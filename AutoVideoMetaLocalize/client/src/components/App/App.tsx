@@ -6,6 +6,8 @@ import {AppLayout} from './AppLayout/AppLayout';
 
 /**
  * The highest-level react component.
+ *
+ * @return {JSX.Element}
  */
 export function App(): JSX.Element {
   return (
@@ -14,7 +16,6 @@ export function App(): JSX.Element {
     </Router>
   );
 }
-// <MonetisationPage/>
 
 // Render the application to the DOM.
 render(<App />, document.getElementById('app'));

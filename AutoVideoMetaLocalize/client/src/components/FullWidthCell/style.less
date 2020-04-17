@@ -1,0 +1,32 @@
+@import '../style.less';
+
+.full-width-cell {
+  > .full-width-xs {
+    max-width: @screen-xs-max;
+  }
+
+  > .full-width-sm {
+    max-width: @screen-sm-max;
+  }
+
+  > .full-width-md {
+    max-width: @screen-md-max;
+  }
+
+  > .full-width-lg {
+    max-width: @screen-lg-max;
+  }
+
+  > .full-width-xl {
+    max-width: @screen-xl-max;
+  }
+
+  > .full-width-xs,
+  > .full-width-sm,
+  > .full-width-md,
+  > .full-width-lg,
+  > .full-width-xl {
+    width: 100%;
+    margin: @padding-md;
+  }
+}
