@@ -13,7 +13,7 @@ variables:
   buildConfiguration: 'Release'
   restoreBuildProjects: '**/*.csproj'
   unitTestProjects: '**/*UnitTests/*.csproj'
-  npmPackageDirectory: '$(Build.SourcesDirectory)/zukte.com'
+  npmPackageDirectory: '$(Build.SourcesDirectory)/AutoVideoMetaLocalize'
 
 steps:
 - task: Npm@1
