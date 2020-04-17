@@ -1,0 +1,62 @@
+# ASP.NET Core (.NET Framework)
+# Build and test ASP.NET Core projects targeting the full .NET Framework.
+# Add steps that publish symbols, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
+trigger:
+- master
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  buildConfiguration: 'Release'
+  restoreBuildProjects: '**/*.csproj'
+  unitTestProjects: '**/*UnitTests/*.csproj'
+  npmPackageDirectory: '$(Build.SourcesDirectory)/zukte.com'
+
+steps:
+- task: Npm@1
+  displayName: Npm Install
+  inputs:
+    command: 'install'
+    workingDir: '$(npmPackageDirectory)'
+
+- task: Npm@1
+  displayName: Npm Webpack
+  inputs:
+    command: 'custom'
+    workingDir: '$(npmPackageDirectory)'
+    customCommand: 'run build'
+
+- task: DotNetCoreCLI@2
+  displayName: Restore
+  inputs:
+    command: restore
+    projects: '$(restoreBuildProjects)'
+
+- task: DotNetCoreCLI@2
+  displayName: Build
+  inputs:
+    projects: '$(restoreBuildProjects)'
+    arguments: '--configuration $(buildConfiguration)'
+
+- task: DotNetCoreCLI@2
+  displayName: Test
+  inputs:
+    command: test
+    projects: '$(unitTestProjects)'
+    arguments: '--configuration $(buildConfiguration)'
+
+- task: DotNetCoreCLI@2
+  displayName: Publish
+  inputs:
+    command: publish
+    publishWebProjects: True
+    arguments: '--configuration $(buildConfiguration) --output "$(build.artifactstagingdirectory)"'
+    zipAfterPublish: True
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact'
+  inputs:
+    PathtoPublish: '$(build.artifactstagingdirectory)'
