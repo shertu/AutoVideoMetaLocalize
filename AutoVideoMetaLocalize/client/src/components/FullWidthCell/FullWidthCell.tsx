@@ -26,12 +26,12 @@ export const FullWidthCell: React.FunctionComponent<FullWidthUnitProps> = (props
   let colClassName: string;
 
   // assign default value
-  props.size = props.size || 'md';
+  const propsSize: typeof Sizes[number] | number = props.size || 'md';
 
-  if (isNumber(props.size)) {
-    colStyle = { maxWidth: props.size };
+  if (isNumber(propsSize)) {
+    colStyle = { maxWidth: propsSize };
   } else {
-    colClassName = `full-width-${props.size}`;
+    colClassName = `full-width-${propsSize}`;
   }
 
   return (

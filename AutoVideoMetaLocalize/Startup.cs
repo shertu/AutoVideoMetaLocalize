@@ -6,6 +6,7 @@ using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
 using ChanceNET;
+using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -19,7 +20,7 @@ namespace AutoVideoMetaLocalize {
 	public class Startup {
 		private static readonly string CORS_POLICY = "_AllowSpecificOrigins";
 
-		public static readonly System.Version APIVERSION = new System.Version(1, 0);
+		public static readonly Version APIVERSION = new System.Version(1, 0);
 		public static readonly string APPNAME = Assembly.GetExecutingAssembly().GetName().Name;
 
 		private readonly IConfiguration _configuration;
@@ -31,6 +32,13 @@ namespace AutoVideoMetaLocalize {
 		// This method gets called by the runtime. Use this method to add services to the container.
 		// For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
 		public void ConfigureServices(IServiceCollection services) {
+			#region Google OAuth
+			_ = services.AddScoped(elem => new ClientSecrets {
+				ClientId = _configuration["Authentication:Google:ClientId"],
+				ClientSecret = _configuration["Authentication:Google:ClientSecret"]
+			});
+			#endregion
+
 			#region routing
 			_ = services.AddControllers();
 			#endregion

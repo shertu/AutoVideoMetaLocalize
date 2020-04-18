@@ -3,6 +3,7 @@ import {Steps} from 'antd';
 import './style.less';
 import {StepCurrentProvider} from './StepCurrentContext/StepCurrentContext';
 import { FullWidthCell } from '../FullWidthCell/FullWidthCell';
+import { GoogleAuthCard } from './GoogleAuthCard/GoogleAuthCard';
 
 const {Step} = Steps;
 
@@ -19,6 +20,15 @@ export function ProcessStepsContent(props: {
   const [stepCurrent, setStepCurrent] =
     React.useState<number>(0);
 
+  let stepCurrentNode: React.ReactNode;
+  switch (stepCurrent) {
+    case 0:
+      stepCurrentNode = (<GoogleAuthCard/>);
+      break;
+    default:
+      throw `The current step state, ${stepCurrent}, is impossible.`;
+  }
+
   return (
     <StepCurrentProvider value={{
       current: stepCurrent,
@@ -32,7 +42,7 @@ export function ProcessStepsContent(props: {
           <Step title="update" />
         </Steps>
 
-        <div>Hello World</div>
+        {stepCurrentNode}
       </FullWidthCell>
     </StepCurrentProvider>
   );
