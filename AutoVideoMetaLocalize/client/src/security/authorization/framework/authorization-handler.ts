@@ -1,5 +1,5 @@
 ﻿import {AuthorizationRequirement} from './authorization-requirement';
-import {AuthorizationUser} from './authorization-user';
+import { AuthorizationUser } from './authorization-user';
 
 export abstract class AuthorizationHandler {
   abstract handleAsync(

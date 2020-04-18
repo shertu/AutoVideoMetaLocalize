@@ -1,7 +1,7 @@
 import {AuthorizationHandler} from '../framework/authorization-handler';
 import {AuthorizationRequirement} from '../framework/authorization-requirement';
-import {AuthorizationUser} from '../framework/authorization-user';
-import {ClaimTypes} from '../framework/claim-types';
+import { AuthorizationUser } from '../framework/authorization-user';
+import { ClaimTypes } from '..';
 
 export class SuperuserAuthorizationHandler extends AuthorizationHandler {
   private static superusers: string[] = [

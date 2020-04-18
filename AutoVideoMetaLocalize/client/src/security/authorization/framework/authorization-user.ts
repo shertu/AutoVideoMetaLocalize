@@ -1,7 +1,4 @@
-import {ClaimTypes} from '..';
-import {ApplicationUserRolesApi, Claim, ApplicationUserClaim} from '../../../generated-sources/openapi';
-
-const APPLICATION_USER_ROLES_API = new ApplicationUserRolesApi();
+import { ClaimTypes } from "./claim-types";
 
 /**
  * A useful wrapper class for a collection of claims.
@@ -45,45 +42,5 @@ export class AuthorizationUser {
    */
   public findFirstNameIdentifier(): string {
     return this.findFirstValue(ClaimTypes.NameIdentifier);
-  }
-
-  /**
-   * Adds the specified role server-side.
-   */
-  public async pushRole(role: string): Promise<void> {
-    if (this.isInRole(role)) {
-      throw new Error(`Failed to add because the ${role} role conflicted.`);
-    }
-
-    const id = this.findFirstNameIdentifier();
-    const claim: ApplicationUserClaim = {
-      userId: id,
-      claimType: ClaimTypes.Role,
-      claimValue: role,
-    };
-
-    await APPLICATION_USER_ROLES_API.apiApplicationUserRolesPost({
-      applicationUserClaim: claim,
-    });
-  }
-
-  /**
-   * Deletes the specified role server-side.
-   */
-  public async spliceRole(role: string): Promise<void> {
-    if (!this.isInRole(role)) {
-      throw new Error(`Failed to delete because the ${role} role was not found.`);
-    }
-
-    const id = this.findFirstNameIdentifier();
-    const claim: ApplicationUserClaim = {
-      userId: id,
-      claimType: ClaimTypes.Role,
-      claimValue: role,
-    };
-
-    await APPLICATION_USER_ROLES_API.apiApplicationUserRolesDelete({
-      applicationUserClaim: claim,
-    });
   }
 }
