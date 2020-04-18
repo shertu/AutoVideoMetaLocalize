@@ -1,8 +1,13 @@
 import * as React from 'react';
-import {render} from 'react-dom';
-import {BrowserRouter as Router} from 'react-router-dom';
+import { render } from 'react-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
 import './style.less';
-import {AppLayout} from './AppLayout/AppLayout';
+import { AppLayout } from './AppLayout/AppLayout';
+import { UserProvider } from '../UserContext/UserContext';
+import { AuthorizationUser } from '../../security';
+import { AccountApi } from '../../../generated-sources/openapi';
+
+const ACCOUNT_API: AccountApi = new AccountApi();
 
 /**
  * The highest-level react component.
@@ -10,10 +15,23 @@ import {AppLayout} from './AppLayout/AppLayout';
  * @return {JSX.Element}
  */
 export function App(): JSX.Element {
+  const [user, setUser] =
+    React.useState<AuthorizationUser>(null);
+
+  React.useEffect(() => {
+    ACCOUNT_API.apiAccountGet()
+      .then((res) => setUser(new AuthorizationUser(res)))
+      .catch(err => setUser(null));
+  }, []);
+
+  console.log('authorization user', user);
+
   return (
-    <Router>
-      <AppLayout />
-    </Router>
+    <UserProvider value={user}>
+      <Router>
+        <AppLayout />
+      </Router>
+    </UserProvider>
   );
 }
 

@@ -95,6 +95,19 @@ namespace AutoVideoMetaLocalize.Controllers {
 		}
 
 		/// <summary>
+		/// Gets a representation of the logged in user as a collection of claims.
+		/// </summary>
+		[Authorize]
+		[HttpGet]
+		public ActionResult<IEnumerable<Claim>> GetAccount() {
+			IEnumerable<Claim> claims = User.Claims.Select(elem => new Claim(
+				elem.Type, elem.Value, elem.ValueType, elem.Issuer, elem.OriginalIssuer)
+			);
+
+			return Ok(claims);
+		}
+
+		/// <summary>
 		/// Sets the url to return to after sign in and sign out.
 		/// </summary>
 		[HttpGet(nameof(Login))]
@@ -112,17 +125,37 @@ namespace AutoVideoMetaLocalize.Controllers {
 		}
 
 		/// <summary>
-		/// Signs a user in to the application.
+		/// Handles the OAuth2 callback from the google sign in.
 		/// </summary>
 		/// <param name="code">The Google authorization code.</param>
 		[HttpGet("google-signin")]
 		public async Task<IActionResult> GoogleSignIn([Required] string code) {
+			string guid = Guid.NewGuid().ToString();
+
 			TokenResponse token = await flow.ExchangeCodeForTokenAsync(
-				null, code, OAuthRedirectUri, CancellationToken.None);
+				guid, code, OAuthRedirectUri, CancellationToken.None);
 
+			await HttpContextSignIn(token);
+
+			UserCredential userCredential = new UserCredential(flow, guid, token);
+
+			await dataStore.StoreAsync<UserCredential>(guid, userCredential);
+
+			YouTubeService service = new YouTubeService(new BaseClientService.Initializer() {
+				HttpClientInitializer = userCredential,
+				ApplicationName = "Auto Video Meta Localize",
+			});
+
+			string returnUrl = Request.Cookies[KEY_RE];
+			return RedirectToReturnUrl(returnUrl);
+		}
+
+		/// <summary>
+		/// Signs a user in to the application.
+		/// </summary>
+		/// <param name="token">The Google authentication token.</param>
+		private async Task HttpContextSignIn(TokenResponse token) {
 			GoogleProfile profile = await GetGoogleProfileAsync(token);
-
-			#region Context Sign In
 			ClaimsIdentity identity = GetClaimsIdentity(profile);
 
 			AuthenticationProperties authenticationProperties = new AuthenticationProperties {
@@ -138,17 +171,6 @@ namespace AutoVideoMetaLocalize.Controllers {
 				CookieAuthenticationDefaults.AuthenticationScheme,
 				new ClaimsPrincipal(identity),
 				authenticationProperties);
-			#endregion
-
-			UserCredential userCredential = new UserCredential(flow, profile.sub, token);
-
-			YouTubeService service = new YouTubeService(new BaseClientService.Initializer() {
-				HttpClientInitializer = userCredential,
-				ApplicationName = "Auto Video Meta Localize",
-			});
-
-			string returnUrl = Request.Cookies[KEY_RE];
-			return RedirectToReturnUrl(returnUrl);
 		}
 
 		/// <summary>
@@ -163,7 +185,6 @@ namespace AutoVideoMetaLocalize.Controllers {
 		/// <summary>
 		/// Redirects the user to the return url and throws a bad request if the url is not local.
 		/// </summary>
-		/// <param name="returnUrl"></param>
 		private IActionResult RedirectToReturnUrl(string returnUrl) {
 			returnUrl ??= DEFAULT_RETURN_URL;
 
@@ -189,8 +210,6 @@ namespace AutoVideoMetaLocalize.Controllers {
 				throw new Exception(response.ReasonPhrase);
 			}
 		}
-
-
 
 		/// <summary>
 		/// Creates a new identity based on the Google profile with up to date claims.

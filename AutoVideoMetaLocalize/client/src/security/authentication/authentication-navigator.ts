@@ -1,4 +1,4 @@
-import {BASE_PATH, ApiAccountLoginGetRequest, ApiAccountLogoutGetRequest} from '../generated-sources/openapi';
+import {BASE_PATH, ApiAccountLoginGetRequest, ApiAccountLogoutGetRequest} from '../../../generated-sources/openapi';
 
 export class AuthenticationNavigator {
   static login(params: ApiAccountLoginGetRequest): void {
