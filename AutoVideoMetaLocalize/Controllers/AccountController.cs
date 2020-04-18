@@ -65,11 +65,6 @@ namespace AutoVideoMetaLocalize.Controllers {
 		private readonly IHttpClientFactory _httpClientFactory;
 
 		/// <summary>
-		/// A singleton used to manage the user in a persistence store.
-		/// </summary>
-		private readonly ApplicationDbContext _context;
-
-		/// <summary>
 		/// Gets the redirect url for the OAuth2 request.
 		/// </summary>
 		private string OAuthRedirectUri => Url.Action(nameof(GoogleSignIn), null, null, Request.Scheme);
@@ -86,12 +81,10 @@ namespace AutoVideoMetaLocalize.Controllers {
 
 		public AccountController(
 			ClientSecrets secrets,
-			IHttpClientFactory httpClientFactory,
-			ApplicationDbContext context
+			IHttpClientFactory httpClientFactory
 		) {
 			_secrets = secrets;
 			_httpClientFactory = httpClientFactory;
-			_context = context;
 
 			// initialize the flow
 			flow = new GoogleAuthorizationCodeFlow(
@@ -128,6 +121,24 @@ namespace AutoVideoMetaLocalize.Controllers {
 				null, code, OAuthRedirectUri, CancellationToken.None);
 
 			GoogleProfile profile = await GetGoogleProfileAsync(token);
+
+			#region Context Sign In
+			ClaimsIdentity identity = GetClaimsIdentity(profile);
+
+			AuthenticationProperties authenticationProperties = new AuthenticationProperties {
+				AllowRefresh = true,
+				ExpiresUtc = token.IssuedUtc
+					.AddSeconds((long) token.ExpiresInSeconds),
+				IsPersistent = true,
+				IssuedUtc = token.IssuedUtc,
+				RedirectUri = OAuthRedirectUri,
+			};
+
+			await HttpContext.SignInAsync(
+				CookieAuthenticationDefaults.AuthenticationScheme,
+				new ClaimsPrincipal(identity),
+				authenticationProperties);
+			#endregion
 
 			UserCredential userCredential = new UserCredential(flow, profile.sub, token);
 
@@ -177,6 +188,18 @@ namespace AutoVideoMetaLocalize.Controllers {
 			} else {
 				throw new Exception(response.ReasonPhrase);
 			}
+		}
+
+
+
+		/// <summary>
+		/// Creates a new identity based on the Google profile with up to date claims.
+		/// </summary>
+		/// <param name="profile">The Google profile on which to base the identity.</param>
+		private ClaimsIdentity GetClaimsIdentity(GoogleProfile profile) {
+			ClaimsIdentity identity = new ClaimsIdentity(AUTHENTICATION_TYPE);
+			identity.AddClaims(profile.ToClaims());
+			return identity;
 		}
 	}
 }

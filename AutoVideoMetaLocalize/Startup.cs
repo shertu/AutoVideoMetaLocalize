@@ -39,6 +39,10 @@ namespace AutoVideoMetaLocalize {
 			});
 			#endregion
 
+			#region http client
+			_ = services.AddHttpClient();
+			#endregion
+
 			#region routing
 			_ = services.AddControllers();
 			#endregion
