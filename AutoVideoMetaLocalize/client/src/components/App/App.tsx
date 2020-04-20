@@ -5,6 +5,7 @@ import './style.less';
 import { AppLayout } from './AppLayout/AppLayout';
 import { UserProvider } from '../UserContext/UserContext';
 import { AccountApi } from '../../../generated-sources/openapi';
+import { ClaimsPrinciple } from '../../security/claims';
 
 const ACCOUNT_API: AccountApi = new AccountApi();
 
@@ -14,19 +15,17 @@ const ACCOUNT_API: AccountApi = new AccountApi();
  * @return {JSX.Element}
  */
 export function App(): JSX.Element {
-  //const [user, setUser] =
-  //  React.useState<AuthorizationUser>(null);
+  const [user, setUser] =
+    React.useState<ClaimsPrinciple>(null);
 
-  //React.useEffect(() => {
-  //  ACCOUNT_API.ac
-  //    .then((res) => setUser(new AuthorizationUser(res)))
-  //    .catch(err => setUser(null));
-  //}, []);
-
-  //console.log('authorization user', user);
+  React.useEffect(() => {
+    ACCOUNT_API.apiAccountGet()
+      .then((res) => setUser(new ClaimsPrinciple(res)))
+      .catch(err => setUser(null));
+  }, []);
 
   return (
-    <UserProvider value={null}>
+    <UserProvider value={user}>
       <Router>
         <AppLayout />
       </Router>

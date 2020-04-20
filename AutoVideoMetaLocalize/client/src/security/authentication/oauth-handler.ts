@@ -1,17 +1,32 @@
-﻿export class OAuthHandler {
-  //static login(params: ApiAccountLoginGetRequest): void {
-  //  const returnUrl: string = params.returnUrl || window.location.pathname;
+﻿import { GoogleAuthApi } from "../../../generated-sources/openapi";
 
-  //  window.location.assign(encodeURI(
-  //    `${BASE_PATH}/api/account/login? returnUrl =${returnUrl}`,
-  //  ));
-  //}
+const GOOGLE_AUTH_API: GoogleAuthApi = new GoogleAuthApi();
 
-  //static logout(params: ApiAccountLogoutGetRequest): void {
-  //  const returnUrl: string = params.returnUrl || window.location.pathname;
+export class OAuthHandler {
+  public static async GoogleSignIn(uri?: string, scopes?: string[]): Promise<void> {
+    this.SetSignRedirectUri(uri);
 
-  //  window.location.assign(encodeURI(
-  //    `${BASE_PATH}/api/account/logout? returnUrl =${returnUrl}`,
-  //  ));
-  //}
+    let scope: string = null;
+    if (scopes) {
+      scope = scopes.join(' ');
+    }
+
+    const res: string = await GOOGLE_AUTH_API.apiGoogleAuthGetAuthorizationRequestUrlGet({
+      scope: scope
+    });
+
+    window.location.assign(res);
+  }
+
+  public static GoogleSignOut(uri?: string): void {
+    this.SetSignRedirectUri(uri);
+
+    GOOGLE_AUTH_API.apiGoogleAuthGoogleSignOutGet();
+  }
+
+  private static SetSignRedirectUri(redirectUri?: string) {
+    GOOGLE_AUTH_API.apiGoogleAuthSetSignRedirectUriPost({
+      uri: redirectUri || window.location.pathname
+    })
+  }
 }

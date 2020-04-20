@@ -20,10 +20,6 @@ namespace AutoVideoMetaLocalize.Controllers {
 		private const string SIGN_REDIRECT_URI_KEY = "auth-return-url";
 		private const string SIGN_REDIRECT_URI_DEFAULT = "~/";
 
-		//"https://www.googleapis.com/auth/youtube.upload",
-		//"https://www.googleapis.com/auth/youtube",
-		//"https://www.googleapis.com/auth/cloud-translation",
-
 		private readonly GoogleAuthorizationCodeFlow _flow;
 
 		public GoogleAuthController(GoogleAuthorizationCodeFlow flow) {
@@ -73,7 +69,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 			AuthorizationCodeRequestUrl authorizationCodeRequestUrl = _flow.CreateAuthorizationCodeRequest(OAuthRedirectUri);
 			authorizationCodeRequestUrl.Scope = scope;
 			Uri authorizationUrl = authorizationCodeRequestUrl.Build();
-			return Redirect(authorizationUrl.AbsoluteUri);
+			return Ok(authorizationUrl.AbsoluteUri);
 		}
 
 		/// <summary>

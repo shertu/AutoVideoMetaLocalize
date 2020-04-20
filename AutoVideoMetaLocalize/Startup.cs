@@ -43,6 +43,29 @@ namespace AutoVideoMetaLocalize {
 					@"https://www.googleapis.com/auth/userinfo.profile",
 				},
 			});
+
+			_ = services.AddSingleton(flow);
+			#endregion
+
+			#region chance
+			// This is an implementation of the corresponding .js library
+			Chance chance = new ConcurrentChance();
+			_ = services.AddSingleton(chance);
+			#endregion
+
+			#region CORS
+			_ = services.AddCors(options => {
+				options.AddPolicy(CORS_POLICY,
+				builder => {
+					_ = builder.WithOrigins("http://www.AutoVideoMetaLocalize", "http://zukte.azurewebsites.net")
+					.AllowAnyHeader()
+					.AllowAnyMethod();
+				});
+			});
+			#endregion
+
+			#region routing
+			_ = services.AddControllers();
 			#endregion
 
 			#region authentication
@@ -59,16 +82,6 @@ namespace AutoVideoMetaLocalize {
 			_ = services.AddAuthorization();
 			#endregion
 
-			#region routing
-			_ = services.AddControllers();
-			#endregion
-
-			#region chance
-			// This is an implementation of the corresponding .js library
-			Chance chance = new ConcurrentChance();
-			_ = services.AddSingleton(chance);
-			#endregion
-
 			#region Swashbuckle
 			string version = APIVERSION.ToString();
 
@@ -79,25 +92,14 @@ namespace AutoVideoMetaLocalize {
 				});
 			});
 			#endregion
-
-			#region CORS
-			_ = services.AddCors(options => {
-				options.AddPolicy(CORS_POLICY,
-				builder => {
-					_ = builder.WithOrigins("http://www.AutoVideoMetaLocalize", "http://zukte.azurewebsites.net")
-					.AllowAnyHeader()
-					.AllowAnyMethod();
-				});
-			});
-			#endregion
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
 			// https://docs.microsoft.com/en-us/aspnet/core/fundamentals/middleware/
 
-			#region routing
-			_ = app.UseRouting();
+			#region developer exception
+			_ = app.UseDeveloperExceptionPage();
 			#endregion
 
 			#region static content
@@ -108,12 +110,20 @@ namespace AutoVideoMetaLocalize {
 			});
 			#endregion
 
+			#region routing
+			_ = app.UseRouting();
+			#endregion
+
 			#region CORS
 			_ = app.UseCors(CORS_POLICY);
 			#endregion
 
-			#region developer exception
-			_ = app.UseDeveloperExceptionPage();
+			#region authentication
+			_ = app.UseAuthentication();
+			#endregion
+
+			#region authorization
+			_ = app.UseAuthorization();
 			#endregion
 
 			#region endpoints

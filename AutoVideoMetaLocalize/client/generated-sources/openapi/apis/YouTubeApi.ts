@@ -14,39 +14,33 @@
 
 
 import * as runtime from '../runtime';
-import {
-    Claim,
-    ClaimFromJSON,
-    ClaimToJSON,
-} from '../models';
 
 /**
  * no description
  */
-export class AccountApi extends runtime.BaseAPI {
+export class YouTubeApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiAccountGetRaw(): Promise<runtime.ApiResponse<Array<Claim>>> {
+    async apiYouTubeInstantiateServiceGetRaw(): Promise<runtime.ApiResponse<void>> {
         const queryParameters: runtime.HTTPQuery = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/Account`,
+            path: `/api/YouTube/InstantiateService`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         });
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(ClaimFromJSON));
+        return new runtime.VoidApiResponse(response);
     }
 
     /**
      */
-    async apiAccountGet(): Promise<Array<Claim>> {
-        const response = await this.apiAccountGetRaw();
-        return await response.value();
+    async apiYouTubeInstantiateServiceGet(): Promise<void> {
+        await this.apiYouTubeInstantiateServiceGetRaw();
     }
 
 }
