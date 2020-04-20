@@ -1,1 +1,1 @@
-﻿export * from './authentication-navigator';
+﻿export * from './google-signinz';
