@@ -1,11 +1,12 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 
 namespace AutoVideoMetaLocalize.Models {
 	[Serializable]
 	public class GoogleProfile {
+
+		//[JsonProperty("id_token")]
 		public string sub { get; set; }
 		public string name { get; set; }
 		public string given_name { get; set; }

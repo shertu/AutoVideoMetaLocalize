@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net;
 using System.Reflection;
-using System.Threading.Tasks;
+using AutoVideoMetaLocalize.Security.Authentication;
+using AutoVideoMetaLocalize.Utilities;
 using ChanceNET;
 using Google.Apis.Auth.OAuth2;
-using Microsoft.AspNetCore.Authentication;
+using Google.Apis.Auth.OAuth2.Flows;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -20,7 +19,7 @@ namespace AutoVideoMetaLocalize {
 	public class Startup {
 		private static readonly string CORS_POLICY = "_AllowSpecificOrigins";
 
-		public static readonly Version APIVERSION = new System.Version(1, 0);
+		public static readonly Version APIVERSION = new Version(1, 0);
 		public static readonly string APPNAME = Assembly.GetExecutingAssembly().GetName().Name;
 
 		private readonly IConfiguration _configuration;
@@ -32,15 +31,32 @@ namespace AutoVideoMetaLocalize {
 		// This method gets called by the runtime. Use this method to add services to the container.
 		// For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
 		public void ConfigureServices(IServiceCollection services) {
-			#region Google OAuth
-			_ = services.AddScoped(elem => new ClientSecrets {
-				ClientId = _configuration["Authentication:Google:ClientId"],
-				ClientSecret = _configuration["Authentication:Google:ClientSecret"]
+			#region Google OAuth 2.0
+			GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow(new GoogleAuthorizationCodeFlow.Initializer {
+				ClientSecrets = new ClientSecrets {
+					ClientId = _configuration["Authentication:Google:ClientId"],
+					ClientSecret = _configuration["Authentication:Google:ClientSecret"]
+				},
+				DataStore = GoogleDataStores.GOOGLE_AUTH_TOKEN_STORE,
+				IncludeGrantedScopes = true,
+				Scopes = new string[] {
+					@"https://www.googleapis.com/auth/userinfo.profile",
+				},
 			});
 			#endregion
 
-			#region http client
-			_ = services.AddHttpClient();
+			#region authentication
+			_ = services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+				.AddCookie(options => {
+					/* The normal login system cannot combine with an OAuth 2.0 system
+					 * as the app cannot 300 the user to the google login page.
+					 */
+					options.Events = new CustomCookieAuthenticationEvents();
+				});
+			#endregion
+
+			#region authorization
+			_ = services.AddAuthorization();
 			#endregion
 
 			#region routing
@@ -78,6 +94,8 @@ namespace AutoVideoMetaLocalize {
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
+			// https://docs.microsoft.com/en-us/aspnet/core/fundamentals/middleware/
+
 			#region routing
 			_ = app.UseRouting();
 			#endregion
