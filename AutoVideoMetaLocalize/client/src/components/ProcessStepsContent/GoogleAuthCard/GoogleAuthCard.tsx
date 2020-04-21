@@ -10,10 +10,16 @@ import { GoogleSignInButton } from '../../GoogleSignInButton/GoogleSignInButton'
  * @return {JSX.Element}
  */
 export function GoogleAuthCard(): JSX.Element {
+  const scopes: string[] = [
+    "https://www.googleapis.com/auth/youtube.upload",
+    "https://www.googleapis.com/auth/youtube",
+    "https://www.googleapis.com/auth/cloud-translation",
+  ];
+
   return (
     <FullWidthCell size="sm">
       <Card >
-        <GoogleSignInButton />
+        <GoogleSignInButton scopes={scopes} />
       </Card>
     </FullWidthCell>
   );

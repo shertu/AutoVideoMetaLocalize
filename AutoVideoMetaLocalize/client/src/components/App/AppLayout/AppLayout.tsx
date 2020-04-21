@@ -1,9 +1,9 @@
-import {Layout} from 'antd';
+import { Layout } from 'antd';
 import * as React from 'react';
-import {AppContentSwitch} from '../AppContentSwitch/AppContentSwitch';
+import { AppContentSwitch } from '../AppContentSwitch/AppContentSwitch';
 import './style.less';
 
-const {Content} = Layout;
+const { Content } = Layout;
 
 /**
  * The general layout or structure of the web application, e.g. main, header, footer, etc.
@@ -12,7 +12,7 @@ const {Content} = Layout;
  */
 export function AppLayout(): JSX.Element {
   return (
-    <Layout>
+    <Layout style={{ minHeight: '100vh' }}>
       <Content>
         <AppContentSwitch />
       </Content>

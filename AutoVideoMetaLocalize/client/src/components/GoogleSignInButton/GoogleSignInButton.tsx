@@ -8,16 +8,12 @@ import { OAuthHandler } from '../../security/authentication/oauth-handler';
  *
  * @return {JSX.Element}
  */
-export function GoogleSignInButton(): JSX.Element {
-  const scopes: string[] = [
-    "https://www.googleapis.com/auth/youtube.upload",
-    "https://www.googleapis.com/auth/youtube",
-    "https://www.googleapis.com/auth/cloud-translation",
-  ]
-
+export function GoogleSignInButton(props: {
+  scopes?: string[],
+}): JSX.Element {
   return (
     <GoogleButton type="light" style={{ margin: 'auto' }}
-      onClick={() => OAuthHandler.GoogleSignIn(null, scopes)}
+      onClick={() => OAuthHandler.GoogleSignIn(null, props.scopes)}
     />
   );
 }
