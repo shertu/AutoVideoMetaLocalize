@@ -1,1 +1,1 @@
-﻿export * from './google-signinz';
+﻿export * from './oauth-handler';

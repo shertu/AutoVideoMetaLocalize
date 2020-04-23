@@ -3,8 +3,8 @@ import { Route, Switch } from 'react-router-dom';
 import routes from '../../../routes';
 import { NoRouteMatchError } from '../../NoRouteMatchError/NoRouteMatchError';
 import './style.less';
-import { ProcessStepsContent } from '../../ProcessStepsContent/ProcessStepsContent';
-import { PrivacyPolicyPage } from '../../PrivacyPolicyPage/PrivacyPolicyPage';
+import { StepsPage } from '../../Page/StepsPage/StepsPage';
+import { PrivacyPolicyPage } from '../../Page/PrivacyPolicyPage/PrivacyPolicyPage';
 
 /**
  * The main switch in the web application.
@@ -15,7 +15,7 @@ export function AppContentSwitch(): JSX.Element {
   return (
     <Switch>
       <Route exact path={routes.ROUTE_HOME}>
-        <ProcessStepsContent />
+        <StepsPage />
       </Route>
       <Route exact path={routes.ROUTE_PRIVACY_POLICY}>
         <PrivacyPolicyPage />

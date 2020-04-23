@@ -35,7 +35,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 		/// Gets or sets the redirect uri for the sign in and sign out actions.
 		/// Used to ensure that the uri is a local uri.
 		/// </summary>
-		public string SignInSignOutRedirectUri {
+		public string SignRedirectUri {
 			get {
 				string uri = Request.Cookies[SIGN_REDIRECT_URI_KEY];
 				return Url.IsLocalUrl(uri) ? uri : SIGN_REDIRECT_URI_DEFAULT;
@@ -57,15 +57,15 @@ namespace AutoVideoMetaLocalize.Controllers {
 				return BadRequest($"{nameof(uri)} is not a valid local uri.");
 			}
 
-			SignInSignOutRedirectUri = uri;
+			SignRedirectUri = uri;
 			return Ok();
 		}
 
 		/// <summary>
 		/// Gets the uri to which to redirect the user to sign-in to.
 		/// </summary>
-		[HttpGet(nameof(GetAuthorizationRequestUrl))]
-		public ActionResult<string> GetAuthorizationRequestUrl([FromQuery] string scope) {
+		[HttpGet(nameof(AuthorizationRequestUrl))]
+		public ActionResult<string> AuthorizationRequestUrl([FromQuery] string scope) {
 			AuthorizationCodeRequestUrl authorizationCodeRequestUrl = _flow.CreateAuthorizationCodeRequest(OAuthRedirectUri);
 			authorizationCodeRequestUrl.Scope = scope;
 			Uri authorizationUrl = authorizationCodeRequestUrl.Build();
@@ -73,46 +73,73 @@ namespace AutoVideoMetaLocalize.Controllers {
 		}
 
 		/// <summary>
+		/// A utility class which contains both a token and its user key. 
+		/// </summary>
+		public class GoogleTokenInformation {
+			public readonly TokenResponse token;
+			public readonly string key;
+
+			public GoogleTokenInformation(TokenResponse token, string key) {
+				this.token = token;
+				this.key = key;
+			}
+		}
+
+		/// <summary>
 		/// Handles the OAuth2 callback from the google sign in.
 		/// </summary>
 		[HttpGet(nameof(GoogleSignIn))]
 		public async Task<SignInResult> GoogleSignIn([Required] string code) {
+			#region Token
 			string userTokenKey = Guid.NewGuid().ToString();
-
 			TokenResponse token = await _flow.ExchangeCodeForTokenAsync(
 				userTokenKey, code, OAuthRedirectUri, CancellationToken.None);
-
-			#region Claims Principle
-			ClaimsPrincipal principal = null;
 			#endregion
 
-			#region Authentication Properties
-			DateTimeOffset expiresUtc = token.IssuedUtc
-				.AddSeconds(token.ExpiresInSeconds ?? (default));
-			bool hasRefreshToken = token.RefreshToken != null;
-
-			AuthenticationProperties authenticationProperties = new AuthenticationProperties {
-				AllowRefresh = hasRefreshToken,
-				ExpiresUtc = expiresUtc,
-				IsPersistent = true,
-				IssuedUtc = token.IssuedUtc,
-				RedirectUri = SignInSignOutRedirectUri,
-			};
-			#endregion
-
+			ClaimsPrincipal principal = GenerateClaimsPrinciple(token, userTokenKey);
+			AuthenticationProperties authenticationProperties = GenerateAuthenticationProperties(token);
 			return new SignInResult(CookieAuthenticationDefaults.AuthenticationScheme, principal, authenticationProperties);
 		}
 
 		/// <summary>
-		/// 
+		/// Generates an identity for sign-in based on the token response and user token key.
 		/// </summary>
-		/// <param name="token"></param>
-		/// <param name="userTokenKey"></param>
-		/// <returns></returns>
-		protected ClaimsPrincipal GetClaimsPrinciple(TokenResponse token, string userTokenKey) {
+		protected ClaimsPrincipal GenerateClaimsPrinciple(TokenResponse token, string userTokenKey) {
 			ClaimsIdentity identity = new ClaimsIdentity(AUTHENTICATION_TYPE);
 			identity.AddClaim(new Claim(AdditionalClaimTypes.TokenResponseKey, userTokenKey));
 			return new ClaimsPrincipal(identity);
+		}
+
+		/// <summary>
+		/// Generates the properties for authentication based on the token response and sign redirect uri.
+		/// </summary>
+		private AuthenticationProperties GenerateAuthenticationProperties(TokenResponse token) {
+			DateTimeOffset expiresUtc = token.IssuedUtc
+				.AddSeconds(token.ExpiresInSeconds ?? (default));
+
+			bool hasRefreshToken = token.RefreshToken != null;
+
+			return new AuthenticationProperties {
+				AllowRefresh = hasRefreshToken,
+				ExpiresUtc = expiresUtc,
+				IsPersistent = true,
+				IssuedUtc = token.IssuedUtc,
+				RedirectUri = SignRedirectUri,
+			};
+		}
+
+		/// <summary>
+		/// Loads the user's response token from storage.
+		/// </summary>
+		private async Task<GoogleTokenInformation> GetGoogleTokenInformation() {
+			string userTokenKey = User.FindFirstValue(AdditionalClaimTypes.TokenResponseKey);
+
+			if (userTokenKey == null) {
+				return null;
+			}
+
+			TokenResponse token = await _flow.LoadTokenAsync(userTokenKey, CancellationToken.None);
+			return new GoogleTokenInformation(token, userTokenKey);
 		}
 
 		/// <summary>
@@ -121,15 +148,21 @@ namespace AutoVideoMetaLocalize.Controllers {
 		[HttpGet(nameof(GoogleSignOut))]
 		[Authorize]
 		public async Task<SignOutResult> GoogleSignOut() {
-			#region Google Revoke Token
-			string userTokenKey = User.FindFirstValue(AdditionalClaimTypes.TokenResponseKey);
-			TokenResponse token = await _flow.LoadTokenAsync(userTokenKey, CancellationToken.None);
-			await _flow.RevokeTokenAsync(userTokenKey, token.AccessToken, CancellationToken.None);
-			#endregion
+			GoogleTokenInformation info = await GetGoogleTokenInformation();
+			await _flow.RevokeTokenAsync(info.key, info.token.AccessToken, CancellationToken.None);
 
-			return new SignOutResult(CookieAuthenticationDefaults.AuthenticationScheme, new AuthenticationProperties {
-				RedirectUri = SignInSignOutRedirectUri,
-			});
+			AuthenticationProperties authenticationProperties = GenerateAuthenticationProperties(info.token);
+			return new SignOutResult(CookieAuthenticationDefaults.AuthenticationScheme, authenticationProperties);
+		}
+
+		/// <summary>
+		/// Endpoint to fetch information about the user's auth token.
+		/// </summary>
+		[HttpGet(nameof(GetTokenInformation))]
+		[Authorize]
+		public async Task<ActionResult<GoogleTokenInformation>> GetTokenInformation() {
+			GoogleTokenInformation info = await GetGoogleTokenInformation();
+			return Ok(info);
 		}
 	}
 }

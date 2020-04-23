@@ -1,6 +1,6 @@
 import * as React from 'react';
 import './style.less';
-import { FullWidthCell } from '../FullWidthCell/FullWidthCell';
+import { Page } from '../Page';
 
 /**
  * A mailto link which provides the email address of the developer.
@@ -9,7 +9,7 @@ import { FullWidthCell } from '../FullWidthCell/FullWidthCell';
  */
 export function PrivacyPolicyPage(): JSX.Element {
   return (
-    <FullWidthCell size="lg">
+    <Page id="privact-policy-page">
       <h1>Privacy Policy for BLACKMAN, JARED MICHAEL</h1>
 
       <p>At Auto Video Meta Localize, accessible from https://autovideometalocalize.azurewebsites.net/, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by Auto Video Meta Localize and how we use it.</p>
@@ -92,6 +92,6 @@ export function PrivacyPolicyPage(): JSX.Element {
       <p>Another part of our priority is adding protection for children while using the internet. We encourage parents and guardians to observe, participate in, and/or monitor and guide their online activity.</p>
 
       <p>Auto Video Meta Localize does not knowingly collect any Personal Identifiable Information from children under the age of 13. If you think that your child provided this kind of information on our website, we strongly encourage you to contact us immediately and we will do our best efforts to promptly remove such information from our records.</p>
-    </FullWidthCell>
+    </Page>
   );
 }

@@ -5,7 +5,7 @@ import './style.less';
 import { AppLayout } from './AppLayout/AppLayout';
 import { UserProvider } from '../UserContext/UserContext';
 import { AccountApi } from '../../../generated-sources/openapi';
-import { ClaimsPrinciple } from '../../security/claims';
+import { ClaimsPrinciple } from '../../security';
 
 const ACCOUNT_API: AccountApi = new AccountApi();
 
@@ -21,7 +21,7 @@ export function App(): JSX.Element {
   React.useEffect(() => {
     ACCOUNT_API.apiAccountGet()
       .then((res) => setUser(new ClaimsPrinciple(res)))
-      .catch(err => setUser(null));
+      .catch(err => setUser(new ClaimsPrinciple([])));
   }, []);
 
   return (

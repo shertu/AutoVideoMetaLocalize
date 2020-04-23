@@ -1,4 +1,4 @@
-import { Layout } from 'antd';
+import { Layout, Row } from 'antd';
 import * as React from 'react';
 import { AppContentSwitch } from '../AppContentSwitch/AppContentSwitch';
 import './style.less';
@@ -14,7 +14,9 @@ export function AppLayout(): JSX.Element {
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <Content>
-        <AppContentSwitch />
+        <Row className="content-alignment" justify="center">
+          <AppContentSwitch />
+        </Row>
       </Content>
     </Layout>
   );

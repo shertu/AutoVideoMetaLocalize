@@ -8,7 +8,7 @@ const TerserPlugin = require('terser-webpack-plugin');
 
 // https://github.com/ant-design/ant-design/blob/master/components/style/themes/default.less
 const ThemeOverrides = {
-  'primary-color': '#d8412f',
+  //'primary-color': '#d8412f',
 };
 
 // webpack method

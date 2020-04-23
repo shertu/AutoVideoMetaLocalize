@@ -3,8 +3,10 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.YouTube.v3;
+using Google.Apis.YouTube.v3.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Security.Claims;
 using System.Threading;
@@ -25,7 +27,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 		/// </summary>
 		[HttpGet(nameof(InstantiateService))]
 		[Authorize]
-		public async Task<IActionResult> InstantiateService() {
+		public async Task<ActionResult<IEnumerable<Channel>>> InstantiateService() {
 			string userTokenKey = User.FindFirstValue(AdditionalClaimTypes.TokenResponseKey);
 			TokenResponse token = await _flow.LoadTokenAsync(userTokenKey, CancellationToken.None);
 			UserCredential credential = new UserCredential(_flow, userTokenKey, token);
@@ -35,7 +37,13 @@ namespace AutoVideoMetaLocalize.Controllers {
 				ApplicationName = Assembly.GetExecutingAssembly().GetName().Name,
 			});
 
-			return Ok();
+			ChannelsResource.ListRequest request = service.Channels.List("snippet,contentDetails,statistics");
+			request.Mine = true;
+
+			ChannelListResponse res = await request.ExecuteAsync();
+			IList<Channel> items = res.Items;
+
+			return Ok(items);
 		}
 	}
 }
