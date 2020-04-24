@@ -14,6 +14,11 @@
 
 
 import * as runtime from '../runtime';
+import {
+    Channel,
+    ChannelFromJSON,
+    ChannelToJSON,
+} from '../models';
 
 /**
  * no description
@@ -22,7 +27,7 @@ export class YouTubeApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiYouTubeInstantiateServiceGetRaw(): Promise<runtime.ApiResponse<void>> {
+    async apiYouTubeInstantiateServiceGetRaw(): Promise<runtime.ApiResponse<Array<Channel>>> {
         const queryParameters: runtime.HTTPQuery = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -34,13 +39,14 @@ export class YouTubeApi extends runtime.BaseAPI {
             query: queryParameters,
         });
 
-        return new runtime.VoidApiResponse(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(ChannelFromJSON));
     }
 
     /**
      */
-    async apiYouTubeInstantiateServiceGet(): Promise<void> {
-        await this.apiYouTubeInstantiateServiceGetRaw();
+    async apiYouTubeInstantiateServiceGet(): Promise<Array<Channel>> {
+        const response = await this.apiYouTubeInstantiateServiceGetRaw();
+        return await response.value();
     }
 
 }

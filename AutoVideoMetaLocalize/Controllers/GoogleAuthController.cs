@@ -64,25 +64,12 @@ namespace AutoVideoMetaLocalize.Controllers {
 		/// <summary>
 		/// Gets the uri to which to redirect the user to sign-in to.
 		/// </summary>
-		[HttpGet(nameof(AuthorizationRequestUrl))]
-		public ActionResult<string> AuthorizationRequestUrl([FromQuery] string scope) {
+		[HttpGet(nameof(GetAuthorizationRequestUrl))]
+		public ActionResult<string> GetAuthorizationRequestUrl([FromQuery] string scope) {
 			AuthorizationCodeRequestUrl authorizationCodeRequestUrl = _flow.CreateAuthorizationCodeRequest(OAuthRedirectUri);
 			authorizationCodeRequestUrl.Scope = scope;
 			Uri authorizationUrl = authorizationCodeRequestUrl.Build();
 			return Ok(authorizationUrl.AbsoluteUri);
-		}
-
-		/// <summary>
-		/// A utility class which contains both a token and its user key. 
-		/// </summary>
-		public class GoogleTokenInformation {
-			public readonly TokenResponse token;
-			public readonly string key;
-
-			public GoogleTokenInformation(TokenResponse token, string key) {
-				this.token = token;
-				this.key = key;
-			}
 		}
 
 		/// <summary>
@@ -129,29 +116,16 @@ namespace AutoVideoMetaLocalize.Controllers {
 		}
 
 		/// <summary>
-		/// Loads the user's response token from storage.
-		/// </summary>
-		private async Task<GoogleTokenInformation> GetGoogleTokenInformation() {
-			string userTokenKey = User.FindFirstValue(AdditionalClaimTypes.TokenResponseKey);
-
-			if (userTokenKey == null) {
-				return null;
-			}
-
-			TokenResponse token = await _flow.LoadTokenAsync(userTokenKey, CancellationToken.None);
-			return new GoogleTokenInformation(token, userTokenKey);
-		}
-
-		/// <summary>
 		/// Signs a user out of the application.
 		/// </summary>
 		[HttpGet(nameof(GoogleSignOut))]
 		[Authorize]
 		public async Task<SignOutResult> GoogleSignOut() {
-			GoogleTokenInformation info = await GetGoogleTokenInformation();
-			await _flow.RevokeTokenAsync(info.key, info.token.AccessToken, CancellationToken.None);
+			string userTokenKey = User.FindFirstValue(AdditionalClaimTypes.TokenResponseKey);
+			TokenResponse token = await _flow.LoadTokenAsync(userTokenKey, CancellationToken.None);
+			await _flow.RevokeTokenAsync(userTokenKey, token.AccessToken, CancellationToken.None);
 
-			AuthenticationProperties authenticationProperties = GenerateAuthenticationProperties(info.token);
+			AuthenticationProperties authenticationProperties = GenerateAuthenticationProperties(token);
 			return new SignOutResult(CookieAuthenticationDefaults.AuthenticationScheme, authenticationProperties);
 		}
 
@@ -160,9 +134,10 @@ namespace AutoVideoMetaLocalize.Controllers {
 		/// </summary>
 		[HttpGet(nameof(GetTokenInformation))]
 		[Authorize]
-		public async Task<ActionResult<GoogleTokenInformation>> GetTokenInformation() {
-			GoogleTokenInformation info = await GetGoogleTokenInformation();
-			return Ok(info);
+		public async Task<ActionResult<TokenResponse>> GetTokenInformation() {
+			string userTokenKey = User.FindFirstValue(AdditionalClaimTypes.TokenResponseKey);
+			TokenResponse token = await _flow.LoadTokenAsync(userTokenKey, CancellationToken.None);
+			return Ok(token);
 		}
 	}
 }

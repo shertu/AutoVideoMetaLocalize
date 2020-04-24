@@ -11,7 +11,7 @@ export class OAuthHandler {
       scope = scopes.join(' ');
     }
 
-    const res: string = await GOOGLE_AUTH_API.apiGoogleAuthGetAuthorizationRequestUrlGet({
+    const res: string = await GOOGLE_AUTH_API.apiGoogleAuthAuthorizationRequestUrlGet({
       scope: scope
     });
 
