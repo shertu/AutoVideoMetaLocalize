@@ -6,6 +6,7 @@ using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Security.Claims;
@@ -16,34 +17,41 @@ namespace AutoVideoMetaLocalize.Controllers {
 	[Route("api/[controller]")]
 	[ApiController]
 	public class YouTubeController : ControllerBase {
-		private readonly GoogleAuthorizationCodeFlow _flow;
+		private const string PART = "id,snippet,contentDetails";
+		private readonly YouTubeService service;
 
-		public YouTubeController(GoogleAuthorizationCodeFlow flow) {
-			_flow = flow;
+		public YouTubeController(GoogleCredentialManager gcm) {
+			Task<UserCredential> task = gcm.GetUserCredentials();
+			task.Wait(CancellationToken.None);
+			UserCredential credential = task.Result;
+
+			service = new YouTubeService(new YouTubeService.Initializer {
+				HttpClientInitializer = credential,
+				ApplicationName = Assembly.GetExecutingAssembly().GetName().Name,
+			});
 		}
 
 		/// <summary>
 		/// Gets the uri to which to redirect the user to sign-in to.
 		/// </summary>
-		[HttpGet(nameof(InstantiateService))]
+		[HttpGet(nameof(GetMyChannels))]
 		[Authorize]
-		public async Task<ActionResult<IEnumerable<Channel>>> InstantiateService() {
-			string userTokenKey = User.FindFirstValue(AdditionalClaimTypes.TokenResponseKey);
-			TokenResponse token = await _flow.LoadTokenAsync(userTokenKey, CancellationToken.None);
-			UserCredential credential = new UserCredential(_flow, userTokenKey, token);
+		public async Task<ActionResult<IList<Channel>>> GetMyChannels() {
+			List<Channel> channels = new List<Channel>();
+			string pageToken = null;
 
-			YouTubeService service = new YouTubeService(new YouTubeService.Initializer {
-				HttpClientInitializer = credential,
-				ApplicationName = Assembly.GetExecutingAssembly().GetName().Name,
-			});
+			ChannelListResponse response;
+			do {
+				ChannelsResource.ListRequest request = service.Channels.List(PART);
+				request.Mine = true;
+				request.PageToken = pageToken;
 
-			ChannelsResource.ListRequest request = service.Channels.List("snippet,contentDetails,statistics");
-			request.Mine = true;
+				response = await request.ExecuteAsync();
+				pageToken = response.NextPageToken;
+				channels.AddRange(response.Items);
+			} while (pageToken != null);
 
-			ChannelListResponse res = await request.ExecuteAsync();
-			IList<Channel> items = res.Items;
-
-			return Ok(items);
+			return channels;
 		}
 	}
 }

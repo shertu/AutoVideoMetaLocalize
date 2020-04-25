@@ -1,1 +1,1 @@
-﻿export * from './oauth-handler';
+﻿export * from './google-oauth-handler';

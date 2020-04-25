@@ -1,15 +1,16 @@
 import * as React from 'react';
 import './style.less';
-import { DatePicker, Form, Button } from 'antd';
+import { DatePicker, Form, Button, message } from 'antd';
 import { Page } from '../Page';
-import { RangeValue } from 'rc-picker/lib/interface';
+import { YouTubeApi, Channel } from '../../../../generated-sources/openapi';
 import { Store } from 'antd/lib/form/interface';
-import { GoogleAuthApi } from '../../../../generated-sources/openapi';
-import { google } from 'googleapis';
+import { RangeValue } from 'rc-picker/lib/interface';
 
 const { RangePicker } = DatePicker;
 
-const GOOGLE_AUTH_API: GoogleAuthApi = new GoogleAuthApi();
+const YOUTUBE_API: YouTubeApi = new YouTubeApi();
+
+//const youtube = google.youtube('v3');
 
 /**
  * A mailto link which provides the email address of the developer.
@@ -17,25 +18,23 @@ const GOOGLE_AUTH_API: GoogleAuthApi = new GoogleAuthApi();
  * @return {JSX.Element}
  */
 export function FetchVideosPage(): JSX.Element {
+  const [fetchError, setFetchError] =
+    React.useState<boolean>(false);
 
-  //React.useEffect(() => {
-  //  GOOGLE_AUTH_API.apiGoogleAuthGetTokenInformationGet()
-  //    .then((res) => {
-  //      const client = new google.auth.OAuth2({
-  //        clientId: "539196681426-l6cnhj95rltbi7pi24gs3m8pt12agqom.apps.googleusercontent.com",
-  //      };
+  const [channels, setChannels] =
+    React.useState<Channel[]>(null);
 
-  //      client.credentials.
+  React.useEffect(() => {
+    YOUTUBE_API.apiYouTubeInstantiateServiceGet()
+      .then((res) => setChannels(res))
+      .catch((err) => {
+        setFetchError(true);
+        console.log(err);
+        //message.error(err);
+      })
+  }, []);
 
-  //      const youtube = google.youtube({
-  //        version: 'v3',
-  //        auth: sampleClient.oAuth2Client,
-  //      });
-
-  //    });
-  //}, []);
-
-  // DateType
+  // RangeValue<DateType>
   function onChangeRangePicker(values: RangeValue<any>, formatString: [string, string]): void {
     console.log('Selected Time: ', values);
     console.log('Formatted Selected Time: ', formatString);
@@ -44,6 +43,9 @@ export function FetchVideosPage(): JSX.Element {
   function onFinishForm(values: Store): void {
 
   }
+
+  console.log(fetchError);
+  console.log(channels);
 
   return (
     <Page id="fetch-videos-page">
@@ -60,3 +62,4 @@ export function FetchVideosPage(): JSX.Element {
     </Page>
   );
 }
+

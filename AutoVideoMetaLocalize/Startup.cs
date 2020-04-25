@@ -92,6 +92,14 @@ namespace AutoVideoMetaLocalize {
 				});
 			});
 			#endregion
+
+			#region HttpContext
+			_ = services.AddHttpContextAccessor();
+			#endregion
+
+			#region Common Controller Methods
+			_ = services.AddScoped<GoogleCredentialManager>();
+			#endregion
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

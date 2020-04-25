@@ -62,7 +62,6 @@
 		"webpack-dev-server": "^3.10.3"
 	},
 	"devDependencies": {
-		"googleapis": "^49.0.0",
 		"react-google-button": "^0.7.1"
 	}
 }

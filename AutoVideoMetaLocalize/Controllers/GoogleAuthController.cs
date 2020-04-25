@@ -11,19 +11,22 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using AutoVideoMetaLocalize.Utilities;
 using Google.Apis.Auth.OAuth2.Requests;
+using Google.Apis.Auth.OAuth2;
 
 namespace AutoVideoMetaLocalize.Controllers {
 	[Route("api/[controller]")]
 	[ApiController]
 	public class GoogleAuthController : ControllerBase {
 		private const string AUTHENTICATION_TYPE = "AutoVideoMetaLocalize";
-		private const string SIGN_REDIRECT_URI_KEY = "auth-return-url";
-		private const string SIGN_REDIRECT_URI_DEFAULT = "~/";
+		private const string AUTHENTICATION_REDIRECT_URI_KEY = "auth-return-url";
+		private const string AUTHENTICATION_REDIRECT_URI_DEFAULT = "~/";
 
 		private readonly GoogleAuthorizationCodeFlow _flow;
+		private readonly GoogleCredentialManager _gcm;
 
-		public GoogleAuthController(GoogleAuthorizationCodeFlow flow) {
+		public GoogleAuthController(GoogleAuthorizationCodeFlow flow, GoogleCredentialManager gcm) {
 			_flow = flow;
+			_gcm = gcm;
 		}
 
 		/// <summary>
@@ -35,15 +38,15 @@ namespace AutoVideoMetaLocalize.Controllers {
 		/// Gets or sets the redirect uri for the sign in and sign out actions.
 		/// Used to ensure that the uri is a local uri.
 		/// </summary>
-		public string SignRedirectUri {
+		public string AuthenticationRedirectUri {
 			get {
-				string uri = Request.Cookies[SIGN_REDIRECT_URI_KEY];
-				return Url.IsLocalUrl(uri) ? uri : SIGN_REDIRECT_URI_DEFAULT;
+				string uri = Request.Cookies[AUTHENTICATION_REDIRECT_URI_KEY];
+				return Url.IsLocalUrl(uri) ? uri : AUTHENTICATION_REDIRECT_URI_DEFAULT;
 			}
 
 			set {
 				if (Url.IsLocalUrl(value)) {
-					Response.Cookies.Append(SIGN_REDIRECT_URI_KEY, value);
+					Response.Cookies.Append(AUTHENTICATION_REDIRECT_URI_KEY, value);
 				}
 			}
 		}
@@ -51,25 +54,25 @@ namespace AutoVideoMetaLocalize.Controllers {
 		/// <summary>
 		/// Sets the uri to return to after sign in and sign out.
 		/// </summary>
-		[HttpPost(nameof(SetSignRedirectUri))]
-		public IActionResult SetSignRedirectUri(string uri) {
+		[HttpPost("authentication-redirect-uri")]
+		public ActionResult<string> SetAuthenticationRedirectUri(string uri) {
 			if (!Url.IsLocalUrl(uri)) {
-				return BadRequest($"{nameof(uri)} is not a valid local uri.");
+				return BadRequest($"{uri} is not a valid local uri.");
 			}
 
-			SignRedirectUri = uri;
-			return Ok();
+			AuthenticationRedirectUri = uri;
+			return Ok(AuthenticationRedirectUri);
 		}
 
 		/// <summary>
 		/// Gets the uri to which to redirect the user to sign-in to.
 		/// </summary>
-		[HttpGet(nameof(GetAuthorizationRequestUrl))]
+		[HttpGet("authorization-request-url")]
 		public ActionResult<string> GetAuthorizationRequestUrl([FromQuery] string scope) {
 			AuthorizationCodeRequestUrl authorizationCodeRequestUrl = _flow.CreateAuthorizationCodeRequest(OAuthRedirectUri);
 			authorizationCodeRequestUrl.Scope = scope;
 			Uri authorizationUrl = authorizationCodeRequestUrl.Build();
-			return Ok(authorizationUrl.AbsoluteUri);
+			return authorizationUrl.AbsoluteUri;
 		}
 
 		/// <summary>
@@ -77,28 +80,34 @@ namespace AutoVideoMetaLocalize.Controllers {
 		/// </summary>
 		[HttpGet(nameof(GoogleSignIn))]
 		public async Task<SignInResult> GoogleSignIn([Required] string code) {
-			#region Token
-			string userTokenKey = Guid.NewGuid().ToString();
-			TokenResponse token = await _flow.ExchangeCodeForTokenAsync(
-				userTokenKey, code, OAuthRedirectUri, CancellationToken.None);
-			#endregion
-
-			ClaimsPrincipal principal = GenerateClaimsPrinciple(token, userTokenKey);
-			AuthenticationProperties authenticationProperties = GenerateAuthenticationProperties(token);
+			UserCredential credential = await GenerateUserCredentialFromAuthorizationCode(code);
+			ClaimsPrincipal principal = GenerateClaimsPrinciple(credential);
+			AuthenticationProperties authenticationProperties = GenerateAuthenticationProperties(credential.Token);
 			return new SignInResult(CookieAuthenticationDefaults.AuthenticationScheme, principal, authenticationProperties);
 		}
 
 		/// <summary>
-		/// Generates an identity for sign-in based on the token response and user token key.
+		/// Generates user crendentials from a google authorization code.
 		/// </summary>
-		protected ClaimsPrincipal GenerateClaimsPrinciple(TokenResponse token, string userTokenKey) {
+		private async Task<UserCredential> GenerateUserCredentialFromAuthorizationCode(string code) {
+			string userTokenKey = Guid.NewGuid().ToString();
+			TokenResponse token = await _flow.ExchangeCodeForTokenAsync(
+				userTokenKey, code, OAuthRedirectUri, CancellationToken.None);
+			UserCredential credential = new UserCredential(_flow, userTokenKey, token);
+			return credential;
+		}
+
+		/// <summary>
+		/// Generates an identity for the http-context sign in.
+		/// </summary>
+		protected ClaimsPrincipal GenerateClaimsPrinciple(UserCredential credential) {
 			ClaimsIdentity identity = new ClaimsIdentity(AUTHENTICATION_TYPE);
-			identity.AddClaim(new Claim(AdditionalClaimTypes.TokenResponseKey, userTokenKey));
+			identity.AddClaim(new Claim(AdditionalClaimTypes.TokenResponseKey, credential.UserId));
 			return new ClaimsPrincipal(identity);
 		}
 
 		/// <summary>
-		/// Generates the properties for authentication based on the token response and sign redirect uri.
+		/// Generates the authentication properties for the http-context sign in.
 		/// </summary>
 		private AuthenticationProperties GenerateAuthenticationProperties(TokenResponse token) {
 			DateTimeOffset expiresUtc = token.IssuedUtc
@@ -111,33 +120,19 @@ namespace AutoVideoMetaLocalize.Controllers {
 				ExpiresUtc = expiresUtc,
 				IsPersistent = true,
 				IssuedUtc = token.IssuedUtc,
-				RedirectUri = SignRedirectUri,
+				RedirectUri = AuthenticationRedirectUri,
 			};
 		}
 
 		/// <summary>
-		/// Signs a user out of the application.
+		/// Signs a user out of the application and revokes their Google Auth Token.
 		/// </summary>
 		[HttpGet(nameof(GoogleSignOut))]
 		[Authorize]
 		public async Task<SignOutResult> GoogleSignOut() {
-			string userTokenKey = User.FindFirstValue(AdditionalClaimTypes.TokenResponseKey);
-			TokenResponse token = await _flow.LoadTokenAsync(userTokenKey, CancellationToken.None);
-			await _flow.RevokeTokenAsync(userTokenKey, token.AccessToken, CancellationToken.None);
-
-			AuthenticationProperties authenticationProperties = GenerateAuthenticationProperties(token);
+			UserCredential credential = await _gcm.GetUserCredentials();
+			AuthenticationProperties authenticationProperties = GenerateAuthenticationProperties(credential.Token);
 			return new SignOutResult(CookieAuthenticationDefaults.AuthenticationScheme, authenticationProperties);
-		}
-
-		/// <summary>
-		/// Endpoint to fetch information about the user's auth token.
-		/// </summary>
-		[HttpGet(nameof(GetTokenInformation))]
-		[Authorize]
-		public async Task<ActionResult<TokenResponse>> GetTokenInformation() {
-			string userTokenKey = User.FindFirstValue(AdditionalClaimTypes.TokenResponseKey);
-			TokenResponse token = await _flow.LoadTokenAsync(userTokenKey, CancellationToken.None);
-			return Ok(token);
 		}
 	}
 }
