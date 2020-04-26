@@ -21,7 +21,7 @@ export function App(): JSX.Element {
   React.useEffect(() => {
     ACCOUNT_API.apiAccountGet()
       .then((res) => setUser(new ClaimsPrinciple(res)))
-      .catch(err => setUser(new ClaimsPrinciple([])));
+      .catch(err => setUser(null));
   }, []);
 
   return (

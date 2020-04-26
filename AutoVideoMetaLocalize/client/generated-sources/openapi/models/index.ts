@@ -26,5 +26,4 @@ export * from './PropertyValue';
 export * from './RelatedPlaylistsData';
 export * from './Thumbnail';
 export * from './ThumbnailDetails';
-export * from './TokenResponse';
 export * from './WatchSettings';

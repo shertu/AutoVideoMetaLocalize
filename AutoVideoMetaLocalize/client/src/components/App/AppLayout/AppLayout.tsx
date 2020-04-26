@@ -12,8 +12,8 @@ const { Content } = Layout;
  */
 export function AppLayout(): JSX.Element {
   return (
-    <Layout style={{ minHeight: '100vh' }}>
-      <Content>
+    <Layout className="site-layout">
+      <Content className="site-content">
         <Row className="content-alignment" justify="center">
           <AppContentSwitch />
         </Row>

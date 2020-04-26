@@ -3,13 +3,13 @@ import './style.less';
 import { Page } from '../Page';
 
 /**
- * A mailto link which provides the email address of the developer.
+ * This page outlines the rights of the user in regards to their online privacy while using the app.
  *
  * @return {JSX.Element}
  */
 export function PrivacyPolicyPage(): JSX.Element {
   return (
-    <Page id="privact-policy-page">
+    <Page id="privacy-policy-page">
       <h1>Privacy Policy for BLACKMAN, JARED MICHAEL</h1>
 
       <p>At Auto Video Meta Localize, accessible from https://autovideometalocalize.azurewebsites.net/, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by Auto Video Meta Localize and how we use it.</p>

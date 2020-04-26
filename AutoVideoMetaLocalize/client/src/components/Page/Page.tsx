@@ -1,6 +1,5 @@
 import * as React from 'react';
 import './style.less';
-import { Row } from 'antd';
 
 /**
  * The main content of this web application.
@@ -13,9 +12,9 @@ export const Page: React.FunctionComponent<{
   id?: string,
 }> = (props) => {
   return (
-    <div id={props.id} className="max-cell-lg">
+    <section id={props.id} className="max-cell-lg">
         {props.children}
-    </div>
+    </section>
   );
 };
 

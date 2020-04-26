@@ -14,22 +14,17 @@
 
 
 import * as runtime from '../runtime';
-import {
-    TokenResponse,
-    TokenResponseFromJSON,
-    TokenResponseToJSON,
-} from '../models';
 
-export interface ApiGoogleAuthGetAuthorizationRequestUrlGetRequest {
+export interface ApiGoogleAuthAuthenticationRedirectUriPostRequest {
+    uri?: string | null;
+}
+
+export interface ApiGoogleAuthAuthorizationRequestUrlGetRequest {
     scope?: string | null;
 }
 
 export interface ApiGoogleAuthGoogleSignInGetRequest {
     code: string;
-}
-
-export interface ApiGoogleAuthSetSignRedirectUriPostRequest {
-    uri?: string | null;
 }
 
 /**
@@ -39,7 +34,35 @@ export class GoogleAuthApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiGoogleAuthGetAuthorizationRequestUrlGetRaw(requestParameters: ApiGoogleAuthGetAuthorizationRequestUrlGetRequest): Promise<runtime.ApiResponse<string>> {
+    async apiGoogleAuthAuthenticationRedirectUriPostRaw(requestParameters: ApiGoogleAuthAuthenticationRedirectUriPostRequest): Promise<runtime.ApiResponse<string>> {
+        const queryParameters: runtime.HTTPQuery = {};
+
+        if (requestParameters.uri !== undefined) {
+            queryParameters['uri'] = requestParameters.uri;
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/api/GoogleAuth/authentication-redirect-uri`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+        });
+
+        return new runtime.TextApiResponse(response) as any;
+    }
+
+    /**
+     */
+    async apiGoogleAuthAuthenticationRedirectUriPost(requestParameters: ApiGoogleAuthAuthenticationRedirectUriPostRequest): Promise<string> {
+        const response = await this.apiGoogleAuthAuthenticationRedirectUriPostRaw(requestParameters);
+        return await response.value();
+    }
+
+    /**
+     */
+    async apiGoogleAuthAuthorizationRequestUrlGetRaw(requestParameters: ApiGoogleAuthAuthorizationRequestUrlGetRequest): Promise<runtime.ApiResponse<string>> {
         const queryParameters: runtime.HTTPQuery = {};
 
         if (requestParameters.scope !== undefined) {
@@ -49,7 +72,7 @@ export class GoogleAuthApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/GoogleAuth/GetAuthorizationRequestUrl`,
+            path: `/api/GoogleAuth/authorization-request-url`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -60,32 +83,8 @@ export class GoogleAuthApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiGoogleAuthGetAuthorizationRequestUrlGet(requestParameters: ApiGoogleAuthGetAuthorizationRequestUrlGetRequest): Promise<string> {
-        const response = await this.apiGoogleAuthGetAuthorizationRequestUrlGetRaw(requestParameters);
-        return await response.value();
-    }
-
-    /**
-     */
-    async apiGoogleAuthGetTokenInformationGetRaw(): Promise<runtime.ApiResponse<TokenResponse>> {
-        const queryParameters: runtime.HTTPQuery = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        const response = await this.request({
-            path: `/api/GoogleAuth/GetTokenInformation`,
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        });
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => TokenResponseFromJSON(jsonValue));
-    }
-
-    /**
-     */
-    async apiGoogleAuthGetTokenInformationGet(): Promise<TokenResponse> {
-        const response = await this.apiGoogleAuthGetTokenInformationGetRaw();
+    async apiGoogleAuthAuthorizationRequestUrlGet(requestParameters: ApiGoogleAuthAuthorizationRequestUrlGetRequest): Promise<string> {
+        const response = await this.apiGoogleAuthAuthorizationRequestUrlGetRaw(requestParameters);
         return await response.value();
     }
 
@@ -141,33 +140,6 @@ export class GoogleAuthApi extends runtime.BaseAPI {
      */
     async apiGoogleAuthGoogleSignOutGet(): Promise<void> {
         await this.apiGoogleAuthGoogleSignOutGetRaw();
-    }
-
-    /**
-     */
-    async apiGoogleAuthSetSignRedirectUriPostRaw(requestParameters: ApiGoogleAuthSetSignRedirectUriPostRequest): Promise<runtime.ApiResponse<void>> {
-        const queryParameters: runtime.HTTPQuery = {};
-
-        if (requestParameters.uri !== undefined) {
-            queryParameters['uri'] = requestParameters.uri;
-        }
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        const response = await this.request({
-            path: `/api/GoogleAuth/SetSignRedirectUri`,
-            method: 'POST',
-            headers: headerParameters,
-            query: queryParameters,
-        });
-
-        return new runtime.VoidApiResponse(response);
-    }
-
-    /**
-     */
-    async apiGoogleAuthSetSignRedirectUriPost(requestParameters: ApiGoogleAuthSetSignRedirectUriPostRequest): Promise<void> {
-        await this.apiGoogleAuthSetSignRedirectUriPostRaw(requestParameters);
     }
 
 }

@@ -27,13 +27,13 @@ export class YouTubeApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiYouTubeInstantiateServiceGetRaw(): Promise<runtime.ApiResponse<Array<Channel>>> {
+    async apiYouTubeGetMyChannelsGetRaw(): Promise<runtime.ApiResponse<Array<Channel>>> {
         const queryParameters: runtime.HTTPQuery = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/YouTube/InstantiateService`,
+            path: `/api/YouTube/GetMyChannels`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -44,8 +44,8 @@ export class YouTubeApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiYouTubeInstantiateServiceGet(): Promise<Array<Channel>> {
-        const response = await this.apiYouTubeInstantiateServiceGetRaw();
+    async apiYouTubeGetMyChannelsGet(): Promise<Array<Channel>> {
+        const response = await this.apiYouTubeGetMyChannelsGetRaw();
         return await response.value();
     }
 
