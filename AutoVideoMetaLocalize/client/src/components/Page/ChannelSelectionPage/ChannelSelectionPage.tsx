@@ -45,10 +45,14 @@ export function ChannelSelectionPage(props: {
     }
   }, []);
 
-  const channelSelectionDefaultValue = (channelOptions && channelOptions.length > 0) ? channelOptions[0].id : null;
+  const CHANNEL_RADIO_GROUP_DEFAULT = (channelOptions && channelOptions.length > 0) ? channelOptions[0].id : null;
 
-  async function onFinishChannelSelectionForm(values: Store): Promise<void> {
+  async function onFinish(values: Store): Promise<void> {
     console.log(values);
+
+    const CHANNEL_RADIO_GROUP_VALUE = values[FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP];
+
+    console.log(CHANNEL_RADIO_GROUP_VALUE);
   }
 
   return (
@@ -64,12 +68,13 @@ export function ChannelSelectionPage(props: {
       </Row>
 
       {user ? (
-        <Form onFinish={onFinishChannelSelectionForm}>
+        <Form onFinish={onFinish}>
           {channelOptions && (
-            <Form.Item name={FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP} rules={[{
-              required: true,
-            }]}>
-              <Radio.Group defaultValue={channelSelectionDefaultValue}>
+            <Form.Item
+              name={FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP}
+              rules={[{ required: true, message: 'please select a channel' }]}
+            >
+              <Radio.Group defaultValue={CHANNEL_RADIO_GROUP_DEFAULT}>
                 {channelOptions.map((_, i) => {
                   <Radio.Button value={_.id}>
                     <ChannelCard channel={_} />
@@ -79,18 +84,10 @@ export function ChannelSelectionPage(props: {
             </Form.Item>
           )}
           <Row align="middle" justify="end" gutter={8}>
-            <Col>
-              <GoogleSignOutButton />
-            </Col>
-            {channelOptions && (
-              <Col>
-                <Form.Item style={{ marginBottom: 0 }}>
-                  <Button type="primary" htmlType="submit">
-                    Submit
-                  </Button>
-                </Form.Item>
-              </Col>
-            )}
+            <GoogleSignOutButton />
+            <Button type="primary" htmlType="submit">
+              Continue
+            </Button>
           </Row>
         </Form>
       ) : (

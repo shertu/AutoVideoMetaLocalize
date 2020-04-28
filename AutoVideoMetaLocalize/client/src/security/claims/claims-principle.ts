@@ -1,5 +1,5 @@
-import { ClaimTypes } from "./claim-types";
 import { Claim } from "../../../generated-sources/openapi";
+import { CLAIM_TYPES } from "./claim-types";
 
 /**
  * A useful wrapper class for a collection of claims.
@@ -27,7 +27,7 @@ export class ClaimsPrinciple {
    */
   public findFirstRoleIndex(role: string): number {
     return this.claims.findIndex((elem) =>
-      elem.type == ClaimTypes.Role && elem.value == role,
+      elem.type == CLAIM_TYPES.Role && elem.value == role,
     );
   }
 
@@ -42,6 +42,6 @@ export class ClaimsPrinciple {
    * Gets the id of the user.
    */
   public findFirstNameIdentifier(): string {
-    return this.findFirstValue(ClaimTypes.NameIdentifier);
+    return this.findFirstValue(CLAIM_TYPES.NameIdentifier);
   }
 }

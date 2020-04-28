@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using AutoVideoMetaLocalize.Security.Authentication;
@@ -45,6 +46,17 @@ namespace AutoVideoMetaLocalize {
 			});
 
 			_ = services.AddSingleton(flow);
+			#endregion
+
+			#region Google Cloud Translate
+			string google_cloud_translate_service_account_file_path = _configuration["ServiceAccounts:GoogleCloudTranslate"];
+			if (!File.Exists(google_cloud_translate_service_account_file_path)) {
+				throw new FileNotFoundException(); // log exception
+			}
+
+			GoogleCloudTranslateManager googleCloudTranslateManager = new GoogleCloudTranslateManager(google_cloud_translate_service_account_file_path);
+
+			_ = services.AddSingleton(googleCloudTranslateManager);
 			#endregion
 
 			#region chance

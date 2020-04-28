@@ -1,11 +1,11 @@
-﻿using Google.Apis.Auth.OAuth2;
+﻿using Google;
+using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Auth.OAuth2.Responses;
+using Google.Apis.YouTube.v3;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,17 +20,30 @@ namespace AutoVideoMetaLocalize.Utilities {
 			_httpContextAccessor = httpContextAccessor;
 		}
 
-		[Authorize]
-		public async Task<UserCredential> GetUserCredentials() {
-			HttpContext httpContext = _httpContextAccessor.HttpContext;
-			string userId = httpContext.User.FindFirstValue(AdditionalClaimTypes.TokenResponseKey);
+		public async Task<UserCredential> LoadUserCredentialsAsync() {
+			ClaimsPrincipal user = _httpContextAccessor.HttpContext.User;
 
-			if (userId == null) {
-				throw new Exception("The user has not authenticated via Google sign-in.");
+			if (user == null) {
+				throw new Exception("The endpoint requires the authorization annotation.");
 			}
 
-			TokenResponse token = await _flow.LoadTokenAsync(userId, CancellationToken.None);
-			return new UserCredential(_flow, userId, token);
+			string key = user.FindFirstValue(AdditionalClaimTypes.TokenResponseKey);
+
+			if (key == null) {
+				throw new GoogleApiException(nameof(GoogleCredentialManager), "The authenticated user is missing a google token claim.");
+			}
+
+			TokenResponse token = await _flow.LoadTokenAsync(key, CancellationToken.None);
+			return new UserCredential(_flow, key, token);
+		}
+
+		public async Task<YouTubeService> InitializeYouTubeServiceAsync() {
+			UserCredential credential = await LoadUserCredentialsAsync();
+
+			return new YouTubeService(new YouTubeService.Initializer {
+				HttpClientInitializer = credential,
+				ApplicationName = "Auto Video Meta Localize",
+			});
 		}
 	}
 }

@@ -5,6 +5,7 @@ import { NoRouteMatchError } from '../../NoRouteMatchError/NoRouteMatchError';
 import './style.less';
 import { PrivacyPolicyPage } from '../../Page/PrivacyPolicyPage/PrivacyPolicyPage';
 import { SelectedChannelPage } from '../../Page/SelectedChannelPage/SelectedChannelPage';
+import { TranslateChannelPage } from '../../Page/TranslateChannelPage/TranslateChannelPage';
 
 /**
  * The main route switch in the web application.
@@ -15,7 +16,7 @@ export function AppContentSwitch(): JSX.Element {
   return (
     <Switch>
       <Route exact path={routes.ROUTE_HOME}>
-        <SelectedChannelPage />
+        <TranslateChannelPage setSelectedChannel={null} channel={null} />
       </Route>
       <Route exact path={routes.ROUTE_PRIVACY_POLICY}>
         <PrivacyPolicyPage />
@@ -26,3 +27,6 @@ export function AppContentSwitch(): JSX.Element {
     </Switch>
   );
 }
+
+
+//<SelectedChannelPage />

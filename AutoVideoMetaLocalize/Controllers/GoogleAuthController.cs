@@ -21,12 +21,12 @@ namespace AutoVideoMetaLocalize.Controllers {
 		private const string AUTHENTICATION_REDIRECT_URI_KEY = "auth-return-url";
 		private const string AUTHENTICATION_REDIRECT_URI_DEFAULT = "~/";
 
-		private readonly GoogleAuthorizationCodeFlow _flow;
-		private readonly GoogleCredentialManager _gcm;
+		private readonly GoogleAuthorizationCodeFlow flow;
+		private readonly GoogleCredentialManager gcm;
 
 		public GoogleAuthController(GoogleAuthorizationCodeFlow flow, GoogleCredentialManager gcm) {
-			_flow = flow;
-			_gcm = gcm;
+			this.flow = flow;
+			this.gcm = gcm;
 		}
 
 		/// <summary>
@@ -69,7 +69,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 		/// </summary>
 		[HttpGet("authorization-request-url")]
 		public ActionResult<string> GetAuthorizationRequestUrl([FromQuery] string scope) {
-			AuthorizationCodeRequestUrl authorizationCodeRequestUrl = _flow.CreateAuthorizationCodeRequest(OAuthRedirectUri);
+			AuthorizationCodeRequestUrl authorizationCodeRequestUrl = flow.CreateAuthorizationCodeRequest(OAuthRedirectUri);
 			authorizationCodeRequestUrl.Scope = scope;
 			Uri authorizationUrl = authorizationCodeRequestUrl.Build();
 			return authorizationUrl.AbsoluteUri;
@@ -91,9 +91,9 @@ namespace AutoVideoMetaLocalize.Controllers {
 		/// </summary>
 		private async Task<UserCredential> GenerateUserCredentialFromAuthorizationCode(string code) {
 			string userTokenKey = Guid.NewGuid().ToString();
-			TokenResponse token = await _flow.ExchangeCodeForTokenAsync(
+			TokenResponse token = await flow.ExchangeCodeForTokenAsync(
 				userTokenKey, code, OAuthRedirectUri, CancellationToken.None);
-			UserCredential credential = new UserCredential(_flow, userTokenKey, token);
+			UserCredential credential = new UserCredential(flow, userTokenKey, token);
 			return credential;
 		}
 
@@ -130,7 +130,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 		[HttpGet(nameof(GoogleSignOut))]
 		[Authorize]
 		public async Task<SignOutResult> GoogleSignOut() {
-			UserCredential credential = await _gcm.GetUserCredentials();
+			UserCredential credential = await gcm.LoadUserCredentialsAsync();
 			AuthenticationProperties authenticationProperties = GenerateAuthenticationProperties(credential.Token);
 			return new SignOutResult(CookieAuthenticationDefaults.AuthenticationScheme, authenticationProperties);
 		}

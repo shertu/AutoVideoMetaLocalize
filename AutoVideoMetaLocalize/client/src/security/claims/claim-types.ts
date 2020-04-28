@@ -1,4 +1,4 @@
-export const ClaimTypes = {
+export const CLAIM_TYPES = {
   //
   // Summary:
   //     The URI for a claim that specifies the actor, .
