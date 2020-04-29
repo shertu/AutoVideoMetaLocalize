@@ -1,5 +1,6 @@
 ﻿using Google.Api.Gax.ResourceNames;
 using Google.Cloud.Translate.V3;
+using Google.LongRunning;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
@@ -33,6 +34,12 @@ namespace AutoVideoMetaLocalize.Utilities {
 		}
 
 		//BatchTranslateTextRequest
+
+		public async Task<Operation<BatchTranslateResponse, BatchTranslateMetadata>> TranslateTextAsync(BatchTranslateTextRequest request) {
+			request.Parent = PARENT;
+			Operation<BatchTranslateResponse, BatchTranslateMetadata> response = await service.BatchTranslateTextAsync(request);
+			return response;
+		}
 
 		public async Task<IList<Translation>> TranslateTextAsync(TranslateTextRequest request) {
 			request.Parent = PARENT;

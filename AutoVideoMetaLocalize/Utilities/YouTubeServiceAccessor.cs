@@ -2,11 +2,26 @@
 using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace AutoVideoMetaLocalize.Utilities {
-	public static class YouTubeListMethods {
+	public class YouTubeServiceAccessor {
+		private readonly GoogleCredentialManager gcm;
+
+		public YouTubeServiceAccessor(GoogleCredentialManager gcm) {
+			this.gcm = gcm;
+		}
+
+		public async Task<YouTubeService> InitializeServiceAsync() {
+			UserCredential credential = await gcm.LoadUserCredentialsAsync();
+
+			return new YouTubeService(new YouTubeService.Initializer {
+				HttpClientInitializer = credential,
+				ApplicationName = "Auto Video Meta Localize",
+			});
+		}
+
+		#region extension methods
 		public static async Task<IList<Channel>> ChannelsListAll(ChannelsResource.ListRequest request) {
 			List<Channel> items = new List<Channel>();
 
@@ -51,5 +66,6 @@ namespace AutoVideoMetaLocalize.Utilities {
 
 			return items;
 		}
+		#endregion
 	}
 }

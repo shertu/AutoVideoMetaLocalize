@@ -3,7 +3,7 @@ import { Channel } from '../../../../generated-sources/openapi';
 import { Page } from '../Page';
 import './style.less';
 import { TranslateChannelPage } from '../TranslateChannelPage/TranslateChannelPage';
-import { ChannelSelectionPage } from '../ChannelSelectionPage/ChannelSelectionPage';
+import { SelectChannelPage } from '../SelectChannelPage/SelectChannelPage';
 import { Typography, Row } from 'antd';
 
 const { Title, Paragraph, Text } = Typography;
@@ -14,12 +14,12 @@ const { Title, Paragraph, Text } = Typography;
  * @param {object} props
  * @return {JSX.Element}
  */
-export function SelectedChannelPage(): JSX.Element {
+export function MainChannelPage(): JSX.Element {
   const [selectedChannel, setSelectedChannel] =
     React.useState<Channel>(null);
 
   return (
-    <Page id="selected-channel">
+    <Page id="main-channel-page">
       {!selectedChannel && (
         <Typography>
           <Title className="site-title">Auto Video Meta Localize</Title >
@@ -39,7 +39,7 @@ export function SelectedChannelPage(): JSX.Element {
           setSelectedChannel={setSelectedChannel}
         />
       ) : (
-          <ChannelSelectionPage setSelectedChannel={setSelectedChannel} />
+          <SelectChannelPage setSelectedChannel={setSelectedChannel} />
         )}
     </Page>
   );

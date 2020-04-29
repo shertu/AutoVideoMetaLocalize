@@ -29,7 +29,7 @@ const FORM_ITEM_NAMES = {
  * @param {object} props
  * @return {JSX.Element}
  */
-export function ChannelSelectionPage(props: {
+export function SelectChannelPage(props: {
   setSelectedChannel: React.Dispatch<React.SetStateAction<Channel>>
 }): JSX.Element {
   const user = React.useContext(UserContext);
@@ -56,7 +56,7 @@ export function ChannelSelectionPage(props: {
   }
 
   return (
-    <Page id="channel-selection">
+    <Page id="select-channel-page">
       <Divider>
         Channel Selection
       </Divider>

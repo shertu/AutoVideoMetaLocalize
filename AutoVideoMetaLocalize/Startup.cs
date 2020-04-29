@@ -45,18 +45,7 @@ namespace AutoVideoMetaLocalize {
 				},
 			});
 
-			_ = services.AddSingleton(flow);
-			#endregion
-
-			#region Google Cloud Translate
-			string google_cloud_translate_service_account_file_path = _configuration["ServiceAccounts:GoogleCloudTranslate"];
-			if (!File.Exists(google_cloud_translate_service_account_file_path)) {
-				throw new FileNotFoundException(); // log exception
-			}
-
-			GoogleCloudTranslateManager googleCloudTranslateManager = new GoogleCloudTranslateManager(google_cloud_translate_service_account_file_path);
-
-			_ = services.AddSingleton(googleCloudTranslateManager);
+			_ = services.AddScoped(elem => flow);
 			#endregion
 
 			#region chance
@@ -109,8 +98,21 @@ namespace AutoVideoMetaLocalize {
 			_ = services.AddHttpContextAccessor();
 			#endregion
 
-			#region Common Controller Methods
+			#region YouTube
 			_ = services.AddScoped<GoogleCredentialManager>();
+			_ = services.AddScoped<YouTubeServiceAccessor>();
+			#endregion
+
+			#region Google Cloud Translate
+			//string googleCloudTranslateServiceAccountFilePath = _configuration["ServiceAccounts:GoogleCloudTranslate"];
+			string googleCloudTranslateServiceAccountFilePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "ServiceAccounts", "autovideometalocalize-8833c572b8b9.json");
+			if (!File.Exists(googleCloudTranslateServiceAccountFilePath)) {
+				throw new FileNotFoundException();
+			}
+
+			GoogleCloudTranslateManager googleCloudTranslateManager = new GoogleCloudTranslateManager(googleCloudTranslateServiceAccountFilePath);
+
+			_ = services.AddSingleton(googleCloudTranslateManager);
 			#endregion
 		}
 

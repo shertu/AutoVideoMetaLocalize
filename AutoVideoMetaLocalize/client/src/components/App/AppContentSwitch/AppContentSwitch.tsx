@@ -4,7 +4,7 @@ import routes from '../../../routes';
 import { NoRouteMatchError } from '../../NoRouteMatchError/NoRouteMatchError';
 import './style.less';
 import { PrivacyPolicyPage } from '../../Page/PrivacyPolicyPage/PrivacyPolicyPage';
-import { SelectedChannelPage } from '../../Page/SelectedChannelPage/SelectedChannelPage';
+import { MainChannelPage } from '../../Page/MainChannelPage/MainChannelPage';
 import { TranslateChannelPage } from '../../Page/TranslateChannelPage/TranslateChannelPage';
 
 /**

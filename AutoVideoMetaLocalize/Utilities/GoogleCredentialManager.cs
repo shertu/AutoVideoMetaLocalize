@@ -36,14 +36,5 @@ namespace AutoVideoMetaLocalize.Utilities {
 			TokenResponse token = await _flow.LoadTokenAsync(key, CancellationToken.None);
 			return new UserCredential(_flow, key, token);
 		}
-
-		public async Task<YouTubeService> InitializeYouTubeServiceAsync() {
-			UserCredential credential = await LoadUserCredentialsAsync();
-
-			return new YouTubeService(new YouTubeService.Initializer {
-				HttpClientInitializer = credential,
-				ApplicationName = "Auto Video Meta Localize",
-			});
-		}
 	}
 }

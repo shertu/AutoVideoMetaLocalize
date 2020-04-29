@@ -45,21 +45,16 @@ namespace AutoVideoMetaLocalize.Controllers {
 			}
 
 			set {
-				if (Url.IsLocalUrl(value)) {
-					Response.Cookies.Append(AUTHENTICATION_REDIRECT_URI_KEY, value);
-				}
+				string uri = Url.IsLocalUrl(value) ? value : AUTHENTICATION_REDIRECT_URI_DEFAULT;
+				Response.Cookies.Append(AUTHENTICATION_REDIRECT_URI_DEFAULT, uri);
 			}
 		}
 
 		/// <summary>
 		/// Sets the uri to return to after sign in and sign out.
 		/// </summary>
-		[HttpPost("authentication-redirect-uri")]
+		[HttpPost("AuthenticationRedirectUri")]
 		public ActionResult<string> SetAuthenticationRedirectUri(string uri) {
-			if (!Url.IsLocalUrl(uri)) {
-				return BadRequest($"{uri} is not a valid local uri.");
-			}
-
 			AuthenticationRedirectUri = uri;
 			return Ok(AuthenticationRedirectUri);
 		}
@@ -67,8 +62,8 @@ namespace AutoVideoMetaLocalize.Controllers {
 		/// <summary>
 		/// Gets the uri to which to redirect the user to sign-in to.
 		/// </summary>
-		[HttpGet("authorization-request-url")]
-		public ActionResult<string> GetAuthorizationRequestUrl([FromQuery] string scope) {
+		[HttpGet("AuthorizationRequestUrl")]
+		public ActionResult<string> GetAuthorizationRequestUrl([Required] string scope) {
 			AuthorizationCodeRequestUrl authorizationCodeRequestUrl = flow.CreateAuthorizationCodeRequest(OAuthRedirectUri);
 			authorizationCodeRequestUrl.Scope = scope;
 			Uri authorizationUrl = authorizationCodeRequestUrl.Build();

@@ -28,7 +28,7 @@ export function TranslateProgressPage(props: {
     React.useState<number>(null);
 
   return (
-    <Page id="translate-process">
+    <Page id="translate-channel-page">
       <Divider>Translate Progress</Divider>
 
       <Steps current={current}>
