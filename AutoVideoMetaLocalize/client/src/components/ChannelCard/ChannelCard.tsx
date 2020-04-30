@@ -1,22 +1,23 @@
-import {Avatar, Card, Empty, Typography, Row, Col} from 'antd';
+import {Avatar, Card, Typography, Row, Col} from 'antd';
 import * as React from 'react';
 import './style.less';
-import { Channel } from '../../../generated-sources/openapi';
+import {Channel} from '../../../generated-sources/openapi';
 
-const { Paragraph } = Typography;
+const {Paragraph} = Typography;
 
 /**
- * A card which shows the basic information about a YouTube channel.
+ * A card for displaying the basic information about a YouTube channel, e.g. the channel's title.
  *
+ * @param {object} props
  * @return {JSX.Element}
  */
 export function ChannelCard(props: {
-  channel: Channel,
+  channel?: Channel,
 }): JSX.Element {
   const channel: Channel = props.channel;
 
-  if (!(channel && channel.snippet && channel.id)) {
-    return <Empty />;
+  if (!channel || !channel.snippet) {
+    return null;
   }
 
   return (
@@ -32,9 +33,11 @@ export function ChannelCard(props: {
           <Paragraph strong>
             {channel.snippet.title}
           </Paragraph>
-          <Paragraph>
-            {channel.id}
-          </Paragraph>
+          {channel.id && (
+            <Paragraph>
+              {channel.id}
+            </Paragraph>
+          )}
         </Col>
       </Row>
     </Card>

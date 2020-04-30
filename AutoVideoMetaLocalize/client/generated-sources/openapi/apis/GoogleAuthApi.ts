@@ -20,7 +20,7 @@ export interface ApiGoogleAuthAuthenticationRedirectUriPostRequest {
 }
 
 export interface ApiGoogleAuthAuthorizationRequestUrlGetRequest {
-    scope?: string | null;
+    scope: string;
 }
 
 export interface ApiGoogleAuthGoogleSignInGetRequest {
@@ -44,7 +44,7 @@ export class GoogleAuthApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/GoogleAuth/authentication-redirect-uri`,
+            path: `/api/GoogleAuth/AuthenticationRedirectUri`,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -63,6 +63,10 @@ export class GoogleAuthApi extends runtime.BaseAPI {
     /**
      */
     async apiGoogleAuthAuthorizationRequestUrlGetRaw(requestParameters: ApiGoogleAuthAuthorizationRequestUrlGetRequest): Promise<runtime.ApiResponse<string>> {
+        if (requestParameters.scope === null || requestParameters.scope === undefined) {
+            throw new runtime.RequiredError('scope','Required parameter requestParameters.scope was null or undefined when calling apiGoogleAuthAuthorizationRequestUrlGet.');
+        }
+
         const queryParameters: runtime.HTTPQuery = {};
 
         if (requestParameters.scope !== undefined) {
@@ -72,7 +76,7 @@ export class GoogleAuthApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/GoogleAuth/authorization-request-url`,
+            path: `/api/GoogleAuth/AuthorizationRequestUrl`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,

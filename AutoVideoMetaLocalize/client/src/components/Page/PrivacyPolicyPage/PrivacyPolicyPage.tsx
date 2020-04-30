@@ -1,9 +1,9 @@
 import * as React from 'react';
 import './style.less';
-import { Page } from '../Page';
+import {Page} from '../Page';
 
 /**
- * This page outlines the rights of the user in regards to their online privacy while using the app.
+ * This page outlines the rights of the user in regards to their online privacy while using this web application.
  *
  * @return {JSX.Element}
  */
@@ -51,7 +51,6 @@ export function PrivacyPolicyPage(): JSX.Element {
       <p>Like any other website, Auto Video Meta Localize uses 'cookies'. These cookies are used to store information including visitors' preferences, and the pages on the website that the visitor accessed or visited. The information is used to optimize the users' experience by customizing our web page content based on visitors' browser type and/or other information.</p>
 
       <p>For more general information on cookies, please read <a href="https://www.cookieconsent.com/what-are-cookies/">"What Are Cookies"</a>.</p>
-
 
 
       <h2>Advertising Partners Privacy Policies</h2>

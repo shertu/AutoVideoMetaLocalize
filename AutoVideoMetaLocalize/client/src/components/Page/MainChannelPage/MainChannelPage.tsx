@@ -1,17 +1,16 @@
 import * as React from 'react';
-import { Channel } from '../../../../generated-sources/openapi';
-import { Page } from '../Page';
+import {Channel} from '../../../../generated-sources/openapi';
+import {Page} from '../Page';
 import './style.less';
-import { TranslateChannelPage } from '../TranslateChannelPage/TranslateChannelPage';
-import { SelectChannelPage } from '../SelectChannelPage/SelectChannelPage';
-import { Typography, Row } from 'antd';
+import {TranslateChannelPage} from '../TranslateChannelPage/TranslateChannelPage';
+import {SelectChannelPage} from '../SelectChannelPage/SelectChannelPage';
+import {Typography, Row} from 'antd';
 
-const { Title, Paragraph, Text } = Typography;
+const {Title, Paragraph, Text} = Typography;
 
 /**
- * The main content of this web application.
+ * The main page of this web application.
  *
- * @param {object} props
  * @return {JSX.Element}
  */
 export function MainChannelPage(): JSX.Element {
@@ -26,8 +25,10 @@ export function MainChannelPage(): JSX.Element {
 
           <Row align="middle" justify="center">
             <Paragraph className="max-cell-xs">
-              Welcome to <Text strong>Auto Video Meta Localize</Text> - The service which can translate or localize the titles
-              and descriptions of your YouTube videos to make them accessible to a larger audience.
+              Welcome to <Text strong>Auto Video Meta Localize.</Text>
+              The service which can translate or localize the
+              titles and descriptions of your YouTube videos
+              to make them accessible to a larger audience.
             </Paragraph>
           </Row>
         </Typography>

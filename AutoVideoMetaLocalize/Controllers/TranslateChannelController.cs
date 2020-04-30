@@ -16,9 +16,11 @@ namespace AutoVideoMetaLocalize.Controllers {
 	[Route("api/[controller]")]
 	[ApiController]
 	public class TranslateChannelController : ControllerBase {
+		private readonly GoogleCloudTranslateManager translate;
 		private readonly YouTubeServiceAccessor serviceAccessor;
 
-		public TranslateChannelController(YouTubeServiceAccessor serviceAccessor) {
+		public TranslateChannelController(GoogleCloudTranslateManager translate, YouTubeServiceAccessor serviceAccessor) {
+			this.translate = translate;
 			this.serviceAccessor = serviceAccessor;
 		}
 
@@ -26,16 +28,12 @@ namespace AutoVideoMetaLocalize.Controllers {
 		public async Task<IActionResult> TranslateChannel([Required, FromRoute] string channelId, [Required, FromForm] string[] languages) {
 			YouTubeService service = await serviceAccessor.InitializeServiceAsync();
 
-			if (!(await ValidateMineChannelId(channelId))) {
-				return BadRequest("The specified channel id is invalid or the user is not the owner of the channel.");
-			}
-
 			#region LIST search
-			SearchResource.ListRequest search_request = service.Search.List("id");
-			search_request.Type = "video";
-			search_request.MaxResults = 50;
-			search_request.ChannelId = channelId;
-			IList<SearchResult> searchList = await YouTubeServiceAccessor.SearchListAll(search_request);
+			SearchResource.ListRequest searchListRequest = service.Search.List("id");
+			searchListRequest.Type = "video";
+			searchListRequest.MaxResults = 50;
+			searchListRequest.ChannelId = channelId;
+			IList<SearchResult> searchList = await YouTubeServiceAccessor.SearchListAll(searchListRequest);
 			#endregion
 
 			#region LIST video
@@ -45,12 +43,23 @@ namespace AutoVideoMetaLocalize.Controllers {
 			IList<Video> videoList = await YouTubeServiceAccessor.VideosListAll(video_request);
 			#endregion
 
-			foreach (Video video in videoList) {
+			for (int i = 0; i < videoList.Count; i++) {
+				Video video = videoList[i];
+
 				string video_title = video.Snippet.Title;
 				string video_description = video.Snippet.Description;
 
 				foreach (string language in languages) {
-					
+					TranslateTextRequest req = new TranslateTextRequest {
+						Contents = { video_title, video_description },
+						TargetLanguageCode = language,
+						// SourceLanguageCode = automatically detect language
+					};
+
+					IList<Translation> res = await translate.TranslateTextAsync(req);
+					foreach (Translation item in res) {
+						string s = item.TranslatedText;
+					}
 				}
 
 				#region UPDATE video
@@ -59,19 +68,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 				#endregion
 			}
 
-			return Ok(videoList);
-		}
-
-		private async Task<bool> ValidateMineChannelId(string channelId) {
-			YouTubeService service = await serviceAccessor.InitializeServiceAsync();
-
-			#region LIST channel
-			ChannelsResource.ListRequest request = service.Channels.List("id");
-			request.Mine = true;
-			IList<Channel> channelsList = await YouTubeServiceAccessor.ChannelsListAll(request);
-			#endregion
-
-			return channelsList.Any(elem => elem.Id == channelId);
+			return Ok();
 		}
 	}
 }

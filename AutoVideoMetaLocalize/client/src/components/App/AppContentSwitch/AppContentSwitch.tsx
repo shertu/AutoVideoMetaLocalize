@@ -1,11 +1,10 @@
 import * as React from 'react';
-import { Route, Switch } from 'react-router-dom';
+import {Route, Switch} from 'react-router-dom';
 import routes from '../../../routes';
-import { NoRouteMatchError } from '../../NoRouteMatchError/NoRouteMatchError';
+import {NoRouteMatchError} from '../../NoRouteMatchError/NoRouteMatchError';
 import './style.less';
-import { PrivacyPolicyPage } from '../../Page/PrivacyPolicyPage/PrivacyPolicyPage';
-import { MainChannelPage } from '../../Page/MainChannelPage/MainChannelPage';
-import { TranslateChannelPage } from '../../Page/TranslateChannelPage/TranslateChannelPage';
+import {PrivacyPolicyPage} from '../../Page/PrivacyPolicyPage/PrivacyPolicyPage';
+import {MainChannelPage} from '../../Page/MainChannelPage/MainChannelPage';
 
 /**
  * The main route switch in the web application.
@@ -16,7 +15,7 @@ export function AppContentSwitch(): JSX.Element {
   return (
     <Switch>
       <Route exact path={routes.ROUTE_HOME}>
-        <TranslateChannelPage setSelectedChannel={null} channel={null} />
+        <MainChannelPage />
       </Route>
       <Route exact path={routes.ROUTE_PRIVACY_POLICY}>
         <PrivacyPolicyPage />
@@ -27,6 +26,3 @@ export function AppContentSwitch(): JSX.Element {
     </Switch>
   );
 }
-
-
-//<SelectedChannelPage />

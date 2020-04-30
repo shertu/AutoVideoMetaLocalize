@@ -23,17 +23,17 @@ import {
 /**
  * no description
  */
-export class YouTubeApi extends runtime.BaseAPI {
+export class SelectChannelApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiYouTubeGetMyChannelsGetRaw(): Promise<runtime.ApiResponse<Array<Channel>>> {
+    async apiSelectChannelMineGetRaw(): Promise<runtime.ApiResponse<Array<Channel>>> {
         const queryParameters: runtime.HTTPQuery = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/YouTube/GetMyChannels`,
+            path: `/api/SelectChannel/mine`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -44,8 +44,8 @@ export class YouTubeApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiYouTubeGetMyChannelsGet(): Promise<Array<Channel>> {
-        const response = await this.apiYouTubeGetMyChannelsGetRaw();
+    async apiSelectChannelMineGet(): Promise<Array<Channel>> {
+        const response = await this.apiSelectChannelMineGetRaw();
         return await response.value();
     }
 

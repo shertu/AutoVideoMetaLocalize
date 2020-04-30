@@ -1,6 +1,6 @@
 import * as React from 'react';
 import './style.less';
-import { ClaimsPrinciple } from '../../security/claims';
+import {ClaimsPrinciple} from '../../security/claims';
 
 const UserContext = React.createContext<ClaimsPrinciple>(null);
 

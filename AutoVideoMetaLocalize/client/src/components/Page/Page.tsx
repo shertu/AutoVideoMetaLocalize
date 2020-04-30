@@ -2,18 +2,18 @@ import * as React from 'react';
 import './style.less';
 
 /**
- * The main content of this web application.
- * Contains the steps flow use throughout the application.
+ * A standard large full-width page to display a section of content.
  *
  * @param {object} props
  * @return {JSX.Element}
  */
-export const Page: React.FunctionComponent<{
+export function Page(props: {
   id?: string,
-}> = (props) => {
+  children?: React.ReactNode
+}): JSX.Element {
   return (
     <section id={props.id} className="max-cell-lg">
-        {props.children}
+      {props.children}
     </section>
   );
 };

@@ -1,3 +1,4 @@
+export * from './AppSupportedLanguage';
 export * from './Channel';
 export * from './ChannelAuditDetails';
 export * from './ChannelBrandingSettings';
@@ -14,6 +15,7 @@ export * from './ChannelTopicDetails';
 export * from './Claim';
 export * from './ClaimsIdentity';
 export * from './ImageSettings';
+export * from './InlineObject';
 export * from './InvideoPosition';
 export * from './InvideoPromotion';
 export * from './InvideoTiming';

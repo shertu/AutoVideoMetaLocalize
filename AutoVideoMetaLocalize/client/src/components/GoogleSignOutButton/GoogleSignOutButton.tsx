@@ -1,7 +1,7 @@
 import * as React from 'react';
 import './style.less';
-import { GoogleAuthApi } from '../../../generated-sources/openapi';
-import { Button } from 'antd';
+import {GoogleAuthApi} from '../../../generated-sources/openapi';
+import {Button} from 'antd';
 
 const GOOGLE_AUTH_API: GoogleAuthApi = new GoogleAuthApi();
 
@@ -11,6 +11,9 @@ const GOOGLE_AUTH_API: GoogleAuthApi = new GoogleAuthApi();
  * @return {JSX.Element}
  */
 export function GoogleSignOutButton(): JSX.Element {
+  /**
+  * The click event for this button.
+  */
   async function onClick(): Promise<void> {
     // set the authentication redurect uri
     GOOGLE_AUTH_API.apiGoogleAuthAuthenticationRedirectUriPost({

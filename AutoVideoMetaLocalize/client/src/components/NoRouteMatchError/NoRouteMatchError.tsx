@@ -6,7 +6,7 @@ import {Typography} from 'antd';
 const {Title, Paragraph} = Typography;
 
 /**
- * The ui element for when a switch statement falls through.
+ * A component to be used for when a switch statement fails to match a route.
  *
  * @return {JSX.Element}
  */

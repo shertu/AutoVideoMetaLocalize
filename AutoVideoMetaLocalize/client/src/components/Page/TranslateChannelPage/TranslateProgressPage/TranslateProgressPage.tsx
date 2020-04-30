@@ -1,14 +1,10 @@
 import * as React from 'react';
 import './style.less';
-import { Divider, Steps, Progress, DatePicker } from 'antd';
-import { Page } from '../../Page';
+import {Divider, Progress} from 'antd';
+import {Page} from '../../Page';
+import {TranslateChannelApi} from '../../../../../generated-sources/openapi';
 
-const { Step } = Steps;
-
-const FORM_ITEM_NAMES = {
-  PUBLISH_DATE_RANGE: 'publish-date-range',
-  LANGUAGE_SELECTION: 'language-selection',
-}
+const TRANSLATE_CHANNEL_API = new TranslateChannelApi();
 
 /**
  * A page which shows the progress of the AVML process for the current user.
@@ -21,21 +17,18 @@ export function TranslateProgressPage(props: {
 }): JSX.Element {
   const continuitive: boolean = props.continuitive || false;
 
-  const [current, setCurrent] =
-    React.useState<number>(null);
+  React.useEffect(() => {
+    if (continuitive) {
+      // TRANSLATE_CHANNEL_API
+    }
+  }, []);
 
   const [progress, setProgress] =
-    React.useState<number>(null);
+    React.useState<number>(0);
 
   return (
     <Page id="translate-channel-page">
       <Divider>Translate Progress</Divider>
-
-      <Steps current={current}>
-        <Step title="fetch" />
-        <Step title="translate" />
-        <Step title="update" />
-      </Steps>
 
       <div className="steps-content">
         {progress && (
