@@ -30,7 +30,7 @@ export interface AppSupportedLanguage {
      * @type {string}
      * @memberof AppSupportedLanguage
      */
-    code?: string | null;
+    code: string;
 }
 
 export function AppSupportedLanguageFromJSON(json: any): AppSupportedLanguage {
@@ -44,7 +44,7 @@ export function AppSupportedLanguageFromJSONTyped(json: any, ignoreDiscriminator
     return {
         
         'name': !exists(json, 'name') ? undefined : json['name'],
-        'code': !exists(json, 'code') ? undefined : json['code'],
+        'code': json['code'],
     };
 }
 

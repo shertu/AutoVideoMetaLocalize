@@ -25,10 +25,9 @@ export function MainChannelPage(): JSX.Element {
 
           <Row align="middle" justify="center">
             <Paragraph className="max-cell-xs">
-              Welcome to <Text strong>Auto Video Meta Localize.</Text>
-              The service which can translate or localize the
-              titles and descriptions of your YouTube videos
-              to make them accessible to a larger audience.
+              Welcome to <Text strong>Auto Video Meta Localize.</Text>&nbsp;The
+              service which can translate or localize the titles and descriptions
+              of your YouTube videos to make them accessible to a larger audience.
             </Paragraph>
           </Row>
         </Typography>
@@ -37,7 +36,7 @@ export function MainChannelPage(): JSX.Element {
       {selectedChannel ? (
         <TranslateChannelPage
           channel={selectedChannel}
-          setSelectedChannel={setSelectedChannel}
+          onBack={() => setSelectedChannel(null)}
         />
       ) : (
           <SelectChannelPage setSelectedChannel={setSelectedChannel} />

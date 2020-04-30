@@ -23,11 +23,11 @@ const FORM_ITEM_NAMES = {
  * @return {JSX.Element}
  */
 export function TranslateChannelPage(props: {
-  channel: Channel,
+  channel?: Channel,
   onBack?: (e: React.MouseEvent<HTMLDivElement>) => void,
 }): JSX.Element {
   if (!props.channel) {
-    throw new Error('The channel prop is null or undefined.');
+    throw new Error('The specified channel is null or undefined.');
   }
 
   const [languages, setLanguages] =
