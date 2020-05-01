@@ -5,6 +5,7 @@ import './style.less';
 import {TranslateChannelPage} from '../TranslateChannelPage/TranslateChannelPage';
 import {SelectChannelPage} from '../SelectChannelPage/SelectChannelPage';
 import {Typography, Row} from 'antd';
+import { ProcessExplanationPage } from '../ProcessExplanationPage/ProcessExplanationPage';
 
 const {Title, Paragraph, Text} = Typography;
 
@@ -41,6 +42,10 @@ export function MainChannelPage(): JSX.Element {
       ) : (
           <SelectChannelPage setSelectedChannel={setSelectedChannel} />
         )}
+
+      {!selectedChannel && (
+        <ProcessExplanationPage/>
+      )}
     </Page>
   );
 }

@@ -12,7 +12,7 @@ const TRANSLATE_CHANNEL_API = new TranslateChannelApi();
  * @param {object} props
  * @return {JSX.Element}
  */
-export function TranslateProgressPage(props: {
+export function TranslateProgress(props: {
   continuitive?: boolean,
 }): JSX.Element {
   const continuitive: boolean = props.continuitive || false;
@@ -27,14 +27,6 @@ export function TranslateProgressPage(props: {
     React.useState<number>(0);
 
   return (
-    <Page id="translate-channel-page">
-      <Divider>Translate Progress</Divider>
-
-      <div className="steps-content">
-        {progress && (
-          <Progress type="circle" percent={progress} />
-        )}
-      </div>
-    </Page>
+    <Progress type="circle" percent={progress} />
   );
 }

@@ -18,7 +18,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 	[ApiController]
 	public class GoogleAuthController : ControllerBase {
 		private const string AUTHENTICATION_TYPE = "AutoVideoMetaLocalize";
-		private const string AUTHENTICATION_REDIRECT_URI_KEY = "auth-return-url";
+		private const string AUTHENTICATION_REDIRECT_URI_KEY = nameof(AUTHENTICATION_REDIRECT_URI_KEY);
 		private const string AUTHENTICATION_REDIRECT_URI_DEFAULT = "~/";
 
 		private readonly GoogleAuthorizationCodeFlow flow;
@@ -62,8 +62,11 @@ namespace AutoVideoMetaLocalize.Controllers {
 		/// <summary>
 		/// Gets the uri to which to redirect the user to sign-in to.
 		/// </summary>
-		[HttpGet("AuthorizationRequestUrl")]
-		public ActionResult<string> GetAuthorizationRequestUrl([Required] string scope) {
+		[HttpGet("AuthorizationCodeRequestUrl")]
+		public ActionResult<string> GetAuthorizationCodeRequestUrl([Required] string scope) {
+			if (string.IsNullOrEmpty(scope))
+				throw new ArgumentException("message", nameof(scope));
+
 			AuthorizationCodeRequestUrl authorizationCodeRequestUrl = flow.CreateAuthorizationCodeRequest(OAuthRedirectUri);
 			authorizationCodeRequestUrl.Scope = scope;
 			Uri authorizationUrl = authorizationCodeRequestUrl.Build();
@@ -75,6 +78,9 @@ namespace AutoVideoMetaLocalize.Controllers {
 		/// </summary>
 		[HttpGet(nameof(GoogleSignIn))]
 		public async Task<SignInResult> GoogleSignIn([Required] string code) {
+			if (string.IsNullOrEmpty(code))
+				throw new ArgumentException("message", nameof(code));
+
 			UserCredential credential = await GenerateUserCredentialFromAuthorizationCode(code);
 			ClaimsPrincipal principal = GenerateClaimsPrinciple(credential);
 			AuthenticationProperties authenticationProperties = GenerateAuthenticationProperties(credential.Token);

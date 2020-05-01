@@ -4,7 +4,7 @@ import {Page} from '../Page';
 import {Channel, AppSupportedLanguage, LanguageApi, TranslateChannelApi} from '../../../../generated-sources/openapi';
 import {PageHeader, Form, Select, DatePicker, Button, Row} from 'antd';
 import {Store} from 'antd/lib/form/interface';
-import {TranslateProgressPage} from './TranslateProgressPage/TranslateProgressPage';
+import { TranslateProgress } from './TranslateProgress/TranslateProgress';
 
 const LANGUAGE_API = new LanguageApi();
 const TRANSLATE_CHANNEL_API = new TranslateChannelApi();
@@ -96,7 +96,7 @@ export function TranslateChannelPage(props: {
         </Row>
       </Form>
 
-      <TranslateProgressPage continuitive={false} />
+      <TranslateProgress continuitive={false} />
     </Page>
   );
 }

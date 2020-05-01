@@ -37,21 +37,6 @@ namespace AutoVideoMetaLocalize.Utilities {
 			return items;
 		}
 
-		public static async Task<IList<SearchResult>> SearchListAll(SearchResource.ListRequest request) {
-			List<SearchResult> items = new List<SearchResult>();
-
-			#region pagination response
-			SearchListResponse response;
-			do {
-				response = await request.ExecuteAsync();
-				request.PageToken = response.NextPageToken;
-				items.AddRange(response.Items);
-			} while (response.NextPageToken != null);
-			#endregion
-
-			return items;
-		}
-
 		public static async Task<IList<Video>> VideosListAll(VideosResource.ListRequest request) {
 			List<Video> items = new List<Video>();
 

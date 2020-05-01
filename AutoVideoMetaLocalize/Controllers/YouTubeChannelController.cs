@@ -10,25 +10,22 @@ namespace AutoVideoMetaLocalize.Controllers {
 	[Authorize]
 	[Route("api/[controller]")]
 	[ApiController]
-	public class SelectChannelController : ControllerBase {
+	public class YouTubeChannelController : ControllerBase {
 		private readonly YouTubeServiceAccessor serviceAccessor;
 
-		public SelectChannelController(YouTubeServiceAccessor serviceAccessor) {
+		public YouTubeChannelController(YouTubeServiceAccessor serviceAccessor) {
 			this.serviceAccessor = serviceAccessor;
 		}
 
 		[HttpGet("mine")]
-		public async Task<ActionResult<IEnumerable<Channel>>> GetMineChannels() {
+		public async Task<ActionResult<IEnumerable<Channel>>> GetMine() {
 			YouTubeService service = await serviceAccessor.InitializeServiceAsync();
 
-			// request
-			ChannelsResource.ListRequest request = service.Channels.List("id,snippet");
+			ChannelsResource.ListRequest request = service.Channels.List("id,snippet,contentDetails");
 			request.Mine = true;
+			IList<Channel> response = await YouTubeServiceAccessor.ChannelsListAll(request);
 
-			// reponse
-			IList<Channel> channels = await YouTubeServiceAccessor.ChannelsListAll(request);
-
-			return new ActionResult<IEnumerable<Channel>>(channels);
+			return new ActionResult<IEnumerable<Channel>>(response);
 		}
 	}
 }
