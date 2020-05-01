@@ -20,7 +20,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 		}
 
 		[HttpGet]
-		public async Task<ActionResult<AppPlaylistItemListResponse>> GetVideosInPlaylist([Required, FromForm] string playlistId, [FromForm] string pageToken = null) {
+		public async Task<ActionResult<PlaylistItemListResponse>> GetVideosInPlaylist([Required, FromForm] string playlistId, [FromForm] string pageToken = null) {
 			if (string.IsNullOrEmpty(playlistId))
 				throw new System.ArgumentException("message", nameof(playlistId));
 
@@ -29,13 +29,15 @@ namespace AutoVideoMetaLocalize.Controllers {
 			request.PlaylistId = playlistId;
 			request.PageToken = pageToken;
 			PlaylistItemListResponse response = await request.ExecuteAsync();
-			return new AppPlaylistItemListResponse { 
-				Items = response.Items,
-				NextPageToken = response.NextPageToken,
-				PrevPageToken = response.PrevPageToken,
-				ResultsPerPage = response.PageInfo.ResultsPerPage,
-				TotalResults = response.PageInfo.ResultsPerPage,
-			};
+			return new ActionResult<PlaylistItemListResponse>(response);
+
+			//return new AppPlaylistItemListResponse { 
+			//	Items = response.Items,
+			//	NextPageToken = response.NextPageToken,
+			//	PrevPageToken = response.PrevPageToken,
+			//	ResultsPerPage = response.PageInfo.ResultsPerPage,
+			//	TotalResults = response.PageInfo.ResultsPerPage,
+			//};
 		}
 	}
 }
