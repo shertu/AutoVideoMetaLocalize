@@ -16,39 +16,32 @@ import { exists, mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface InlineObject
+ * @interface TokenPagination
  */
-export interface InlineObject {
+export interface TokenPagination {
     /**
      * 
      * @type {string}
-     * @memberof InlineObject
+     * @memberof TokenPagination
      */
-    playlistId: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof InlineObject
-     */
-    pageToken?: string | null;
+    eTag?: string | null;
 }
 
-export function InlineObjectFromJSON(json: any): InlineObject {
-    return InlineObjectFromJSONTyped(json, false);
+export function TokenPaginationFromJSON(json: any): TokenPagination {
+    return TokenPaginationFromJSONTyped(json, false);
 }
 
-export function InlineObjectFromJSONTyped(json: any, ignoreDiscriminator: boolean): InlineObject {
+export function TokenPaginationFromJSONTyped(json: any, ignoreDiscriminator: boolean): TokenPagination {
     if ((json === undefined) || (json === null)) {
         return json;
     }
     return {
         
-        'playlistId': json['playlistId'],
-        'pageToken': !exists(json, 'pageToken') ? undefined : json['pageToken'],
+        'eTag': !exists(json, 'eTag') ? undefined : json['eTag'],
     };
 }
 
-export function InlineObjectToJSON(value?: InlineObject | null): any {
+export function TokenPaginationToJSON(value?: TokenPagination | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -57,8 +50,7 @@ export function InlineObjectToJSON(value?: InlineObject | null): any {
     }
     return {
         
-        'playlistId': value.playlistId,
-        'pageToken': value.pageToken,
+        'eTag': value.eTag,
     };
 }
 

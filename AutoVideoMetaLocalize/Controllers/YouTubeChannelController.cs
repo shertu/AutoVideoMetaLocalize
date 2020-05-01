@@ -17,7 +17,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 			this.serviceAccessor = serviceAccessor;
 		}
 
-		[HttpGet("mine")]
+		[HttpGet("Mine")]
 		public async Task<ActionResult<IEnumerable<Channel>>> GetMine() {
 			YouTubeService service = await serviceAccessor.InitializeServiceAsync();
 

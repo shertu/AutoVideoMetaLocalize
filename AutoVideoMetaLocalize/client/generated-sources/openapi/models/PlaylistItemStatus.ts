@@ -16,39 +16,39 @@ import { exists, mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface InlineObject
+ * @interface PlaylistItemStatus
  */
-export interface InlineObject {
+export interface PlaylistItemStatus {
     /**
      * 
      * @type {string}
-     * @memberof InlineObject
+     * @memberof PlaylistItemStatus
      */
-    playlistId: string;
+    privacyStatus?: string | null;
     /**
      * 
      * @type {string}
-     * @memberof InlineObject
+     * @memberof PlaylistItemStatus
      */
-    pageToken?: string | null;
+    eTag?: string | null;
 }
 
-export function InlineObjectFromJSON(json: any): InlineObject {
-    return InlineObjectFromJSONTyped(json, false);
+export function PlaylistItemStatusFromJSON(json: any): PlaylistItemStatus {
+    return PlaylistItemStatusFromJSONTyped(json, false);
 }
 
-export function InlineObjectFromJSONTyped(json: any, ignoreDiscriminator: boolean): InlineObject {
+export function PlaylistItemStatusFromJSONTyped(json: any, ignoreDiscriminator: boolean): PlaylistItemStatus {
     if ((json === undefined) || (json === null)) {
         return json;
     }
     return {
         
-        'playlistId': json['playlistId'],
-        'pageToken': !exists(json, 'pageToken') ? undefined : json['pageToken'],
+        'privacyStatus': !exists(json, 'privacyStatus') ? undefined : json['privacyStatus'],
+        'eTag': !exists(json, 'eTag') ? undefined : json['eTag'],
     };
 }
 
-export function InlineObjectToJSON(value?: InlineObject | null): any {
+export function PlaylistItemStatusToJSON(value?: PlaylistItemStatus | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -57,8 +57,8 @@ export function InlineObjectToJSON(value?: InlineObject | null): any {
     }
     return {
         
-        'playlistId': value.playlistId,
-        'pageToken': value.pageToken,
+        'privacyStatus': value.privacyStatus,
+        'eTag': value.eTag,
     };
 }
 

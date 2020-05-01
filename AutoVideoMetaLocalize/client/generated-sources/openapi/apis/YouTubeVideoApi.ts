@@ -15,25 +15,25 @@
 
 import * as runtime from '../runtime';
 
-export interface ApiTranslateChannelTranslateChannelPostRequest {
-    channelId: string;
+export interface ApiYouTubeVideoTranslatePostRequest {
+    videoId: string;
     languages: Array<string>;
 }
 
 /**
  * no description
  */
-export class TranslateChannelApi extends runtime.BaseAPI {
+export class YouTubeVideoApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiTranslateChannelTranslateChannelPostRaw(requestParameters: ApiTranslateChannelTranslateChannelPostRequest): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters.channelId === null || requestParameters.channelId === undefined) {
-            throw new runtime.RequiredError('channelId','Required parameter requestParameters.channelId was null or undefined when calling apiTranslateChannelTranslateChannelPost.');
+    async apiYouTubeVideoTranslatePostRaw(requestParameters: ApiYouTubeVideoTranslatePostRequest): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters.videoId === null || requestParameters.videoId === undefined) {
+            throw new runtime.RequiredError('videoId','Required parameter requestParameters.videoId was null or undefined when calling apiYouTubeVideoTranslatePost.');
         }
 
         if (requestParameters.languages === null || requestParameters.languages === undefined) {
-            throw new runtime.RequiredError('languages','Required parameter requestParameters.languages was null or undefined when calling apiTranslateChannelTranslateChannelPost.');
+            throw new runtime.RequiredError('languages','Required parameter requestParameters.languages was null or undefined when calling apiYouTubeVideoTranslatePost.');
         }
 
         const queryParameters: runtime.HTTPQuery = {};
@@ -54,12 +54,16 @@ export class TranslateChannelApi extends runtime.BaseAPI {
             formParams = new URLSearchParams();
         }
 
+        if (requestParameters.videoId !== undefined) {
+            formParams.append('videoId', requestParameters.videoId as any);
+        }
+
         if (requestParameters.languages) {
             formParams.append('languages', requestParameters.languages.join(runtime.COLLECTION_FORMATS["csv"]));
         }
 
         const response = await this.request({
-            path: `/api/TranslateChannel/translate-channel`.replace(`{${"channelId"}}`, encodeURIComponent(String(requestParameters.channelId))),
+            path: `/api/YouTubeVideo/translate`,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -71,8 +75,8 @@ export class TranslateChannelApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiTranslateChannelTranslateChannelPost(requestParameters: ApiTranslateChannelTranslateChannelPostRequest): Promise<void> {
-        await this.apiTranslateChannelTranslateChannelPostRaw(requestParameters);
+    async apiYouTubeVideoTranslatePost(requestParameters: ApiYouTubeVideoTranslatePostRequest): Promise<void> {
+        await this.apiYouTubeVideoTranslatePostRaw(requestParameters);
     }
 
 }

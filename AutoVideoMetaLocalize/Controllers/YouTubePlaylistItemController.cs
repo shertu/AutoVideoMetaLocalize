@@ -1,4 +1,5 @@
-﻿using AutoVideoMetaLocalize.Utilities;
+﻿using AutoVideoMetaLocalize.Models;
+using AutoVideoMetaLocalize.Utilities;
 using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
 using Microsoft.AspNetCore.Authorization;
@@ -18,8 +19,8 @@ namespace AutoVideoMetaLocalize.Controllers {
 			this.serviceAccessor = serviceAccessor;
 		}
 
-		[HttpGet("videos-in-playlist")]
-		public async Task<ActionResult<PlaylistItemListResponse>> GetVideosInPlaylist([Required, FromForm] string playlistId, [FromForm] string pageToken = null) {
+		[HttpGet]
+		public async Task<ActionResult<AppPlaylistItemListResponse>> GetVideosInPlaylist([Required, FromForm] string playlistId, [FromForm] string pageToken = null) {
 			if (string.IsNullOrEmpty(playlistId))
 				throw new System.ArgumentException("message", nameof(playlistId));
 
@@ -28,7 +29,13 @@ namespace AutoVideoMetaLocalize.Controllers {
 			request.PlaylistId = playlistId;
 			request.PageToken = pageToken;
 			PlaylistItemListResponse response = await request.ExecuteAsync();
-			return response;
+			return new AppPlaylistItemListResponse { 
+				Items = response.Items,
+				NextPageToken = response.NextPageToken,
+				PrevPageToken = response.PrevPageToken,
+				ResultsPerPage = response.PageInfo.ResultsPerPage,
+				TotalResults = response.PageInfo.ResultsPerPage,
+			};
 		}
 	}
 }

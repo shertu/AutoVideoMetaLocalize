@@ -1,6 +1,6 @@
 import {Radio, Row, Form, Button, Typography, Divider} from 'antd';
 import * as React from 'react';
-import {Channel, SelectChannelApi} from '../../../../generated-sources/openapi';
+import {Channel} from '../../../../generated-sources/openapi';
 import {GoogleSignInButton} from '../../GoogleSignInButton/GoogleSignInButton';
 import UserContext from '../../UserContext/UserContext';
 import {Page} from '../Page';
@@ -8,10 +8,11 @@ import './style.less';
 import {ChannelCard} from '../../ChannelCard/ChannelCard';
 import {GoogleSignOutButton} from '../../GoogleSignOutButton/GoogleSignOutButton';
 import {Store} from 'antd/lib/form/interface';
+import { YouTubeChannelApi } from '../../../../generated-sources/openapi/apis/YouTubeChannelApi';
 
 const {Paragraph} = Typography;
 
-const SELECT_CHANNEL_API: SelectChannelApi = new SelectChannelApi();
+const YOUTUBE_CHANNEL_API: YouTubeChannelApi = new YouTubeChannelApi();
 
 const GOOGLE_AUTH_SCOPES: string[] = [
   'https://www.googleapis.com/auth/youtube.upload',
@@ -39,7 +40,7 @@ export function SelectChannelPage(props: {
 
   React.useEffect(() => {
     if (user) {
-      SELECT_CHANNEL_API.apiSelectChannelMineGet()
+      YOUTUBE_CHANNEL_API.apiYouTubeChannelMineGet()
           .then((res) => setChannelOptions(res))
           .catch((err) => console.log(err));
     }
@@ -61,7 +62,7 @@ export function SelectChannelPage(props: {
   }
 
   return (
-    <Page id="select-channel-page">
+    <Page id="SelectChannelPage">
       <Divider>
         Channel Selection
       </Divider>

@@ -19,7 +19,7 @@ export interface ApiGoogleAuthAuthenticationRedirectUriPostRequest {
     uri?: string | null;
 }
 
-export interface ApiGoogleAuthAuthorizationRequestUrlGetRequest {
+export interface ApiGoogleAuthAuthorizationCodeRequestUrlGetRequest {
     scope: string;
 }
 
@@ -62,9 +62,9 @@ export class GoogleAuthApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiGoogleAuthAuthorizationRequestUrlGetRaw(requestParameters: ApiGoogleAuthAuthorizationRequestUrlGetRequest): Promise<runtime.ApiResponse<string>> {
+    async apiGoogleAuthAuthorizationCodeRequestUrlGetRaw(requestParameters: ApiGoogleAuthAuthorizationCodeRequestUrlGetRequest): Promise<runtime.ApiResponse<string>> {
         if (requestParameters.scope === null || requestParameters.scope === undefined) {
-            throw new runtime.RequiredError('scope','Required parameter requestParameters.scope was null or undefined when calling apiGoogleAuthAuthorizationRequestUrlGet.');
+            throw new runtime.RequiredError('scope','Required parameter requestParameters.scope was null or undefined when calling apiGoogleAuthAuthorizationCodeRequestUrlGet.');
         }
 
         const queryParameters: runtime.HTTPQuery = {};
@@ -76,7 +76,7 @@ export class GoogleAuthApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/GoogleAuth/AuthorizationRequestUrl`,
+            path: `/api/GoogleAuth/AuthorizationCodeRequestUrl`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -87,8 +87,8 @@ export class GoogleAuthApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiGoogleAuthAuthorizationRequestUrlGet(requestParameters: ApiGoogleAuthAuthorizationRequestUrlGetRequest): Promise<string> {
-        const response = await this.apiGoogleAuthAuthorizationRequestUrlGetRaw(requestParameters);
+    async apiGoogleAuthAuthorizationCodeRequestUrlGet(requestParameters: ApiGoogleAuthAuthorizationCodeRequestUrlGetRequest): Promise<string> {
+        const response = await this.apiGoogleAuthAuthorizationCodeRequestUrlGetRaw(requestParameters);
         return await response.value();
     }
 

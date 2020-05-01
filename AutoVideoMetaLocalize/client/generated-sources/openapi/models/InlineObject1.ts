@@ -16,39 +16,39 @@ import { exists, mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface InlineObject
+ * @interface InlineObject1
  */
-export interface InlineObject {
+export interface InlineObject1 {
     /**
      * 
      * @type {string}
-     * @memberof InlineObject
+     * @memberof InlineObject1
      */
-    playlistId: string;
+    videoId: string;
     /**
      * 
-     * @type {string}
-     * @memberof InlineObject
+     * @type {Array<string>}
+     * @memberof InlineObject1
      */
-    pageToken?: string | null;
+    languages: Array<string>;
 }
 
-export function InlineObjectFromJSON(json: any): InlineObject {
-    return InlineObjectFromJSONTyped(json, false);
+export function InlineObject1FromJSON(json: any): InlineObject1 {
+    return InlineObject1FromJSONTyped(json, false);
 }
 
-export function InlineObjectFromJSONTyped(json: any, ignoreDiscriminator: boolean): InlineObject {
+export function InlineObject1FromJSONTyped(json: any, ignoreDiscriminator: boolean): InlineObject1 {
     if ((json === undefined) || (json === null)) {
         return json;
     }
     return {
         
-        'playlistId': json['playlistId'],
-        'pageToken': !exists(json, 'pageToken') ? undefined : json['pageToken'],
+        'videoId': json['videoId'],
+        'languages': json['languages'],
     };
 }
 
-export function InlineObjectToJSON(value?: InlineObject | null): any {
+export function InlineObject1ToJSON(value?: InlineObject1 | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -57,8 +57,8 @@ export function InlineObjectToJSON(value?: InlineObject | null): any {
     }
     return {
         
-        'playlistId': value.playlistId,
-        'pageToken': value.pageToken,
+        'videoId': value.videoId,
+        'languages': value.languages,
     };
 }
 

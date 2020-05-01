@@ -12,7 +12,7 @@ const { Meta } = Card;
  */
 export function ProcessExplanationPage(): JSX.Element {
   return (
-    <Page id="process-explanation-page">
+    <Page id="ProcessExplanationPage">
       <Divider>How it Works</Divider>
       <Row align="top" justify="center" gutter={8}>
         <Col span={8}>

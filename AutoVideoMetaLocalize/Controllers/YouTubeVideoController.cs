@@ -36,7 +36,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 		///		the titles and descriptions need to be translated into.
 		/// </param>
 		/// <returns></returns>
-		[HttpPost("translate")]
+		[HttpPost("Translate")]
 		public async Task<IActionResult> TranslateVideosAsync([Required, FromForm] string videoId, [Required, FromForm] string[] languages) {
 			if (string.IsNullOrEmpty(videoId))
 				throw new ArgumentException("message", nameof(videoId));
