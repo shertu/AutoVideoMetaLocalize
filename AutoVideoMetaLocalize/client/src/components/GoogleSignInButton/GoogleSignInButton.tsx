@@ -21,12 +21,12 @@ export function GoogleSignInButton(props: {
    */
   async function onClick(): Promise<void> {
     // set the authentication redurect uri
-    GOOGLE_AUTH_API.apiGoogleAuthAuthenticationRedirectUriPost({
+    await GOOGLE_AUTH_API.apiGoogleAuthAuthenticationRedirectUriPost({
       uri: window.location.pathname,
     });
 
     // fetch the authorization url
-    const authorizationUrl: string = await GOOGLE_AUTH_API.apiGoogleAuthAuthorizationRequestUrlGet({
+    const authorizationUrl: string = await GOOGLE_AUTH_API.apiGoogleAuthAuthorizationCodeRequestUrlGet({
       scope: scopes.join(' '),
     });
 
@@ -35,6 +35,6 @@ export function GoogleSignInButton(props: {
   }
 
   return (
-    <GoogleButton type="light" style={{margin: 0}} onClick={onClick}/>
+    <GoogleButton type="light" onClick={onClick}/>
   );
 }

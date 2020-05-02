@@ -30,14 +30,6 @@ namespace AutoVideoMetaLocalize.Controllers {
 			request.PageToken = pageToken;
 			PlaylistItemListResponse response = await request.ExecuteAsync();
 			return new ActionResult<PlaylistItemListResponse>(response);
-
-			//return new AppPlaylistItemListResponse { 
-			//	Items = response.Items,
-			//	NextPageToken = response.NextPageToken,
-			//	PrevPageToken = response.PrevPageToken,
-			//	ResultsPerPage = response.PageInfo.ResultsPerPage,
-			//	TotalResults = response.PageInfo.ResultsPerPage,
-			//};
 		}
 	}
 }

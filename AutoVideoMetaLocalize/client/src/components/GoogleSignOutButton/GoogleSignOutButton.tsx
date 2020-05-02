@@ -16,12 +16,12 @@ export function GoogleSignOutButton(): JSX.Element {
   */
   async function onClick(): Promise<void> {
     // set the authentication redurect uri
-    GOOGLE_AUTH_API.apiGoogleAuthAuthenticationRedirectUriPost({
+    await GOOGLE_AUTH_API.apiGoogleAuthAuthenticationRedirectUriPost({
       uri: window.location.pathname,
     });
 
     // call the sign out
-    GOOGLE_AUTH_API.apiGoogleAuthGoogleSignOutGet();
+    await GOOGLE_AUTH_API.apiGoogleAuthGoogleSignOutGet();
   }
 
   return (

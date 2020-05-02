@@ -1,24 +1,34 @@
 import * as React from 'react';
 import './style.less';
-import {Page} from '../Page';
-import {Channel, AppSupportedLanguage, LanguageApi } from '../../../../generated-sources/openapi';
-import {PageHeader, Form, Select, DatePicker, Button, Row} from 'antd';
-import {Store} from 'antd/lib/form/interface';
-import { TranslateProgress } from './TranslateProgress/TranslateProgress';
+import { Page } from '../Page';
+import { Channel, AppSupportedLanguage, LanguageApi } from '../../../../generated-sources/openapi';
+import { PageHeader, Form, Select, Button, Row, Table, Progress } from 'antd';
+import { Store } from 'antd/lib/form/interface';
 import { YouTubeVideoApi } from '../../../../generated-sources/openapi/apis/YouTubeVideoApi';
 import { YouTubePlaylistItemApi } from '../../../../generated-sources/openapi/apis/YouTubePlaylistItemApi';
-import { PlaylistItem } from '../../../../generated-sources/openapi/models/PlaylistItem';
+import { PlaylistItemListResponse } from '../../../../generated-sources/openapi/models/PlaylistItemListResponse';
 
 const LANGUAGE_API = new LanguageApi();
 const YOUTUBE_PLAYLIST_ITEM_API = new YouTubePlaylistItemApi();
 const YOUTUBE_VIDEO_API = new YouTubeVideoApi();
 
-const {Option} = Select;
+const { Option } = Select;
 
 const FORM_ITEM_NAMES = {
-  PUBLISH_DATE_RANGE: 'publish-date-range',
   LANGUAGE_SELECTION: 'language-selection',
+  VIDEO_SELECTION: 'video-selection',
 };
+
+const TABLE_COLUMNS = [{
+  title: 'Video Id',
+  dataIndex: 'snippet.resourceId.videoId',
+}, {
+  title: 'Title',
+  dataIndex: 'snippet.title',
+}, {
+  title: 'Description',
+  dataIndex: 'snippet.description',
+},];
 
 /**
  * A page which contains options and progress information for the AVML process.
@@ -37,8 +47,8 @@ export function TranslateChannelPage(props: {
   const [languages, setLanguages] =
     React.useState<AppSupportedLanguage[]>(null);
 
-  const [playlistItem, setPlaylistItem] =
-    React.useState<PlaylistItem[]>(null);
+  const [playlistItemListResponse, setPlaylistItemListResponse] =
+    React.useState<PlaylistItemListResponse>(null);
 
   React.useEffect(() => {
     LANGUAGE_API.apiLanguageGoogleTranslateSupportedLanguagesGet()
@@ -47,7 +57,7 @@ export function TranslateChannelPage(props: {
     YOUTUBE_PLAYLIST_ITEM_API.apiYouTubePlaylistItemVideosInPlaylistGet({
       playlistId: props.channel.contentDetails.relatedPlaylists.uploads,
       pageToken: null,
-    }).then((res) => setPlaylistItem(res));
+    }).then((res: PlaylistItemListResponse) => setPlaylistItemListResponse(res));
   }, []);
 
   /**
@@ -78,14 +88,14 @@ export function TranslateChannelPage(props: {
       />
 
       <Form
-        labelCol={{span: 8}}
-        wrapperCol={{span: 16}}
+        labelCol={{ span: 8 }}
+        wrapperCol={{ span: 16 }}
         onFinish={onFinish}
       >
         <Form.Item
           label="Languages"
           name={FORM_ITEM_NAMES.LANGUAGE_SELECTION}
-          rules={[{required: true, message: LANGUAGE_SELECTION_MESSAGE}]}
+          rules={[{ required: true, message: LANGUAGE_SELECTION_MESSAGE }]}
         >
           <Select
             loading={languages == null}
@@ -100,6 +110,16 @@ export function TranslateChannelPage(props: {
           </Select>
         </Form.Item>
 
+        {playlistItemListResponse && (
+          <Table
+            rowSelection={{
+              type: 'checkbox',
+            }}
+            columns={TABLE_COLUMNS}
+            dataSource={playlistItemListResponse.items}
+          />
+        )}
+
         <Row align="middle" justify="end">
           <Button type="primary" htmlType="submit">
             Submit
@@ -107,7 +127,7 @@ export function TranslateChannelPage(props: {
         </Row>
       </Form>
 
-      <TranslateProgress continuitive={false} />
+      <Progress type="circle" percent={0} />
     </Page>
   );
 }
