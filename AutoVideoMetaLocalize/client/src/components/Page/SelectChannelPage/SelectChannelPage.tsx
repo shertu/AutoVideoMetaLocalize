@@ -46,9 +46,6 @@ export function SelectChannelPage(props: {
     }
   }, [user]);
 
-
-  console.log("TEST A", user, channelOptions)
-
   const CHANNEL_RADIO_GROUP_DEFAULT = (channelOptions && channelOptions.length > 0) ? channelOptions[0].id : null;
 
   /**
@@ -77,7 +74,9 @@ export function SelectChannelPage(props: {
       </Row>
 
       {user ? (
-        <Form onFinish={onFinish}>
+        <Form onFinish={onFinish} initialValues={{
+          [FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP]: CHANNEL_RADIO_GROUP_DEFAULT
+        }}>
           {channelOptions && (
             <Form.Item
               name={FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP}
