@@ -1,6 +1,6 @@
 import * as React from 'react';
 import './style.less';
-import {GoogleAuthApi} from '../../../generated-sources/openapi';
+import {GoogleAuthApi, BASE_PATH} from '../../../generated-sources/openapi';
 import {Button} from 'antd';
 
 const GOOGLE_AUTH_API: GoogleAuthApi = new GoogleAuthApi();
@@ -21,7 +21,7 @@ export function GoogleSignOutButton(): JSX.Element {
     });
 
     // call the sign out
-    await GOOGLE_AUTH_API.apiGoogleAuthGoogleSignOutGet();
+    window.location.assign(`${BASE_PATH}/api/GoogleAuth/GoogleSignOut`);
   }
 
   return (
