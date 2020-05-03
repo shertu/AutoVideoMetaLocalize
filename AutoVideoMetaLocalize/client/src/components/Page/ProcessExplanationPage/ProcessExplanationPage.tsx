@@ -14,6 +14,10 @@ const COL_LAYOUT: ColProps = {
   xl: 8,
 }
 
+const CARD_SECTION_STYLE: React.CSSProperties = {
+  height: '300px',
+}
+
 /**
  * This page outlines how the application in beneficial for the user.
  *
@@ -38,22 +42,28 @@ export function ProcessExplanationPage(): JSX.Element {
       <Divider>How does it work?</Divider>
       <Row align="top" justify="center" gutter={8}>
         <Col {...COL_LAYOUT} >
-          <Card cover={
-            <img className="cover-item" alt="example" src="https://www.authorsguilds.com/wp-content/uploads/2017/02/youtube.png" />
+          <Card bodyStyle={CARD_SECTION_STYLE} cover={
+            <Row align="middle" justify="center" style={CARD_SECTION_STYLE}>
+              <img alt="example" src="https://www.authorsguilds.com/wp-content/uploads/2017/02/youtube.png"
+                style={{ height: '100%', objectFit: 'cover' }} />
+            </Row>
           }>
-            <Meta description="The YouTube algorithm tends to recommend content which is local in relation the viewer." />
+            <Meta description="The YouTube algorithm tends to recommend content which is local in relation to the viewer." />
           </Card>
         </Col>
         <Col {...COL_LAYOUT} >
-          <Card cover={
-            <img className="cover-item" alt="example" src="https://www.authorsguilds.com/wp-content/uploads/2017/02/youtube.png" />
+          <Card bodyStyle={CARD_SECTION_STYLE} cover={
+            <Row align="middle" justify="center" style={CARD_SECTION_STYLE}>
+              <img alt="example" src="https://upload.wikimedia.org/wikipedia/commons/d/dd/Cloud-Translation-Logo.svg"
+                style={{ width: 200 }} />
+            </Row>
           }>
-            <Meta description="This service can add localizations to content on YouTube in wide range of languages." />
+            <Meta description="This service can automatically localize content on YouTube by translating it into several languages." />
           </Card>
         </Col>
         <Col {...COL_LAYOUT} >
-          <Card cover={
-            <Row className="cover-item" align="middle" justify="center">
+          <Card bodyStyle={CARD_SECTION_STYLE} cover={
+            <Row align="middle" justify="center" style={CARD_SECTION_STYLE}>
               <Statistic
                 title="View Count"
                 value={viewCount}
@@ -64,7 +74,7 @@ export function ProcessExplanationPage(): JSX.Element {
               />
             </Row>
           }>
-            <Meta description="Content localized using AVML tends to double in views." />
+            <Meta description="The content affected by this service tends to be viewed more frequently." />
           </Card>
         </Col>
       </Row>
