@@ -77,14 +77,16 @@ namespace AutoVideoMetaLocalize.Controllers {
 		/// Handles the OAuth2 callback from the google sign in.
 		/// </summary>
 		[HttpGet(nameof(GoogleSignIn))]
-		public async Task<SignInResult> GoogleSignIn([Required] string code) {
+		public async Task<IActionResult> GoogleSignIn([Required] string code) {
 			if (string.IsNullOrEmpty(code))
 				throw new ArgumentException("message", nameof(code));
 
 			UserCredential credential = await GenerateUserCredentialFromAuthorizationCode(code);
 			ClaimsPrincipal principal = GenerateClaimsPrinciple(credential);
 			AuthenticationProperties authenticationProperties = GenerateAuthenticationProperties(credential.Token);
-			return new SignInResult(CookieAuthenticationDefaults.AuthenticationScheme, principal, authenticationProperties);
+
+			await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, authenticationProperties);
+			return Redirect(authenticationProperties.RedirectUri);
 		}
 
 		/// <summary>
@@ -130,10 +132,12 @@ namespace AutoVideoMetaLocalize.Controllers {
 		/// </summary>
 		[HttpGet(nameof(GoogleSignOut))]
 		[Authorize]
-		public async Task<SignOutResult> GoogleSignOut() {
+		public async Task<IActionResult> GoogleSignOut() {
 			UserCredential credential = await gcm.LoadUserCredentialsAsync();
 			AuthenticationProperties authenticationProperties = GenerateAuthenticationProperties(credential.Token);
-			return new SignOutResult(CookieAuthenticationDefaults.AuthenticationScheme, authenticationProperties);
+
+			await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme, authenticationProperties);
+			return Redirect(authenticationProperties.RedirectUri);
 		}
 	}
 }
