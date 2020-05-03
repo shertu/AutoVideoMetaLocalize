@@ -40,11 +40,16 @@ export function SelectChannelPage(props: {
 
   React.useEffect(() => {
     if (user) {
+      console.log("TEST B", user)
+
       YOUTUBE_CHANNEL_API.apiYouTubeChannelMineGet()
         .then((res) => setChannelOptions(res))
         .catch((err) => console.log(err));
     }
   }, []);
+
+
+  console.log("TEST A", user, channelOptions)
 
   const CHANNEL_RADIO_GROUP_DEFAULT = (channelOptions && channelOptions.length > 0) ? channelOptions[0].id : null;
 
