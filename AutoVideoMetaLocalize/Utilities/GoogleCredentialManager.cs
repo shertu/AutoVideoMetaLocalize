@@ -12,16 +12,16 @@ using System.Threading.Tasks;
 
 namespace AutoVideoMetaLocalize.Utilities {
 	public class GoogleCredentialManager {
-		private readonly GoogleAuthorizationCodeFlow _flow;
-		private readonly IHttpContextAccessor _httpContextAccessor;
+		private readonly GoogleAuthorizationCodeFlow flow;
+		private readonly IHttpContextAccessor httpContextAccessor;
 
-		public GoogleCredentialManager(GoogleAuthorizationCodeFlow flow, IHttpContextAccessor httpContextAccessor) {
-			_flow = flow;
-			_httpContextAccessor = httpContextAccessor;
+		public GoogleCredentialManager(GoogleAuthorizationCodeFlow.Initializer initializer, IHttpContextAccessor httpContextAccessor) {
+			flow = new GoogleAuthorizationCodeFlow(initializer);
+			this.httpContextAccessor = httpContextAccessor;
 		}
 
 		public async Task<UserCredential> LoadUserCredentialsAsync() {
-			ClaimsPrincipal user = _httpContextAccessor.HttpContext.User;
+			ClaimsPrincipal user = httpContextAccessor.HttpContext.User;
 
 			if (user == null) {
 				throw new Exception("The endpoint requires the authorization annotation.");
@@ -33,8 +33,8 @@ namespace AutoVideoMetaLocalize.Utilities {
 				throw new GoogleApiException(nameof(GoogleCredentialManager), "The authenticated user is missing a google token claim.");
 			}
 
-			TokenResponse token = await _flow.LoadTokenAsync(key, CancellationToken.None);
-			return new UserCredential(_flow, key, token);
+			TokenResponse token = await flow.LoadTokenAsync(key, CancellationToken.None);
+			return new UserCredential(flow, key, token);
 		}
 	}
 }

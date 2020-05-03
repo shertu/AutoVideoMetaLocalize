@@ -15,12 +15,12 @@ namespace AutoVideoMetaLocalize.Controllers {
 	[Route("api/[controller]")]
 	[ApiController]
 	public class YouTubeVideoController : ControllerBase {
-		private readonly GoogleCloudTranslateManager translate;
 		private readonly YouTubeServiceAccessor serviceAccessor;
+		private readonly GoogleCloudTranslateManager translate;
 
-		public YouTubeVideoController(GoogleCloudTranslateManager translate, YouTubeServiceAccessor serviceAccessor) {
-			this.translate = translate;
+		public YouTubeVideoController(YouTubeServiceAccessor serviceAccessor, GoogleCloudTranslateManager translate) {
 			this.serviceAccessor = serviceAccessor;
+			this.translate = translate;
 		}
 
 		/// <summary>

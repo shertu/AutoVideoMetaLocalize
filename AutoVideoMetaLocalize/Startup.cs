@@ -33,7 +33,7 @@ namespace AutoVideoMetaLocalize {
 		// For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
 		public void ConfigureServices(IServiceCollection services) {
 			#region Google OAuth 2.0
-			GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow(new GoogleAuthorizationCodeFlow.Initializer {
+			GoogleAuthorizationCodeFlow.Initializer authInitializer =  new GoogleAuthorizationCodeFlow.Initializer {
 				ClientSecrets = new ClientSecrets {
 					ClientId = _configuration["Authentication:Google:ClientId"],
 					ClientSecret = _configuration["Authentication:Google:ClientSecret"]
@@ -43,9 +43,10 @@ namespace AutoVideoMetaLocalize {
 				Scopes = new string[] {
 					@"https://www.googleapis.com/auth/userinfo.profile",
 				},
-			});
+			};
 
-			_ = services.AddTransient(elem => flow);
+			_ = services.AddScoped(elem => authInitializer);
+			_ = services.AddScoped<GoogleCredentialManager>();
 			#endregion
 
 			#region chance

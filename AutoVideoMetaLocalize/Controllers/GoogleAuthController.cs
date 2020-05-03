@@ -24,8 +24,8 @@ namespace AutoVideoMetaLocalize.Controllers {
 		private readonly GoogleAuthorizationCodeFlow flow;
 		private readonly GoogleCredentialManager gcm;
 
-		public GoogleAuthController(GoogleAuthorizationCodeFlow flow, GoogleCredentialManager gcm) {
-			this.flow = flow;
+		public GoogleAuthController(GoogleAuthorizationCodeFlow.Initializer initializer, GoogleCredentialManager gcm) {
+			this.flow = new GoogleAuthorizationCodeFlow(initializer);
 			this.gcm = gcm;
 		}
 
