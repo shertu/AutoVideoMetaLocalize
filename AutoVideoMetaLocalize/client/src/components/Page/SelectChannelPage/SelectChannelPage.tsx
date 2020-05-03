@@ -1,16 +1,16 @@
-import {Radio, Row, Form, Button, Typography, Divider} from 'antd';
+import { Radio, Row, Form, Button, Typography, Divider, Col } from 'antd';
 import * as React from 'react';
-import {Channel} from '../../../../generated-sources/openapi';
-import {GoogleSignInButton} from '../../GoogleSignInButton/GoogleSignInButton';
+import { Channel } from '../../../../generated-sources/openapi';
+import { GoogleSignInButton } from '../../GoogleSignInButton/GoogleSignInButton';
 import UserContext from '../../UserContext/UserContext';
-import {Page} from '../Page';
+import { Page } from '../Page';
 import './style.less';
-import {ChannelCard} from '../../ChannelCard/ChannelCard';
-import {GoogleSignOutButton} from '../../GoogleSignOutButton/GoogleSignOutButton';
-import {Store} from 'antd/lib/form/interface';
+import { ChannelCard } from '../../ChannelCard/ChannelCard';
+import { GoogleSignOutButton } from '../../GoogleSignOutButton/GoogleSignOutButton';
+import { Store } from 'antd/lib/form/interface';
 import { YouTubeChannelApi } from '../../../../generated-sources/openapi/apis/YouTubeChannelApi';
 
-const {Paragraph} = Typography;
+const { Paragraph } = Typography;
 
 const YOUTUBE_CHANNEL_API: YouTubeChannelApi = new YouTubeChannelApi();
 
@@ -41,8 +41,8 @@ export function SelectChannelPage(props: {
   React.useEffect(() => {
     if (user) {
       YOUTUBE_CHANNEL_API.apiYouTubeChannelMineGet()
-          .then((res) => setChannelOptions(res))
-          .catch((err) => console.log(err));
+        .then((res) => setChannelOptions(res))
+        .catch((err) => console.log(err));
     }
   }, []);
 
@@ -78,7 +78,7 @@ export function SelectChannelPage(props: {
           {channelOptions && (
             <Form.Item
               name={FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP}
-              rules={[{required: true, message: 'please select a channel'}]}
+              rules={[{ required: true, message: 'please select a channel' }]}
             >
               <Radio.Group defaultValue={CHANNEL_RADIO_GROUP_DEFAULT}>
                 {channelOptions.map((_, i) => {
@@ -89,11 +89,15 @@ export function SelectChannelPage(props: {
               </Radio.Group>
             </Form.Item>
           )}
-          <Row align="middle" justify="end" gutter={8}>
-            <GoogleSignOutButton />
-            <Button type="primary" htmlType="submit">
-              Continue
-            </Button>
+          <Row className="button-row" align="middle" justify="end" gutter={8}>
+            <Col>
+              <GoogleSignOutButton />
+            </Col>
+            <Col>
+              <Button type="primary" htmlType="submit">
+                Continue
+              </Button>
+            </Col>
           </Row>
         </Form>
       ) : (

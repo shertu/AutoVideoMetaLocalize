@@ -1,6 +1,5 @@
 ﻿using Google.Api.Gax.ResourceNames;
 using Google.Cloud.Translate.V3;
-using Google.LongRunning;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;

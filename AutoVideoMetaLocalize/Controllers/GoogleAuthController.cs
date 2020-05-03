@@ -7,11 +7,11 @@ using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Auth.OAuth2.Responses;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using AutoVideoMetaLocalize.Utilities;
 using Google.Apis.Auth.OAuth2.Requests;
 using Google.Apis.Auth.OAuth2;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AutoVideoMetaLocalize.Controllers {
 	[Route("api/[controller]")]
@@ -86,7 +86,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 			AuthenticationProperties authenticationProperties = GenerateAuthenticationProperties(credential.Token);
 
 			await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, authenticationProperties);
-			return Redirect(authenticationProperties.RedirectUri);
+			return LocalRedirect(AuthenticationRedirectUri);
 		}
 
 		/// <summary>
@@ -123,7 +123,6 @@ namespace AutoVideoMetaLocalize.Controllers {
 				ExpiresUtc = expiresUtc,
 				IsPersistent = true,
 				IssuedUtc = token.IssuedUtc,
-				RedirectUri = AuthenticationRedirectUri,
 			};
 		}
 
@@ -135,9 +134,8 @@ namespace AutoVideoMetaLocalize.Controllers {
 		public async Task<IActionResult> GoogleSignOut() {
 			UserCredential credential = await gcm.LoadUserCredentialsAsync();
 			AuthenticationProperties authenticationProperties = GenerateAuthenticationProperties(credential.Token);
-
 			await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme, authenticationProperties);
-			return Redirect(authenticationProperties.RedirectUri);
+			return LocalRedirect(AuthenticationRedirectUri);
 		}
 	}
 }

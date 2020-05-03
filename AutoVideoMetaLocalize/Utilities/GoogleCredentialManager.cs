@@ -1,9 +1,6 @@
-﻿using Google;
-using Google.Apis.Auth.OAuth2;
+﻿using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Auth.OAuth2.Responses;
-using Google.Apis.YouTube.v3;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Security.Claims;
@@ -23,14 +20,10 @@ namespace AutoVideoMetaLocalize.Utilities {
 		public async Task<UserCredential> LoadUserCredentialsAsync() {
 			ClaimsPrincipal user = httpContextAccessor.HttpContext.User;
 
-			if (user == null) {
-				throw new Exception("The endpoint requires the authorization annotation.");
-			}
-
 			string key = user.FindFirstValue(AdditionalClaimTypes.TokenResponseKey);
 
 			if (key == null) {
-				throw new GoogleApiException(nameof(GoogleCredentialManager), "The authenticated user is missing a google token claim.");
+				throw new Exception("An [Authorize] annotation is missing from this endpoint.");
 			}
 
 			TokenResponse token = await flow.LoadTokenAsync(key, CancellationToken.None);
