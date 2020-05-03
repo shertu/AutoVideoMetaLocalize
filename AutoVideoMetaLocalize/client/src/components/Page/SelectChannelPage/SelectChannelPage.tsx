@@ -40,13 +40,11 @@ export function SelectChannelPage(props: {
 
   React.useEffect(() => {
     if (user) {
-      console.log("TEST B", user)
-
       YOUTUBE_CHANNEL_API.apiYouTubeChannelMineGet()
         .then((res) => setChannelOptions(res))
         .catch((err) => console.log(err));
     }
-  }, []);
+  }, [user]);
 
 
   console.log("TEST A", user, channelOptions)
