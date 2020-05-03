@@ -45,7 +45,7 @@ namespace AutoVideoMetaLocalize {
 				},
 			});
 
-			_ = services.AddScoped(elem => flow);
+			_ = services.AddTransient(elem => flow);
 			#endregion
 
 			#region chance
