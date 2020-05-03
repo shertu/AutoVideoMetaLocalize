@@ -82,7 +82,7 @@ export function SelectChannelPage(props: {
               name={FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP}
               rules={[{ required: true, message: 'please select a channel' }]}
             >
-              <Radio.Group defaultValue={CHANNEL_RADIO_GROUP_DEFAULT}>
+              <Radio.Group>
                 {channelOptions.map((_, i) => {
                   <Radio.Button value={_.id}>
                     <ChannelCard channel={_} />
