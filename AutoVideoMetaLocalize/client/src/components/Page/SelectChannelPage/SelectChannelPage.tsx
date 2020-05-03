@@ -61,6 +61,8 @@ export function SelectChannelPage(props: {
     console.log(CHANNEL_RADIO_GROUP_VALUE);
   }
 
+  console.log("TEST", user, channelOptions, CHANNEL_RADIO_GROUP_DEFAULT);
+
   return (
     <Page id="SelectChannelPage">
       <Divider>
@@ -77,20 +79,19 @@ export function SelectChannelPage(props: {
         <Form onFinish={onFinish} initialValues={{
           [FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP]: CHANNEL_RADIO_GROUP_DEFAULT
         }}>
-          {channelOptions && (
-            <Form.Item
-              name={FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP}
-              rules={[{ required: true, message: 'please select a channel' }]}
-            >
-              <Radio.Group>
-                {channelOptions.map((_, i) => {
-                  <Radio.Button value={_.id}>
-                    <ChannelCard channel={_} />
-                  </Radio.Button>;
-                })}
-              </Radio.Group>
-            </Form.Item>
-          )}
+          <Form.Item
+            name={FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP}
+            rules={[{ required: true, message: 'please select a channel' }]}
+          >
+            <Radio.Group>
+              {channelOptions && channelOptions.map((_, i) => {
+                <Radio.Button value={_.id}>
+                  {i}
+                </Radio.Button>
+              })}
+            </Radio.Group>
+          </Form.Item>
+
           <Row className="button-row" align="middle" justify="end" gutter={8}>
             <Col>
               <GoogleSignOutButton />
@@ -110,3 +111,5 @@ export function SelectChannelPage(props: {
     </Page>
   );
 }
+
+//<ChannelCard channel={_} />
