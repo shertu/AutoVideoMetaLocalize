@@ -4,7 +4,6 @@ import './style.less';
 import { Store } from 'antd/lib/form/interface';
 import { Page } from '../../Page';
 import { Channel, YouTubeChannelApi } from '../../../../../generated-sources/openapi';
-import { ChannelSelectionGroup } from './ChannelSelectionGroup/ChannelSelectionGroup';
 import { ChannelCard } from '../../../ChannelCard/ChannelCard';
 
 const { Paragraph } = Typography;
@@ -66,13 +65,15 @@ export function SelectChannelStepContent(props: {
           rules={[{ required: true, message: SELECTION_MESSAGE }]}
         >
           <Row align="top" justify="center">
-            <Radio.Group >
-              {options.map((_) =>
-                <Radio.Button key={_.id} value={_.id}>
-                  <ChannelCard channel={_} />
-                </Radio.Button>
-              )}
-            </Radio.Group>
+            {options && (
+              <Radio.Group >
+                {options.map((_) =>
+                  <Radio.Button key={_.id} value={_.id}>
+                    <ChannelCard channel={_} />
+                  </Radio.Button>
+                )}
+              </Radio.Group>
+            )}
           </Row>
         </Form.Item>
 

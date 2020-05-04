@@ -18,16 +18,6 @@ export function ProcessPage(): JSX.Element {
   // user
   const user = React.useContext(UserContext);
 
-  if (user == null) {
-    return (
-      <Row align="middle" justify="center">
-        <Paragraph className="max-cell-xs">
-          To use this service please sign-in to YouTube.
-        </Paragraph>
-      </Row>
-    )
-  }
-
   // step
   const [current, setCurrent] =
     React.useState<number>(0);
@@ -59,6 +49,16 @@ export function ProcessPage(): JSX.Element {
   }
 
   // render
+  if (user == null) {
+    return (
+      <Row align="middle" justify="center">
+        <Paragraph className="max-cell-xs">
+          To use this service please sign-in to YouTube.
+        </Paragraph>
+      </Row>
+    )
+  }
+
   return (
     <Page id="process-page">
       <div className="steps-content">{currentContent}</div>
