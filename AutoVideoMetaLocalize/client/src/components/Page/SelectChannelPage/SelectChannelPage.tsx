@@ -54,24 +54,19 @@ export function SelectChannelPage(props: {
    * @param {Store} values
    */
   async function onFinish(values: Store): Promise<void> {
-    console.log(values);
-
     const CHANNEL_RADIO_GROUP_VALUE = values[FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP];
-
-    console.log(CHANNEL_RADIO_GROUP_VALUE);
+    const selected: Channel = channelOptions.find(elem => elem.id == CHANNEL_RADIO_GROUP_VALUE);
+    props.setSelectedChannel(selected);
   }
 
   let channelRadioGroupOptions: JSX.Element[] = null;
-
   if (channelOptions) {
     channelRadioGroupOptions = channelOptions.map((_, i) =>
-      <Radio.Button value={_.id}>
+      <Radio.Button key={_.id} value={_.id}>
         <ChannelCard channel={_} />
       </Radio.Button>
     );
   }
-
-  console.log("TEST", user, channelOptions, CHANNEL_RADIO_GROUP_DEFAULT, channelRadioGroupOptions);
 
   return (
     <Page id="SelectChannelPage">
@@ -93,12 +88,14 @@ export function SelectChannelPage(props: {
             name={FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP}
             rules={[{ required: true, message: 'please select a channel' }]}
           >
-            <Radio.Group>
-              {channelRadioGroupOptions}
-            </Radio.Group>
+            <Row align="top" justify="center">
+              <Radio.Group className="channel-radio-group">
+                {channelRadioGroupOptions}
+              </Radio.Group>
+            </Row>
           </Form.Item>
 
-          <Row className="button-row" align="middle" justify="end" gutter={8}>
+          <Row className="select-channel-button-group" align="middle" justify="end" gutter={8}>
             <Col>
               <GoogleSignOutButton />
             </Col>
@@ -117,16 +114,3 @@ export function SelectChannelPage(props: {
     </Page>
   );
 }
-
-//
-
-
-
-//{
-//user && channelOptions && (
-//  <div>
-//    <Radio.Button value="TEST BUTTON TWO">TEST BUTTON TEXT TWO</Radio.Button>
-//    <Radio.Button value={channelOptions[0]}>{channelOptions[0].id}</Radio.Button>
-//  </div>
-//)
-//}
