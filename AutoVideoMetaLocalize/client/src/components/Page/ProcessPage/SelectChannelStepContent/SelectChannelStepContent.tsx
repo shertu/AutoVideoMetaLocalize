@@ -55,35 +55,35 @@ export function SelectChannelStepContent(props: {
     <Page id="SelectChannelPage">
       <Divider>Channel Selection</Divider>
 
-      <Form onFinish={onFinish} initialValues={{
-        [FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP]: CHANNEL_RADIO_GROUP_DEFAULT
-      }}>
-        <Row align="top" justify="center">
-          <Form.Item
-            className="max-cell-md form-item-channel-selection"
-            name={FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP}
-            rules={[{ required: true, message: SELECTION_MESSAGE }]}
-          >
-            {options && (
-              <Radio.Group style={{ padding: 0 }}>
+      {options && (
+        <Form onFinish={onFinish} initialValues={{
+          [FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP]: CHANNEL_RADIO_GROUP_DEFAULT
+        }}>
+          <Row align="top" justify="center">
+            <Form.Item
+              className="max-cell-md"
+              name={FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP}
+              rules={[{ required: true, message: SELECTION_MESSAGE }]}
+            >
+              <Radio.Group style={{ marginBottom: '1em' }}>
                 {options.map((_) =>
-                  <Radio.Button key={_.id} value={_.id}>
+                  <Radio.Button key={_.id} value={_.id} style={{padding: 0}}>
                     <ChannelCard channel={_} />
                   </Radio.Button>
                 )}
               </Radio.Group>
-            )}
-          </Form.Item>
-        </Row>
-
-        <Form.Item>
-          <Row align="middle" justify="end" gutter={8}>
-            <Col>
-              <Button type="primary" htmlType="submit">Continue</Button>
-            </Col>
+            </Form.Item>
           </Row>
-        </Form.Item>
-      </Form>
+
+          <Form.Item>
+            <Row align="middle" justify="end" gutter={8}>
+              <Col>
+                <Button type="primary" htmlType="submit">Continue</Button>
+              </Col>
+            </Row>
+          </Form.Item>
+        </Form>
+      )}
     </Page >
   );
 }
