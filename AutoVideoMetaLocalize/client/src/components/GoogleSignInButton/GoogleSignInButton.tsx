@@ -12,9 +12,11 @@ const GOOGLE_AUTH_API: GoogleAuthApi = new GoogleAuthApi();
  * @return {JSX.Element}
  */
 export function GoogleSignInButton(props: {
-  scopes?: string[], // https://developers.google.com/identity/protocols/oauth2/scopes
+  scopes?: string[], // https://developers.google.com/identity/protocols/oauth2/scopes,
+  redirect?: string
 }): JSX.Element {
   const scopes: string[] = props.scopes || ['https://www.googleapis.com/auth/userinfo.profile'];
+  const redirect: string = props.redirect || window.location.pathname;
 
   /**
    * The click event for this button.
@@ -22,7 +24,7 @@ export function GoogleSignInButton(props: {
   async function onClick(): Promise<void> {
     // set the authentication redurect uri
     await GOOGLE_AUTH_API.apiGoogleAuthAuthenticationRedirectUriPost({
-      uri: window.location.pathname,
+      uri: redirect,
     });
 
     // fetch the authorization url
