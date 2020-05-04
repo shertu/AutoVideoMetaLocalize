@@ -61,7 +61,15 @@ export function SelectChannelPage(props: {
     console.log(CHANNEL_RADIO_GROUP_VALUE);
   }
 
-  console.log("TEST", user, channelOptions, CHANNEL_RADIO_GROUP_DEFAULT);
+  let channelRadioGroupOptions: JSX.Element[] = null;
+
+  if (user && channelOptions) {
+    channelRadioGroupOptions = channelOptions.map((_, i) => {
+      return (<Radio.Button value="RENDER">TEST</Radio.Button>)
+    })
+  }
+
+  console.log("TEST", user, channelOptions, CHANNEL_RADIO_GROUP_DEFAULT, channelRadioGroupOptions);
 
   return (
     <Page id="SelectChannelPage">
@@ -84,13 +92,7 @@ export function SelectChannelPage(props: {
             rules={[{ required: true, message: 'please select a channel' }]}
           >
             <Radio.Group>
-              <Radio.Button value="TEST BUTTON">TEST BUTTON TEXT</Radio.Button>
-
-              {channelOptions && channelOptions.map((_, i) => 
-                <Radio.Button value={_.id}>
-                  {i}
-                </Radio.Button>
-              )}
+              {channelRadioGroupOptions}
             </Radio.Group>
           </Form.Item>
 
