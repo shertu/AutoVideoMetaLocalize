@@ -33,11 +33,9 @@ export function ChannelCard(props: {
           <Paragraph strong>
             {channel.snippet.title}
           </Paragraph>
-          {channel.id && (
-            <Paragraph>
-              {channel.id}
-            </Paragraph>
-          )}
+          <Paragraph>
+            {channel.id}
+          </Paragraph>
         </Col>
       </Row>
     </Card>

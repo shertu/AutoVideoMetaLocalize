@@ -47,26 +47,25 @@ export function SelectChannelStepContent(props: {
 
   const SELECTION_MESSAGE: string = 'Please select a channel.'
 
+  console.log(options, CHANNEL_RADIO_GROUP_DEFAULT, {
+    [FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP]: CHANNEL_RADIO_GROUP_DEFAULT
+  });
+
   return (
     <Page id="SelectChannelPage">
       <Divider>Channel Selection</Divider>
 
-      <Row justify="center">
-        <Paragraph className="max-cell-xs">
-          {SELECTION_MESSAGE}
-        </Paragraph>
-      </Row>
-
       <Form onFinish={onFinish} initialValues={{
         [FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP]: CHANNEL_RADIO_GROUP_DEFAULT
       }}>
-        <Form.Item
-          name={FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP}
-          rules={[{ required: true, message: SELECTION_MESSAGE }]}
-        >
-          <Row align="top" justify="center">
+        <Row align="top" justify="center">
+          <Form.Item
+            className="max-cell-md form-item-channel-selection"
+            name={FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP}
+            rules={[{ required: true, message: SELECTION_MESSAGE }]}
+          >
             {options && (
-              <Radio.Group >
+              <Radio.Group style={{ padding: 0 }}>
                 {options.map((_) =>
                   <Radio.Button key={_.id} value={_.id}>
                     <ChannelCard channel={_} />
@@ -74,8 +73,8 @@ export function SelectChannelStepContent(props: {
                 )}
               </Radio.Group>
             )}
-          </Row>
-        </Form.Item>
+          </Form.Item>
+        </Row>
 
         <Form.Item>
           <Row align="middle" justify="end" gutter={8}>
