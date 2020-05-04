@@ -86,11 +86,11 @@ export function SelectChannelPage(props: {
             <Radio.Group>
               <Radio.Button value="TEST BUTTON">TEST BUTTON TEXT</Radio.Button>
 
-              {channelOptions && channelOptions.map((_, i) => {
+              {channelOptions && channelOptions.map((_, i) => 
                 <Radio.Button value={_.id}>
                   {i}
                 </Radio.Button>
-              })}
+              )}
             </Radio.Group>
           </Form.Item>
 
@@ -115,3 +115,14 @@ export function SelectChannelPage(props: {
 }
 
 //<ChannelCard channel={_} />
+
+
+
+//{
+//user && channelOptions && (
+//  <div>
+//    <Radio.Button value="TEST BUTTON TWO">TEST BUTTON TEXT TWO</Radio.Button>
+//    <Radio.Button value={channelOptions[0]}>{channelOptions[0].id}</Radio.Button>
+//  </div>
+//)
+//}
