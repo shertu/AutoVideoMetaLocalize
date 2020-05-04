@@ -84,6 +84,8 @@ export function SelectChannelPage(props: {
             rules={[{ required: true, message: 'please select a channel' }]}
           >
             <Radio.Group>
+              <Radio.Button value="TEST BUTTON">TEST BUTTON TEXT</Radio.Button>
+
               {channelOptions && channelOptions.map((_, i) => {
                 <Radio.Button value={_.id}>
                   {i}
