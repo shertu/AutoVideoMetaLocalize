@@ -18,7 +18,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 	[ApiController]
 	public class GoogleAuthController : ControllerBase {
 		private const string AUTHENTICATION_TYPE = "AutoVideoMetaLocalize";
-		private const string AUTHENTICATION_REDIRECT_URI_KEY = nameof(AUTHENTICATION_REDIRECT_URI_KEY);
+		private const string AUTHENTICATION_REDIRECT_URI_KEY = "AUTHENTICATION_REDIRECT_URI";
 		private const string AUTHENTICATION_REDIRECT_URI_DEFAULT = "~/";
 
 		private readonly GoogleAuthorizationCodeFlow flow;
@@ -34,6 +34,8 @@ namespace AutoVideoMetaLocalize.Controllers {
 		/// </summary>
 		private string OAuthRedirectUri => Url.Action(nameof(GoogleSignIn), null, null, Request.Scheme);
 
+		private string AuthenticationRedirectUri_;
+
 		/// <summary>
 		/// Gets or sets the redirect uri for the sign in and sign out actions.
 		/// Used to ensure that the uri is a local uri.
@@ -46,7 +48,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 
 			set {
 				string uri = Url.IsLocalUrl(value) ? value : AUTHENTICATION_REDIRECT_URI_DEFAULT;
-				Response.Cookies.Append(AUTHENTICATION_REDIRECT_URI_DEFAULT, uri);
+				Response.Cookies.Append(AUTHENTICATION_REDIRECT_URI_KEY, uri);
 			}
 		}
 

@@ -21,7 +21,7 @@ const GOOGLE_AUTH_SCOPES: string[] = [
  */
 export function HomePage(): JSX.Element {
   return (
-    <Page id="home-page"> 
+    <Page id="home-page">
       <Row justify="center">
         <Paragraph className="max-cell-xs">
           Welcome to <Text strong>Auto Video Meta Localize.</Text>&nbsp;The
@@ -39,7 +39,7 @@ export function HomePage(): JSX.Element {
           </Paragraph>
         </Row>
 
-        <Row justify="center">
+        <Row justify="center" style={{ marginBottom: '2em' }}>
           <GoogleSignInButton scopes={GOOGLE_AUTH_SCOPES} redirect={`~${routes.ROUTE_PROCESS}`} />
         </Row>
       </Page>
