@@ -1,7 +1,7 @@
 import * as React from 'react';
 import './style.less';
 import {Store} from 'antd/lib/form/interface';
-import {LanguageApi, YouTubePlaylistItemApi, Channel, AppSupportedLanguage, PlaylistItemListResponse} from '../../../../../generated-sources/openapi';
+import {LanguageApi, YouTubePlaylistItemApi, Channel, AppSupportedLanguage, PlaylistItemListResponse, ApiYouTubeVideoTranslatePostRequest} from '../../../../../generated-sources/openapi';
 import {Select, Divider, Form, Row, Col, Button} from 'antd';
 import {Page} from '../../Page';
 import {VideoSelectionTable} from './VideoSelectionTable/VideoSelectionTable';
@@ -24,18 +24,16 @@ const FORM_ITEM_NAMES = {
  * @param {Channel} props.channel The channel used to enumerate through the videos.
  * @return {JSX.Element}
  */
-export function OptionsStepContent(props: {
-  channel?: Channel,
-  onBack?: Function,
-  onFinish?: Function,
+export function ConfigurationStepContent(props: {
+  channel: Channel,
+  setVideoTranslateRequestState: React.Dispatch<React.SetStateAction<ApiYouTubeVideoTranslatePostRequest>>,
+  onContinue?: () => void,
+  onBack?: () => void,
 }): JSX.Element {
   const channel: Channel = props.channel;
 
   const [languages, setLanguages] =
     React.useState<AppSupportedLanguage[]>(null);
-
-  const [selectedVideos, setSelectedVideos] =
-    React.useState<PlaylistItemListResponse>(null);
 
   React.useEffect(() => {
     LANGUAGE_API.apiLanguageGoogleTranslateSupportedLanguagesGet()
@@ -54,7 +52,7 @@ export function OptionsStepContent(props: {
 
   return (
     <Page id="translate-channel-page">
-      <Divider>Channel Selection</Divider>
+      <Divider>Options</Divider>
 
       {channel && (
         <Form
@@ -94,7 +92,7 @@ export function OptionsStepContent(props: {
                 <Button type="primary" htmlType="submit">Continue</Button>
               </Col>
               <Col>
-                <Button shape="circle" icon={<LeftOutlined />} onClick={props.onBack()} />
+                <Button shape="circle" icon={<LeftOutlined />} onClick={props.onBack} />
               </Col>
             </Row>
           </Form.Item>

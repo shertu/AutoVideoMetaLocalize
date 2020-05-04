@@ -4,10 +4,10 @@ import {Page} from '../Page';
 import './style.less';
 import UserContext from '../../UserContext/UserContext';
 import {SelectChannelStepContent} from './SelectChannelStepContent/SelectChannelStepContent';
-import {Channel} from '../../../../generated-sources/openapi';
-import {OptionsStepContent} from './OptionsStepContent/OptionsStepContent';
+import {Channel, YouTubeVideoApi, ApiYouTubeVideoTranslatePostRequest} from '../../../../generated-sources/openapi';
+import { ConfigurationStepContent } from './ConfigurationStepContent/ConfigurationStepContent';
 
-const {Paragraph} = Typography;
+const { Paragraph } = Typography;
 
 /**
  * The page used to control the flow of the process.
@@ -23,6 +23,9 @@ export function ProcessPage(): JSX.Element {
   const [channel, setChannel] =
     React.useState<Channel>(null);
 
+  const [videoTranslateRequest, setVideoTranslateRequest] =
+    React.useState<ApiYouTubeVideoTranslatePostRequest>(null);
+
   /**
    * Go to the next page.
    */
@@ -37,27 +40,18 @@ export function ProcessPage(): JSX.Element {
     setCurrent(current - 1);
   }
 
-  /**
-   * Called when a channel is successfully selected.
-   * 
-   * @param {Channel} channel
-   */
-  async function onFinishSelectChannel(channel: Channel) {
-    setChannel(channel);
-    incrementCurrent();
-  }
-
-  let currentContent: React.ReactNode;
-  switch (current) {
-    case 0:
-      currentContent = <SelectChannelStepContent onFinish={onFinishSelectChannel} />;
-      break;
-    case 1:
-      currentContent = <OptionsStepContent channel={channel} onBack={decrementCurrent} />;
-      break;
-    default:
-      currentContent = null;
-  }
+  const content: React.ReactNode[] = [
+    (<SelectChannelStepContent
+      setChannelState={setChannel}
+      onContinue={incrementCurrent}
+    />),
+    (<ConfigurationStepContent
+      channel={channel}
+      setVideoTranslateRequestState={setVideoTranslateRequest}
+      onBack={decrementCurrent}
+      onContinue={incrementCurrent}
+    />),
+  ];
 
   // render
   if (user == null) {
@@ -72,7 +66,7 @@ export function ProcessPage(): JSX.Element {
 
   return (
     <Page id="process-page">
-      <div className="steps-content">{currentContent}</div>
+      <div className="steps-content">{content[current]}</div>
       <div className="steps-action"></div>
     </Page>
   );
