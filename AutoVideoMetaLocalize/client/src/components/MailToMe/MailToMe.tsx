@@ -2,9 +2,11 @@ import * as React from 'react';
 import './style.less';
 
 /**
- * A link to the email address of this web application's developer.
+ * A mailto link to the developer of this web application.
  *
  * @param {object} props
+ * @param {string} props.subject The email's subject.
+ * @param {string} props.children
  * @return {JSX.Element}
  */
 export function MailToMe(props: {

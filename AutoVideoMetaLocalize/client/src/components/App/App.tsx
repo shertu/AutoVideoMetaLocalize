@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { render } from 'react-dom';
-import { BrowserRouter as Router } from 'react-router-dom';
+import {render} from 'react-dom';
+import {BrowserRouter as Router} from 'react-router-dom';
 import './style.less';
-import { AppLayout } from './AppLayout/AppLayout';
-import { UserProvider } from '../UserContext/UserContext';
-import { AccountApi } from '../../../generated-sources/openapi';
-import { ClaimsPrinciple } from '../../security';
+import {AppLayout} from './AppLayout/AppLayout';
+import {UserProvider} from '../UserContext/UserContext';
+import {AccountApi} from '../../../generated-sources/openapi';
+import {ClaimsPrinciple} from '../../security';
 
 const ACCOUNT_API: AccountApi = new AccountApi();
 
@@ -20,8 +20,8 @@ export function App(): JSX.Element {
 
   React.useEffect(() => {
     ACCOUNT_API.apiAccountGet()
-      .then((res) => setUser(new ClaimsPrinciple(res)))
-      .catch((err) => { });
+        .then((res) => setUser(new ClaimsPrinciple(res)))
+        .catch((err) => { });
   }, []);
 
   return (

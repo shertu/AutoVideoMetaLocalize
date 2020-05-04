@@ -9,11 +9,13 @@ const GOOGLE_AUTH_API: GoogleAuthApi = new GoogleAuthApi();
  * A sign-in button which uses the Google Auth API.
  *
  * @param {object} props
+ * @param {string[]} props.scopes The Google OAuth 2.0 scopes - see https://developers.google.com/identity/protocols/oauth2/scopes for more information.
+ * @param {string} props.redirect The local url to redirect to after sign-in.
  * @return {JSX.Element}
  */
 export function GoogleSignInButton(props: {
-  scopes?: string[], // https://developers.google.com/identity/protocols/oauth2/scopes,
-  redirect?: string
+  scopes?: string[],
+  redirect?: string,
 }): JSX.Element {
   const scopes: string[] = props.scopes || ['https://www.googleapis.com/auth/userinfo.profile'];
   const redirect: string = props.redirect || window.location.pathname;

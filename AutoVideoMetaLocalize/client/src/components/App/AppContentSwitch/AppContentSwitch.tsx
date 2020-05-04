@@ -4,8 +4,8 @@ import routes from '../../../routes';
 import {NoRouteMatchError} from '../../NoRouteMatchError/NoRouteMatchError';
 import './style.less';
 import {PrivacyPolicyPage} from '../../Page/PrivacyPolicyPage/PrivacyPolicyPage';
-import { HomePage } from '../../Page/HomePage/HomePage';
-import { ProcessPage } from '../../Page/ProcessPage/ProcessPage';
+import {HomePage} from '../../Page/HomePage/HomePage';
+import {ProcessPage} from '../../Page/ProcessPage/ProcessPage';
 
 /**
  * The main route switch in the web application.

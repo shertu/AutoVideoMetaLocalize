@@ -1,12 +1,12 @@
 import * as React from 'react';
-import { Page } from '../Page';
+import {Page} from '../Page';
 import './style.less';
-import { Typography, Row, Divider } from 'antd';
-import { ProcessExplanationGrid } from './ProcessExplanationGrid/ProcessExplanationGrid';
-import { GoogleSignInButton } from '../../GoogleSignInButton/GoogleSignInButton';
+import {Typography, Row, Divider} from 'antd';
+import {ProcessExplanationGrid} from './ProcessExplanationGrid/ProcessExplanationGrid';
+import {GoogleSignInButton} from '../../GoogleSignInButton/GoogleSignInButton';
 import routes from '../../../routes';
 
-const { Paragraph, Text } = Typography;
+const {Paragraph, Text} = Typography;
 
 const GOOGLE_AUTH_SCOPES: string[] = [
   'https://www.googleapis.com/auth/youtube.upload',
@@ -39,7 +39,7 @@ export function HomePage(): JSX.Element {
           </Paragraph>
         </Row>
 
-        <Row justify="center" style={{ marginBottom: '2em' }}>
+        <Row justify="center" style={{marginBottom: '2em'}}>
           <GoogleSignInButton scopes={GOOGLE_AUTH_SCOPES} redirect={`~${routes.ROUTE_PROCESS}`} />
         </Row>
       </Page>
