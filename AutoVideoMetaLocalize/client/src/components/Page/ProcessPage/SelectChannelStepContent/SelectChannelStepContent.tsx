@@ -1,12 +1,12 @@
-import {Radio, Row, Form, Button, Typography, Divider, Col} from 'antd';
+import { Radio, Row, Form, Button, Typography, Divider, Col } from 'antd';
 import * as React from 'react';
 import './style.less';
-import {Store} from 'antd/lib/form/interface';
-import {Page} from '../../Page';
-import {Channel, YouTubeChannelApi} from '../../../../../generated-sources/openapi';
-import {ChannelCard} from '../../../ChannelCard/ChannelCard';
+import { Store } from 'antd/lib/form/interface';
+import { Page } from '../../Page';
+import { Channel, YouTubeChannelApi } from '../../../../../generated-sources/openapi';
+import { ChannelCard } from '../../../ChannelCard/ChannelCard';
 
-const {Paragraph} = Typography;
+const { Paragraph } = Typography;
 
 const YOUTUBE_CHANNEL_API: YouTubeChannelApi = new YouTubeChannelApi();
 
@@ -29,8 +29,8 @@ export function SelectChannelStepContent(props: {
 
   React.useEffect(() => {
     YOUTUBE_CHANNEL_API.apiYouTubeChannelMineGet()
-        .then((res) => setOptions(res))
-        .catch((err) => console.log(err));
+      .then((res) => setOptions(res))
+      .catch((err) => console.log(err));
   }, []);
 
   const CHANNEL_RADIO_GROUP_DEFAULT = (options && options.length > 0) ? options[0].id : null;
@@ -61,11 +61,11 @@ export function SelectChannelStepContent(props: {
             <Form.Item
               className="max-cell-md"
               name={FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP}
-              rules={[{required: true, message: SELECTION_MESSAGE}]}
+              rules={[{ required: true, message: SELECTION_MESSAGE }]}
             >
-              <Radio.Group style={{marginBottom: '1em'}}>
+              <Radio.Group>
                 {options.map((_) =>
-                  <Radio.Button key={_.id} value={_.id} style={{padding: 0}}>
+                  <Radio.Button key={_.id} value={_.id} style={{ padding: 0 }}>
                     <ChannelCard channel={_} />
                   </Radio.Button>,
                 )}
@@ -73,13 +73,11 @@ export function SelectChannelStepContent(props: {
             </Form.Item>
           </Row>
 
-          <Form.Item>
-            <Row align="middle" justify="end" gutter={8}>
-              <Col>
-                <Button type="primary" htmlType="submit">Continue</Button>
-              </Col>
-            </Row>
-          </Form.Item>
+          <Row align="middle" justify="end" gutter={8}>
+            <Col>
+              <Button type="primary" htmlType="submit">Continue</Button>
+            </Col>
+          </Row>
         </Form>
       )}
     </Page >

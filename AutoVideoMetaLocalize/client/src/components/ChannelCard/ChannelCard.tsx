@@ -22,7 +22,7 @@ export function ChannelCard(props: {
   return (
     <Card className="channel-card">
       <Row align="middle" justify="start">
-        <Col span={3}>
+        <Col span={4}>
           <Row align="middle" justify="center">
             {thumbnail && (
               <Avatar src={thumbnail.url} style={{width: thumbnail.width, height: thumbnail.height}} />
@@ -30,7 +30,7 @@ export function ChannelCard(props: {
           </Row>
         </Col>
 
-        <Col span={14} offset={2}>
+        <Col span={14} offset={1}>
           <Paragraph strong>{name}</Paragraph>
           <Paragraph>{id}</Paragraph>
         </Col>
