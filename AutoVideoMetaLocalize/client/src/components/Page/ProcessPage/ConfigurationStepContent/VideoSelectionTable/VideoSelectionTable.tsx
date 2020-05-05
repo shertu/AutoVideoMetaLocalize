@@ -1,6 +1,6 @@
 import * as React from 'react';
 import './style.less';
-import { YouTubePlaylistItemApi, Channel, PlaylistItemListResponse, PlaylistItem } from '../../../../../../generated-sources/openapi';
+import { YouTubePlaylistItemApi, Channel, PlaylistItemListResponse, PlaylistItem, ApiYouTubePlaylistItemGetRequest } from '../../../../../../generated-sources/openapi';
 import { Table } from 'antd';
 
 const YOUTUBE_PLAYLIST_ITEM_API = new YouTubePlaylistItemApi();
@@ -30,6 +30,9 @@ export function VideoSelectionTable(props: {
   channel?: Channel,
 }): JSX.Element {
   const playlistId: string = props.channel?.contentDetails?.relatedPlaylists.uploads;
+  const request: ApiYouTubePlaylistItemGetRequest = {
+    playlistId: playlistId,
+  }
 
   const [items, setItems] =
     React.useState<Array<PlaylistItem>>(null);
@@ -44,15 +47,14 @@ export function VideoSelectionTable(props: {
       let temp: Array<PlaylistItem> = [];
 
       do {
-        const res = await YOUTUBE_PLAYLIST_ITEM_API.apiYouTubePlaylistItemGet({
-          playlistId: playlistId,
-          pageToken: token,
-        });
+        if (token) {
+          request.pageToken = token;
+        }
 
-        temp = [...temp, ...res.items];
-        token = res.nextPageToken;
+        const response = await YOUTUBE_PLAYLIST_ITEM_API.apiYouTubePlaylistItemGet(request);
+        temp = [...temp, ...response.items];
+        token = response.nextPageToken;
       } while (token == null);
-
 
       setItems(temp)
     }
