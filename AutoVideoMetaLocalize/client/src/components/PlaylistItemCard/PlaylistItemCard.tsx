@@ -17,7 +17,6 @@ export function PlaylistItemCard(props: {
 }): JSX.Element {
   const thumbnail: Thumbnail = props.playlistItem?.snippet?.thumbnails._default;
   const name: string = props.playlistItem?.snippet?.title;
-  const id: string = props.playlistItem?.snippet?.resourceId.videoId;
   const publishedAt: Date = props.playlistItem?.snippet?.publishedAt;
 
   return (
@@ -26,7 +25,7 @@ export function PlaylistItemCard(props: {
         <Col span={8}>
           <Row align="middle" justify="center">
             {thumbnail && (
-              <Avatar src={thumbnail.url} style={{ width: thumbnail.width, height: thumbnail.height }} />
+              <Avatar shape="square" src={thumbnail.url} style={{ width: thumbnail.width, height: thumbnail.height }} />
             )}
           </Row>
         </Col>

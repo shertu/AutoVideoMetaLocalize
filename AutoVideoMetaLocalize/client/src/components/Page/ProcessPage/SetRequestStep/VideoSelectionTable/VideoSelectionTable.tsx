@@ -4,6 +4,7 @@ import { YouTubePlaylistItemApi, Channel, PlaylistItemListResponse, PlaylistItem
 import { Table } from 'antd';
 import { ColumnsType, TablePaginationConfig } from 'antd/lib/table';
 import { PlaylistItemCard } from '../../../../PlaylistItemCard/PlaylistItemCard';
+import { TableRowSelection } from 'antd/lib/table/interface';
 
 const YOUTUBE_PLAYLIST_ITEM_API = new YouTubePlaylistItemApi();
 
@@ -22,6 +23,7 @@ const TABLE_COLUMNS: ColumnsType<PlaylistItem> = [{
  */
 export function VideoSelectionTable(props: {
   playlistId: string,
+  setVideos: React.Dispatch<React.SetStateAction<Array<string>>>,
 }): JSX.Element {
   const request: ApiYouTubePlaylistItemGetRequest = {
     playlistId: props.playlistId,
@@ -31,11 +33,19 @@ export function VideoSelectionTable(props: {
     React.useState<PlaylistItemListResponse>(null);
 
   const [currentPage, setCurrentPage] =
-    React.useState<number>(0);
+    React.useState<number>(1);
+
+  const [selectedRowKeys, setSelectedRowKeys] =
+    React.useState<React.Key[]>([]);
 
   React.useEffect(() => {
-    execute()
+    loadPageFromApi()
   }, []);
+
+  function loadPageFromApi(): void {
+    YOUTUBE_PLAYLIST_ITEM_API.apiYouTubePlaylistItemGet(request)
+      .then((res) => setResponse(res))
+  }
 
   function onChangePagination(page: number, pageSize?: number): void {
     if (response) {
@@ -48,13 +58,8 @@ export function VideoSelectionTable(props: {
       }
     }
 
-    execute();
+    loadPageFromApi();
     setCurrentPage(page);
-  }
-
-  function execute() {
-    YOUTUBE_PLAYLIST_ITEM_API.apiYouTubePlaylistItemGet(request)
-      .then((res) => setResponse(res))
   }
 
   const pagination: TablePaginationConfig = {
@@ -65,12 +70,46 @@ export function VideoSelectionTable(props: {
     onChange: onChangePagination,
   }
 
+  async function onSelectAll(selected: boolean, selectedRows: PlaylistItem[], changeRows: PlaylistItem[]): Promise<void> {
+    const temp: React.Key[] = [];
+
+    if (selected) {
+      // select
+      const request_selectAll: ApiYouTubePlaylistItemGetRequest = {
+        playlistId: props.playlistId,
+      };
+
+      let response_selectAll: PlaylistItemListResponse;
+
+      do { // paginate items
+        if (response_selectAll) {
+          request_selectAll.pageToken = response_selectAll.nextPageToken;
+        }
+
+        response_selectAll = await YOUTUBE_PLAYLIST_ITEM_API.apiYouTubePlaylistItemGet(request);
+
+        response.items.forEach((_) => {
+          temp.push(_.id);
+        });
+      } while (!response_selectAll.nextPageToken);
+    }
+
+    setSelectedRowKeys(temp);
+  }
+
+  const rowSelection: TableRowSelection<PlaylistItem> = {
+    type: 'checkbox',
+    onSelectAll: onSelectAll,
+    selectedRowKeys: selectedRowKeys,
+    onChange: (aaa, bbb) => {
+      console.log(aaa, bbb);
+    }
+  }
+
   return (
     <Table
       pagination={pagination}
-      rowSelection={{
-        type: 'checkbox',
-      }}
+      rowSelection={rowSelection}
       rowKey={(elem) => elem.id}
       columns={TABLE_COLUMNS}
       dataSource={response?.items}

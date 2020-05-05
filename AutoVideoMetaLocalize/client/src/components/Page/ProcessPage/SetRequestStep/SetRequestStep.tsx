@@ -35,7 +35,7 @@ export function SetRequestStep(props: {
   const [languages, setLanguages] =
     React.useState<Array<AppSupportedLanguage>>(null);
 
-  const [videoIds, setVideoIds] =
+  const [videos, setVideos] =
     React.useState<Array<string>>(null);
 
   React.useEffect(() => {
@@ -87,7 +87,10 @@ export function SetRequestStep(props: {
             name={FORM_ITEM_NAMES.VIDEO_SELECTION}
             rules={[{required: true, message: 'Please select at least one video.'}]}
           >
-            <VideoSelectionTable playlistId={channel?.contentDetails?.relatedPlaylists.uploads}/>
+            <VideoSelectionTable
+              playlistId={channel?.contentDetails?.relatedPlaylists.uploads}
+              setVideos={setVideos}
+            />
           </Form.Item>
 
           <Row align="middle" justify="space-between" gutter={8}>
