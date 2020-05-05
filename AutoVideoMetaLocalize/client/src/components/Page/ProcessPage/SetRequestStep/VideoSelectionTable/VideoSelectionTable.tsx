@@ -1,17 +1,22 @@
-import * as React from 'react';
-import './style.less';
-import { YouTubePlaylistItemApi, Channel, PlaylistItemListResponse, PlaylistItem, ApiYouTubePlaylistItemGetRequest } from '../../../../../../generated-sources/openapi';
 import { Table } from 'antd';
 import { ColumnsType, TablePaginationConfig } from 'antd/lib/table';
-import { PlaylistItemCard } from '../../../../PlaylistItemCard/PlaylistItemCard';
 import { TableRowSelection } from 'antd/lib/table/interface';
+import * as React from 'react';
+import { ApiYouTubePlaylistItemGetRequest, PlaylistItem, PlaylistItemListResponse, YouTubePlaylistItemApi } from '../../../../../../generated-sources/openapi';
+import { BasicComboCard } from '../../../../BasicComboCard/BasicComboCard';
+import './style.less';
 
 const YOUTUBE_PLAYLIST_ITEM_API = new YouTubePlaylistItemApi();
 
 const TABLE_COLUMNS: ColumnsType<PlaylistItem> = [{
   title: 'Video',
   render: (text, record, index) => {
-    return (<PlaylistItemCard playlistItem={record} />)
+    return (<BasicComboCard
+      avatarShape="square"
+      thumbnail={record.snippet.thumbnails._default}
+      title={record.snippet.title}
+      subtitle={record.snippet.publishedAt.toLocaleString()}
+    />)
   }
 }];
 
@@ -23,7 +28,7 @@ const TABLE_COLUMNS: ColumnsType<PlaylistItem> = [{
  */
 export function VideoSelectionTable(props: {
   playlistId: string,
-  setVideos: React.Dispatch<React.SetStateAction<Array<string>>>,
+  setVideos: React.Dispatch<React.SetStateAction<string[]>>,
 }): JSX.Element {
   const request: ApiYouTubePlaylistItemGetRequest = {
     playlistId: props.playlistId,
@@ -32,85 +37,61 @@ export function VideoSelectionTable(props: {
   const [response, setResponse] =
     React.useState<PlaylistItemListResponse>(null);
 
-  const [currentPage, setCurrentPage] =
+  const [paginationCurrent, setPaginationCurrent] =
     React.useState<number>(1);
 
-  const [selectedRowKeys, setSelectedRowKeys] =
+  const [selectedKeys, setSelectedKeys] =
     React.useState<React.Key[]>([]);
 
   React.useEffect(() => {
-    loadPageFromApi()
+    onChangePagination(paginationCurrent);
+    props.setVideos(selectedKeys as string[]);
   }, []);
-
-  function loadPageFromApi(): void {
-    YOUTUBE_PLAYLIST_ITEM_API.apiYouTubePlaylistItemGet(request)
-      .then((res) => setResponse(res))
-  }
 
   function onChangePagination(page: number, pageSize?: number): void {
     if (response) {
-      if (page < currentPage) {
+      if (page < paginationCurrent) {
         request.pageToken = response.prevPageToken;
       }
 
-      if (page > currentPage) {
+      if (page > paginationCurrent) {
         request.pageToken = response.nextPageToken;
       }
     }
 
-    loadPageFromApi();
-    setCurrentPage(page);
+    request.maxResults = pageSize;
+
+    YOUTUBE_PLAYLIST_ITEM_API.apiYouTubePlaylistItemGet(request)
+      .then((res) => setResponse(res))
+
+    setPaginationCurrent(page);
+  }
+
+  function onChangeRowSelection(selectedRowKeys: React.Key[], selectedRows: PlaylistItem[]): void {
+    setSelectedKeys(selectedRowKeys);
   }
 
   const pagination: TablePaginationConfig = {
-    current: currentPage,
+    current: paginationCurrent,
     simple: true,
     pageSize: response?.pageInfo.resultsPerPage,
     total: response?.pageInfo.totalResults,
     onChange: onChangePagination,
-  }
-
-  async function onSelectAll(selected: boolean, selectedRows: PlaylistItem[], changeRows: PlaylistItem[]): Promise<void> {
-    const temp: React.Key[] = [];
-
-    if (selected) {
-      // select
-      const request_selectAll: ApiYouTubePlaylistItemGetRequest = {
-        playlistId: props.playlistId,
-      };
-
-      let response_selectAll: PlaylistItemListResponse;
-
-      do { // paginate items
-        if (response_selectAll) {
-          request_selectAll.pageToken = response_selectAll.nextPageToken;
-        }
-
-        response_selectAll = await YOUTUBE_PLAYLIST_ITEM_API.apiYouTubePlaylistItemGet(request);
-
-        response.items.forEach((_) => {
-          temp.push(_.id);
-        });
-      } while (!response_selectAll.nextPageToken);
-    }
-
-    setSelectedRowKeys(temp);
+    //onShowSizeChange: onShowSizeChangePagination,
+    showSizeChanger: true,
   }
 
   const rowSelection: TableRowSelection<PlaylistItem> = {
     type: 'checkbox',
-    onSelectAll: onSelectAll,
-    selectedRowKeys: selectedRowKeys,
-    onChange: (aaa, bbb) => {
-      console.log(aaa, bbb);
-    }
+    selectedRowKeys: selectedKeys,
+    onChange: onChangeRowSelection,
   }
 
   return (
     <Table
       pagination={pagination}
       rowSelection={rowSelection}
-      rowKey={(elem) => elem.id}
+      rowKey={(elem) => elem.snippet.resourceId.videoId}
       columns={TABLE_COLUMNS}
       dataSource={response?.items}
     />

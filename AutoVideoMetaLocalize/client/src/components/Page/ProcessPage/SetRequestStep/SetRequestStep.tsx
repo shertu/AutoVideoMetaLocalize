@@ -33,10 +33,10 @@ export function SetRequestStep(props: {
   const channel: Channel = props.channel;
 
   const [languages, setLanguages] =
-    React.useState<Array<AppSupportedLanguage>>(null);
+    React.useState<AppSupportedLanguage[]>(null);
 
   const [videos, setVideos] =
-    React.useState<Array<string>>(null);
+    React.useState<string[]>(null);
 
   React.useEffect(() => {
     LANGUAGE_API.apiLanguageGoogleTranslateSupportedLanguagesGet()

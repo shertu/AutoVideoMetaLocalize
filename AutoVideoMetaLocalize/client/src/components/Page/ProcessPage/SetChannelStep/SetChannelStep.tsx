@@ -4,7 +4,7 @@ import './style.less';
 import {Store} from 'antd/lib/form/interface';
 import {Page} from '../../Page';
 import {Channel, YouTubeChannelApi} from '../../../../../generated-sources/openapi';
-import {ChannelCard} from '../../../ChannelCard/ChannelCard';
+import { BasicComboCard } from '../../../BasicComboCard/BasicComboCard';
 
 const {Paragraph} = Typography;
 
@@ -25,7 +25,7 @@ export function SetChannelStep(props: {
   onNext: () => void,
 }): JSX.Element {
   const [options, setOptions] =
-    React.useState<Array<Channel>>(null);
+    React.useState<Channel[]>(null);
 
   React.useEffect(() => {
     YOUTUBE_CHANNEL_API.apiYouTubeChannelMineGet()
@@ -66,7 +66,11 @@ export function SetChannelStep(props: {
               <Radio.Group>
                 {options.map((_) =>
                   <Radio.Button key={_.id} value={_.id} style={{padding: 0}}>
-                    <ChannelCard channel={_} />
+                    <BasicComboCard
+                      thumbnail={_.snippet.thumbnails._default}
+                      title={_.snippet.title}
+                      subtitle={_.id}
+                    />
                   </Radio.Button>,
                 )}
               </Radio.Group>

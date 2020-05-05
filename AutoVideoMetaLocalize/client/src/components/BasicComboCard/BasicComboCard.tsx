@@ -6,34 +6,36 @@ import { Channel, Thumbnail } from '../../../generated-sources/openapi';
 const { Paragraph } = Typography;
 
 /**
- * A view card for a YouTube channel.
+ * A card to view basic information with an image.
  *
  * @param {object} props
- * @param {Channel} props.channel The YouTube channel information.
  * @return {JSX.Element}
  */
-export function ChannelCard(props: {
-  channel?: Channel,
+export function BasicComboCard(props: {
+  thumbnail?: Thumbnail,
+  title?: string,
+  subtitle?: string,
+  avatarShape?: 'circle' | 'square',
 }): JSX.Element {
-  const thumbnail: Thumbnail = props.channel?.snippet?.thumbnails._default;
-  const name: string = props.channel?.snippet?.title;
-  const id: string = props.channel?.id;
-
   return (
-    <Card className="channel-card">
+    <Card className="basic-combo-card">
       <Row align="middle" justify="start">
         <Col span={8}>
           <Row align="middle" justify="center">
-            {thumbnail && (
-              <Avatar src={thumbnail.url} style={{ width: thumbnail.width, height: thumbnail.height }} />
+            {props.thumbnail && (
+              <Avatar
+                src={props.thumbnail.url}
+                style={{ width: props.thumbnail.width, height: props.thumbnail.height }}
+                shape={props.avatarShape}
+              />
             )}
           </Row>
         </Col>
 
         <Col span={14} offset={2}>
           <Typography>
-            <Paragraph strong>{name}</Paragraph>
-            <Paragraph ellipsis>{id}</Paragraph>
+            <Paragraph strong>{props.title}</Paragraph>
+            <Paragraph>{props.subtitle}</Paragraph>
           </Typography>
         </Col>
       </Row>

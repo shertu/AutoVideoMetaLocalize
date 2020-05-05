@@ -23,6 +23,7 @@ import {
 export interface ApiYouTubePlaylistItemGetRequest {
     playlistId: string;
     pageToken?: string | null;
+    maxResults?: number | null;
 }
 
 /**
@@ -45,6 +46,10 @@ export class YouTubePlaylistItemApi extends runtime.BaseAPI {
 
         if (requestParameters.pageToken !== undefined) {
             queryParameters['pageToken'] = requestParameters.pageToken;
+        }
+
+        if (requestParameters.maxResults !== undefined) {
+            queryParameters['maxResults'] = requestParameters.maxResults;
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
