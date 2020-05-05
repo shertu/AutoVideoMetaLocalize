@@ -18,7 +18,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 		}
 
 		[HttpGet]
-		public async Task<ActionResult<PlaylistItemListResponse>> GetVideosInPlaylist([Required, FromForm] string playlistId, [FromForm] string pageToken = null) {
+		public async Task<ActionResult<PlaylistItemListResponse>> GetVideosInPlaylist([Required] string playlistId, string pageToken = null) {
 			if (string.IsNullOrEmpty(playlistId))
 				throw new System.ArgumentException("message", nameof(playlistId));
 
