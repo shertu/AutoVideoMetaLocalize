@@ -87,12 +87,12 @@ export function SetRequestStep(props: {
             name={FORM_ITEM_NAMES.VIDEO_SELECTION}
             rules={[{required: true, message: 'Please select at least one video.'}]}
           >
-            <VideoSelectionTable channel={channel}/>
+            <VideoSelectionTable playlistId={channel?.contentDetails?.relatedPlaylists.uploads}/>
           </Form.Item>
 
           <Row align="middle" justify="space-between" gutter={8}>
             <Col>
-              <Button shape="circle" icon={<LeftOutlined />} onClick={props.onBack} style={{width: '1em'}} />
+              <Button shape="circle" icon={<LeftOutlined />} onClick={props.onPrev} style={{width: '1em'}} />
             </Col>
             <Col>
               <Button type="primary" htmlType="submit">Continue</Button>
