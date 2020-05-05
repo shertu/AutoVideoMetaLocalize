@@ -1,23 +1,21 @@
 import * as React from 'react';
 import './style.less';
-import { YouTubePlaylistItemApi, Channel, PlaylistItemListResponse, PlaylistItem, ApiYouTubePlaylistItemGetRequest } from '../../../../../../generated-sources/openapi';
-import { Table } from 'antd';
+import {YouTubePlaylistItemApi, Channel, PlaylistItemListResponse, PlaylistItem, ApiYouTubePlaylistItemGetRequest} from '../../../../../../generated-sources/openapi';
+import {Table} from 'antd';
 
 const YOUTUBE_PLAYLIST_ITEM_API = new YouTubePlaylistItemApi();
 
 interface VideoSelectionTableItem {
-
+  id: string,
+  title: string,
 }
 
 const TABLE_COLUMNS = [{
-  title: 'Video Id',
-  dataIndex: 'snippet.resourceId.videoId',
+  title: 'ID',
+  dataIndex: 'id',
 }, {
   title: 'Title',
-  dataIndex: 'snippet.title',
-}, {
-  title: 'Description',
-  dataIndex: 'snippet.description',
+  dataIndex: 'title',
 }];
 
 /**
@@ -32,10 +30,10 @@ export function VideoSelectionTable(props: {
   const playlistId: string = props.channel?.contentDetails?.relatedPlaylists.uploads;
   const request: ApiYouTubePlaylistItemGetRequest = {
     playlistId: playlistId,
-  }
+  };
 
   const [items, setItems] =
-    React.useState<Array<PlaylistItem>>(null);
+    React.useState<Array<VideoSelectionTableItem>>(null);
 
   React.useEffect(() => {
     loadEveryItem();
@@ -44,19 +42,28 @@ export function VideoSelectionTable(props: {
   async function loadEveryItem() {
     if (playlistId) {
       let token: string = null;
-      let temp: Array<PlaylistItem> = [];
+      const temp: Array<VideoSelectionTableItem> = [];
 
       do {
         if (token) {
           request.pageToken = token;
         }
 
-        const response = await YOUTUBE_PLAYLIST_ITEM_API.apiYouTubePlaylistItemGet(request);
-        temp = [...temp, ...response.items];
+        const response: PlaylistItemListResponse = await YOUTUBE_PLAYLIST_ITEM_API.apiYouTubePlaylistItemGet(request);
+
+        response.items.forEach((_) => {
+          const tempItem: VideoSelectionTableItem = {
+            id: _.id,
+            title: _.snippet.title,
+          };
+
+          temp.push(tempItem);
+        });
+
         token = response.nextPageToken;
       } while (token == null);
 
-      setItems(temp)
+      setItems(temp);
     }
   }
 
@@ -65,6 +72,7 @@ export function VideoSelectionTable(props: {
       rowSelection={{
         type: 'checkbox',
       }}
+      rowKey={(elem) => elem.id}
       columns={TABLE_COLUMNS}
       dataSource={items}
     />

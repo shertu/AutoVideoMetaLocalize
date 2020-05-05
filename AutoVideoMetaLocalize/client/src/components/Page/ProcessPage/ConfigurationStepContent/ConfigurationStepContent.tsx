@@ -1,11 +1,11 @@
 import * as React from 'react';
 import './style.less';
-import { Store } from 'antd/lib/form/interface';
-import { LanguageApi, YouTubePlaylistItemApi, Channel, AppSupportedLanguage, PlaylistItemListResponse, ApiYouTubeVideoTranslatePostRequest } from '../../../../../generated-sources/openapi';
-import { Select, Divider, Form, Row, Col, Button } from 'antd';
-import { Page } from '../../Page';
-import { VideoSelectionTable } from './VideoSelectionTable/VideoSelectionTable';
-import { LeftOutlined } from '@ant-design/icons';
+import {Store} from 'antd/lib/form/interface';
+import {LanguageApi, YouTubePlaylistItemApi, Channel, AppSupportedLanguage, PlaylistItemListResponse, ApiYouTubeVideoTranslatePostRequest} from '../../../../../generated-sources/openapi';
+import {Select, Divider, Form, Row, Col, Button} from 'antd';
+import {Page} from '../../Page';
+import {VideoSelectionTable} from './VideoSelectionTable/VideoSelectionTable';
+import {LeftOutlined} from '@ant-design/icons';
 
 const LANGUAGE_API = new LanguageApi();
 const YOUTUBE_PLAYLIST_ITEM_API = new YouTubePlaylistItemApi();
@@ -37,7 +37,7 @@ export function ConfigurationStepContent(props: {
 
   React.useEffect(() => {
     LANGUAGE_API.apiLanguageGoogleTranslateSupportedLanguagesGet()
-      .then((res) => setLanguages(res));
+        .then((res) => setLanguages(res));
   }, []);
 
   /**
@@ -56,14 +56,14 @@ export function ConfigurationStepContent(props: {
 
       {channel && (
         <Form
-          labelCol={{ span: 4 }}
-          wrapperCol={{ span: 20 }}
+          labelCol={{span: 4}}
+          wrapperCol={{span: 20}}
           onFinish={onFinish}
         >
           <Form.Item
             label="Languages"
             name={FORM_ITEM_NAMES.LANGUAGE_SELECTION}
-            rules={[{ required: true, message: 'Please select at least one language.' }]}
+            rules={[{required: true, message: 'Please select at least one language.'}]}
           >
             <Select
               loading={languages == null}
@@ -82,14 +82,14 @@ export function ConfigurationStepContent(props: {
           <Form.Item
             label="Videos"
             name={FORM_ITEM_NAMES.VIDEO_SELECTION}
-            rules={[{ required: true, message: 'Please select at least one video.' }]}
+            rules={[{required: true, message: 'Please select at least one video.'}]}
           >
             <VideoSelectionTable channel={channel}/>
           </Form.Item>
 
           <Row align="middle" justify="space-between" gutter={8}>
             <Col>
-              <Button shape="circle" icon={<LeftOutlined />} onClick={props.onBack} style={{ width: '1em' }} />
+              <Button shape="circle" icon={<LeftOutlined />} onClick={props.onBack} style={{width: '1em'}} />
             </Col>
             <Col>
               <Button type="primary" htmlType="submit">Continue</Button>

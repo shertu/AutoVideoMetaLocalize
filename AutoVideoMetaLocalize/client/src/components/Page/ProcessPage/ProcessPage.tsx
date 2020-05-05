@@ -5,9 +5,9 @@ import './style.less';
 import UserContext from '../../UserContext/UserContext';
 import {SelectChannelStepContent} from './SelectChannelStepContent/SelectChannelStepContent';
 import {Channel, YouTubeVideoApi, ApiYouTubeVideoTranslatePostRequest} from '../../../../generated-sources/openapi';
-import { ConfigurationStepContent } from './ConfigurationStepContent/ConfigurationStepContent';
+import {ConfigurationStepContent} from './ConfigurationStepContent/ConfigurationStepContent';
 
-const { Paragraph } = Typography;
+const {Paragraph} = Typography;
 
 /**
  * The page used to control the flow of the process.
