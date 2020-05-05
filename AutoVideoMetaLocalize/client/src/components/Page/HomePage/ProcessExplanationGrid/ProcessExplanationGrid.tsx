@@ -1,19 +1,15 @@
 import * as React from 'react';
 import './style.less';
-import {Row, Col, Card, Statistic} from 'antd';
-import {ColProps} from 'antd/lib/col';
-import {ArrowUpOutlined} from '@ant-design/icons';
+import { Row, Col, Card, Statistic } from 'antd';
+import { ColProps } from 'antd/lib/col';
+import { ArrowUpOutlined } from '@ant-design/icons';
 
-const {Meta} = Card;
+const { Meta } = Card;
 
 const COL_LAYOUT: ColProps = {
   xs: 24,
   md: 12,
   xl: 8,
-};
-
-const CARD_SECTION_STYLE: React.CSSProperties = {
-  height: '300px',
 };
 
 /**
@@ -28,35 +24,35 @@ export function ProcessExplanationGrid(): JSX.Element {
   return (
     <Row className="process-explanation-grid" align="top" justify="center" gutter={8}>
       <Col {...COL_LAYOUT} >
-        <Card bodyStyle={CARD_SECTION_STYLE} cover={
-          <Row align="middle" justify="center" style={CARD_SECTION_STYLE}>
+        <Card cover={
+          <Row align="middle" justify="center">
             <img alt="example" src="https://www.authorsguilds.com/wp-content/uploads/2017/02/youtube.png"
-              style={{height: '100%', objectFit: 'cover'}} />
+              className="max-height-cover" />
           </Row>
         }>
           <Meta description="The YouTube algorithm tends to recommend content which is local in relation to the viewer." />
         </Card>
       </Col>
       <Col {...COL_LAYOUT} >
-        <Card bodyStyle={CARD_SECTION_STYLE} cover={
-          <Row align="middle" justify="center" style={CARD_SECTION_STYLE}>
+        <Card cover={
+          <Row align="middle" justify="center">
             <img alt="example" src="https://upload.wikimedia.org/wikipedia/commons/d/dd/Cloud-Translation-Logo.svg"
-              style={{width: 200}} />
+              style={{ width: 110 }} />
           </Row>
         }>
           <Meta description="This service can automatically localize content on YouTube by translating it into several languages." />
         </Card>
       </Col>
       <Col {...COL_LAYOUT} >
-        <Card bodyStyle={CARD_SECTION_STYLE} cover={
-          <Row align="middle" justify="center" style={CARD_SECTION_STYLE}>
+        <Card cover={
+          <Row align="middle" justify="center">
             <Statistic
               title="View Count"
               value={viewCount}
-              valueStyle={{color: '#3f8600'}}
+              valueStyle={{ color: '#3f8600' }}
               prefix={<ArrowUpOutlined />}
               suffix="views"
-              style={{textAlign: 'center'}}
+              style={{ textAlign: 'center' }}
             />
           </Row>
         }>

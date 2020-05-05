@@ -56,8 +56,8 @@ export function ConfigurationStepContent(props: {
 
       {channel && (
         <Form
-          labelCol={{ span: 8 }}
-          wrapperCol={{ span: 16 }}
+          labelCol={{ span: 4 }}
+          wrapperCol={{ span: 20 }}
           onFinish={onFinish}
         >
           <Form.Item
@@ -68,9 +68,10 @@ export function ConfigurationStepContent(props: {
             <Select
               loading={languages == null}
               mode="multiple"
+              optionFilterProp="label"
             >
               {languages && languages.map((_, i) =>
-                <Select.Option key={_.code} value={_.code}>
+                <Select.Option key={_.code} value={_.code} label={_.name}>
                   {_.name}
                 </Select.Option >,
               )}
@@ -83,12 +84,12 @@ export function ConfigurationStepContent(props: {
             name={FORM_ITEM_NAMES.VIDEO_SELECTION}
             rules={[{ required: true, message: 'Please select at least one video.' }]}
           >
-            <VideoSelectionTable />
+            <VideoSelectionTable channel={channel}/>
           </Form.Item>
 
           <Row align="middle" justify="space-between" gutter={8}>
             <Col>
-              <Button shape="circle" icon={<LeftOutlined />} onClick={props.onBack} style={{ width: 49 }} />
+              <Button shape="circle" icon={<LeftOutlined />} onClick={props.onBack} style={{ width: '1em' }} />
             </Col>
             <Col>
               <Button type="primary" htmlType="submit">Continue</Button>

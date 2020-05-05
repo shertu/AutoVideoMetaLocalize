@@ -35,7 +35,7 @@ export function HomePage(): JSX.Element {
 
         <Row justify="center">
           <Paragraph className="max-cell-xs">
-            To use this service please sign-in to YouTube.
+            To use this service please sign-in to Google and authorize this application.
           </Paragraph>
         </Row>
 

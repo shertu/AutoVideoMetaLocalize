@@ -1,9 +1,13 @@
 import * as React from 'react';
 import './style.less';
-import {YouTubePlaylistItemApi} from '../../../../../../generated-sources/openapi';
-import {Table} from 'antd';
+import { YouTubePlaylistItemApi, Channel, PlaylistItemListResponse, PlaylistItem } from '../../../../../../generated-sources/openapi';
+import { Table } from 'antd';
 
 const YOUTUBE_PLAYLIST_ITEM_API = new YouTubePlaylistItemApi();
+
+interface VideoSelectionTableItem {
+
+}
 
 const TABLE_COLUMNS = [{
   title: 'Video Id',
@@ -22,15 +26,37 @@ const TABLE_COLUMNS = [{
  * @param {object} props
  * @return {JSX.Element}
  */
-export function VideoSelectionTable(): JSX.Element {
-  React.useEffect(() => {
-    // const playlistId: string = props.channel.contentDetails.relatedPlaylists.uploads;
+export function VideoSelectionTable(props: {
+  channel?: Channel,
+}): JSX.Element {
+  const playlistId: string = props.channel?.contentDetails?.relatedPlaylists.uploads;
 
-    // YOUTUBE_PLAYLIST_ITEM_API.apiYouTubePlaylistItemVideosInPlaylistGet({
-    //  playlistId: playlistId,
-    //  pageToken: null,
-    // }).then((res: PlaylistItemListResponse) => setSelectedVideos(res));
-  }, []);
+  const [items, setItems] =
+    React.useState<Array<PlaylistItem>>(null);
+
+  React.useEffect(() => {
+    loadEveryItem();
+  }, [playlistId]);
+
+  async function loadEveryItem() {
+    if (playlistId) {
+      let token: string = null;
+      let temp: Array<PlaylistItem> = [];
+
+      do {
+        const res = await YOUTUBE_PLAYLIST_ITEM_API.apiYouTubePlaylistItemVideosInPlaylistGet({
+          playlistId: playlistId,
+          pageToken: token,
+        });
+
+        temp = [...temp, ...res.items];
+        token = res.nextPageToken;
+      } while (token == null);
+
+
+      setItems(temp)
+    }
+  }
 
   return (
     <Table
@@ -38,7 +64,7 @@ export function VideoSelectionTable(): JSX.Element {
         type: 'checkbox',
       }}
       columns={TABLE_COLUMNS}
-      dataSource={null}
+      dataSource={items}
     />
   );
 }
