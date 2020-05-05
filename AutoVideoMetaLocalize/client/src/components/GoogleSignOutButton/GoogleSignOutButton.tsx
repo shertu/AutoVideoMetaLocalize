@@ -9,7 +9,7 @@ const GOOGLE_AUTH_API: GoogleAuthApi = new GoogleAuthApi();
  * A sign-out button which uses the Google Auth API.
  *
  * @param {object} props
- * @param {string} props.redirect The local url to redirect to after sign-in.
+ * @param {string} props.redirect The uri to redirect the user to after sign-in.
  * @return {JSX.Element}
  */
 export function GoogleSignOutButton(props: {

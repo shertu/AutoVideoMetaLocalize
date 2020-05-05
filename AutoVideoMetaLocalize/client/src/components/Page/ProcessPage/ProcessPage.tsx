@@ -1,10 +1,11 @@
 import * as React from 'react';
-import { Page } from '../Page';
+import {Page} from '../Page';
 import './style.less';
-import { Channel, ApiYouTubeVideoTranslatePostRequest } from '../../../../generated-sources/openapi';
-import { SetChannelStep } from './SetChannelStep/SetChannelStep';
-import { SetRequestStep } from './SetRequestStep/SetRequestStep';
-import { ExecuteRequestStep } from './ExecuteRequestStep/ExecuteRequestStep';
+import {Channel, ApiYouTubeVideoTranslatePostRequest} from '../../../../generated-sources/openapi';
+import {ExecuteRequestStep} from './ExecuteRequestStep/ExecuteRequestStep';
+import {StepsStateProvider} from './StepsStateContext/StepsStateContext';
+import {SetChannelPage} from './SetChannelPage/SetChannelPage';
+import {SetRequestPage} from './SetRequestPage/SetRequestPage';
 
 /**
  * The page used to control the flow of the process.
@@ -12,7 +13,7 @@ import { ExecuteRequestStep } from './ExecuteRequestStep/ExecuteRequestStep';
  * @return {JSX.Element}
  */
 export function ProcessPage(): JSX.Element {
-  const [currentStep, setCurrentStep] =
+  const [stepsCurrent, setStepsCurrent] =
     React.useState<number>(0);
 
   const [channel, setChannel] =
@@ -21,40 +22,30 @@ export function ProcessPage(): JSX.Element {
   const [request, setRequest] =
     React.useState<ApiYouTubeVideoTranslatePostRequest>(null);
 
-  /**
-   * Go to the next page.
-   */
-  async function incrementCurrentStep(): Promise<void> {
-    setCurrentStep(currentStep + 1);
-  }
-
-  /**
-   * Go to the previous page.
-   */
-  async function decrementCurrentStep(): Promise<void> {
-    setCurrentStep(currentStep - 1);
-  }
-
   const content: React.ReactNode[] = [
-    (<SetChannelStep
-      setChannel={setChannel}
-      onNext={incrementCurrentStep}
-    />),
-    (<SetRequestStep
+    <SetChannelPage
+      key={0}
+      setChannelStateAction={setChannel}
+    />,
+    <SetRequestPage
+      key={1}
       channel={channel}
       setRequest={setRequest}
-      onNext={incrementCurrentStep}
-      onPrev={decrementCurrentStep}
-    />),
+    />,
     (<ExecuteRequestStep
+      key={2}
       request={request}
     />),
   ];
 
   return (
     <Page>
-      <div className="steps-content">{content[currentStep]}</div>
-      <div className="steps-action"></div>
+      <StepsStateProvider value={{
+        value: stepsCurrent,
+        setValue: setStepsCurrent,
+      }}>
+        <div className="steps-content">{content[stepsCurrent]}</div>
+      </StepsStateProvider>
     </Page>
   );
 }

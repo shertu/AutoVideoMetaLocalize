@@ -1,12 +1,12 @@
-import { Avatar, Card, Typography, Row, Col } from 'antd';
+import {Avatar, Card, Typography, Row, Col} from 'antd';
 import * as React from 'react';
 import './style.less';
-import { Channel, Thumbnail } from '../../../generated-sources/openapi';
+import {Thumbnail} from '../../../generated-sources/openapi';
 
-const { Paragraph } = Typography;
+const {Paragraph} = Typography;
 
 /**
- * A card to view basic information with an image.
+ * A basic information card with an image, title and subtitle.
  *
  * @param {object} props
  * @return {JSX.Element}
@@ -25,7 +25,7 @@ export function BasicComboCard(props: {
             {props.thumbnail && (
               <Avatar
                 src={props.thumbnail.url}
-                style={{ width: props.thumbnail.width, height: props.thumbnail.height }}
+                style={{width: props.thumbnail.width, height: props.thumbnail.height}}
                 shape={props.avatarShape}
               />
             )}

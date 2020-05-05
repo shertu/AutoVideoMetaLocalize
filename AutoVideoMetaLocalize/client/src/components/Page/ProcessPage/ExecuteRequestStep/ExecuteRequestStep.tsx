@@ -1,4 +1,4 @@
-import { Typography } from 'antd';
+import {Typography} from 'antd';
 import * as React from 'react';
 import './style.less';
 import {Page} from '../../Page';

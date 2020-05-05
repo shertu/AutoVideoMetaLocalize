@@ -2,9 +2,9 @@ import * as React from 'react';
 import {Page} from '../Page';
 import './style.less';
 import {Typography, Row, Divider} from 'antd';
-import {ProcessExplanationGrid} from './ProcessExplanationGrid/ProcessExplanationGrid';
 import {GoogleSignInButton} from '../../GoogleSignInButton/GoogleSignInButton';
 import routes from '../../../routes';
+import {AppExplanationGrid} from './AppExplanationGrid/AppExplanationGrid';
 
 const {Paragraph, Text} = Typography;
 
@@ -46,7 +46,7 @@ export function HomePage(): JSX.Element {
 
       <Page>
         <Divider>How does it work?</Divider>
-        <ProcessExplanationGrid />
+        <AppExplanationGrid />
       </Page>
     </Page>
   );

@@ -17,12 +17,12 @@ const COL_LAYOUT: ColProps = {
  *
  * @return {JSX.Element}
  */
-export function ProcessExplanationGrid(): JSX.Element {
+export function AppExplanationGrid(): JSX.Element {
   const [viewCount, setViewCount] =
     React.useState<number>(927787);
 
   return (
-    <Row className="process-explanation-grid" align="top" justify="center" gutter={8}>
+    <Row className="app-explanation-grid" align="top" justify="center" gutter={8}>
       <Col {...COL_LAYOUT} >
         <Card cover={
           <Row align="middle" justify="center">
