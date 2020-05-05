@@ -44,7 +44,7 @@ export function VideoSelectionTable(props: {
       let temp: Array<PlaylistItem> = [];
 
       do {
-        const res = await YOUTUBE_PLAYLIST_ITEM_API.apiYouTubePlaylistItemVideosInPlaylistGet({
+        const res = await YOUTUBE_PLAYLIST_ITEM_API.apiYouTubePlaylistItemGet({
           playlistId: playlistId,
           pageToken: token,
         });

@@ -33,7 +33,7 @@ export class YouTubeChannelApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/YouTubeChannel/mine`,
+            path: `/api/YouTubeChannel/Mine`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,

@@ -20,7 +20,7 @@ import {
     PlaylistItemListResponseToJSON,
 } from '../models';
 
-export interface ApiYouTubePlaylistItemVideosInPlaylistGetRequest {
+export interface ApiYouTubePlaylistItemGetRequest {
     playlistId: string;
     pageToken?: string | null;
 }
@@ -32,43 +32,28 @@ export class YouTubePlaylistItemApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiYouTubePlaylistItemVideosInPlaylistGetRaw(requestParameters: ApiYouTubePlaylistItemVideosInPlaylistGetRequest): Promise<runtime.ApiResponse<PlaylistItemListResponse>> {
+    async apiYouTubePlaylistItemGetRaw(requestParameters: ApiYouTubePlaylistItemGetRequest): Promise<runtime.ApiResponse<PlaylistItemListResponse>> {
         if (requestParameters.playlistId === null || requestParameters.playlistId === undefined) {
-            throw new runtime.RequiredError('playlistId','Required parameter requestParameters.playlistId was null or undefined when calling apiYouTubePlaylistItemVideosInPlaylistGet.');
+            throw new runtime.RequiredError('playlistId','Required parameter requestParameters.playlistId was null or undefined when calling apiYouTubePlaylistItemGet.');
         }
 
         const queryParameters: runtime.HTTPQuery = {};
 
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        const consumes: runtime.Consume[] = [
-            { contentType: 'multipart/form-data' },
-        ];
-        // @ts-ignore: canConsumeForm may be unused
-        const canConsumeForm = runtime.canConsumeForm(consumes);
-
-        let formParams: { append(param: string, value: any): any };
-        let useForm = false;
-        if (useForm) {
-            formParams = new FormData();
-        } else {
-            formParams = new URLSearchParams();
-        }
-
         if (requestParameters.playlistId !== undefined) {
-            formParams.append('playlistId', requestParameters.playlistId as any);
+            queryParameters['playlistId'] = requestParameters.playlistId;
         }
 
         if (requestParameters.pageToken !== undefined) {
-            formParams.append('pageToken', requestParameters.pageToken as any);
+            queryParameters['pageToken'] = requestParameters.pageToken;
         }
 
+        const headerParameters: runtime.HTTPHeaders = {};
+
         const response = await this.request({
-            path: `/api/YouTubePlaylistItem/videos-in-playlist`,
+            path: `/api/YouTubePlaylistItem`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-            body: formParams,
         });
 
         return new runtime.JSONApiResponse(response, (jsonValue) => PlaylistItemListResponseFromJSON(jsonValue));
@@ -76,8 +61,8 @@ export class YouTubePlaylistItemApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiYouTubePlaylistItemVideosInPlaylistGet(requestParameters: ApiYouTubePlaylistItemVideosInPlaylistGetRequest): Promise<PlaylistItemListResponse> {
-        const response = await this.apiYouTubePlaylistItemVideosInPlaylistGetRaw(requestParameters);
+    async apiYouTubePlaylistItemGet(requestParameters: ApiYouTubePlaylistItemGetRequest): Promise<PlaylistItemListResponse> {
+        const response = await this.apiYouTubePlaylistItemGetRaw(requestParameters);
         return await response.value();
     }
 

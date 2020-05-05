@@ -16,7 +16,6 @@ export * from './Claim';
 export * from './ClaimsIdentity';
 export * from './ImageSettings';
 export * from './InlineObject';
-export * from './InlineObject1';
 export * from './InvideoPosition';
 export * from './InvideoPromotion';
 export * from './InvideoTiming';

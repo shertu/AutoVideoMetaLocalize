@@ -24,13 +24,13 @@ export interface InlineObject {
      * @type {string}
      * @memberof InlineObject
      */
-    playlistId: string;
+    videoId: string;
     /**
      * 
-     * @type {string}
+     * @type {Array<string>}
      * @memberof InlineObject
      */
-    pageToken?: string | null;
+    languages: Array<string>;
 }
 
 export function InlineObjectFromJSON(json: any): InlineObject {
@@ -43,8 +43,8 @@ export function InlineObjectFromJSONTyped(json: any, ignoreDiscriminator: boolea
     }
     return {
         
-        'playlistId': json['playlistId'],
-        'pageToken': !exists(json, 'pageToken') ? undefined : json['pageToken'],
+        'videoId': json['videoId'],
+        'languages': json['languages'],
     };
 }
 
@@ -57,8 +57,8 @@ export function InlineObjectToJSON(value?: InlineObject | null): any {
     }
     return {
         
-        'playlistId': value.playlistId,
-        'pageToken': value.pageToken,
+        'videoId': value.videoId,
+        'languages': value.languages,
     };
 }
 

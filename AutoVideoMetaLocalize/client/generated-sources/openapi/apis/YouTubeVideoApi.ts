@@ -63,7 +63,7 @@ export class YouTubeVideoApi extends runtime.BaseAPI {
         }
 
         const response = await this.request({
-            path: `/api/YouTubeVideo/translate`,
+            path: `/api/YouTubeVideo/Translate`,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
