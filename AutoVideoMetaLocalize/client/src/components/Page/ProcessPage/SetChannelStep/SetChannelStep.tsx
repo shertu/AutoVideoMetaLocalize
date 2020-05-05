@@ -20,9 +20,9 @@ const FORM_ITEM_NAMES = {
  * @param {object} props
  * @return {JSX.Element}
  */
-export function SelectChannelStepContent(props: {
-  setChannelState: React.Dispatch<React.SetStateAction<Channel>>,
-  onContinue?: () => void
+export function SetChannelStep(props: {
+  setChannel: React.Dispatch<React.SetStateAction<Channel>>,
+  onNext: () => void,
 }): JSX.Element {
   const [options, setOptions] =
     React.useState<Array<Channel>>(null);
@@ -43,8 +43,8 @@ export function SelectChannelStepContent(props: {
   async function onFinish(values: Store): Promise<void> {
     const CHANNEL_RADIO_GROUP_VALUE = values[FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP];
     const selected: Channel = options.find((elem) => elem.id == CHANNEL_RADIO_GROUP_VALUE);
-    props.setChannelState(selected);
-    props.onContinue();
+    props.setChannel(selected);
+    props.onNext();
   }
 
   const SELECTION_MESSAGE: string = 'Please select a channel.';

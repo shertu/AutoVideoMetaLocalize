@@ -1,7 +1,7 @@
 import { Avatar, Card, Typography, Row, Col } from 'antd';
 import * as React from 'react';
 import './style.less';
-import { Channel, Thumbnail } from '../../../generated-sources/openapi';
+import { Thumbnail, PlaylistItem } from '../../../generated-sources/openapi';
 
 const { Paragraph } = Typography;
 
@@ -12,12 +12,13 @@ const { Paragraph } = Typography;
  * @param {Channel} props.channel The YouTube channel information.
  * @return {JSX.Element}
  */
-export function ChannelCard(props: {
-  channel?: Channel,
+export function PlaylistItemCard(props: {
+  playlistItem?: PlaylistItem,
 }): JSX.Element {
-  const thumbnail: Thumbnail = props.channel?.snippet?.thumbnails._default;
-  const name: string = props.channel?.snippet?.title;
-  const id: string = props.channel?.id;
+  const thumbnail: Thumbnail = props.playlistItem?.snippet?.thumbnails._default;
+  const name: string = props.playlistItem?.snippet?.title;
+  const id: string = props.playlistItem?.snippet?.resourceId.videoId;
+  const publishedAt: Date = props.playlistItem?.snippet?.publishedAt;
 
   return (
     <Card className="channel-card">
@@ -33,7 +34,7 @@ export function ChannelCard(props: {
         <Col span={14} offset={2}>
           <Typography>
             <Paragraph strong>{name}</Paragraph>
-            <Paragraph ellipsis>{id}</Paragraph>
+            <Paragraph>{publishedAt.toLocaleDateString()}</Paragraph>
           </Typography>
         </Col>
       </Row>

@@ -24,16 +24,19 @@ const FORM_ITEM_NAMES = {
  * @param {Channel} props.channel The channel used to enumerate through the videos.
  * @return {JSX.Element}
  */
-export function ConfigurationStepContent(props: {
+export function SetRequestStep(props: {
   channel: Channel,
-  setVideoTranslateRequestState: React.Dispatch<React.SetStateAction<ApiYouTubeVideoTranslatePostRequest>>,
-  onContinue?: () => void,
-  onBack?: () => void,
+  setRequest: React.Dispatch<React.SetStateAction<ApiYouTubeVideoTranslatePostRequest>>,
+  onNext: () => void,
+  onPrev: () => void,
 }): JSX.Element {
   const channel: Channel = props.channel;
 
   const [languages, setLanguages] =
-    React.useState<AppSupportedLanguage[]>(null);
+    React.useState<Array<AppSupportedLanguage>>(null);
+
+  const [videoIds, setVideoIds] =
+    React.useState<Array<string>>(null);
 
   React.useEffect(() => {
     LANGUAGE_API.apiLanguageGoogleTranslateSupportedLanguagesGet()
@@ -51,7 +54,7 @@ export function ConfigurationStepContent(props: {
   }
 
   return (
-    <Page id="translate-channel-page">
+    <Page>
       <Divider>Options</Divider>
 
       {channel && (

@@ -1,13 +1,10 @@
-import {Row, Typography} from 'antd';
 import * as React from 'react';
-import {Page} from '../Page';
+import { Page } from '../Page';
 import './style.less';
-import UserContext from '../../UserContext/UserContext';
-import {SelectChannelStepContent} from './SelectChannelStepContent/SelectChannelStepContent';
-import {Channel, YouTubeVideoApi, ApiYouTubeVideoTranslatePostRequest} from '../../../../generated-sources/openapi';
-import {ConfigurationStepContent} from './ConfigurationStepContent/ConfigurationStepContent';
-
-const {Paragraph} = Typography;
+import { Channel, ApiYouTubeVideoTranslatePostRequest } from '../../../../generated-sources/openapi';
+import { SetChannelStep } from './SetChannelStep/SetChannelStep';
+import { SetRequestStep } from './SetRequestStep/SetRequestStep';
+import { ExecuteRequestStep } from './ExecuteRequestStep/ExecuteRequestStep';
 
 /**
  * The page used to control the flow of the process.
@@ -15,58 +12,48 @@ const {Paragraph} = Typography;
  * @return {JSX.Element}
  */
 export function ProcessPage(): JSX.Element {
-  const user = React.useContext(UserContext);
-
-  const [current, setCurrent] =
+  const [currentStep, setCurrentStep] =
     React.useState<number>(0);
 
   const [channel, setChannel] =
     React.useState<Channel>(null);
 
-  const [videoTranslateRequest, setVideoTranslateRequest] =
+  const [request, setRequest] =
     React.useState<ApiYouTubeVideoTranslatePostRequest>(null);
 
   /**
    * Go to the next page.
    */
-  async function incrementCurrent() {
-    setCurrent(current + 1);
+  async function incrementCurrentStep(): Promise<void> {
+    setCurrentStep(currentStep + 1);
   }
 
   /**
    * Go to the previous page.
    */
-  async function decrementCurrent() {
-    setCurrent(current - 1);
+  async function decrementCurrentStep(): Promise<void> {
+    setCurrentStep(currentStep - 1);
   }
 
   const content: React.ReactNode[] = [
-    (<SelectChannelStepContent
-      setChannelState={setChannel}
-      onContinue={incrementCurrent}
+    (<SetChannelStep
+      setChannel={setChannel}
+      onNext={incrementCurrentStep}
     />),
-    (<ConfigurationStepContent
+    (<SetRequestStep
       channel={channel}
-      setVideoTranslateRequestState={setVideoTranslateRequest}
-      onBack={decrementCurrent}
-      onContinue={incrementCurrent}
+      setRequest={setRequest}
+      onNext={incrementCurrentStep}
+      onPrev={decrementCurrentStep}
+    />),
+    (<ExecuteRequestStep
+      request={request}
     />),
   ];
 
-  // render
-  if (user == null) {
-    return (
-      <Row justify="center">
-        <Paragraph className="max-cell-xs">
-          To use this service please sign-in to YouTube.
-        </Paragraph>
-      </Row>
-    );
-  }
-
   return (
-    <Page id="process-page">
-      <div className="steps-content">{content[current]}</div>
+    <Page>
+      <div className="steps-content">{content[currentStep]}</div>
       <div className="steps-action"></div>
     </Page>
   );
