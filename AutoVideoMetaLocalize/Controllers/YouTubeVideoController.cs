@@ -93,23 +93,26 @@ namespace AutoVideoMetaLocalize.Controllers {
 			if (string.IsNullOrEmpty(language))
 				throw new ArgumentException("message", nameof(language));
 
-			string videoTitle = video.Snippet.Title;
-			string videoDescription = video.Snippet.Description;
+			string title = video.Snippet.Title;
+			string description = video.Snippet.Description;
 
 			TranslateTextRequest request = new TranslateTextRequest {
-				Contents = { videoTitle, videoDescription },
 				TargetLanguageCode = language,
 				//SourceLanguageCode
 			};
 
+			request.Contents.Add(title);
+			request.Contents.Add(description);
+
 			IList<Translation> response = await translate.TranslateTextAsync(request);
 
-			Translation videoTitleTranslation = response[0];
-			Translation videoDescriptionTranslation = response[1];
+			Translation titleTranslation = response[0];
+			Translation descriptionTranslation = response[1];
+
 
 			video.Localizations[language] = new VideoLocalization {
-				Title = videoTitleTranslation.TranslatedText,
-				Description = videoDescriptionTranslation.TranslatedText,
+				Title = titleTranslation.TranslatedText,
+				Description = descriptionTranslation.TranslatedText,
 			};
 		}
 	}
