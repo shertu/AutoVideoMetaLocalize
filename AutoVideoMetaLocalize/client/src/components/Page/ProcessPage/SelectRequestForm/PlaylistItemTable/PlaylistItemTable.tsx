@@ -26,11 +26,11 @@ const TABLE_COLUMNS: ColumnsType<PlaylistItem> = [{
  * @param {object} props
  * @return {JSX.Element}
  */
-export function VideoSelectionTable(props: {
-  channel?: Channel,
-  setVideos: React.Dispatch<React.SetStateAction<string[]>>,
+export function PlaylistItemTable(props: {
+  playlistId: string,
+  onChangeRowSelection: (selectedRowKeys: React.Key[], selectedRows: PlaylistItem[]) => void,
 }): JSX.Element {
-  const playlistId: string = props.channel?.contentDetails?.relatedPlaylists.uploads;
+  const playlistId: string = props.playlistId;
 
   const [response, setResponse] =
     React.useState<PlaylistItemListResponse>(null);
@@ -38,7 +38,7 @@ export function VideoSelectionTable(props: {
   const [paginationCurrent, setPaginationCurrent] =
     React.useState<number>(1);
 
-  const [selectedKeys, setSelectedKeys] =
+  const [selectedRowKeysState, setSelectedRowKeysState] =
     React.useState<React.Key[]>([]);
 
   React.useEffect(() => {
@@ -53,10 +53,12 @@ export function VideoSelectionTable(props: {
    */
   async function onChangePagination(page: number, pageSize?: number) {
     if (playlistId) {
+      // build request
       const request: ApiYouTubePlaylistItemGetRequest = {
         playlistId: playlistId,
       };
 
+      // change page
       if (response) {
         if (page < paginationCurrent) {
           request.pageToken = response.prevPageToken;
@@ -67,11 +69,14 @@ export function VideoSelectionTable(props: {
         }
       }
 
+      // change page size
       request.maxResults = pageSize;
 
+      // fetch page
       YOUTUBE_PLAYLIST_ITEM_API.apiYouTubePlaylistItemGet(request)
           .then((res) => setResponse(res));
 
+      // set the page to the new value
       setPaginationCurrent(page);
     }
   }
@@ -82,26 +87,22 @@ export function VideoSelectionTable(props: {
    * @param selectedRows
    */
   async function onChangeRowSelection(selectedRowKeys: React.Key[], selectedRows: PlaylistItem[]) {
-    setSelectedKeys(selectedRowKeys);
-    props.setVideos(selectedRowKeys as string[]);
-  }
-
-  if (!playlistId || !response) {
-    return null;
+    setSelectedRowKeysState(selectedRowKeys);
+    props.onChangeRowSelection(selectedRowKeys, selectedRows);
   }
 
   const pagination: TablePaginationConfig = {
     current: paginationCurrent,
     simple: true,
-    pageSize: response.pageInfo.resultsPerPage,
-    total: response.pageInfo.totalResults,
+    pageSize: response?.pageInfo.resultsPerPage,
+    total: response?.pageInfo.totalResults,
     onChange: onChangePagination,
     showSizeChanger: true,
   };
 
   const rowSelection: TableRowSelection<PlaylistItem> = {
     type: 'checkbox',
-    selectedRowKeys: selectedKeys,
+    selectedRowKeys: selectedRowKeysState,
     onChange: onChangeRowSelection,
   };
 

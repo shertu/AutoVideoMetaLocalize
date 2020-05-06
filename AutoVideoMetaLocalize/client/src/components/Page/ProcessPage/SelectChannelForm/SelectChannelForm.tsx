@@ -19,7 +19,7 @@ const FORM_ITEM_NAMES = {
  * @param {object} props
  * @return {JSX.Element}
  */
-export function SetChannelPage(props: {
+export function SelectChannelForm(props: {
   setChannelStateAction: React.Dispatch<React.SetStateAction<Channel>>,
 }): JSX.Element {
   const stepsState = React.useContext(StepsStateContext);
@@ -52,38 +52,34 @@ export function SetChannelPage(props: {
   }
 
   return (
-    <Page>
-      <Divider>Channel Selection</Divider>
+    <Form onFinish={onFinish} initialValues={{
+      [FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP]: CHANNEL_RADIO_GROUP_DEFAULT,
+    }}>
+      <Row align="top" justify="center">
+        <Form.Item
+          className="max-cell-md"
+          name={FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP}
+          rules={[{ required: true, message: 'Please select a channel.' }]}
+        >
+          <Radio.Group>
+            {options.map((_) =>
+              <Radio.Button key={_.id} value={_.id} style={{ padding: 0 }}>
+                <BasicComboCard
+                  thumbnail={_.snippet.thumbnails._default}
+                  title={_.snippet.title}
+                  subtitle={_.id}
+                />
+              </Radio.Button>,
+            )}
+          </Radio.Group>
+        </Form.Item>
+      </Row>
 
-      <Form onFinish={onFinish} initialValues={{
-        [FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP]: CHANNEL_RADIO_GROUP_DEFAULT,
-      }}>
-        <Row align="top" justify="center">
-          <Form.Item
-            className="max-cell-md"
-            name={FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP}
-            rules={[{required: true, message: 'Please select a channel.'}]}
-          >
-            <Radio.Group>
-              {options.map((_) =>
-                <Radio.Button key={_.id} value={_.id} style={{padding: 0}}>
-                  <BasicComboCard
-                    thumbnail={_.snippet.thumbnails._default}
-                    title={_.snippet.title}
-                    subtitle={_.id}
-                  />
-                </Radio.Button>,
-              )}
-            </Radio.Group>
-          </Form.Item>
-        </Row>
-
-        <Row align="middle" justify="end" gutter={8}>
-          <Col>
-            <Button type="primary" htmlType="submit">Continue</Button>
-          </Col>
-        </Row>
-      </Form>
-    </Page >
+      <Row align="middle" justify="end" gutter={8}>
+        <Col>
+          <Button type="primary" htmlType="submit">Continue</Button>
+        </Col>
+      </Row>
+    </Form>
   );
 }

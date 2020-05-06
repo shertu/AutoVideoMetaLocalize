@@ -4,8 +4,8 @@ import './style.less';
 import {Channel, ApiYouTubeVideoTranslatePostRequest} from '../../../../generated-sources/openapi';
 import {ExecuteRequestStep} from './ExecuteRequestStep/ExecuteRequestStep';
 import {StepsStateProvider} from './StepsStateContext/StepsStateContext';
-import {SetChannelPage} from './SetChannelPage/SetChannelPage';
-import {SetRequestPage} from './SetRequestPage/SetRequestPage';
+import { SelectChannelForm } from './SelectChannelForm/SelectChannelForm';
+import { SelectRequestForm } from './SelectRequestForm/SelectRequestForm';
 
 /**
  * The page used to control the flow of the process.
@@ -23,14 +23,14 @@ export function ProcessPage(): JSX.Element {
     React.useState<ApiYouTubeVideoTranslatePostRequest>(null);
 
   const content: React.ReactNode[] = [
-    <SetChannelPage
+    <SelectChannelForm
       key={0}
       setChannelStateAction={setChannel}
     />,
-    <SetRequestPage
+    <SelectRequestForm
       key={1}
       channel={channel}
-      setRequest={setRequest}
+      setRequestStateAction={setRequest}
     />,
     (<ExecuteRequestStep
       key={2}
