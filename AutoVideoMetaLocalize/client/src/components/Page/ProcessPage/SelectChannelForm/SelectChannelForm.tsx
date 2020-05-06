@@ -61,16 +61,14 @@ export function SelectChannelForm(props: {
           name={FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP}
           rules={[{ required: true, message: 'Please select a channel.' }]}
         >
-          <Radio.Group>
+          <Radio.Group className="max-cell-md">
             {options.map((_) =>
-              <Radio.Button key={_.id} value={_.id} style={{ padding: 0 }}>
-                <Card className="channel-selection-card">
-                  <BasicComboView
-                    thumbnail={_.snippet.thumbnails._default}
-                    title={_.snippet.title}
-                    subtitle={_.id}
-                  />
-                </Card>
+              <Radio.Button className="max-cell-md" key={_.id} value={_.id}>
+                <BasicComboView
+                  thumbnail={_.snippet.thumbnails._default}
+                  title={_.snippet.title}
+                  subtitle={_.id}
+                />
               </Radio.Button>,
             )}
           </Radio.Group>
