@@ -44,7 +44,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 
 			YouTubeService service = await serviceAccessor.InitializeServiceAsync();
 
-			VideosResource.ListRequest request = service.Videos.List("snippet");
+			VideosResource.ListRequest request = service.Videos.List("snippet,localizations");
 			request.Id = id;
 
 			do {
@@ -109,11 +109,12 @@ namespace AutoVideoMetaLocalize.Controllers {
 			Translation titleTranslation = response[0];
 			Translation descriptionTranslation = response[1];
 
-
-			video.Localizations[language] = new VideoLocalization {
+			VideoLocalization localization = new VideoLocalization {
 				Title = titleTranslation.TranslatedText,
 				Description = descriptionTranslation.TranslatedText,
 			};
+
+			video.Localizations[language] = localization;
 		}
 	}
 }
