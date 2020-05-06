@@ -1,11 +1,11 @@
-import {Radio, Row, Form, Button, Divider, Col} from 'antd';
+import { Radio, Row, Form, Button, Divider, Col, Card } from 'antd';
 import * as React from 'react';
 import './style.less';
-import {Store} from 'antd/lib/form/interface';
-import {Page} from '../../Page';
-import {Channel, YouTubeChannelApi} from '../../../../../generated-sources/openapi';
-import {BasicComboCard} from '../../../BasicComboCard/BasicComboCard';
+import { Store } from 'antd/lib/form/interface';
+import { Page } from '../../Page';
+import { Channel, YouTubeChannelApi } from '../../../../../generated-sources/openapi';
 import StepsStateContext from '../StepsStateContext/StepsStateContext';
+import { BasicComboView } from '../../../BasicComboView/BasicComboView';
 
 const YOUTUBE_CHANNEL_API: YouTubeChannelApi = new YouTubeChannelApi();
 
@@ -29,8 +29,8 @@ export function SelectChannelForm(props: {
 
   React.useEffect(() => {
     YOUTUBE_CHANNEL_API.apiYouTubeChannelMineGet()
-        .then((res) => setOptions(res))
-        .catch((err) => console.log(err));
+      .then((res) => setOptions(res))
+      .catch((err) => console.log(err));
   }, []);
 
   const CHANNEL_RADIO_GROUP_DEFAULT = (options && options.length > 0) ? options[0].id : null;
@@ -64,11 +64,13 @@ export function SelectChannelForm(props: {
           <Radio.Group>
             {options.map((_) =>
               <Radio.Button key={_.id} value={_.id} style={{ padding: 0 }}>
-                <BasicComboCard
-                  thumbnail={_.snippet.thumbnails._default}
-                  title={_.snippet.title}
-                  subtitle={_.id}
-                />
+                <Card style={{ width: 350 }}>
+                  <BasicComboView
+                    thumbnail={_.snippet.thumbnails._default}
+                    title={_.snippet.title}
+                    subtitle={_.id}
+                  />
+                </Card>
               </Radio.Button>,
             )}
           </Radio.Group>

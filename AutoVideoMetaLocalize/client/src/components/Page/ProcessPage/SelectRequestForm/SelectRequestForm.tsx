@@ -5,7 +5,6 @@ import { Channel, AppSupportedLanguage, ApiYouTubeVideoTranslatePostRequest, Pla
 import { Form, Row, Col, Button, Select } from 'antd';
 import { LeftOutlined } from '@ant-design/icons';
 import StepsStateContext from '../StepsStateContext/StepsStateContext';
-//import { LanguageSelect } from './LanguageSelect/LanguageSelect';
 import { PlaylistItemTable } from './PlaylistItemTable/PlaylistItemTable';
 
 const LANGUAGE_API = new LanguageApi();
@@ -28,12 +27,12 @@ export function SelectRequestForm(props: {
   const stepsState = React.useContext(StepsStateContext);
   const [form] = Form.useForm();
 
-  const [options, setOptions] =
+  const [languageOptions, setLanguageOptions] =
     React.useState<AppSupportedLanguage[]>(null);
 
   React.useEffect(() => {
     LANGUAGE_API.apiLanguageGoogleTranslateSupportedLanguagesGet()
-      .then((res) => setOptions(res));
+      .then((res) => setLanguageOptions(res));
   }, []);
 
   /**
@@ -43,10 +42,8 @@ export function SelectRequestForm(props: {
    * @param selectedRows
    */
   async function onChangeRowSelectionPlaylistItemTable(selectedRowKeys: React.Key[], selectedRows: PlaylistItem[]) {
-    console.log("TEST", selectedRowKeys, selectedRows);
-
     const values: Store = form.getFieldsValue();
-    values[FORM_ITEM_NAMES.VIDEO_SELECTION] = ['abc_id_fake_id'];
+    values[FORM_ITEM_NAMES.VIDEO_SELECTION] = selectedRowKeys;
     form.setFieldsValue(values);
   }
 
@@ -56,15 +53,13 @@ export function SelectRequestForm(props: {
    * @param {Store} values
    */
   async function onFinish(values: Store): Promise<void> {
-    console.log(values);
+    const selectedLanguageCodes: string[] = values[FORM_ITEM_NAMES.LANGUAGE_SELECTION];
+    const selectedVideoIds: string[] = values[FORM_ITEM_NAMES.VIDEO_SELECTION];
 
-    //const selectedLanguages: AppSupportedLanguage[] = values[FORM_ITEM_NAMES.LANGUAGE_SELECTION];
-    //const selectedVideos: string[] = values[FORM_ITEM_NAMES.VIDEO_SELECTION];
-
-    //props.setRequest({
-    //  languages: selectedLanguages.map((_) => _.code),
-    //  videoId: selectedVideos.join(','),
-    //});
+    props.setRequestStateAction({
+      languages: selectedLanguageCodes,
+      videoId: selectedVideoIds.join(','),
+    });
   }
 
   /**
@@ -87,11 +82,11 @@ export function SelectRequestForm(props: {
         rules={[{ required: true, message: 'Please select at least one language.' }]}
       >
         <Select
-          loading={options == null}
+          loading={languageOptions == null}
           mode="multiple"
           optionFilterProp="label"
         >
-          {options && options.map((_) =>
+          {languageOptions && languageOptions.map((_) =>
             <Select.Option key={_.code} value={_.code} label={_.name}>
               {_.name}
             </Select.Option >,

@@ -3,15 +3,15 @@ import {ColumnsType, TablePaginationConfig} from 'antd/lib/table';
 import {TableRowSelection} from 'antd/lib/table/interface';
 import * as React from 'react';
 import {ApiYouTubePlaylistItemGetRequest, PlaylistItem, PlaylistItemListResponse, YouTubePlaylistItemApi, Channel} from '../../../../../../generated-sources/openapi';
-import {BasicComboCard} from '../../../../BasicComboCard/BasicComboCard';
 import './style.less';
+import { BasicComboView } from '../../../../BasicComboView/BasicComboView';
 
 const YOUTUBE_PLAYLIST_ITEM_API = new YouTubePlaylistItemApi();
 
 const TABLE_COLUMNS: ColumnsType<PlaylistItem> = [{
   title: 'Video',
   render: (text, record, index) => {
-    return (<BasicComboCard
+    return (<BasicComboView
       avatarShape="square"
       thumbnail={record.snippet.thumbnails._default}
       title={record.snippet.title}
@@ -42,7 +42,7 @@ export function PlaylistItemTable(props: {
     React.useState<React.Key[]>([]);
 
   React.useEffect(() => {
-    onChangePagination(paginationCurrent);
+    onChangePagination(paginationCurrent, 25);
   }, [playlistId]);
 
   /**
@@ -97,7 +97,6 @@ export function PlaylistItemTable(props: {
     pageSize: response?.pageInfo.resultsPerPage,
     total: response?.pageInfo.totalResults,
     onChange: onChangePagination,
-    showSizeChanger: true,
   };
 
   const rowSelection: TableRowSelection<PlaylistItem> = {
