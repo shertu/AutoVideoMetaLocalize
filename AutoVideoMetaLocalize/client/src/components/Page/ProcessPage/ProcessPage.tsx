@@ -1,11 +1,12 @@
 import * as React from 'react';
-import {Page} from '../Page';
+import { Page } from '../Page';
 import './style.less';
-import {Channel, ApiYouTubeVideoTranslatePostRequest} from '../../../../generated-sources/openapi';
-import {ExecuteRequestStep} from './ExecuteRequestStep/ExecuteRequestStep';
-import {StepsStateProvider} from './StepsStateContext/StepsStateContext';
+import { Channel, ApiYouTubeVideoTranslatePostRequest } from '../../../../generated-sources/openapi';
+import { ExecuteRequestStep } from './ExecuteRequestStep/ExecuteRequestStep';
+import { StepsStateProvider } from './StepsStateContext/StepsStateContext';
 import { SelectChannelForm } from './SelectChannelForm/SelectChannelForm';
 import { SelectRequestForm } from './SelectRequestForm/SelectRequestForm';
+import { Divider } from 'antd';
 
 /**
  * The page used to control the flow of the process.
@@ -23,19 +24,25 @@ export function ProcessPage(): JSX.Element {
     React.useState<ApiYouTubeVideoTranslatePostRequest>(null);
 
   const content: React.ReactNode[] = [
-    <SelectChannelForm
-      key={0}
-      setChannelStateAction={setChannel}
-    />,
-    <SelectRequestForm
-      key={1}
-      channel={channel}
-      setRequestStateAction={setRequest}
-    />,
-    (<ExecuteRequestStep
-      key={2}
-      request={request}
-    />),
+    <Page>
+      <Divider>Channel Selection</Divider>
+      <SelectChannelForm
+        setChannelStateAction={setChannel}
+      />
+    </Page>,
+    <Page>
+      <Divider>Options</Divider>
+      <SelectRequestForm
+        channel={channel}
+        setRequestStateAction={setRequest}
+      />
+    </Page>,
+    <Page>
+      <Divider>Execution Progress</Divider>
+      <ExecuteRequestStep
+        request={request}
+      />
+    </Page>,
   ];
 
   return (

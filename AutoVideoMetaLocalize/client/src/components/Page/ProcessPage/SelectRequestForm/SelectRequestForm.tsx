@@ -60,6 +60,8 @@ export function SelectRequestForm(props: {
       languages: selectedLanguageCodes,
       videoId: selectedVideoIds.join(','),
     });
+
+    stepsState.setValue(stepsState.value + 1);
   }
 
   /**
@@ -118,7 +120,7 @@ export function SelectRequestForm(props: {
           />
         </Col>
         <Col>
-          <Button type="primary" htmlType="submit">Continue</Button>
+          <Button type="primary" htmlType="submit">Execute</Button>
         </Col>
       </Row>
     </Form>

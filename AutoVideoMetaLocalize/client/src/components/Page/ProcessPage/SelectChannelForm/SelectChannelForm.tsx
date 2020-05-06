@@ -64,7 +64,7 @@ export function SelectChannelForm(props: {
           <Radio.Group>
             {options.map((_) =>
               <Radio.Button key={_.id} value={_.id} style={{ padding: 0 }}>
-                <Card style={{ width: 350 }}>
+                <Card className="channel-selection-card">
                   <BasicComboView
                     thumbnail={_.snippet.thumbnails._default}
                     title={_.snippet.title}

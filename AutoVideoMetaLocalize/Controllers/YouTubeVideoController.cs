@@ -25,7 +25,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <param name="videoId">
+		/// <param name="id">
 		/// 	The id parameter specifies a comma-separated list of the YouTube video ID(s)
 		/// 	for the resource(s) that are being retrieved. In a video resource, the id property
 		/// 	specifies the video's ID.
@@ -36,22 +36,22 @@ namespace AutoVideoMetaLocalize.Controllers {
 		/// </param>
 		/// <returns></returns>
 		[HttpPost("Translate")]
-		public async Task<IActionResult> TranslateVideosAsync([Required, FromForm] string videoId, [Required, FromForm] string[] languages) {
-			if (string.IsNullOrEmpty(videoId))
-				throw new ArgumentException("message", nameof(videoId));
+		public async Task<IActionResult> TranslateAsync([Required, FromForm] string id, [Required, FromForm] string[] languages) {
+			if (string.IsNullOrEmpty(id))
+				throw new ArgumentException("message", nameof(id));
 			if (languages is null)
 				throw new ArgumentNullException(nameof(languages));
 
 			YouTubeService service = await serviceAccessor.InitializeServiceAsync();
 
 			VideosResource.ListRequest request = service.Videos.List("snippet");
-			request.Id = videoId;
+			request.Id = id;
 
 			do {
 				VideoListResponse response = await request.ExecuteAsync();
 
 				foreach (Video video in response.Items) {
-					await TranslateVideoAsync(video, languages);
+					await TranslateAsync(video, languages);
 				}
 
 				request.PageToken = response.NextPageToken;
@@ -66,7 +66,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 		/// <param name="video"></param>
 		/// <param name="languages"></param>
 		/// <returns></returns>
-		private async Task TranslateVideoAsync(Video video, string[] languages) {
+		private async Task TranslateAsync(Video video, string[] languages) {
 			if (video is null)
 				throw new ArgumentNullException(nameof(video));
 			if (languages is null)
@@ -103,6 +103,8 @@ namespace AutoVideoMetaLocalize.Controllers {
 			};
 
 			IList<Translation> response = await translate.TranslateTextAsync(request);
+
+			throw new Exception(response.ToString());
 
 			video.Localizations[language] = new VideoLocalization {
 				Title = videoTitle,

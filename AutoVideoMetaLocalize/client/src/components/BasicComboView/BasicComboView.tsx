@@ -1,9 +1,9 @@
-import {Avatar, Card, Typography, Row, Col} from 'antd';
+import { Avatar, Card, Typography, Row, Col } from 'antd';
 import * as React from 'react';
 import './style.less';
-import {Thumbnail} from '../../../generated-sources/openapi';
+import { Thumbnail } from '../../../generated-sources/openapi';
 
-const {Paragraph} = Typography;
+const { Paragraph } = Typography;
 
 /**
  * A basic information card with an image, title and subtitle.
@@ -32,7 +32,7 @@ export function BasicComboView(props: {
       </Col>
 
       <Col span={14} offset={2}>
-        <Typography>
+        <Typography style={{ overflowWrap: 'break-word' }}>
           <Paragraph strong>{props.title}</Paragraph>
           <Paragraph>{props.subtitle}</Paragraph>
         </Typography>
