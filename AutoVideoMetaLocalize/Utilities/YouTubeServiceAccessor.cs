@@ -21,7 +21,6 @@ namespace AutoVideoMetaLocalize.Utilities {
 			});
 		}
 
-		#region extension methods
 		public static async Task<IList<Channel>> ChannelsListAll(ChannelsResource.ListRequest request) {
 			List<Channel> items = new List<Channel>();
 
@@ -36,21 +35,5 @@ namespace AutoVideoMetaLocalize.Utilities {
 
 			return items;
 		}
-
-		public static async Task<IList<Video>> VideosListAll(VideosResource.ListRequest request) {
-			List<Video> items = new List<Video>();
-
-			#region pagination response
-			VideoListResponse response;
-			do {
-				response = await request.ExecuteAsync();
-				request.PageToken = response.NextPageToken;
-				items.AddRange(response.Items);
-			} while (response.NextPageToken != null);
-			#endregion
-
-			return items;
-		}
-		#endregion
 	}
 }

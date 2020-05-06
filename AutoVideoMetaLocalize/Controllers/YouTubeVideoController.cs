@@ -44,7 +44,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 
 			YouTubeService service = await serviceAccessor.InitializeServiceAsync();
 
-			VideosResource.ListRequest request = service.Videos.List("snippet,localizations");
+			VideosResource.ListRequest request = service.Videos.List("id,snippet,localizations");
 			request.Id = id;
 
 			do {
@@ -78,7 +78,9 @@ namespace AutoVideoMetaLocalize.Controllers {
 				await AddVideoLocalizationAsync(video, language);
 			}
 
-			VideosResource.UpdateRequest request = service.Videos.Update(video, "localizations");
+			//Your video update request doesn't list all the parts you are including in the video object you are sending.
+			video.Snippet = null;
+			VideosResource.UpdateRequest request = service.Videos.Update(video, "id,localizations");
 			Video response = await request.ExecuteAsync();
 		}
 
@@ -98,11 +100,8 @@ namespace AutoVideoMetaLocalize.Controllers {
 
 			TranslateTextRequest request = new TranslateTextRequest {
 				TargetLanguageCode = language,
-				//SourceLanguageCode
+				Contents = { title, description },
 			};
-
-			request.Contents.Add(title);
-			request.Contents.Add(description);
 
 			IList<Translation> response = await translate.TranslateTextAsync(request);
 
