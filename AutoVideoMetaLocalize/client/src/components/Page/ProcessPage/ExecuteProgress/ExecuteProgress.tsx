@@ -34,6 +34,8 @@ export function ExecuteProgress(props: {
     }
   }, []);
 
+  console.log("Help", index, ids.length, index / ids.length);
+
   const progressProps: ProgressProps = {
     type: 'circle',
     status: 'active',
