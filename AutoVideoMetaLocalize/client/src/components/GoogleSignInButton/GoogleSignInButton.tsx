@@ -1,7 +1,7 @@
 import * as React from 'react';
-import './style.less';
 import GoogleButton from 'react-google-button';
 import {GoogleAuthApi} from '../../../generated-sources/openapi';
+import './style.less';
 
 const GOOGLE_AUTH_API: GoogleAuthApi = new GoogleAuthApi();
 

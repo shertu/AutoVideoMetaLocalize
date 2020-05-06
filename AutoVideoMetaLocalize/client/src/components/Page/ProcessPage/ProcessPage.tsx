@@ -1,12 +1,13 @@
+import {Divider} from 'antd';
 import * as React from 'react';
-import { Page } from '../Page';
+import {ApiYouTubeVideoTranslatePostRequest, Channel} from '../../../../generated-sources/openapi';
+import {Page} from '../Page';
+import {ExecuteStep} from './ExecuteStep/ExecuteStep';
+import {SelectChannelForm} from './SelectChannelForm/SelectChannelForm';
+import {SelectRequestForm} from './SelectRequestForm/SelectRequestForm';
+import {StepsStateProvider} from './StepsStateContext/StepsStateContext';
 import './style.less';
-import { Channel, ApiYouTubeVideoTranslatePostRequest } from '../../../../generated-sources/openapi';
-import { ExecuteRequestStep } from './ExecuteRequestStep/ExecuteRequestStep';
-import { StepsStateProvider } from './StepsStateContext/StepsStateContext';
-import { SelectChannelForm } from './SelectChannelForm/SelectChannelForm';
-import { SelectRequestForm } from './SelectRequestForm/SelectRequestForm';
-import { Divider } from 'antd';
+import {ExecuteProgress} from './ExecuteProgress/ExecuteProgress';
 
 /**
  * The page used to control the flow of the process.
@@ -39,7 +40,7 @@ export function ProcessPage(): JSX.Element {
     </Page>,
     <Page>
       <Divider>Execution Progress</Divider>
-      <ExecuteRequestStep
+      <ExecuteProgress
         request={request}
       />
     </Page>,

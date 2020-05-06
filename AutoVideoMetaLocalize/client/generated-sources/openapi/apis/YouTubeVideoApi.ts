@@ -16,7 +16,7 @@
 import * as runtime from '../runtime';
 
 export interface ApiYouTubeVideoTranslatePostRequest {
-    videoId: string;
+    id: string;
     languages: Array<string>;
 }
 
@@ -28,8 +28,8 @@ export class YouTubeVideoApi extends runtime.BaseAPI {
     /**
      */
     async apiYouTubeVideoTranslatePostRaw(requestParameters: ApiYouTubeVideoTranslatePostRequest): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters.videoId === null || requestParameters.videoId === undefined) {
-            throw new runtime.RequiredError('videoId','Required parameter requestParameters.videoId was null or undefined when calling apiYouTubeVideoTranslatePost.');
+        if (requestParameters.id === null || requestParameters.id === undefined) {
+            throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling apiYouTubeVideoTranslatePost.');
         }
 
         if (requestParameters.languages === null || requestParameters.languages === undefined) {
@@ -54,8 +54,8 @@ export class YouTubeVideoApi extends runtime.BaseAPI {
             formParams = new URLSearchParams();
         }
 
-        if (requestParameters.videoId !== undefined) {
-            formParams.append('videoId', requestParameters.videoId as any);
+        if (requestParameters.id !== undefined) {
+            formParams.append('id', requestParameters.id as any);
         }
 
         if (requestParameters.languages) {

@@ -1,8 +1,8 @@
 import {Layout, Row, Typography} from 'antd';
 import * as React from 'react';
+import {Page} from '../../Page/Page';
 import {AppContentSwitch} from '../AppContentSwitch/AppContentSwitch';
 import './style.less';
-import {Page} from '../../Page/Page';
 
 const {Title} = Typography;
 

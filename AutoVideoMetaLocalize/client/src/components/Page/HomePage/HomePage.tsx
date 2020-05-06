@@ -1,10 +1,10 @@
+import {Divider, Row, Typography} from 'antd';
 import * as React from 'react';
-import {Page} from '../Page';
-import './style.less';
-import {Typography, Row, Divider} from 'antd';
-import {GoogleSignInButton} from '../../GoogleSignInButton/GoogleSignInButton';
 import routes from '../../../routes';
+import {GoogleSignInButton} from '../../GoogleSignInButton/GoogleSignInButton';
+import {Page} from '../Page';
 import {AppExplanationGrid} from './AppExplanationGrid/AppExplanationGrid';
+import './style.less';
 
 const {Paragraph, Text} = Typography;
 

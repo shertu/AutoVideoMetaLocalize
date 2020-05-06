@@ -2,10 +2,10 @@ import * as React from 'react';
 import {Route, Switch} from 'react-router-dom';
 import routes from '../../../routes';
 import {NoRouteMatchError} from '../../NoRouteMatchError/NoRouteMatchError';
-import './style.less';
-import {PrivacyPolicyPage} from '../../Page/PrivacyPolicyPage/PrivacyPolicyPage';
 import {HomePage} from '../../Page/HomePage/HomePage';
+import {PrivacyPolicyPage} from '../../Page/PrivacyPolicyPage/PrivacyPolicyPage';
 import {ProcessPage} from '../../Page/ProcessPage/ProcessPage';
+import './style.less';
 
 /**
  * The main route switch in the web application.

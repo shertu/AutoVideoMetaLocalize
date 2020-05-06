@@ -1,11 +1,10 @@
-import { Radio, Row, Form, Button, Divider, Col, Card } from 'antd';
+import {Button, Col, Form, Radio, Row} from 'antd';
+import {Store} from 'antd/lib/form/interface';
 import * as React from 'react';
-import './style.less';
-import { Store } from 'antd/lib/form/interface';
-import { Page } from '../../Page';
-import { Channel, YouTubeChannelApi } from '../../../../../generated-sources/openapi';
+import {Channel, YouTubeChannelApi} from '../../../../../generated-sources/openapi';
+import {BasicComboView} from '../../../BasicComboView/BasicComboView';
 import StepsStateContext from '../StepsStateContext/StepsStateContext';
-import { BasicComboView } from '../../../BasicComboView/BasicComboView';
+import './style.less';
 
 const YOUTUBE_CHANNEL_API: YouTubeChannelApi = new YouTubeChannelApi();
 
@@ -29,8 +28,8 @@ export function SelectChannelForm(props: {
 
   React.useEffect(() => {
     YOUTUBE_CHANNEL_API.apiYouTubeChannelMineGet()
-      .then((res) => setOptions(res))
-      .catch((err) => console.log(err));
+        .then((res) => setOptions(res))
+        .catch((err) => console.log(err));
   }, []);
 
   const CHANNEL_RADIO_GROUP_DEFAULT = (options && options.length > 0) ? options[0].id : null;
@@ -47,10 +46,6 @@ export function SelectChannelForm(props: {
     stepsState.setValue(stepsState.value + 1);
   }
 
-  if (options == null) {
-    return null;
-  }
-
   return (
     <Form onFinish={onFinish} initialValues={{
       [FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP]: CHANNEL_RADIO_GROUP_DEFAULT,
@@ -59,10 +54,10 @@ export function SelectChannelForm(props: {
         <Form.Item
           className="max-cell-md"
           name={FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP}
-          rules={[{ required: true, message: 'Please select a channel.' }]}
+          rules={[{required: true, message: 'Please select a channel.'}]}
         >
           <Radio.Group className="max-cell-md">
-            {options.map((_) =>
+            {options && options.map((_) =>
               <Radio.Button className="max-cell-md" key={_.id} value={_.id}>
                 <BasicComboView
                   thumbnail={_.snippet.thumbnails._default}

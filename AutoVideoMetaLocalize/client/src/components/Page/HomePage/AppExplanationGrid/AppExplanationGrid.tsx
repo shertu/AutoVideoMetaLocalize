@@ -1,8 +1,8 @@
+import {ArrowUpOutlined} from '@ant-design/icons';
+import {Card, Col, Row, Statistic} from 'antd';
+import {ColProps} from 'antd/lib/col';
 import * as React from 'react';
 import './style.less';
-import {Row, Col, Card, Statistic} from 'antd';
-import {ColProps} from 'antd/lib/col';
-import {ArrowUpOutlined} from '@ant-design/icons';
 
 const {Meta} = Card;
 

@@ -24,7 +24,7 @@ export interface InlineObject {
      * @type {string}
      * @memberof InlineObject
      */
-    videoId: string;
+    id: string;
     /**
      * 
      * @type {Array<string>}
@@ -43,7 +43,7 @@ export function InlineObjectFromJSONTyped(json: any, ignoreDiscriminator: boolea
     }
     return {
         
-        'videoId': json['videoId'],
+        'id': json['id'],
         'languages': json['languages'],
     };
 }
@@ -57,7 +57,7 @@ export function InlineObjectToJSON(value?: InlineObject | null): any {
     }
     return {
         
-        'videoId': value.videoId,
+        'id': value.id,
         'languages': value.languages,
     };
 }

@@ -1,11 +1,11 @@
+import {LeftOutlined} from '@ant-design/icons';
+import {Button, Col, Form, Row, Select} from 'antd';
+import {Store} from 'antd/lib/form/interface';
 import * as React from 'react';
-import './style.less';
-import { Store } from 'antd/lib/form/interface';
-import { Channel, AppSupportedLanguage, ApiYouTubeVideoTranslatePostRequest, PlaylistItem, LanguageApi } from '../../../../../generated-sources/openapi';
-import { Form, Row, Col, Button, Select } from 'antd';
-import { LeftOutlined } from '@ant-design/icons';
+import {ApiYouTubeVideoTranslatePostRequest, AppSupportedLanguage, Channel, LanguageApi, PlaylistItem} from '../../../../../generated-sources/openapi';
 import StepsStateContext from '../StepsStateContext/StepsStateContext';
-import { PlaylistItemTable } from './PlaylistItemTable/PlaylistItemTable';
+import {PlaylistItemTable} from './PlaylistItemTable/PlaylistItemTable';
+import './style.less';
 
 const LANGUAGE_API = new LanguageApi();
 
@@ -32,12 +32,12 @@ export function SelectRequestForm(props: {
 
   React.useEffect(() => {
     LANGUAGE_API.apiLanguageGoogleTranslateSupportedLanguagesGet()
-      .then((res) => setLanguageOptions(res));
+        .then((res) => setLanguageOptions(res));
   }, []);
 
   /**
-   * 
-   * 
+   *
+   *
    * @param selectedRowKeys
    * @param selectedRows
    */
@@ -58,7 +58,7 @@ export function SelectRequestForm(props: {
 
     props.setRequestStateAction({
       languages: selectedLanguageCodes,
-      videoId: selectedVideoIds.join(','),
+      id: selectedVideoIds.join(','),
     });
 
     stepsState.setValue(stepsState.value + 1);
@@ -74,14 +74,14 @@ export function SelectRequestForm(props: {
   return (
     <Form
       form={form}
-      labelCol={{ span: 4 }}
-      wrapperCol={{ span: 20 }}
+      labelCol={{span: 4}}
+      wrapperCol={{span: 20}}
       onFinish={onFinish}
     >
       <Form.Item
         label="Languages"
         name={FORM_ITEM_NAMES.LANGUAGE_SELECTION}
-        rules={[{ required: true, message: 'Please select at least one language.' }]}
+        rules={[{required: true, message: 'Please select at least one language.'}]}
       >
         <Select
           loading={languageOptions == null}
@@ -116,7 +116,7 @@ export function SelectRequestForm(props: {
             shape="circle"
             icon={<LeftOutlined />}
             onClick={onClickBackButton}
-            style={{ width: '1em' }}
+            style={{width: '1em'}}
           />
         </Col>
         <Col>
