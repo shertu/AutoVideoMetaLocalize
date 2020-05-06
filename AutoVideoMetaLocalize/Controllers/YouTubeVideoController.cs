@@ -104,11 +104,12 @@ namespace AutoVideoMetaLocalize.Controllers {
 
 			IList<Translation> response = await translate.TranslateTextAsync(request);
 
-			throw new Exception(response.ToString());
+			Translation videoTitleTranslation = response[0];
+			Translation videoDescriptionTranslation = response[1];
 
 			video.Localizations[language] = new VideoLocalization {
-				Title = videoTitle,
-				Description = videoDescription,
+				Title = videoTitleTranslation.TranslatedText,
+				Description = videoDescriptionTranslation.TranslatedText,
 			};
 		}
 	}

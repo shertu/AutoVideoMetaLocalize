@@ -46,6 +46,11 @@ export function SelectChannelForm(props: {
     stepsState.setValue(stepsState.value + 1);
   }
 
+  // do not initialize the form until the options state is set
+  if (!options) {
+    return null;
+  }
+
   return (
     <Form onFinish={onFinish} initialValues={{
       [FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP]: CHANNEL_RADIO_GROUP_DEFAULT,

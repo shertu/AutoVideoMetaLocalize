@@ -29,8 +29,8 @@ export function ExecuteProgress(props: {
         id: ids[i],
         languages: props.request.languages,
       })
-          .then((res) => setIndex(i))
-          .catch((err) => setException(true));
+        .then((res) => setIndex(i))
+        .catch((err) => setException(true));
     }
   }, []);
 
@@ -45,7 +45,7 @@ export function ExecuteProgress(props: {
   }
 
   return (
-    <Row>
+    <Row align="middle" justify="center">
       <Progress {...progressProps} />
     </Row>
   );
