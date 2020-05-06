@@ -1,12 +1,14 @@
 import * as React from 'react';
 import './style.less';
 import { Store } from 'antd/lib/form/interface';
-import { Channel, AppSupportedLanguage, ApiYouTubeVideoTranslatePostRequest, PlaylistItem } from '../../../../../generated-sources/openapi';
-import { Form, Row, Col, Button } from 'antd';
+import { Channel, AppSupportedLanguage, ApiYouTubeVideoTranslatePostRequest, PlaylistItem, LanguageApi } from '../../../../../generated-sources/openapi';
+import { Form, Row, Col, Button, Select } from 'antd';
 import { LeftOutlined } from '@ant-design/icons';
 import StepsStateContext from '../StepsStateContext/StepsStateContext';
-import { LanguageSelect } from './LanguageSelect/LanguageSelect';
+//import { LanguageSelect } from './LanguageSelect/LanguageSelect';
 import { PlaylistItemTable } from './PlaylistItemTable/PlaylistItemTable';
+
+const LANGUAGE_API = new LanguageApi();
 
 const FORM_ITEM_NAMES = {
   LANGUAGE_SELECTION: 'language-selection',
@@ -26,6 +28,14 @@ export function SelectRequestForm(props: {
   const stepsState = React.useContext(StepsStateContext);
   const [form] = Form.useForm();
 
+  const [options, setOptions] =
+    React.useState<AppSupportedLanguage[]>(null);
+
+  React.useEffect(() => {
+    LANGUAGE_API.apiLanguageGoogleTranslateSupportedLanguagesGet()
+      .then((res) => setOptions(res));
+  }, []);
+
   /**
    * 
    * 
@@ -35,9 +45,9 @@ export function SelectRequestForm(props: {
   async function onChangeRowSelectionPlaylistItemTable(selectedRowKeys: React.Key[], selectedRows: PlaylistItem[]) {
     console.log("TEST", selectedRowKeys, selectedRows);
 
-    form.setFieldsValue({
-      [FORM_ITEM_NAMES.VIDEO_SELECTION]: ['abc_id_fake_id']
-    });
+    const values: Store = form.getFieldsValue();
+    values[FORM_ITEM_NAMES.VIDEO_SELECTION] = ['abc_id_fake_id'];
+    form.setFieldsValue(values);
   }
 
   /**
@@ -66,6 +76,7 @@ export function SelectRequestForm(props: {
 
   return (
     <Form
+      form={form}
       labelCol={{ span: 4 }}
       wrapperCol={{ span: 20 }}
       onFinish={onFinish}
@@ -75,7 +86,17 @@ export function SelectRequestForm(props: {
         name={FORM_ITEM_NAMES.LANGUAGE_SELECTION}
         rules={[{ required: true, message: 'Please select at least one language.' }]}
       >
-        <LanguageSelect />
+        <Select
+          loading={options == null}
+          mode="multiple"
+          optionFilterProp="label"
+        >
+          {options && options.map((_) =>
+            <Select.Option key={_.code} value={_.code} label={_.name}>
+              {_.name}
+            </Select.Option >,
+          )}
+        </Select>
       </Form.Item>
 
       <Form.Item
