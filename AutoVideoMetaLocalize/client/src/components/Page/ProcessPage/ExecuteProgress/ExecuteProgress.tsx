@@ -1,8 +1,10 @@
-import { Progress, Row } from 'antd';
+import { Progress, Row, Button } from 'antd';
 import { ProgressProps } from 'antd/lib/progress';
 import * as React from 'react';
 import { ApiYouTubeVideoTranslatePostRequest, YouTubeVideoApi } from '../../../../../generated-sources/openapi';
 import './style.less';
+import { Page } from '../../Page';
+import StepsStateContext from '../StepsStateContext/StepsStateContext';
 
 const YOUTUBE_VIDEO_API: YouTubeVideoApi = new YouTubeVideoApi();
 
@@ -16,6 +18,8 @@ export function ExecuteProgress(props: {
   request: ApiYouTubeVideoTranslatePostRequest,
 }): JSX.Element {
   const ids: string[] = props.request.id.split(',');
+
+  const stepsState = React.useContext(StepsStateContext);
 
   const [exception, setException] =
     React.useState<boolean>(false);
@@ -34,12 +38,16 @@ export function ExecuteProgress(props: {
     }
   }, []);
 
-  console.log("Help", index, ids.length, index / ids.length);
+  function onFinish() {
+    stepsState.setValue(0);
+  }
+
+  const fractionCompleted: number = (ids.length) ? (index / ids.length) : 1;
 
   const progressProps: ProgressProps = {
     type: 'circle',
     status: 'active',
-    percent: index / ids.length,
+    percent: fractionCompleted * 100,
   };
 
   if (exception) {
@@ -47,8 +55,13 @@ export function ExecuteProgress(props: {
   }
 
   return (
-    <Row align="middle" justify="center">
-      <Progress {...progressProps} />
-    </Row>
+    <Page>
+      <Row align="middle" justify="center">
+        <Progress {...progressProps} />
+      </Row>
+      <Row align="middle" justify="end">
+        <Button type="primary" htmlType="submit" disabled={fractionCompleted >= 1} onClick={onFinish}>Complete</Button>
+      </Row>
+    </Page>
   );
 }
