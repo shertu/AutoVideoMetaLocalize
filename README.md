@@ -1,2 +1,2 @@
 # AutoVideoMetaLocalize
-Automatically localizes a YouTube channel's videos.
+Click [here](https://autovideometalocalize.azurewebsites.net/) to view the website.
