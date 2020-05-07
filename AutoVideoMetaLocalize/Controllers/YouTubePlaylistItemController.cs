@@ -1,4 +1,5 @@
-﻿using AutoVideoMetaLocalize.Utilities;
+﻿using AutoVideoMetaLocalize.Models;
+using AutoVideoMetaLocalize.Utilities;
 using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
 using Microsoft.AspNetCore.Authorization;
@@ -18,17 +19,15 @@ namespace AutoVideoMetaLocalize.Controllers {
 		}
 
 		[HttpGet]
-		public async Task<ActionResult<PlaylistItemListResponse>> GetVideosInPlaylist(
-			[Required] string playlistId, string pageToken = null, long? maxResults = null
-			) {
-			if (string.IsNullOrEmpty(playlistId))
-				throw new System.ArgumentException("message", nameof(playlistId));
+		public async Task<ActionResult<PlaylistItemListResponse>> GetVideosInPlaylist([Required, FromQuery] string id, [FromQuery] PaginationRequestInformation pagination) {
+			if (string.IsNullOrEmpty(id))
+				throw new System.ArgumentException("message", nameof(id));
 
 			YouTubeService service = await serviceAccessor.InitializeServiceAsync();
 			PlaylistItemsResource.ListRequest request = service.PlaylistItems.List("id,snippet");
-			request.PlaylistId = playlistId;
-			request.PageToken = pageToken;
-			request.MaxResults = maxResults;
+			request.PlaylistId = id;
+			request.PageToken = pagination.PageToken;
+			request.MaxResults = pagination.MaxResults;
 			PlaylistItemListResponse response = await request.ExecuteAsync();
 			return new ActionResult<PlaylistItemListResponse>(response);
 		}

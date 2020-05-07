@@ -4,8 +4,8 @@ import routes from '../../../routes';
 import {NoRouteMatchError} from '../../NoRouteMatchError/NoRouteMatchError';
 import {HomePage} from '../../Page/HomePage/HomePage';
 import {PrivacyPolicyPage} from '../../Page/PrivacyPolicyPage/PrivacyPolicyPage';
-import {ProcessPage} from '../../Page/ProcessPage/ProcessPage';
 import './style.less';
+import { ChannelTranslationPage } from '../../Page/ChannelTranslationPage/ChannelTranslationPage';
 
 /**
  * The main route switch in the web application.
@@ -19,7 +19,7 @@ export function AppContentSwitch(): JSX.Element {
         <HomePage />
       </Route>
       <Route exact path={routes.ROUTE_PROCESS}>
-        <ProcessPage />
+        <ChannelTranslationPage />
       </Route>
       <Route exact path={routes.ROUTE_PRIVACY_POLICY}>
         <PrivacyPolicyPage />

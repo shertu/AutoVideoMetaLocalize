@@ -2,7 +2,6 @@ import {Divider} from 'antd';
 import * as React from 'react';
 import {ApiYouTubeVideoTranslatePostRequest, Channel} from '../../../../generated-sources/openapi';
 import {Page} from '../Page';
-import {ExecuteStep} from './ExecuteStep/ExecuteStep';
 import {SelectChannelForm} from './SelectChannelForm/SelectChannelForm';
 import {SelectRequestForm} from './SelectRequestForm/SelectRequestForm';
 import {StepsStateProvider} from './StepsStateContext/StepsStateContext';
@@ -14,7 +13,7 @@ import {ExecuteProgress} from './ExecuteProgress/ExecuteProgress';
  *
  * @return {JSX.Element}
  */
-export function ProcessPage(): JSX.Element {
+export function ChannelTranslationPage(): JSX.Element {
   const [stepsCurrent, setStepsCurrent] =
     React.useState<number>(0);
 

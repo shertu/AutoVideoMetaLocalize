@@ -60,7 +60,7 @@ export function ExecuteProgress(props: {
         <Progress {...progressProps} />
       </Row>
       <Row align="middle" justify="end">
-        <Button type="primary" htmlType="submit" disabled={fractionCompleted >= 1} onClick={onFinish}>Complete</Button>
+        <Button type="primary" htmlType="submit" disabled={fractionCompleted < 1} onClick={onFinish}>Finish</Button>
       </Row>
     </Page>
   );

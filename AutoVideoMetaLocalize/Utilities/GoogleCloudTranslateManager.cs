@@ -16,6 +16,12 @@ namespace AutoVideoMetaLocalize.Utilities {
 		public GoogleCloudTranslateManager(string pathToServiceAccount) {
 			this.pathToServiceAccount = pathToServiceAccount;
 
+		 //var a= new Google.Cloud.Translate.V3.TranslationServiceClientBuilder {
+			//	ChannelCredentials = new Ch
+			//}
+
+			//Google.Cloud.Translate.V3.TranslationServiceClient
+
 			service = new TranslationServiceClientBuilder {
 				CredentialsPath = pathToServiceAccount
 			}.Build();

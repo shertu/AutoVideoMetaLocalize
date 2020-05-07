@@ -1,7 +1,5 @@
 ﻿using Google.Apis.Auth.OAuth2;
 using Google.Apis.YouTube.v3;
-using Google.Apis.YouTube.v3.Data;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace AutoVideoMetaLocalize.Utilities {
@@ -19,21 +17,6 @@ namespace AutoVideoMetaLocalize.Utilities {
 				HttpClientInitializer = credential,
 				ApplicationName = "Auto Video Meta Localize",
 			});
-		}
-
-		public static async Task<IList<Channel>> ChannelsListAll(ChannelsResource.ListRequest request) {
-			List<Channel> items = new List<Channel>();
-
-			#region pagination response
-			ChannelListResponse response;
-			do {
-				response = await request.ExecuteAsync();
-				request.PageToken = response.NextPageToken;
-				items.AddRange(response.Items);
-			} while (response.NextPageToken != null);
-			#endregion
-
-			return items;
 		}
 	}
 }

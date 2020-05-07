@@ -1,9 +1,9 @@
-﻿using AutoVideoMetaLocalize.Utilities;
+﻿using AutoVideoMetaLocalize.Models;
+using AutoVideoMetaLocalize.Utilities;
 using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace AutoVideoMetaLocalize.Controllers {
@@ -18,14 +18,14 @@ namespace AutoVideoMetaLocalize.Controllers {
 		}
 
 		[HttpGet("Mine")]
-		public async Task<ActionResult<IEnumerable<Channel>>> GetMine() {
+		public async Task<ActionResult<ChannelListResponse>> GetMine([FromQuery] PaginationRequestInformation pagination) {
 			YouTubeService service = await serviceAccessor.InitializeServiceAsync();
-
 			ChannelsResource.ListRequest request = service.Channels.List("id,snippet,contentDetails");
 			request.Mine = true;
-			IList<Channel> response = await YouTubeServiceAccessor.ChannelsListAll(request);
-
-			return new ActionResult<IEnumerable<Channel>>(response);
+			request.PageToken = pagination.PageToken;
+			request.MaxResults = pagination.MaxResults;
+			ChannelListResponse response = await request.ExecuteAsync();
+			return new ActionResult<ChannelListResponse>(response);
 		}
 	}
 }
