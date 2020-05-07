@@ -6,6 +6,7 @@ export * from './ChannelContentDetails';
 export * from './ChannelContentOwnerDetails';
 export * from './ChannelConversionPing';
 export * from './ChannelConversionPings';
+export * from './ChannelListResponse';
 export * from './ChannelLocalization';
 export * from './ChannelSettings';
 export * from './ChannelSnippet';

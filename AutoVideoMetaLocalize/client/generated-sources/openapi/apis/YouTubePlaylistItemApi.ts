@@ -21,7 +21,7 @@ import {
 } from '../models';
 
 export interface ApiYouTubePlaylistItemGetRequest {
-    playlistId: string;
+    id: string;
     pageToken?: string | null;
     maxResults?: number | null;
 }
@@ -34,22 +34,22 @@ export class YouTubePlaylistItemApi extends runtime.BaseAPI {
     /**
      */
     async apiYouTubePlaylistItemGetRaw(requestParameters: ApiYouTubePlaylistItemGetRequest): Promise<runtime.ApiResponse<PlaylistItemListResponse>> {
-        if (requestParameters.playlistId === null || requestParameters.playlistId === undefined) {
-            throw new runtime.RequiredError('playlistId','Required parameter requestParameters.playlistId was null or undefined when calling apiYouTubePlaylistItemGet.');
+        if (requestParameters.id === null || requestParameters.id === undefined) {
+            throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling apiYouTubePlaylistItemGet.');
         }
 
         const queryParameters: runtime.HTTPQuery = {};
 
-        if (requestParameters.playlistId !== undefined) {
-            queryParameters['playlistId'] = requestParameters.playlistId;
+        if (requestParameters.id !== undefined) {
+            queryParameters['id'] = requestParameters.id;
         }
 
         if (requestParameters.pageToken !== undefined) {
-            queryParameters['pageToken'] = requestParameters.pageToken;
+            queryParameters['PageToken'] = requestParameters.pageToken;
         }
 
         if (requestParameters.maxResults !== undefined) {
-            queryParameters['maxResults'] = requestParameters.maxResults;
+            queryParameters['MaxResults'] = requestParameters.maxResults;
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

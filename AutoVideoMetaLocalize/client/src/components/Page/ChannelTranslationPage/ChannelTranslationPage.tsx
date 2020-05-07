@@ -1,12 +1,10 @@
-import {Divider} from 'antd';
 import * as React from 'react';
-import {ApiYouTubeVideoTranslatePostRequest, Channel} from '../../../../generated-sources/openapi';
-import {Page} from '../Page';
-import {SelectChannelForm} from './SelectChannelForm/SelectChannelForm';
-import {SelectRequestForm} from './SelectRequestForm/SelectRequestForm';
-import {StepsStateProvider} from './StepsStateContext/StepsStateContext';
+import { Channel } from '../../../../generated-sources/openapi';
+import { ChannelSelectForm } from './ChannelSelectForm/ChannelSelectForm';
+import { ChannelTranslationConfiguration } from './ChannelTranslationConfiguration';
+import { ChannelTranslationConfigurationForm } from './ChannelTranslationConfigurationForm/ChannelTranslationConfigurationForm';
+import { ExecuteConfigurationPage } from './ExecuteConfigurationPage/ExecuteConfigurationPage';
 import './style.less';
-import {ExecuteProgress} from './ExecuteProgress/ExecuteProgress';
 
 /**
  * The page used to control the flow of the process.
@@ -14,51 +12,64 @@ import {ExecuteProgress} from './ExecuteProgress/ExecuteProgress';
  * @return {JSX.Element}
  */
 export function ChannelTranslationPage(): JSX.Element {
-  const [stepsCurrent, setStepsCurrent] =
+  const [current, setCurrent] =
     React.useState<number>(0);
 
   const [channel, setChannel] =
     React.useState<Channel>(null);
 
-  const [request, setRequest] =
-    React.useState<ApiYouTubeVideoTranslatePostRequest>(null);
+  const [configuration, setConfiguration] =
+    React.useState<ChannelTranslationConfiguration>(null);
+
+  /**
+   * 
+   * @param value
+   */
+  async function onFinishChannelSelect(value: Channel) {
+    setChannel(value);
+    setConfiguration({
+      ...configuration,
+      videos: null,
+    });
+    setCurrent(current + 1);
+  }
+
+  /**
+   * 
+   * @param value
+   */
+  async function onFinishConfiguration(value: ChannelTranslationConfiguration) {
+    setConfiguration(value);
+    setCurrent(current + 1);
+  }
+
+  /** Go to the previous page. */
+  async function decrementCurrent() {
+    setCurrent(current - 1);
+  }
+
+  /** Go back to the start of the channel translation process. */
+  async function onCompleteExecution() {
+    setCurrent(0);
+  }
 
   const content: React.ReactNode[] = [
-    <Page>
-      <Divider>Channel Selection</Divider>
-      <SelectChannelForm
-        setChannelStateAction={setChannel}
-      />
-    </Page>,
-    <Page>
-      <Divider>Options</Divider>
-      <SelectRequestForm
-        channel={channel}
-        setRequestStateAction={setRequest}
-      />
-    </Page>,
-    <Page>
-      <Divider>Execution Progress</Divider>
-      <ExecuteProgress
-        request={request}
-      />
-    </Page>,
+    <ChannelSelectForm
+      onFinish={onFinishChannelSelect}
+    />,
+    <ChannelTranslationConfigurationForm
+      channel={channel}
+      onFinish={onFinishConfiguration}
+      onBack={decrementCurrent}
+    />,
+    <ExecuteConfigurationPage
+      configuration={configuration}
+      onComplete={onCompleteExecution}
+    />,
   ];
 
   return (
-    <Page>
-      <StepsStateProvider value={{
-        value: stepsCurrent,
-        setValue: setStepsCurrent,
-      }}>
-        <div className="steps-content">{content[stepsCurrent]}</div>
-      </StepsStateProvider>
-    </Page>
+    <div className="steps-content">{content[current]}</div>
   );
 }
 
-// <Steps current={current}>
-//  {steps.map(item => (
-//    <Step key={item.title} title={item.title} />
-//  ))}
-// </Steps>

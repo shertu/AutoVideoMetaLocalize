@@ -15,10 +15,15 @@
 
 import * as runtime from '../runtime';
 import {
-    Channel,
-    ChannelFromJSON,
-    ChannelToJSON,
+    ChannelListResponse,
+    ChannelListResponseFromJSON,
+    ChannelListResponseToJSON,
 } from '../models';
+
+export interface ApiYouTubeChannelMineGetRequest {
+    pageToken?: string | null;
+    maxResults?: number | null;
+}
 
 /**
  * no description
@@ -27,8 +32,16 @@ export class YouTubeChannelApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiYouTubeChannelMineGetRaw(): Promise<runtime.ApiResponse<Array<Channel>>> {
+    async apiYouTubeChannelMineGetRaw(requestParameters: ApiYouTubeChannelMineGetRequest): Promise<runtime.ApiResponse<ChannelListResponse>> {
         const queryParameters: runtime.HTTPQuery = {};
+
+        if (requestParameters.pageToken !== undefined) {
+            queryParameters['PageToken'] = requestParameters.pageToken;
+        }
+
+        if (requestParameters.maxResults !== undefined) {
+            queryParameters['MaxResults'] = requestParameters.maxResults;
+        }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
@@ -39,13 +52,13 @@ export class YouTubeChannelApi extends runtime.BaseAPI {
             query: queryParameters,
         });
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(ChannelFromJSON));
+        return new runtime.JSONApiResponse(response, (jsonValue) => ChannelListResponseFromJSON(jsonValue));
     }
 
     /**
      */
-    async apiYouTubeChannelMineGet(): Promise<Array<Channel>> {
-        const response = await this.apiYouTubeChannelMineGetRaw();
+    async apiYouTubeChannelMineGet(requestParameters: ApiYouTubeChannelMineGetRequest): Promise<ChannelListResponse> {
+        const response = await this.apiYouTubeChannelMineGetRaw(requestParameters);
         return await response.value();
     }
 
