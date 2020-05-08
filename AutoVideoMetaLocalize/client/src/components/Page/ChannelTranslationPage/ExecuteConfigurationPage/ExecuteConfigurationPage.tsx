@@ -44,8 +44,10 @@ export function ExecuteConfigurationPage(props: {
         id: indexedVideoId,
         languages: languages,
       })
-        .then((res) => setCount(i))
-        .catch((err) => console.log(err));
+        .then(() => setCount(i))
+        .catch((err: Response) => {
+          err.text().then((text) => setException(text));
+        });
     }
   }, []);
 
