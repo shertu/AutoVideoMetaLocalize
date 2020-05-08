@@ -40,18 +40,12 @@ export function ExecuteConfigurationPage(props: {
       // languages for a video are all done in a single update request to save resources
       const indexedVideoId: string = videos[i];
 
-      YOUTUBE_VIDEO_API.apiYouTubeVideoTranslatePostRaw({
+      YOUTUBE_VIDEO_API.apiYouTubeVideoTranslatePost({
         id: indexedVideoId,
         languages: languages,
-      }).then((res) => {
-        // increment if ok otherwise set exception
-        if (res.raw.ok) {
-          setCount(i);
-        } else {
-          res.raw.text()
-            .then((res) => setException(res));
-        }
-      });
+      })
+        .then((res) => setCount(i))
+        .catch((err) => console.log(err));
     }
   }, []);
 
