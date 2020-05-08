@@ -1,9 +1,9 @@
-import {Button, Divider, Progress, Row} from 'antd';
-import {ProgressProps} from 'antd/lib/progress';
+import { Button, Divider, Progress, Row, Typography, Card } from 'antd';
+import { ProgressProps } from 'antd/lib/progress';
 import * as React from 'react';
-import {YouTubeVideoApi} from '../../../../../generated-sources/openapi';
-import {Page} from '../../Page';
-import {ChannelTranslationConfiguration} from '../ChannelTranslationConfiguration';
+import { YouTubeVideoApi } from '../../../../../generated-sources/openapi';
+import { Page } from '../../Page';
+import { ChannelTranslationConfiguration } from '../ChannelTranslationConfiguration';
 import './style.less';
 
 const YOUTUBE_VIDEO_API: YouTubeVideoApi = new YouTubeVideoApi();
@@ -42,8 +42,8 @@ export function ExecuteConfigurationPage(props: {
         id: indexedVideoId,
         languages: languages,
       })
-          .then((res) => setCount(i))
-          .catch((err) => setException(true));
+        .then((res) => setCount(i))
+        .catch((err) => setException(true));
     }
   }, []);
 
@@ -70,9 +70,19 @@ export function ExecuteConfigurationPage(props: {
         <Button
           type="primary"
           htmlType="submit"
-          disabled={fractionComplete < 1}
+          disabled={fractionComplete < 1 && !exception}
           onClick={props.onComplete}>Finish</Button>
       </Row>
+
+      {exception && (
+        <Row align="middle" justify="center">
+          <Card>
+            <Typography.Paragraph>
+              {exception.toString()}
+            </Typography.Paragraph>
+          </Card>
+        </Row>
+      )}
     </Page>
   );
 }

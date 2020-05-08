@@ -31,8 +31,19 @@ export function ChannelSelectForm(props: {
         .then((res) => setOptions(res));
   }, []);
 
+  //async function changeOptions(channels: Channel[]) {
+  //  setOptions(channels);
+  //  const defaultValue: string = (channels && options.length) ? options[0].id : null;
+  //  form.setFieldsValue({
+  //    [FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP]: defaultValue,
+  //  });
+  //}
+
   React.useEffect(() => {
     const defaultValue: string = (options && options.length) ? options[0].id : null;
+
+    console.log("TEST", options, defaultValue);
+
     form.setFieldsValue({
       [FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP]: defaultValue,
     });
