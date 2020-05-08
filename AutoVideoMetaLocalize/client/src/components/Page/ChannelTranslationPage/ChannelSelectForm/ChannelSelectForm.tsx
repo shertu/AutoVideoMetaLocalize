@@ -21,8 +21,6 @@ const FORM_ITEM_NAMES = {
 export function ChannelSelectForm(props: {
   onFinish: (channel: Channel) => void
 }): JSX.Element {
-  const [form] = Form.useForm();
-
   const [options, setOptions] =
     React.useState<Channel[]>(null);
 
@@ -31,23 +29,7 @@ export function ChannelSelectForm(props: {
         .then((res) => setOptions(res));
   }, []);
 
-  //async function changeOptions(channels: Channel[]) {
-  //  setOptions(channels);
-  //  const defaultValue: string = (channels && options.length) ? options[0].id : null;
-  //  form.setFieldsValue({
-  //    [FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP]: defaultValue,
-  //  });
-  //}
-
-  React.useEffect(() => {
-    const defaultValue: string = (options && options.length) ? options[0].id : null;
-
-    console.log("TEST", options, defaultValue);
-
-    form.setFieldsValue({
-      [FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP]: defaultValue,
-    });
-  }, [options]);
+  const DEFAULT_OPTION: string = (options && options.length) ? options[0].id : null;
 
   /**
    * Fetches every YouTube channel from the user's Google account.
@@ -81,33 +63,40 @@ export function ChannelSelectForm(props: {
     <Page>
       <Divider>Channel Selection</Divider>
 
-      <Form onFinish={onFinish}>
-        <Row align="top" justify="center">
-          <Form.Item
-            className="max-cell-sm"
-            name={FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP}
-            rules={[{required: true, message: 'Please select a channel.'}]}
-          >
-            <Radio.Group className="max-cell-sm">
-              {options && options.map((_) =>
-                <Radio.Button className="max-cell-sm" key={_.id} value={_.id}>
-                  <BasicComboView
-                    thumbnail={_.snippet.thumbnails._default}
-                    title={_.snippet.title}
-                    subtitle={_.id}
-                  />
-                </Radio.Button>,
-              )}
-            </Radio.Group>
-          </Form.Item>
-        </Row>
+      {options && (
+        <Form
+          onFinish={onFinish}
+          initialValues={{
+            [FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP]: DEFAULT_OPTION,
+          }}
+        >
+          <Row align="top" justify="center">
+            <Form.Item
+              className="max-cell-sm"
+              name={FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP}
+              rules={[{ required: true, message: 'Please select a channel.' }]}
+            >
+              <Radio.Group className="max-cell-sm">
+                {options && options.map((_, i) =>
+                  <Radio.Button className="max-cell-sm" key={_.id} value={_.id} >
+                    <BasicComboView
+                      thumbnail={_.snippet.thumbnails._default}
+                      title={_.snippet.title}
+                      subtitle={_.id}
+                    />
+                  </Radio.Button>,
+                )}
+              </Radio.Group>
+            </Form.Item>
+          </Row>
 
-        <Row align="middle" justify="end" gutter={8}>
-          <Col>
-            <Button type="primary" htmlType="submit">Continue</Button>
-          </Col>
-        </Row>
-      </Form>
+          <Row align="middle" justify="end" gutter={8}>
+            <Col>
+              <Button type="primary" htmlType="submit">Continue</Button>
+            </Col>
+          </Row>
+        </Form>
+      )}
     </Page>
   );
 }

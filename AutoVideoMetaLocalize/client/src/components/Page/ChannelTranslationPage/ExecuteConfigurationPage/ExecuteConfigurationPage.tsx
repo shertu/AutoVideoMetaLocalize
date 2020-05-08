@@ -42,8 +42,8 @@ export function ExecuteConfigurationPage(props: {
         id: indexedVideoId,
         languages: languages,
       })
-        .then((res) => setCount(i))
-        .catch((err) => setException(true));
+        .then(() => setCount(i))
+        .catch((err) => setException(err));
     }
   }, []);
 
@@ -76,7 +76,7 @@ export function ExecuteConfigurationPage(props: {
 
       {exception && (
         <Row align="middle" justify="center">
-          <Card>
+          <Card className="max-cell-md">
             <Typography.Paragraph>
               {exception.toString()}
             </Typography.Paragraph>
