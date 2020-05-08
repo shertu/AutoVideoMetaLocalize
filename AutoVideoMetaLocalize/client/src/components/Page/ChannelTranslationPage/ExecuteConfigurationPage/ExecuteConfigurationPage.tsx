@@ -21,6 +21,8 @@ export function ExecuteConfigurationPage(props: {
   const languages: string[] = props.configuration.languages;
   const videos: string[] = props.configuration.videos;
 
+  console.log(languages, videos);
+
   const [exception, setException] =
     React.useState<any>(false);
 
@@ -75,13 +77,16 @@ export function ExecuteConfigurationPage(props: {
       </Row>
 
       {exception && (
-        <Row align="middle" justify="center">
-          <Card className="max-cell-md">
-            <Typography.Paragraph>
-              {exception.toString()}
-            </Typography.Paragraph>
-          </Card>
-        </Row>
+        <Page>
+          <Divider>Execution Error</Divider>
+          <Row align="middle" justify="center">
+            <Card className="max-cell-md">
+              <Typography.Paragraph>
+                {JSON.stringify(exception, null, 2)}
+              </Typography.Paragraph>
+            </Card>
+          </Row>
+        </Page>
       )}
     </Page>
   );
