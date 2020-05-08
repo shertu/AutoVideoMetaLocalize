@@ -21,7 +21,7 @@ export function ExecuteConfigurationPage(props: {
   const languages: string[] = props.configuration.languages;
   const videos: string[] = props.configuration.videos;
 
-  console.log(languages, videos);
+  //console.log(languages, videos);
 
   const [exception, setException] =
     React.useState<any>(false);
@@ -40,12 +40,18 @@ export function ExecuteConfigurationPage(props: {
       // languages for a video are all done in a single update request to save resources
       const indexedVideoId: string = videos[i];
 
-      YOUTUBE_VIDEO_API.apiYouTubeVideoTranslatePost({
+      YOUTUBE_VIDEO_API.apiYouTubeVideoTranslatePostRaw({
         id: indexedVideoId,
         languages: languages,
-      })
-        .then(() => setCount(i))
-        .catch((err) => setException(err));
+      }).then((res) => {
+        // increment if ok otherwise set exception
+        if (res.raw.ok) {
+          setCount(i);
+        } else {
+          res.raw.text()
+            .then((res) => setException(res));
+        }
+      });
     }
   }, []);
 
@@ -82,7 +88,7 @@ export function ExecuteConfigurationPage(props: {
           <Row align="middle" justify="center">
             <Card className="max-cell-md">
               <Typography.Paragraph>
-                {JSON.stringify(exception, null, 2)}
+                {exception}
               </Typography.Paragraph>
             </Card>
           </Row>
