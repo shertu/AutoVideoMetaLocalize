@@ -1,9 +1,9 @@
-import { Button, Divider, Progress, Row } from 'antd';
-import { ProgressProps } from 'antd/lib/progress';
+import {Button, Divider, Progress, Row} from 'antd';
+import {ProgressProps} from 'antd/lib/progress';
 import * as React from 'react';
-import { YouTubeVideoApi } from '../../../../../generated-sources/openapi';
-import { Page } from '../../Page';
-import { ChannelTranslationConfiguration } from '../ChannelTranslationConfiguration';
+import {YouTubeVideoApi} from '../../../../../generated-sources/openapi';
+import {Page} from '../../Page';
+import {ChannelTranslationConfiguration} from '../ChannelTranslationConfiguration';
 import './style.less';
 
 const YOUTUBE_VIDEO_API: YouTubeVideoApi = new YouTubeVideoApi();
@@ -32,7 +32,7 @@ export function ExecuteConfigurationPage(props: {
 
   React.useEffect(() => {
     const max = videos.length;
-    setMaximumCount(max)
+    setMaximumCount(max);
 
     for (var i = 0; i < max; i++) {
       // languages for a video are all done in a single update request to save resources
@@ -42,8 +42,8 @@ export function ExecuteConfigurationPage(props: {
         id: indexedVideoId,
         languages: languages,
       })
-        .then((res) => setCount(i))
-        .catch((err) => setException(true));
+          .then((res) => setCount(i))
+          .catch((err) => setException(true));
     }
   }, []);
 

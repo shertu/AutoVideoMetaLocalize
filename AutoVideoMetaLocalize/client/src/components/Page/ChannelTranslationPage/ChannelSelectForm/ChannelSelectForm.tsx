@@ -1,9 +1,9 @@
-import { Button, Col, Divider, Form, Radio, Row } from 'antd';
-import { Store } from 'antd/lib/form/interface';
+import {Button, Col, Divider, Form, Radio, Row} from 'antd';
+import {Store} from 'antd/lib/form/interface';
 import * as React from 'react';
-import { ApiYouTubeChannelMineGetRequest, Channel, ChannelListResponse, YouTubeChannelApi } from '../../../../../generated-sources/openapi';
-import { BasicComboView } from '../../../BasicComboView/BasicComboView';
-import { Page } from '../../Page';
+import {ApiYouTubeChannelMineGetRequest, Channel, ChannelListResponse, YouTubeChannelApi} from '../../../../../generated-sources/openapi';
+import {BasicComboView} from '../../../BasicComboView/BasicComboView';
+import {Page} from '../../Page';
 import './style.less';
 
 const YOUTUBE_CHANNEL_API: YouTubeChannelApi = new YouTubeChannelApi();
@@ -28,7 +28,7 @@ export function ChannelSelectForm(props: {
 
   React.useEffect(() => {
     fetchAllMineChannelsAsync()
-      .then((res) => setOptions(res));
+        .then((res) => setOptions(res));
   }, []);
 
   React.useEffect(() => {
@@ -75,7 +75,7 @@ export function ChannelSelectForm(props: {
           <Form.Item
             className="max-cell-sm"
             name={FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP}
-            rules={[{ required: true, message: 'Please select a channel.' }]}
+            rules={[{required: true, message: 'Please select a channel.'}]}
           >
             <Radio.Group className="max-cell-sm">
               {options && options.map((_) =>

@@ -5,7 +5,7 @@ import {NoRouteMatchError} from '../../NoRouteMatchError/NoRouteMatchError';
 import {HomePage} from '../../Page/HomePage/HomePage';
 import {PrivacyPolicyPage} from '../../Page/PrivacyPolicyPage/PrivacyPolicyPage';
 import './style.less';
-import { ChannelTranslationPage } from '../../Page/ChannelTranslationPage/ChannelTranslationPage';
+import {ChannelTranslationPage} from '../../Page/ChannelTranslationPage/ChannelTranslationPage';
 
 /**
  * The main route switch in the web application.

@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { Channel } from '../../../../generated-sources/openapi';
-import { ChannelSelectForm } from './ChannelSelectForm/ChannelSelectForm';
-import { ChannelTranslationConfiguration } from './ChannelTranslationConfiguration';
-import { ChannelTranslationConfigurationForm } from './ChannelTranslationConfigurationForm/ChannelTranslationConfigurationForm';
-import { ExecuteConfigurationPage } from './ExecuteConfigurationPage/ExecuteConfigurationPage';
+import {Channel} from '../../../../generated-sources/openapi';
+import {ChannelSelectForm} from './ChannelSelectForm/ChannelSelectForm';
+import {ChannelTranslationConfiguration} from './ChannelTranslationConfiguration';
+import {ChannelTranslationConfigurationForm} from './ChannelTranslationConfigurationForm/ChannelTranslationConfigurationForm';
+import {ExecuteConfigurationPage} from './ExecuteConfigurationPage/ExecuteConfigurationPage';
 import './style.less';
 
 /**
@@ -22,7 +22,7 @@ export function ChannelTranslationPage(): JSX.Element {
     React.useState<ChannelTranslationConfiguration>(null);
 
   /**
-   * 
+   *
    * @param value
    */
   async function onFinishChannelSelect(value: Channel) {
@@ -35,7 +35,7 @@ export function ChannelTranslationPage(): JSX.Element {
   }
 
   /**
-   * 
+   *
    * @param value
    */
   async function onFinishConfiguration(value: ChannelTranslationConfiguration) {

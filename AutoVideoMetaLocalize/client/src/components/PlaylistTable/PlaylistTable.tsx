@@ -1,9 +1,9 @@
-import { Table } from 'antd';
-import { ColumnsType, TablePaginationConfig } from 'antd/lib/table';
-import { TableRowSelection } from 'antd/lib/table/interface';
+import {Table} from 'antd';
+import {ColumnsType, TablePaginationConfig} from 'antd/lib/table';
+import {TableRowSelection} from 'antd/lib/table/interface';
 import * as React from 'react';
-import { ApiYouTubePlaylistItemGetRequest, PlaylistItem, PlaylistItemListResponse, YouTubePlaylistItemApi } from '../../../generated-sources/openapi';
-import { BasicComboView } from '../BasicComboView/BasicComboView';
+import {ApiYouTubePlaylistItemGetRequest, PlaylistItem, PlaylistItemListResponse, YouTubePlaylistItemApi} from '../../../generated-sources/openapi';
+import {BasicComboView} from '../BasicComboView/BasicComboView';
 import './style.less';
 
 const YOUTUBE_PLAYLIST_ITEM_API = new YouTubePlaylistItemApi();

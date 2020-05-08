@@ -1,11 +1,11 @@
-import { LeftOutlined } from '@ant-design/icons';
-import { Button, Col, Divider, Form, Row, Select } from 'antd';
-import { Store } from 'antd/lib/form/interface';
+import {LeftOutlined} from '@ant-design/icons';
+import {Button, Col, Divider, Form, Row, Select} from 'antd';
+import {Store} from 'antd/lib/form/interface';
 import * as React from 'react';
-import { AppSupportedLanguage, Channel, LanguageApi, PlaylistItem } from '../../../../../generated-sources/openapi';
-import { PlaylistTable } from '../../../PlaylistTable/PlaylistTable';
-import { Page } from '../../Page';
-import { ChannelTranslationConfiguration } from '../ChannelTranslationConfiguration';
+import {AppSupportedLanguage, Channel, LanguageApi, PlaylistItem} from '../../../../../generated-sources/openapi';
+import {PlaylistTable} from '../../../PlaylistTable/PlaylistTable';
+import {Page} from '../../Page';
+import {ChannelTranslationConfiguration} from '../ChannelTranslationConfiguration';
 import './style.less';
 
 const LANGUAGE_API = new LanguageApi();
@@ -69,14 +69,14 @@ export function ChannelTranslationConfigurationForm(props: {
 
       <Form
         form={form}
-        labelCol={{ span: 4 }}
-        wrapperCol={{ span: 20 }}
+        labelCol={{span: 4}}
+        wrapperCol={{span: 20}}
         onFinish={onFinish}
       >
         <Form.Item
           label="Languages"
           name={FORM_ITEM_NAMES.LANGUAGE_SELECTION}
-          rules={[{ required: true, message: 'Please select at least one language.' }]}
+          rules={[{required: true, message: 'Please select at least one language.'}]}
         >
           <Select
             loading={languageOptions == null}
@@ -113,7 +113,7 @@ export function ChannelTranslationConfigurationForm(props: {
               shape="circle"
               icon={<LeftOutlined />}
               onClick={props.onBack}
-              style={{ width: '1em' }}
+              style={{width: '1em'}}
             />
           </Col>
           <Col>
@@ -121,6 +121,6 @@ export function ChannelTranslationConfigurationForm(props: {
           </Col>
         </Row>
       </Form>
-    </Page>    
+    </Page>
   );
 }
