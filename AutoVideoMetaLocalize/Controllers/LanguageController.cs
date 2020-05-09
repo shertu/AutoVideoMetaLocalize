@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoVideoMetaLocalize.Models;
 using AutoVideoMetaLocalize.Utilities;
 using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
@@ -24,23 +23,15 @@ namespace AutoVideoMetaLocalize.Controllers {
 
 		[HttpGet("YouTube-I18nLanguages")]
 		[Authorize]
-		public async Task<ActionResult<IEnumerable<AppSupportedLanguage>>> GetYouTubeLanguages() {
+		public async Task<ActionResult<I18nLanguageListResponse>> GetYouTubeLanguages() {
 			YouTubeService service = await serviceAccessor.InitializeServiceAsync();
-
 			I18nLanguagesResource.ListRequest req = service.I18nLanguages.List("snippet");
 			I18nLanguageListResponse res = await req.ExecuteAsync();
-			IList<I18nLanguage> items = res.Items;
-
-			IEnumerable<AppSupportedLanguage> appSupportedLanguages = items.Select(elem => new AppSupportedLanguage {
-				Code = elem.Snippet.Hl,
-				Name = elem.Snippet.Name,
-			});
-
-			return new ActionResult<IEnumerable<AppSupportedLanguage>>(appSupportedLanguages);
+			return new ActionResult<I18nLanguageListResponse>(res);
 		}
 
 		[HttpGet("GoogleTranslate-SupportedLanguages")]
-		public async Task<ActionResult<IEnumerable<AppSupportedLanguage>>> GetGoogleTranslateLanguages() {
+		public async Task<ActionResult<IList<SupportedLanguage>>> GetGoogleTranslateLanguages() {
 			string[] displayLanguageCodeList = { "en" };
 
 			#region Accept Header
@@ -49,13 +40,17 @@ namespace AutoVideoMetaLocalize.Controllers {
 			}
 			#endregion
 
-			int i = 0;
-			IList<SupportedLanguage> supportedLanguages = null;
-			while (supportedLanguages == null) {
+			int i = 0; // iterate over display language code list
+			IList<SupportedLanguage> response = null;
+			while (response == null) {
 				string displayLanguageCode = (i < displayLanguageCodeList.Length) ? displayLanguageCodeList[i] : null;
 
+				if (displayLanguageCode == null) {
+					break;
+				}
+
 				try {
-					supportedLanguages = await translate.GetSupportedLanguagesAsync(new GetSupportedLanguagesRequest {
+					response = await translate.GetSupportedLanguagesAsync(new GetSupportedLanguagesRequest {
 						DisplayLanguageCode = displayLanguageCode,
 					});
 				} catch (Grpc.Core.RpcException) {
@@ -63,12 +58,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 				}
 			}
 
-			IEnumerable<AppSupportedLanguage> appSupportedLanguages = supportedLanguages.Select(elem => new AppSupportedLanguage {
-				Code = elem.LanguageCode,
-				Name = elem.DisplayName,
-			});
-
-			return new ActionResult<IEnumerable<AppSupportedLanguage>>(appSupportedLanguages);
+			return new ActionResult<IList<SupportedLanguage>>(response);
 		}
 	}
 }

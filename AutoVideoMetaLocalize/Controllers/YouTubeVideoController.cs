@@ -1,4 +1,5 @@
-﻿using AutoVideoMetaLocalize.Utilities;
+﻿using AutoVideoMetaLocalize.Models;
+using AutoVideoMetaLocalize.Utilities;
 using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
 using Google.Cloud.Translate.V3;
@@ -22,98 +23,77 @@ namespace AutoVideoMetaLocalize.Controllers {
 			this.translate = translate;
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="id">
-		/// 	The id parameter specifies a comma-separated list of the YouTube video ID(s)
-		/// 	for the resource(s) that are being retrieved. In a video resource, the id property
-		/// 	specifies the video's ID.
-		/// </param>
-		/// <param name="languages">
-		///		The langauages parameter specifies an array of languages codes that 
-		///		the titles and descriptions need to be translated into.
-		/// </param>
-		/// <returns></returns>
-		[HttpPost("Translate")]
-		public async Task<IActionResult> TranslateAsync([Required, FromForm] string id, [Required, FromForm] string[] languages) {
-			if (string.IsNullOrEmpty(id))
-				throw new ArgumentException("message", nameof(id));
-			if (languages is null)
-				throw new ArgumentNullException(nameof(languages));
+		[HttpGet("ExecuteConfigurationPage")]
+		public async Task<ActionResult<VideoListResponse>> ListForExecuteConfigurationPage(
+			[Required, FromQuery] string id, [FromQuery] PaginationRequestInformation pagination) {
 
 			YouTubeService service = await serviceAccessor.InitializeServiceAsync();
-
 			VideosResource.ListRequest request = service.Videos.List("id,snippet,localizations");
 			request.Id = id;
-
-			do {
-				VideoListResponse response = await request.ExecuteAsync();
-
-				foreach (Video video in response.Items) {
-					await TranslateAsync(video, languages);
-				}
-
-				request.PageToken = response.NextPageToken;
-			} while (request.PageToken != null);
-
-			return Ok();
+			request.PageToken = pagination.PageToken;
+			request.MaxResults = pagination.MaxResults;
+			VideoListResponse response = await request.ExecuteAsync();
+			return new ActionResult<VideoListResponse>(response);
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="video"></param>
-		/// <param name="languages"></param>
-		/// <returns></returns>
-		private async Task TranslateAsync(Video video, string[] languages) {
-			if (video is null)
-				throw new ArgumentNullException(nameof(video));
-			if (languages is null)
-				throw new ArgumentNullException(nameof(languages));
+		[HttpPost("Video")]
+		public async Task<ActionResult<Video>> UpdateVideo(
+			[Required, FromForm] Video video) {
 
 			YouTubeService service = await serviceAccessor.InitializeServiceAsync();
 
-			foreach (string language in languages) {
-				await AddVideoLocalizationAsync(video, language);
-			}
+			video = new Video {
+				Id = video.Id,
+				Localizations = video.Localizations,
+			};
 
-			//Your video update request doesn't list all the parts you are including in the video object you are sending.
-			video.Snippet = null;
 			VideosResource.UpdateRequest request = service.Videos.Update(video, "id,localizations");
 			Video response = await request.ExecuteAsync();
+			return new ActionResult<Video>(response);
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="video"></param>
-		/// <param name="language"></param>
-		private async Task AddVideoLocalizationAsync(Video video, string language) {
+		private enum CONTENTS_INDEX {
+			TITLE = 0,
+			DESCRIPTION = 1,
+		}
+
+		[HttpPost("Add-Localization")]
+		public async Task<ActionResult<Video>> AddLocalizationVideo(
+			[Required, FromForm] Video video, [Required, FromForm] string targetLanguageCode) {
 			if (video is null)
 				throw new ArgumentNullException(nameof(video));
-			if (string.IsNullOrEmpty(language))
-				throw new ArgumentException("message", nameof(language));
 
-			string title = video.Snippet.Title;
-			string description = video.Snippet.Description;
+			if (video.Snippet is null)
+				throw new ArgumentNullException(nameof(video.Snippet));
+
+			if (video.Localizations is null)
+				throw new ArgumentNullException(nameof(video.Localizations));
+
+			string sourceLanguageCode = video.Snippet.DefaultLanguage;
+
+			string[] contents = new string[2];
+			contents[(int) CONTENTS_INDEX.TITLE] = video.Snippet.Title;
+			contents[(int) CONTENTS_INDEX.DESCRIPTION] = video.Snippet.Description;
 
 			TranslateTextRequest request = new TranslateTextRequest {
-				TargetLanguageCode = language,
-				Contents = { title, description },
+				TargetLanguageCode = targetLanguageCode,
+				SourceLanguageCode = sourceLanguageCode,
 			};
+
+			request.Contents.Add(contents);
 
 			IList<Translation> response = await translate.TranslateTextAsync(request);
 
-			Translation titleTranslation = response[0];
-			Translation descriptionTranslation = response[1];
+			Translation translationTitle = response[(int) CONTENTS_INDEX.TITLE];
+			Translation translationDescription = response[(int) CONTENTS_INDEX.DESCRIPTION];
 
 			VideoLocalization localization = new VideoLocalization {
-				Title = titleTranslation.TranslatedText,
-				Description = descriptionTranslation.TranslatedText,
+				Title = translationTitle.TranslatedText,
+				Description = translationDescription.TranslatedText,
 			};
 
-			video.Localizations[language] = localization;
+			video.Localizations[targetLanguageCode] = localization;
+			return new ActionResult<Video>(video);
 		}
 	}
 }

@@ -18,14 +18,15 @@ namespace AutoVideoMetaLocalize.Controllers {
 			this.serviceAccessor = serviceAccessor;
 		}
 
-		[HttpGet]
-		public async Task<ActionResult<PlaylistItemListResponse>> GetVideosInPlaylist([Required, FromQuery] string id, [FromQuery] PaginationRequestInformation pagination) {
-			if (string.IsNullOrEmpty(id))
-				throw new System.ArgumentException("message", nameof(id));
+		[HttpGet("ChannelTranslationConfigurationForm")]
+		public async Task<ActionResult<PlaylistItemListResponse>> GetListForChannelTranslationConfigurationForm(
+			[Required, FromQuery] string playlistId, [FromQuery] PaginationRequestInformation pagination) {
+			if (string.IsNullOrEmpty(playlistId))
+				throw new System.ArgumentException("message", nameof(playlistId));
 
 			YouTubeService service = await serviceAccessor.InitializeServiceAsync();
 			PlaylistItemsResource.ListRequest request = service.PlaylistItems.List("id,snippet");
-			request.PlaylistId = id;
+			request.PlaylistId = playlistId;
 			request.PageToken = pagination.PageToken;
 			request.MaxResults = pagination.MaxResults;
 			PlaylistItemListResponse response = await request.ExecuteAsync();
