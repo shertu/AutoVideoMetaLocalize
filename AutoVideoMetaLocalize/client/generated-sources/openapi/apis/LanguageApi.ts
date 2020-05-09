@@ -15,9 +15,12 @@
 
 import * as runtime from '../runtime';
 import {
-    AppSupportedLanguage,
-    AppSupportedLanguageFromJSON,
-    AppSupportedLanguageToJSON,
+    I18nLanguageListResponse,
+    I18nLanguageListResponseFromJSON,
+    I18nLanguageListResponseToJSON,
+    SupportedLanguage,
+    SupportedLanguageFromJSON,
+    SupportedLanguageToJSON,
 } from '../models';
 
 /**
@@ -27,7 +30,7 @@ export class LanguageApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiLanguageGoogleTranslateSupportedLanguagesGetRaw(): Promise<runtime.ApiResponse<Array<AppSupportedLanguage>>> {
+    async apiLanguageGoogleTranslateSupportedLanguagesGetRaw(): Promise<runtime.ApiResponse<Array<SupportedLanguage>>> {
         const queryParameters: runtime.HTTPQuery = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -39,19 +42,19 @@ export class LanguageApi extends runtime.BaseAPI {
             query: queryParameters,
         });
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(AppSupportedLanguageFromJSON));
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(SupportedLanguageFromJSON));
     }
 
     /**
      */
-    async apiLanguageGoogleTranslateSupportedLanguagesGet(): Promise<Array<AppSupportedLanguage>> {
+    async apiLanguageGoogleTranslateSupportedLanguagesGet(): Promise<Array<SupportedLanguage>> {
         const response = await this.apiLanguageGoogleTranslateSupportedLanguagesGetRaw();
         return await response.value();
     }
 
     /**
      */
-    async apiLanguageYouTubeI18nLanguagesGetRaw(): Promise<runtime.ApiResponse<Array<AppSupportedLanguage>>> {
+    async apiLanguageYouTubeI18nLanguagesGetRaw(): Promise<runtime.ApiResponse<I18nLanguageListResponse>> {
         const queryParameters: runtime.HTTPQuery = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -63,12 +66,12 @@ export class LanguageApi extends runtime.BaseAPI {
             query: queryParameters,
         });
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(AppSupportedLanguageFromJSON));
+        return new runtime.JSONApiResponse(response, (jsonValue) => I18nLanguageListResponseFromJSON(jsonValue));
     }
 
     /**
      */
-    async apiLanguageYouTubeI18nLanguagesGet(): Promise<Array<AppSupportedLanguage>> {
+    async apiLanguageYouTubeI18nLanguagesGet(): Promise<I18nLanguageListResponse> {
         const response = await this.apiLanguageYouTubeI18nLanguagesGetRaw();
         return await response.value();
     }

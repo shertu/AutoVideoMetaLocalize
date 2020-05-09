@@ -20,7 +20,7 @@ import {
     ChannelListResponseToJSON,
 } from '../models';
 
-export interface ApiYouTubeChannelMineGetRequest {
+export interface ApiYouTubeChannelChannelSelectFormGetRequest {
     pageToken?: string | null;
     maxResults?: number | null;
 }
@@ -32,7 +32,7 @@ export class YouTubeChannelApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiYouTubeChannelMineGetRaw(requestParameters: ApiYouTubeChannelMineGetRequest): Promise<runtime.ApiResponse<ChannelListResponse>> {
+    async apiYouTubeChannelChannelSelectFormGetRaw(requestParameters: ApiYouTubeChannelChannelSelectFormGetRequest): Promise<runtime.ApiResponse<ChannelListResponse>> {
         const queryParameters: runtime.HTTPQuery = {};
 
         if (requestParameters.pageToken !== undefined) {
@@ -46,7 +46,7 @@ export class YouTubeChannelApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/YouTubeChannel/Mine`,
+            path: `/api/YouTubeChannel/ChannelSelectForm`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -57,8 +57,8 @@ export class YouTubeChannelApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiYouTubeChannelMineGet(requestParameters: ApiYouTubeChannelMineGetRequest): Promise<ChannelListResponse> {
-        const response = await this.apiYouTubeChannelMineGetRaw(requestParameters);
+    async apiYouTubeChannelChannelSelectFormGet(requestParameters: ApiYouTubeChannelChannelSelectFormGetRequest): Promise<ChannelListResponse> {
+        const response = await this.apiYouTubeChannelChannelSelectFormGetRaw(requestParameters);
         return await response.value();
     }
 

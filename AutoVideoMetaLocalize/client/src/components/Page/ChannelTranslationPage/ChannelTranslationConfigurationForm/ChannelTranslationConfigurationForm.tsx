@@ -1,12 +1,12 @@
-import {LeftOutlined} from '@ant-design/icons';
-import {Button, Col, Divider, Form, Row, Select} from 'antd';
-import {Store} from 'antd/lib/form/interface';
+import { LeftOutlined } from '@ant-design/icons';
+import { Button, Col, Divider, Form, Row, Select } from 'antd';
+import { Store } from 'antd/lib/form/interface';
 import * as React from 'react';
-import {AppSupportedLanguage, Channel, LanguageApi, PlaylistItem} from '../../../../../generated-sources/openapi';
-import {PlaylistTable} from '../../../PlaylistTable/PlaylistTable';
-import {Page} from '../../Page';
-import {ChannelTranslationConfiguration} from '../ChannelTranslationConfiguration';
+import { Channel, LanguageApi, PlaylistItem, SupportedLanguage } from '../../../../../generated-sources/openapi';
+import { PlaylistTable } from '../../../PlaylistTable/PlaylistTable';
+import { Page } from '../../Page';
 import './style.less';
+import { ChannelTranslationConfiguration } from '../../../../ChannelTranslationConfiguration';
 
 const LANGUAGE_API = new LanguageApi();
 
@@ -28,12 +28,12 @@ export function ChannelTranslationConfigurationForm(props: {
 }): JSX.Element {
   const [form] = Form.useForm();
 
-  const [languageOptions, setLanguageOptions] =
-    React.useState<AppSupportedLanguage[]>(null);
+  const [googleTranslateSupportedLanguages, setGoogleTranslateSupportedLanguages] =
+    React.useState<SupportedLanguage[]>(null);
 
   React.useEffect(() => {
     LANGUAGE_API.apiLanguageGoogleTranslateSupportedLanguagesGet()
-        .then((res) => setLanguageOptions(res));
+      .then((res) => setGoogleTranslateSupportedLanguages(res));
   }, []);
 
   /**
@@ -58,8 +58,21 @@ export function ChannelTranslationConfigurationForm(props: {
     const selectedVideoIds: string[] = values[FORM_ITEM_NAMES.VIDEO_SELECTION];
 
     props.onFinish({
-      languages: selectedLanguageCodes,
-      videos: selectedVideoIds,
+      languageCodes: selectedLanguageCodes,
+      videoIds: selectedVideoIds,
+    });
+  }
+
+  const languageSelectOptions: React.ReactNode[] = null;
+  if (googleTranslateSupportedLanguages) {
+    googleTranslateSupportedLanguages.forEach((_) => {
+      if (_.supportTarget) {
+        languageSelectOptions.push(
+          <Select.Option key={_.languageCode} value={_.languageCode} label={_.displayName}>
+            {_.displayName}
+          </Select.Option >
+        );
+      }
     });
   }
 
@@ -69,25 +82,22 @@ export function ChannelTranslationConfigurationForm(props: {
 
       <Form
         form={form}
-        labelCol={{span: 4}}
-        wrapperCol={{span: 20}}
+        labelCol={{ span: 4 }}
+        wrapperCol={{ span: 20 }}
         onFinish={onFinish}
       >
         <Form.Item
           label="Languages"
           name={FORM_ITEM_NAMES.LANGUAGE_SELECTION}
-          rules={[{required: true, message: 'Please select at least one language.'}]}
+          rules={[{ required: true, message: 'Please select at least one language.' }]}
         >
           <Select
-            loading={languageOptions == null}
+            loading={googleTranslateSupportedLanguages == null}
             mode="multiple"
             optionFilterProp="label"
           >
-            {languageOptions && languageOptions.map((_) =>
-              <Select.Option key={_.code} value={_.code} label={_.name}>
-                {_.name}
-              </Select.Option >,
-            )}
+
+            {languageSelectOptions}
           </Select>
         </Form.Item>
 
@@ -113,7 +123,7 @@ export function ChannelTranslationConfigurationForm(props: {
               shape="circle"
               icon={<LeftOutlined />}
               onClick={props.onBack}
-              style={{width: '1em'}}
+              style={{ width: '1em' }}
             />
           </Col>
           <Col>

@@ -17,8 +17,8 @@ namespace AutoVideoMetaLocalize.Controllers {
 			this.serviceAccessor = serviceAccessor;
 		}
 
-		[HttpGet("ChannelSelectForm")]
-		public async Task<ActionResult<ChannelListResponse>> GetListForChannelSelectionForm(
+		[HttpGet("id-snippet-contentdetails-where-mine")]
+		public async Task<ActionResult<ChannelListResponse>> ForChannelSelect(
 			[FromQuery] PaginationRequestInformation pagination) {
 			YouTubeService service = await serviceAccessor.InitializeServiceAsync();
 			ChannelsResource.ListRequest request = service.Channels.List("id,snippet,contentDetails");

@@ -1,10 +1,10 @@
 import * as React from 'react';
 import {Channel} from '../../../../generated-sources/openapi';
 import {ChannelSelectForm} from './ChannelSelectForm/ChannelSelectForm';
-import {ChannelTranslationConfiguration} from './ChannelTranslationConfiguration';
 import {ChannelTranslationConfigurationForm} from './ChannelTranslationConfigurationForm/ChannelTranslationConfigurationForm';
 import {ExecuteConfigurationPage} from './ExecuteConfigurationPage/ExecuteConfigurationPage';
 import './style.less';
+import { ChannelTranslationConfiguration } from '../../../ChannelTranslationConfiguration';
 
 /**
  * The page used to control the flow of the process.
@@ -29,7 +29,7 @@ export function ChannelTranslationPage(): JSX.Element {
     setChannel(value);
     setConfiguration({
       ...configuration,
-      videos: null,
+      videoIds: null,
     });
     setCurrent(current + 1);
   }

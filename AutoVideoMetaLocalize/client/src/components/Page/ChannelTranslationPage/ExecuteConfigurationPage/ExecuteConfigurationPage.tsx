@@ -1,10 +1,10 @@
 import { Button, Divider, Progress, Row, Typography, Card } from 'antd';
 import { ProgressProps } from 'antd/lib/progress';
 import * as React from 'react';
-import { YouTubeVideoApi } from '../../../../../generated-sources/openapi';
+import { YouTubeVideoApi, Video, ApiYouTubeVideoExecuteConfigurationPageGetRequest } from '../../../../../generated-sources/openapi';
 import { Page } from '../../Page';
-import { ChannelTranslationConfiguration } from '../ChannelTranslationConfiguration';
 import './style.less';
+import { ChannelTranslationConfiguration } from '../../../../ChannelTranslationConfiguration';
 
 const YOUTUBE_VIDEO_API: YouTubeVideoApi = new YouTubeVideoApi();
 
@@ -18,10 +18,19 @@ export function ExecuteConfigurationPage(props: {
   configuration: ChannelTranslationConfiguration,
   onComplete: () => void,
 }): JSX.Element {
-  const languages: string[] = props.configuration.languages;
-  const videos: string[] = props.configuration.videos;
+  const languageCodes: string[] = props.configuration.languageCodes;
+  //const videos: string[] = props.configuration.videos;
 
   //console.log(languages, videos);
+
+
+  const [videos, setVideos] =
+    React.useState<Video[]>(null);
+
+
+  React.useEffect(() => {
+
+  }, []);
 
   const [exception, setException] =
     React.useState<any>(false);
@@ -33,16 +42,38 @@ export function ExecuteConfigurationPage(props: {
     React.useState<number>(0);
 
   React.useEffect(() => {
-    const max = videos.length;
-    setMaximumCount(max);
+    const countActual: number = 0;
+
+    let temp: Channel[] = [];
+    const req: ApiYouTubeVideoExecuteConfigurationPageGetRequest = {
+      id: 
+    };
+
+    do {
+      const response: ChannelListResponse = await YOUTUBE_CHANNEL_API.apiYouTubeChannelChannelSelectFormGet(req);
+      req.pageToken = response.nextPageToken;
+      temp = temp.concat(response.items);
+    } while (req.pageToken);
+
+    return temp;
+
+    YOUTUBE_VIDEO_API.apiYouTubeVideoExecuteConfigurationPageGet({
+      a
+    })
+      .then((res) => setUser(new ClaimsPrinciple(res)))
+      .catch((err) => { });
+
 
     for (var i = 0; i < max; i++) {
+
+
+
       // languages for a video are all done in a single update request to save resources
       const indexedVideoId: string = videos[i];
 
       YOUTUBE_VIDEO_API.apiYouTubeVideoTranslatePost({
         id: indexedVideoId,
-        languages: languages,
+        languages: languageCodes,
       })
         .then(() => setCount(i))
         .catch((err: Response) => {

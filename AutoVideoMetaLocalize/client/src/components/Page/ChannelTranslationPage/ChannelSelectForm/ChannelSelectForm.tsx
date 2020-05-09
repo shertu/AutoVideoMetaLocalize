@@ -1,7 +1,7 @@
 import {Button, Col, Divider, Form, Radio, Row} from 'antd';
 import {Store} from 'antd/lib/form/interface';
 import * as React from 'react';
-import {ApiYouTubeChannelMineGetRequest, Channel, ChannelListResponse, YouTubeChannelApi} from '../../../../../generated-sources/openapi';
+import {Channel, ChannelListResponse, YouTubeChannelApi, ApiYouTubeChannelChannelSelectFormGetRequest} from '../../../../../generated-sources/openapi';
 import {BasicComboView} from '../../../BasicComboView/BasicComboView';
 import {Page} from '../../Page';
 import './style.less';
@@ -36,11 +36,11 @@ export function ChannelSelectForm(props: {
    */
   async function fetchAllMineChannelsAsync(): Promise<Channel[]> {
     let temp: Channel[] = [];
-    const req: ApiYouTubeChannelMineGetRequest = {
+    const req: ApiYouTubeChannelChannelSelectFormGetRequest = {
     };
 
     do {
-      const response: ChannelListResponse = await YOUTUBE_CHANNEL_API.apiYouTubeChannelMineGet(req);
+      const response: ChannelListResponse = await YOUTUBE_CHANNEL_API.apiYouTubeChannelChannelSelectFormGet(req);
       req.pageToken = response.nextPageToken;
       temp = temp.concat(response.items);
     } while (req.pageToken);

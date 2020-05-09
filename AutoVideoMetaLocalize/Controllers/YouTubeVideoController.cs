@@ -23,9 +23,11 @@ namespace AutoVideoMetaLocalize.Controllers {
 			this.translate = translate;
 		}
 
-		[HttpGet("ExecuteConfigurationPage")]
-		public async Task<ActionResult<VideoListResponse>> ListForExecuteConfigurationPage(
+		[HttpGet("id-snippet-localizations-where-id")]
+		public async Task<ActionResult<VideoListResponse>> ListWhereId(
 			[Required, FromQuery] string id, [FromQuery] PaginationRequestInformation pagination) {
+			if (string.IsNullOrEmpty(id))
+				throw new ArgumentException("message", nameof(id));
 
 			YouTubeService service = await serviceAccessor.InitializeServiceAsync();
 			VideosResource.ListRequest request = service.Videos.List("id,snippet,localizations");
@@ -36,18 +38,19 @@ namespace AutoVideoMetaLocalize.Controllers {
 			return new ActionResult<VideoListResponse>(response);
 		}
 
-		[HttpPost("Video")]
-		public async Task<ActionResult<Video>> UpdateVideo(
-			[Required, FromForm] Video video) {
+		[HttpPost("update-localizations")]
+		public async Task<ActionResult<Video>> UpdateVideo([Required, FromForm] Video video) {
+			if (video is null)
+				throw new ArgumentNullException(nameof(video));
 
 			YouTubeService service = await serviceAccessor.InitializeServiceAsync();
 
-			video = new Video {
+			Video temp = new Video {
 				Id = video.Id,
 				Localizations = video.Localizations,
 			};
 
-			VideosResource.UpdateRequest request = service.Videos.Update(video, "id,localizations");
+			VideosResource.UpdateRequest request = service.Videos.Update(temp, "id,localizations");
 			Video response = await request.ExecuteAsync();
 			return new ActionResult<Video>(response);
 		}
@@ -57,8 +60,8 @@ namespace AutoVideoMetaLocalize.Controllers {
 			DESCRIPTION = 1,
 		}
 
-		[HttpPost("Add-Localization")]
-		public async Task<ActionResult<Video>> AddLocalizationVideo(
+		[HttpPost("add-localization")]
+		public async Task<ActionResult<Video>> AddLocalizationToVideo(
 			[Required, FromForm] Video video, [Required, FromForm] string targetLanguageCode) {
 			if (video is null)
 				throw new ArgumentNullException(nameof(video));

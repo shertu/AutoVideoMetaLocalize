@@ -18,8 +18,8 @@ namespace AutoVideoMetaLocalize.Controllers {
 			this.serviceAccessor = serviceAccessor;
 		}
 
-		[HttpGet("ChannelTranslationConfigurationForm")]
-		public async Task<ActionResult<PlaylistItemListResponse>> GetListForChannelTranslationConfigurationForm(
+		[HttpGet("id-snippet-where-playlistid")]
+		public async Task<ActionResult<PlaylistItemListResponse>> ListWherePlaylistId(
 			[Required, FromQuery] string playlistId, [FromQuery] PaginationRequestInformation pagination) {
 			if (string.IsNullOrEmpty(playlistId))
 				throw new System.ArgumentException("message", nameof(playlistId));

@@ -20,8 +20,8 @@ import {
     PlaylistItemListResponseToJSON,
 } from '../models';
 
-export interface ApiYouTubePlaylistItemGetRequest {
-    id: string;
+export interface ApiYouTubePlaylistItemChannelTranslationConfigurationFormGetRequest {
+    playlistId: string;
     pageToken?: string | null;
     maxResults?: number | null;
 }
@@ -33,15 +33,15 @@ export class YouTubePlaylistItemApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiYouTubePlaylistItemGetRaw(requestParameters: ApiYouTubePlaylistItemGetRequest): Promise<runtime.ApiResponse<PlaylistItemListResponse>> {
-        if (requestParameters.id === null || requestParameters.id === undefined) {
-            throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling apiYouTubePlaylistItemGet.');
+    async apiYouTubePlaylistItemChannelTranslationConfigurationFormGetRaw(requestParameters: ApiYouTubePlaylistItemChannelTranslationConfigurationFormGetRequest): Promise<runtime.ApiResponse<PlaylistItemListResponse>> {
+        if (requestParameters.playlistId === null || requestParameters.playlistId === undefined) {
+            throw new runtime.RequiredError('playlistId','Required parameter requestParameters.playlistId was null or undefined when calling apiYouTubePlaylistItemChannelTranslationConfigurationFormGet.');
         }
 
         const queryParameters: runtime.HTTPQuery = {};
 
-        if (requestParameters.id !== undefined) {
-            queryParameters['id'] = requestParameters.id;
+        if (requestParameters.playlistId !== undefined) {
+            queryParameters['playlistId'] = requestParameters.playlistId;
         }
 
         if (requestParameters.pageToken !== undefined) {
@@ -55,7 +55,7 @@ export class YouTubePlaylistItemApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/YouTubePlaylistItem`,
+            path: `/api/YouTubePlaylistItem/ChannelTranslationConfigurationForm`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -66,8 +66,8 @@ export class YouTubePlaylistItemApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiYouTubePlaylistItemGet(requestParameters: ApiYouTubePlaylistItemGetRequest): Promise<PlaylistItemListResponse> {
-        const response = await this.apiYouTubePlaylistItemGetRaw(requestParameters);
+    async apiYouTubePlaylistItemChannelTranslationConfigurationFormGet(requestParameters: ApiYouTubePlaylistItemChannelTranslationConfigurationFormGetRequest): Promise<PlaylistItemListResponse> {
+        const response = await this.apiYouTubePlaylistItemChannelTranslationConfigurationFormGetRaw(requestParameters);
         return await response.value();
     }
 

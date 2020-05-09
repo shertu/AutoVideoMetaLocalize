@@ -16,7 +16,7 @@ const {Content} = Layout;
 export function AppLayout(): JSX.Element {
   return (
     <Layout style={{minHeight: '100vh'}}>
-      <Content>
+      <Content style={{padding: 8}}>
         <Row className="content-alignment" justify="center">
           <Page>
             <Title style={{textAlign: 'center'}}>Auto Video Meta Localize</Title >

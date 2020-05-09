@@ -42,7 +42,7 @@ export function PlaylistTable(props: {
     React.useState<React.Key[]>([]);
 
   React.useEffect(() => {
-    onChangePagination(paginationCurrent, 25);
+    onChangePagination(paginationCurrent, 50);
   }, [playlistId]);
 
   /**
@@ -73,7 +73,7 @@ export function PlaylistTable(props: {
       request.maxResults = pageSize;
 
       // fetch page
-      YOUTUBE_PLAYLIST_ITEM_API.apiYouTubePlaylistItemGet(request)
+      YOUTUBE_PLAYLIST_ITEM_API.apiYouTubePlaylistItemChannelTranslationConfigurationFormGet(request)
           .then((res) => setResponse(res));
 
       // set the page to the new value

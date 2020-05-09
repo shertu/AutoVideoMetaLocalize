@@ -19,6 +19,7 @@ module.exports = {
   entry: [
     require('regenerator-runtime/path').path,
     './client/src/components/App/App.tsx',
+    './client/style/index.less',
   ],
 
   output: {
