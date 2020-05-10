@@ -25,7 +25,7 @@ export function ChannelSelectForm(props: {
     React.useState<Channel[]>(null);
 
   React.useEffect(() => {
-    fetchAllMineChannelsAsync()
+    fetchOptionsAsync()
         .then((res) => setOptions(res));
   }, []);
 
@@ -34,19 +34,20 @@ export function ChannelSelectForm(props: {
   /**
    * Fetches every YouTube channel from the user's Google account.
    */
-  async function fetchAllMineChannelsAsync(): Promise<Channel[]> {
-    let temp: Channel[] = [];
+  async function fetchOptionsAsync(): Promise<Channel[]> {
+    let items: Channel[] = [];
     const req: ApiYouTubeChannelListGetRequest = {
       part: 'id,snippet,contentDetails',
+      mine: true,
     };
 
     do {
       const response: ChannelListResponse = await YOUTUBE_CHANNEL_API.apiYouTubeChannelListGet(req);
       req.pageToken = response.nextPageToken;
-      temp = temp.concat(response.items);
+      items = items.concat(response.items);
     } while (req.pageToken);
 
-    return temp;
+    return items;
   }
 
   /**
@@ -78,7 +79,7 @@ export function ChannelSelectForm(props: {
               rules={[{ required: true, message: 'Please select a channel.' }]}
             >
               <Radio.Group className="max-cell-sm">
-                {options && options.map((_, i) =>
+                {options && options.map((_) =>
                   <Radio.Button className="max-cell-sm" key={_.id} value={_.id} >
                     <BasicComboView
                       thumbnail={_.snippet.thumbnails._default}

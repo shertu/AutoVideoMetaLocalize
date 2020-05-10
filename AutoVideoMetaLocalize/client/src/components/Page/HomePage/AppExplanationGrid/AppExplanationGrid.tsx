@@ -27,7 +27,7 @@ export function AppExplanationGrid(): JSX.Element {
         <Card cover={
           <Row align="middle" justify="center">
             <img alt="example" src="https://www.authorsguilds.com/wp-content/uploads/2017/02/youtube.png"
-              className="max-height-cover" />
+              className="image-cover" />
           </Row>
         }>
           <Meta description="The YouTube algorithm tends to recommend content which is local in relation to the viewer." />

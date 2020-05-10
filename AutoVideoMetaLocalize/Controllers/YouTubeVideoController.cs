@@ -1,5 +1,6 @@
 ﻿using AutoVideoMetaLocalize.Models;
 using AutoVideoMetaLocalize.Utilities;
+using Google;
 using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
 using Google.Cloud.Translate.V3;
@@ -41,16 +42,25 @@ namespace AutoVideoMetaLocalize.Controllers {
 			requestActual.Hl = request.Hl;
 			requestActual.Chart = request.Chart;
 
-			VideoListResponse response = await requestActual.ExecuteAsync();
-			return new ActionResult<VideoListResponse>(response);
+			try {
+				VideoListResponse response = await requestActual.ExecuteAsync();
+				return new ActionResult<VideoListResponse>(response);
+			} catch (GoogleApiException ex) {
+				return StatusCode((int) ex.HttpStatusCode, ex.Message);
+			}
 		}
 
 		[HttpPost("Update")]
 		public async Task<ActionResult<Video>> UpdateVideo([Required, FromForm] Video video, [Required, FromForm] string part) {
 			YouTubeService service = await serviceAccessor.InitializeServiceAsync();
 			VideosResource.UpdateRequest request = service.Videos.Update(video, part);
-			Video response = await request.ExecuteAsync();
-			return new ActionResult<Video>(response);
+
+			try {
+				Video response = await request.ExecuteAsync();
+				return new ActionResult<Video>(response);
+			} catch (GoogleApiException ex) {
+				return StatusCode((int) ex.HttpStatusCode, ex.Message);
+			}
 		}
 
 		private enum CONTENTS_INDEX {

@@ -1,5 +1,6 @@
 ﻿using AutoVideoMetaLocalize.Models;
 using AutoVideoMetaLocalize.Utilities;
+using Google;
 using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
 using Microsoft.AspNetCore.Authorization;
@@ -30,8 +31,12 @@ namespace AutoVideoMetaLocalize.Controllers {
 			requestActual.PlaylistId = request.PlaylistId;
 			requestActual.VideoId = request.VideoId;
 
-			PlaylistItemListResponse response = await requestActual.ExecuteAsync();
-			return new ActionResult<PlaylistItemListResponse>(response);
+			try {
+				PlaylistItemListResponse response = await requestActual.ExecuteAsync();
+				return new ActionResult<PlaylistItemListResponse>(response);
+			} catch (GoogleApiException ex) {
+				return StatusCode((int) ex.HttpStatusCode, ex.Message);
+			}
 		}
 	}
 }
