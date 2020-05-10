@@ -27,11 +27,12 @@ export function App(): JSX.Element {
   return (
     <UserProvider value={user}>
       <Router>
-        <AppLayout />
+        <div />
       </Router>
     </UserProvider>
   );
 }
+//<AppLayout />
 
 // Render the application to the DOM.
 render(<App />, document.getElementById('app'));
