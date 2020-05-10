@@ -4,7 +4,7 @@ import { Store } from 'antd/lib/form/interface';
 import * as React from 'react';
 import { Channel, LanguageApi, PlaylistItem, SupportedLanguage } from '../../../../../generated-sources/openapi';
 import { ChannelTranslationConfiguration } from '../../../../ChannelTranslationConfiguration';
-import { PlaylistTable } from '../../../PlaylistTable/PlaylistTable';
+import { VideoPlaylistTable } from '../../../VideoPlaylistTable/VideoPlaylistTable';
 import { Page } from '../../Page';
 import './style.less';
 
@@ -109,7 +109,7 @@ export function ChannelTranslationConfigurationForm(props: {
           }]}
         >
           {props.channel && (
-            <PlaylistTable
+            <VideoPlaylistTable
               playlistId={props.channel.contentDetails?.relatedPlaylists.uploads}
               onChangeRowSelection={onSelectVideos}
             />

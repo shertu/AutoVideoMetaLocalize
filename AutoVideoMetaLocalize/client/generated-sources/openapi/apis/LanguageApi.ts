@@ -15,9 +15,9 @@
 
 import * as runtime from '../runtime';
 import {
-    I18nLanguageListResponse,
-    I18nLanguageListResponseFromJSON,
-    I18nLanguageListResponseToJSON,
+    I18nLanguageSnippet,
+    I18nLanguageSnippetFromJSON,
+    I18nLanguageSnippetToJSON,
     SupportedLanguage,
     SupportedLanguageFromJSON,
     SupportedLanguageToJSON,
@@ -54,7 +54,7 @@ export class LanguageApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiLanguageYouTubeI18nLanguagesGetRaw(): Promise<runtime.ApiResponse<I18nLanguageListResponse>> {
+    async apiLanguageYouTubeI18nLanguagesGetRaw(): Promise<runtime.ApiResponse<Array<I18nLanguageSnippet>>> {
         const queryParameters: runtime.HTTPQuery = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -66,12 +66,12 @@ export class LanguageApi extends runtime.BaseAPI {
             query: queryParameters,
         });
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => I18nLanguageListResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(I18nLanguageSnippetFromJSON));
     }
 
     /**
      */
-    async apiLanguageYouTubeI18nLanguagesGet(): Promise<I18nLanguageListResponse> {
+    async apiLanguageYouTubeI18nLanguagesGet(): Promise<Array<I18nLanguageSnippet>> {
         const response = await this.apiLanguageYouTubeI18nLanguagesGetRaw();
         return await response.value();
     }

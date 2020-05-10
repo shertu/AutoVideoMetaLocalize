@@ -1,7 +1,7 @@
 import { Button, Card, Divider, Progress, Row, Typography } from 'antd';
 import { ProgressProps } from 'antd/lib/progress';
 import * as React from 'react';
-import { Video, YouTubeVideoApi } from '../../../../../generated-sources/openapi';
+import { ApiYouTubeVideoListGetRequest, Video, VideoListResponse, YouTubeVideoApi } from '../../../../../generated-sources/openapi';
 import { ChannelTranslationConfiguration } from '../../../../ChannelTranslationConfiguration';
 import { Page } from '../../Page';
 import './style.less';
@@ -19,21 +19,10 @@ export function ExecuteConfigurationPage(props: {
   onComplete: () => void,
 }): JSX.Element {
   const languageCodes: string[] = props.configuration.languageCodes;
-  //const videos: string[] = props.configuration.videos;
-
-  //console.log(languages, videos);
-
-
-  const [videos, setVideos] =
-    React.useState<Video[]>(null);
-
-
-  React.useEffect(() => {
-
-  }, []);
+  const videoIds: string[] = props.configuration.videoIds;
 
   const [exception, setException] =
-    React.useState<any>(false);
+    React.useState<any>(null);
 
   const [count, setCount] =
     React.useState<number>(0);
@@ -42,52 +31,64 @@ export function ExecuteConfigurationPage(props: {
     React.useState<number>(0);
 
   React.useEffect(() => {
-    const countActual: number = 0;
+    execute()
+      .catch(err => setException(err))
+  }, []);
 
-    let temp: Channel[] = [];
-    const req: ApiYouTubeVideoExecuteConfigurationPageGetRequest = {
-      id: 
+  async function execute(): Promise<void> {
+    let countTemp: number = 0;
+    let exceptionTemp: Response = null;
+
+    const req: ApiYouTubeVideoListGetRequest = {
+      id: videoIds.join(','),
+      maxResults: 50,
+      part: 'id,localizations,snippet'
     };
 
     do {
-      const response: ChannelListResponse = await YOUTUBE_CHANNEL_API.apiYouTubeChannelChannelSelectFormGet(req);
-      req.pageToken = response.nextPageToken;
-      temp = temp.concat(response.items);
-    } while (req.pageToken);
+      const res: VideoListResponse = await YOUTUBE_VIDEO_API.apiYouTubeVideoListGet(req);
+      req.pageToken = res.nextPageToken;
+      setMaximumCount(res.pageInfo.totalResults * languageCodes.length);
 
-    return temp;
+      const videos = res.items;
+      for (var i = 0; i < videos.length && (exceptionTemp == null); i++) {
+        const video: Video = videos[i];
 
-    YOUTUBE_VIDEO_API.apiYouTubeVideoExecuteConfigurationPageGet({
-      a
-    })
-      .then((res) => setUser(new ClaimsPrinciple(res)))
-      .catch((err) => { });
+        for (var j = 0; j < languageCodes.length && (exceptionTemp == null); j++) {
+          const targetLanguageCode = languageCodes[j];
 
+          await YOUTUBE_VIDEO_API.apiYouTubeVideoAddLocalizationPost({
+            ...video,
+            targetLanguageCode: targetLanguageCode,
+          }).then((res) => {
+            video.localizations = res.localizations;
+          }).catch((err) => exceptionTemp = err);
 
-    for (var i = 0; i < max; i++) {
+          setCount(++countTemp);
+        }
 
+        delete video.snippet; // YouTube API requires additional parts to be removed.
 
+        await YOUTUBE_VIDEO_API.apiYouTubeVideoUpdatePost({
+          ...video,
+          part: 'id,localizations',
+        }).catch((err) => exceptionTemp = err);
+      }
 
-      // languages for a video are all done in a single update request to save resources
-      const indexedVideoId: string = videos[i];
+    } while (req.pageToken && (exceptionTemp == null));
 
-      YOUTUBE_VIDEO_API.apiYouTubeVideoTranslatePost({
-        id: indexedVideoId,
-        languages: languageCodes,
-      })
-        .then(() => setCount(i))
-        .catch((err: Response) => {
-          err.text().then((text) => setException(text));
-        });
-    }
-  }, []);
+    console.log(exceptionTemp);
 
-  const fractionComplete: number = (maximumCount) ? (count / maximumCount) : 1;
+    // set the exception
+    setException(exceptionTemp);
+  }
+
+  const completeFrac: number = (maximumCount) ? (count / maximumCount) : 1;
 
   const progressProps: ProgressProps = {
     type: 'circle',
     status: 'active',
-    percent: fractionComplete * 100,
+    percent: completeFrac * 100,
   };
 
   if (exception) {
@@ -105,7 +106,7 @@ export function ExecuteConfigurationPage(props: {
         <Button
           type="primary"
           htmlType="submit"
-          disabled={fractionComplete < 1 && !exception}
+          disabled={completeFrac < 1 && !exception}
           onClick={props.onComplete}>Finish</Button>
       </Row>
 
@@ -115,7 +116,7 @@ export function ExecuteConfigurationPage(props: {
           <Row align="middle" justify="center">
             <Card className="max-cell-md">
               <Typography.Paragraph>
-                {exception}
+                {exception.text().then()}
               </Typography.Paragraph>
             </Card>
           </Row>

@@ -20,9 +20,18 @@ import {
     ChannelListResponseToJSON,
 } from '../models';
 
-export interface ApiYouTubeChannelIdSnippetContentdetailsWhereMineGetRequest {
-    pageToken?: string | null;
+export interface ApiYouTubeChannelListGetRequest {
+    part?: string | null;
+    categoryId?: string | null;
+    forUsername?: string | null;
+    hl?: string | null;
+    id?: string | null;
+    managedByMe?: boolean | null;
     maxResults?: number | null;
+    mine?: boolean | null;
+    mySubscribers?: boolean | null;
+    onBehalfOfContentOwner?: string | null;
+    pageToken?: string | null;
 }
 
 /**
@@ -32,21 +41,57 @@ export class YouTubeChannelApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiYouTubeChannelIdSnippetContentdetailsWhereMineGetRaw(requestParameters: ApiYouTubeChannelIdSnippetContentdetailsWhereMineGetRequest): Promise<runtime.ApiResponse<ChannelListResponse>> {
+    async apiYouTubeChannelListGetRaw(requestParameters: ApiYouTubeChannelListGetRequest): Promise<runtime.ApiResponse<ChannelListResponse>> {
         const queryParameters: runtime.HTTPQuery = {};
 
-        if (requestParameters.pageToken !== undefined) {
-            queryParameters['PageToken'] = requestParameters.pageToken;
+        if (requestParameters.part !== undefined) {
+            queryParameters['Part'] = requestParameters.part;
+        }
+
+        if (requestParameters.categoryId !== undefined) {
+            queryParameters['CategoryId'] = requestParameters.categoryId;
+        }
+
+        if (requestParameters.forUsername !== undefined) {
+            queryParameters['ForUsername'] = requestParameters.forUsername;
+        }
+
+        if (requestParameters.hl !== undefined) {
+            queryParameters['Hl'] = requestParameters.hl;
+        }
+
+        if (requestParameters.id !== undefined) {
+            queryParameters['Id'] = requestParameters.id;
+        }
+
+        if (requestParameters.managedByMe !== undefined) {
+            queryParameters['ManagedByMe'] = requestParameters.managedByMe;
         }
 
         if (requestParameters.maxResults !== undefined) {
             queryParameters['MaxResults'] = requestParameters.maxResults;
         }
 
+        if (requestParameters.mine !== undefined) {
+            queryParameters['Mine'] = requestParameters.mine;
+        }
+
+        if (requestParameters.mySubscribers !== undefined) {
+            queryParameters['MySubscribers'] = requestParameters.mySubscribers;
+        }
+
+        if (requestParameters.onBehalfOfContentOwner !== undefined) {
+            queryParameters['OnBehalfOfContentOwner'] = requestParameters.onBehalfOfContentOwner;
+        }
+
+        if (requestParameters.pageToken !== undefined) {
+            queryParameters['PageToken'] = requestParameters.pageToken;
+        }
+
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/YouTubeChannel/id-snippet-contentdetails-where-mine`,
+            path: `/api/YouTubeChannel/List`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -57,8 +102,8 @@ export class YouTubeChannelApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiYouTubeChannelIdSnippetContentdetailsWhereMineGet(requestParameters: ApiYouTubeChannelIdSnippetContentdetailsWhereMineGetRequest): Promise<ChannelListResponse> {
-        const response = await this.apiYouTubeChannelIdSnippetContentdetailsWhereMineGetRaw(requestParameters);
+    async apiYouTubeChannelListGet(requestParameters: ApiYouTubeChannelListGetRequest): Promise<ChannelListResponse> {
+        const response = await this.apiYouTubeChannelListGetRaw(requestParameters);
         return await response.value();
     }
 

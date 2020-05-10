@@ -2,7 +2,7 @@ import {Table} from 'antd';
 import {ColumnsType, TablePaginationConfig} from 'antd/lib/table';
 import {TableRowSelection} from 'antd/lib/table/interface';
 import * as React from 'react';
-import {ApiYouTubePlaylistItemGetRequest, PlaylistItem, PlaylistItemListResponse, YouTubePlaylistItemApi} from '../../../generated-sources/openapi';
+import {PlaylistItem, PlaylistItemListResponse, YouTubePlaylistItemApi, ApiYouTubePlaylistItemListGetRequest} from '../../../generated-sources/openapi';
 import {BasicComboView} from '../BasicComboView/BasicComboView';
 import './style.less';
 
@@ -26,7 +26,7 @@ const TABLE_COLUMNS: ColumnsType<PlaylistItem> = [{
  * @param {object} props
  * @return {JSX.Element}
  */
-export function PlaylistTable(props: {
+export function VideoPlaylistTable(props: {
   playlistId: string,
   onChangeRowSelection: (selectedRowKeys: React.Key[], selectedRows: PlaylistItem[]) => void,
 }): JSX.Element {
@@ -54,7 +54,8 @@ export function PlaylistTable(props: {
   async function onChangePagination(page: number, pageSize?: number) {
     if (playlistId) {
       // build request
-      const request: ApiYouTubePlaylistItemGetRequest = {
+      const request: ApiYouTubePlaylistItemListGetRequest = {
+        part: 'snippet',
         id: playlistId,
       };
 
@@ -73,7 +74,7 @@ export function PlaylistTable(props: {
       request.maxResults = pageSize;
 
       // fetch page
-      YOUTUBE_PLAYLIST_ITEM_API.apiYouTubePlaylistItemIdSnippetWherePlaylistidGet(request)
+      YOUTUBE_PLAYLIST_ITEM_API.apiYouTubePlaylistItemListGet(request)
           .then((res) => setResponse(res));
 
       // set the page to the new value

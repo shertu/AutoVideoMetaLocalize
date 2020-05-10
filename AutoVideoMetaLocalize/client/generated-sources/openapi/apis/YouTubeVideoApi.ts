@@ -15,6 +15,12 @@
 
 import * as runtime from '../runtime';
 import {
+    ChartEnum,
+    ChartEnumFromJSON,
+    ChartEnumToJSON,
+    MyRatingEnum,
+    MyRatingEnumFromJSON,
+    MyRatingEnumToJSON,
     Video,
     VideoFromJSON,
     VideoToJSON,
@@ -244,13 +250,24 @@ export interface ApiYouTubeVideoAddLocalizationPostRequest {
     topicDetailsETag?: string | null;
 }
 
-export interface ApiYouTubeVideoIdSnippetLocalizationsWhereIdGetRequest {
-    id: string;
+export interface ApiYouTubeVideoListGetRequest {
+    videoCategoryId?: string | null;
+    regionCode?: string | null;
     pageToken?: string | null;
+    onBehalfOfContentOwner?: string | null;
+    myRating?: MyRatingEnum;
+    maxWidth?: number | null;
     maxResults?: number | null;
+    maxHeight?: number | null;
+    locale?: string | null;
+    id?: string | null;
+    hl?: string | null;
+    chart?: ChartEnum;
+    part?: string | null;
 }
 
-export interface ApiYouTubeVideoUpdateLocalizationsPostRequest {
+export interface ApiYouTubeVideoUpdatePostRequest {
+    part: string;
     ageGatingAlcoholContent?: boolean | null;
     ageGatingRestricted?: boolean | null;
     ageGatingVideoGameRating?: string | null;
@@ -1328,7 +1345,7 @@ export class YouTubeVideoApi extends runtime.BaseAPI {
         }
 
         const response = await this.request({
-            path: `/api/YouTubeVideo/add-localization`,
+            path: `/api/YouTubeVideo/AddLocalization`,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -1347,29 +1364,65 @@ export class YouTubeVideoApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiYouTubeVideoIdSnippetLocalizationsWhereIdGetRaw(requestParameters: ApiYouTubeVideoIdSnippetLocalizationsWhereIdGetRequest): Promise<runtime.ApiResponse<VideoListResponse>> {
-        if (requestParameters.id === null || requestParameters.id === undefined) {
-            throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling apiYouTubeVideoIdSnippetLocalizationsWhereIdGet.');
-        }
-
+    async apiYouTubeVideoListGetRaw(requestParameters: ApiYouTubeVideoListGetRequest): Promise<runtime.ApiResponse<VideoListResponse>> {
         const queryParameters: runtime.HTTPQuery = {};
 
-        if (requestParameters.id !== undefined) {
-            queryParameters['id'] = requestParameters.id;
+        if (requestParameters.videoCategoryId !== undefined) {
+            queryParameters['VideoCategoryId'] = requestParameters.videoCategoryId;
+        }
+
+        if (requestParameters.regionCode !== undefined) {
+            queryParameters['RegionCode'] = requestParameters.regionCode;
         }
 
         if (requestParameters.pageToken !== undefined) {
             queryParameters['PageToken'] = requestParameters.pageToken;
         }
 
+        if (requestParameters.onBehalfOfContentOwner !== undefined) {
+            queryParameters['OnBehalfOfContentOwner'] = requestParameters.onBehalfOfContentOwner;
+        }
+
+        if (requestParameters.myRating !== undefined) {
+            queryParameters['MyRating'] = requestParameters.myRating;
+        }
+
+        if (requestParameters.maxWidth !== undefined) {
+            queryParameters['MaxWidth'] = requestParameters.maxWidth;
+        }
+
         if (requestParameters.maxResults !== undefined) {
             queryParameters['MaxResults'] = requestParameters.maxResults;
+        }
+
+        if (requestParameters.maxHeight !== undefined) {
+            queryParameters['MaxHeight'] = requestParameters.maxHeight;
+        }
+
+        if (requestParameters.locale !== undefined) {
+            queryParameters['Locale'] = requestParameters.locale;
+        }
+
+        if (requestParameters.id !== undefined) {
+            queryParameters['Id'] = requestParameters.id;
+        }
+
+        if (requestParameters.hl !== undefined) {
+            queryParameters['Hl'] = requestParameters.hl;
+        }
+
+        if (requestParameters.chart !== undefined) {
+            queryParameters['Chart'] = requestParameters.chart;
+        }
+
+        if (requestParameters.part !== undefined) {
+            queryParameters['Part'] = requestParameters.part;
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/YouTubeVideo/id-snippet-localizations-where-id`,
+            path: `/api/YouTubeVideo/List`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -1380,14 +1433,18 @@ export class YouTubeVideoApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiYouTubeVideoIdSnippetLocalizationsWhereIdGet(requestParameters: ApiYouTubeVideoIdSnippetLocalizationsWhereIdGetRequest): Promise<VideoListResponse> {
-        const response = await this.apiYouTubeVideoIdSnippetLocalizationsWhereIdGetRaw(requestParameters);
+    async apiYouTubeVideoListGet(requestParameters: ApiYouTubeVideoListGetRequest): Promise<VideoListResponse> {
+        const response = await this.apiYouTubeVideoListGetRaw(requestParameters);
         return await response.value();
     }
 
     /**
      */
-    async apiYouTubeVideoUpdateLocalizationsPostRaw(requestParameters: ApiYouTubeVideoUpdateLocalizationsPostRequest): Promise<runtime.ApiResponse<Video>> {
+    async apiYouTubeVideoUpdatePostRaw(requestParameters: ApiYouTubeVideoUpdatePostRequest): Promise<runtime.ApiResponse<Video>> {
+        if (requestParameters.part === null || requestParameters.part === undefined) {
+            throw new runtime.RequiredError('part','Required parameter requestParameters.part was null or undefined when calling apiYouTubeVideoUpdatePost.');
+        }
+
         const queryParameters: runtime.HTTPQuery = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -2238,8 +2295,12 @@ export class YouTubeVideoApi extends runtime.BaseAPI {
             formParams.append('TopicDetails.ETag', requestParameters.topicDetailsETag as any);
         }
 
+        if (requestParameters.part !== undefined) {
+            formParams.append('part', requestParameters.part as any);
+        }
+
         const response = await this.request({
-            path: `/api/YouTubeVideo/update-localizations`,
+            path: `/api/YouTubeVideo/Update`,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -2251,8 +2312,8 @@ export class YouTubeVideoApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiYouTubeVideoUpdateLocalizationsPost(requestParameters: ApiYouTubeVideoUpdateLocalizationsPostRequest): Promise<Video> {
-        const response = await this.apiYouTubeVideoUpdateLocalizationsPostRaw(requestParameters);
+    async apiYouTubeVideoUpdatePost(requestParameters: ApiYouTubeVideoUpdatePostRequest): Promise<Video> {
+        const response = await this.apiYouTubeVideoUpdatePostRaw(requestParameters);
         return await response.value();
     }
 

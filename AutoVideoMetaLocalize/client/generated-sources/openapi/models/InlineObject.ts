@@ -1292,6 +1292,12 @@ export interface InlineObject {
      * @memberof InlineObject
      */
     topicDetailsETag?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineObject
+     */
+    part: string;
 }
 
 export function InlineObjectFromJSON(json: any): InlineObject {
@@ -1513,6 +1519,7 @@ export function InlineObjectFromJSONTyped(json: any, ignoreDiscriminator: boolea
         'topicDetailsTopicCategories': !exists(json, 'TopicDetails.TopicCategories') ? undefined : json['TopicDetails.TopicCategories'],
         'topicDetailsTopicIds': !exists(json, 'TopicDetails.TopicIds') ? undefined : json['TopicDetails.TopicIds'],
         'topicDetailsETag': !exists(json, 'TopicDetails.ETag') ? undefined : json['TopicDetails.ETag'],
+        'part': json['part'],
     };
 }
 
@@ -1734,6 +1741,7 @@ export function InlineObjectToJSON(value?: InlineObject | null): any {
         'TopicDetails.TopicCategories': value.topicDetailsTopicCategories,
         'TopicDetails.TopicIds': value.topicDetailsTopicIds,
         'TopicDetails.ETag': value.topicDetailsETag,
+        'part': value.part,
     };
 }
 

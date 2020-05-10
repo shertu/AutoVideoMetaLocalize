@@ -20,7 +20,6 @@ namespace AutoVideoMetaLocalize.Controllers {
 
 		[HttpGet("List")]
 		public async Task<ActionResult<ChannelListResponse>> ForChannelSelect([Required, FromQuery] AppChannelListRequest request) {
-			//"id,snippet,contentDetails"
 			YouTubeService service = await serviceAccessor.InitializeServiceAsync();
 
 			ChannelsResource.ListRequest requestActual = service.Channels.List(request.Part);
