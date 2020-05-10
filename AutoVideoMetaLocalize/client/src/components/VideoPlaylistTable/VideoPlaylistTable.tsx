@@ -56,7 +56,7 @@ export function VideoPlaylistTable(props: {
       // build request
       const request: ApiYouTubePlaylistItemListGetRequest = {
         part: 'snippet',
-        id: playlistId,
+        playlistId: playlistId,
       };
 
       // change page
