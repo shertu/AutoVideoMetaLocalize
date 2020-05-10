@@ -18,11 +18,11 @@ export function ExecuteConfigurationPage(props: {
   configuration: ChannelTranslationConfiguration,
   onComplete: () => void,
 }): JSX.Element {
-  const languageCodes: string[] = props.configuration.languageCodes;
-  const videoIds: string[] = props.configuration.videoIds;
+  const languages: string[] = props.configuration.languageCodes;
+  const ids: string[] = props.configuration.videoIds;
 
-  const [exception, setException] =
-    React.useState<any>(null);
+  const [exceptionText, setExceptionText] =
+    React.useState<string>(null);
 
   const [count, setCount] =
     React.useState<number>(0);
@@ -31,56 +31,59 @@ export function ExecuteConfigurationPage(props: {
     React.useState<number>(0);
 
   React.useEffect(() => {
-    execute()
-      .catch(err => setException(err))
+    execute();
   }, []);
 
-  async function execute(): Promise<void> {
-    let countTemp: number = 0;
-    let exceptionTemp: Response = null;
-
+  function execute() {
     const req: ApiYouTubeVideoListGetRequest = {
-      id: videoIds.join(','),
+      id: ids.join(','),
       maxResults: 50,
       part: 'id,localizations,snippet'
     };
 
     do {
-      const res: VideoListResponse = await YOUTUBE_VIDEO_API.apiYouTubeVideoListGet(req);
-      req.pageToken = res.nextPageToken;
-      setMaximumCount(res.pageInfo.totalResults * languageCodes.length);
+      YOUTUBE_VIDEO_API.apiYouTubeVideoListGet(req)
+        .then((res) => {
+          req.pageToken = res.nextPageToken;
+          setMaximumCount(res.pageInfo.totalResults * languages.length);
 
-      const videos = res.items;
-      for (var i = 0; i < videos.length && (exceptionTemp == null); i++) {
-        const video: Video = videos[i];
+          for (var i = 0; i < res.items.length && !exceptionText; i++) {
+            executeVideo(res.items[i]);
+          }
+        })
+        .catch((err: Response) => {
+          err.text().then(text => setExceptionText(text));
+        });
+    } while (req.pageToken && !exceptionText);
+  }
 
-        for (var j = 0; j < languageCodes.length && (exceptionTemp == null); j++) {
-          const targetLanguageCode = languageCodes[j];
+  function executeVideo(video: Video) {
+    for (var j = 0; j < languages.length && !exceptionText; j++) {
+      const languageCode: string = languages[j];
 
-          await YOUTUBE_VIDEO_API.apiYouTubeVideoAddLocalizationPost({
-            ...video,
-            targetLanguageCode: targetLanguageCode,
-          }).then((res) => {
-            video.localizations = res.localizations;
-          }).catch((err) => exceptionTemp = err);
+      YOUTUBE_VIDEO_API.apiYouTubeVideoAddLocalizationPost({
+        ...video,
+        targetLanguageCode: languageCode,
+      })
+        .then((res) => {
+          video.localizations = { ...video.localizations, ...res.localizations };
 
-          setCount(++countTemp);
-        }
+          setCount(count + 1); // increment the progress
+        })
+        .catch((err: Response) => {
+          err.text().then(text => setExceptionText(text));
+        });
+    }
 
-        delete video.snippet; // YouTube API requires additional parts to be removed.
+    delete video.snippet; // YouTube API requires additional parts to be removed.
 
-        await YOUTUBE_VIDEO_API.apiYouTubeVideoUpdatePost({
-          ...video,
-          part: 'id,localizations',
-        }).catch((err) => exceptionTemp = err);
-      }
-
-    } while (req.pageToken && (exceptionTemp == null));
-
-    console.log(exceptionTemp);
-
-    // set the exception
-    setException(exceptionTemp);
+    YOUTUBE_VIDEO_API.apiYouTubeVideoUpdatePost({
+      ...video,
+      part: 'id,localizations',
+    })
+      .catch((err: Response) => {
+        err.text().then(text => setExceptionText(text));
+      });
   }
 
   const completeFrac: number = (maximumCount) ? (count / maximumCount) : 1;
@@ -91,7 +94,7 @@ export function ExecuteConfigurationPage(props: {
     percent: completeFrac * 100,
   };
 
-  if (exception) {
+  if (exceptionText) {
     progressProps.status = 'exception';
   }
 
@@ -106,17 +109,17 @@ export function ExecuteConfigurationPage(props: {
         <Button
           type="primary"
           htmlType="submit"
-          disabled={completeFrac < 1 && !exception}
+          disabled={completeFrac < 1 && !exceptionText}
           onClick={props.onComplete}>Finish</Button>
       </Row>
 
-      {exception && (
+      {exceptionText && (
         <Page>
           <Divider>Execution Error</Divider>
           <Row align="middle" justify="center">
             <Card className="max-cell-md">
               <Typography.Paragraph>
-                {exception.text().then()}
+                {exceptionText}
               </Typography.Paragraph>
             </Card>
           </Row>
