@@ -63,7 +63,7 @@ export function ChannelTranslationConfigurationForm(props: {
     });
   }
 
-  const languageSelectOptions: React.ReactNode[] = null;
+  const languageSelectOptions: React.ReactNode[] = [];
   if (googleTranslateSupportedLanguages) {
     googleTranslateSupportedLanguages.forEach((_) => {
       if (_.supportTarget) {
