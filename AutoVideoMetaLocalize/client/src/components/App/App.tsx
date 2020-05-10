@@ -4,7 +4,7 @@ import {BrowserRouter as Router} from 'react-router-dom';
 import {AccountApi} from '../../../generated-sources/openapi';
 import {ClaimsPrinciple} from '../../security';
 import {UserProvider} from '../UserContext/UserContext';
-import {AppLayout} from './AppLayout/AppLayout';
+//import {AppLayout} from './AppLayout/AppLayout';
 import './style.less';
 
 const ACCOUNT_API: AccountApi = new AccountApi();
