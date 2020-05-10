@@ -3,10 +3,10 @@ import { Button, Col, Divider, Form, Row, Select } from 'antd';
 import { Store } from 'antd/lib/form/interface';
 import * as React from 'react';
 import { Channel, LanguageApi, PlaylistItem, SupportedLanguage } from '../../../../../generated-sources/openapi';
+import { ChannelTranslationConfiguration } from '../../../../ChannelTranslationConfiguration';
 import { PlaylistTable } from '../../../PlaylistTable/PlaylistTable';
 import { Page } from '../../Page';
 import './style.less';
-import { ChannelTranslationConfiguration } from '../../../../ChannelTranslationConfiguration';
 
 const LANGUAGE_API = new LanguageApi();
 
@@ -96,7 +96,6 @@ export function ChannelTranslationConfigurationForm(props: {
             mode="multiple"
             optionFilterProp="label"
           >
-
             {languageSelectOptions}
           </Select>
         </Form.Item>

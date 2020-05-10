@@ -1,10 +1,10 @@
 import * as React from 'react';
-import {Channel} from '../../../../generated-sources/openapi';
-import {ChannelSelectForm} from './ChannelSelectForm/ChannelSelectForm';
-import {ChannelTranslationConfigurationForm} from './ChannelTranslationConfigurationForm/ChannelTranslationConfigurationForm';
-import {ExecuteConfigurationPage} from './ExecuteConfigurationPage/ExecuteConfigurationPage';
-import './style.less';
+import { Channel } from '../../../../generated-sources/openapi';
 import { ChannelTranslationConfiguration } from '../../../ChannelTranslationConfiguration';
+import { ChannelSelectForm } from './ChannelSelectForm/ChannelSelectForm';
+import { ChannelTranslationConfigurationForm } from './ChannelTranslationConfigurationForm/ChannelTranslationConfigurationForm';
+import { ExecuteConfigurationPage } from './ExecuteConfigurationPage/ExecuteConfigurationPage';
+import './style.less';
 
 /**
  * The page used to control the flow of the process.

@@ -4,6 +4,7 @@ using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
 namespace AutoVideoMetaLocalize.Controllers {
@@ -17,15 +18,24 @@ namespace AutoVideoMetaLocalize.Controllers {
 			this.serviceAccessor = serviceAccessor;
 		}
 
-		[HttpGet("id-snippet-contentdetails-where-mine")]
-		public async Task<ActionResult<ChannelListResponse>> ForChannelSelect(
-			[FromQuery] PaginationRequestInformation pagination) {
+		[HttpGet("List")]
+		public async Task<ActionResult<ChannelListResponse>> ForChannelSelect([Required, FromQuery] AppChannelListRequest request) {
+			//"id,snippet,contentDetails"
 			YouTubeService service = await serviceAccessor.InitializeServiceAsync();
-			ChannelsResource.ListRequest request = service.Channels.List("id,snippet,contentDetails");
-			request.Mine = true;
-			request.PageToken = pagination.PageToken;
-			request.MaxResults = pagination.MaxResults;
-			ChannelListResponse response = await request.ExecuteAsync();
+
+			ChannelsResource.ListRequest requestActual = service.Channels.List(request.Part);
+			requestActual.CategoryId = request.CategoryId;
+			requestActual.ForUsername = request.ForUsername;
+			requestActual.Hl = request.Hl;
+			requestActual.Id = request.Id;
+			requestActual.ManagedByMe = request.ManagedByMe;
+			requestActual.MaxResults = request.MaxResults;
+			requestActual.Mine = request.Mine;
+			requestActual.MySubscribers = request.MySubscribers;
+			requestActual.OnBehalfOfContentOwner = request.OnBehalfOfContentOwner;
+			requestActual.PageToken = request.PageToken;
+
+			ChannelListResponse response = await requestActual.ExecuteAsync();
 			return new ActionResult<ChannelListResponse>(response);
 		}
 	}

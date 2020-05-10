@@ -244,13 +244,13 @@ export interface ApiYouTubeVideoAddLocalizationPostRequest {
     topicDetailsETag?: string | null;
 }
 
-export interface ApiYouTubeVideoExecuteConfigurationPageGetRequest {
+export interface ApiYouTubeVideoIdSnippetLocalizationsWhereIdGetRequest {
     id: string;
     pageToken?: string | null;
     maxResults?: number | null;
 }
 
-export interface ApiYouTubeVideoVideoPostRequest {
+export interface ApiYouTubeVideoUpdateLocalizationsPostRequest {
     ageGatingAlcoholContent?: boolean | null;
     ageGatingRestricted?: boolean | null;
     ageGatingVideoGameRating?: string | null;
@@ -1328,7 +1328,7 @@ export class YouTubeVideoApi extends runtime.BaseAPI {
         }
 
         const response = await this.request({
-            path: `/api/YouTubeVideo/Add-Localization`,
+            path: `/api/YouTubeVideo/add-localization`,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -1347,9 +1347,9 @@ export class YouTubeVideoApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiYouTubeVideoExecuteConfigurationPageGetRaw(requestParameters: ApiYouTubeVideoExecuteConfigurationPageGetRequest): Promise<runtime.ApiResponse<VideoListResponse>> {
+    async apiYouTubeVideoIdSnippetLocalizationsWhereIdGetRaw(requestParameters: ApiYouTubeVideoIdSnippetLocalizationsWhereIdGetRequest): Promise<runtime.ApiResponse<VideoListResponse>> {
         if (requestParameters.id === null || requestParameters.id === undefined) {
-            throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling apiYouTubeVideoExecuteConfigurationPageGet.');
+            throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling apiYouTubeVideoIdSnippetLocalizationsWhereIdGet.');
         }
 
         const queryParameters: runtime.HTTPQuery = {};
@@ -1369,7 +1369,7 @@ export class YouTubeVideoApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/YouTubeVideo/ExecuteConfigurationPage`,
+            path: `/api/YouTubeVideo/id-snippet-localizations-where-id`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -1380,14 +1380,14 @@ export class YouTubeVideoApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiYouTubeVideoExecuteConfigurationPageGet(requestParameters: ApiYouTubeVideoExecuteConfigurationPageGetRequest): Promise<VideoListResponse> {
-        const response = await this.apiYouTubeVideoExecuteConfigurationPageGetRaw(requestParameters);
+    async apiYouTubeVideoIdSnippetLocalizationsWhereIdGet(requestParameters: ApiYouTubeVideoIdSnippetLocalizationsWhereIdGetRequest): Promise<VideoListResponse> {
+        const response = await this.apiYouTubeVideoIdSnippetLocalizationsWhereIdGetRaw(requestParameters);
         return await response.value();
     }
 
     /**
      */
-    async apiYouTubeVideoVideoPostRaw(requestParameters: ApiYouTubeVideoVideoPostRequest): Promise<runtime.ApiResponse<Video>> {
+    async apiYouTubeVideoUpdateLocalizationsPostRaw(requestParameters: ApiYouTubeVideoUpdateLocalizationsPostRequest): Promise<runtime.ApiResponse<Video>> {
         const queryParameters: runtime.HTTPQuery = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -2239,7 +2239,7 @@ export class YouTubeVideoApi extends runtime.BaseAPI {
         }
 
         const response = await this.request({
-            path: `/api/YouTubeVideo/Video`,
+            path: `/api/YouTubeVideo/update-localizations`,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -2251,8 +2251,8 @@ export class YouTubeVideoApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiYouTubeVideoVideoPost(requestParameters: ApiYouTubeVideoVideoPostRequest): Promise<Video> {
-        const response = await this.apiYouTubeVideoVideoPostRaw(requestParameters);
+    async apiYouTubeVideoUpdateLocalizationsPost(requestParameters: ApiYouTubeVideoUpdateLocalizationsPostRequest): Promise<Video> {
+        const response = await this.apiYouTubeVideoUpdateLocalizationsPostRaw(requestParameters);
         return await response.value();
     }
 

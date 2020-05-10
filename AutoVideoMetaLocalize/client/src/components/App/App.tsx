@@ -32,7 +32,6 @@ export function App(): JSX.Element {
     </UserProvider>
   );
 }
-//<AppLayout />
 
 // Render the application to the DOM.
 render(<App />, document.getElementById('app'));

@@ -20,7 +20,7 @@ import {
     PlaylistItemListResponseToJSON,
 } from '../models';
 
-export interface ApiYouTubePlaylistItemChannelTranslationConfigurationFormGetRequest {
+export interface ApiYouTubePlaylistItemIdSnippetWherePlaylistidGetRequest {
     playlistId: string;
     pageToken?: string | null;
     maxResults?: number | null;
@@ -33,9 +33,9 @@ export class YouTubePlaylistItemApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiYouTubePlaylistItemChannelTranslationConfigurationFormGetRaw(requestParameters: ApiYouTubePlaylistItemChannelTranslationConfigurationFormGetRequest): Promise<runtime.ApiResponse<PlaylistItemListResponse>> {
+    async apiYouTubePlaylistItemIdSnippetWherePlaylistidGetRaw(requestParameters: ApiYouTubePlaylistItemIdSnippetWherePlaylistidGetRequest): Promise<runtime.ApiResponse<PlaylistItemListResponse>> {
         if (requestParameters.playlistId === null || requestParameters.playlistId === undefined) {
-            throw new runtime.RequiredError('playlistId','Required parameter requestParameters.playlistId was null or undefined when calling apiYouTubePlaylistItemChannelTranslationConfigurationFormGet.');
+            throw new runtime.RequiredError('playlistId','Required parameter requestParameters.playlistId was null or undefined when calling apiYouTubePlaylistItemIdSnippetWherePlaylistidGet.');
         }
 
         const queryParameters: runtime.HTTPQuery = {};
@@ -55,7 +55,7 @@ export class YouTubePlaylistItemApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/YouTubePlaylistItem/ChannelTranslationConfigurationForm`,
+            path: `/api/YouTubePlaylistItem/id-snippet-where-playlistid`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -66,8 +66,8 @@ export class YouTubePlaylistItemApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiYouTubePlaylistItemChannelTranslationConfigurationFormGet(requestParameters: ApiYouTubePlaylistItemChannelTranslationConfigurationFormGetRequest): Promise<PlaylistItemListResponse> {
-        const response = await this.apiYouTubePlaylistItemChannelTranslationConfigurationFormGetRaw(requestParameters);
+    async apiYouTubePlaylistItemIdSnippetWherePlaylistidGet(requestParameters: ApiYouTubePlaylistItemIdSnippetWherePlaylistidGetRequest): Promise<PlaylistItemListResponse> {
+        const response = await this.apiYouTubePlaylistItemIdSnippetWherePlaylistidGetRaw(requestParameters);
         return await response.value();
     }
 

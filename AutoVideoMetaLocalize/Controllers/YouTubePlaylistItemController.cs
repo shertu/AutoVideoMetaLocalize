@@ -18,18 +18,20 @@ namespace AutoVideoMetaLocalize.Controllers {
 			this.serviceAccessor = serviceAccessor;
 		}
 
-		[HttpGet("id-snippet-where-playlistid")]
-		public async Task<ActionResult<PlaylistItemListResponse>> ListWherePlaylistId(
-			[Required, FromQuery] string playlistId, [FromQuery] PaginationRequestInformation pagination) {
-			if (string.IsNullOrEmpty(playlistId))
-				throw new System.ArgumentException("message", nameof(playlistId));
-
+		[HttpGet("List")]
+		public async Task<ActionResult<PlaylistItemListResponse>> ListWherePlaylistId([Required, FromQuery] AppPlaylistItemListRequest request) {
+			//"id,snippet"
 			YouTubeService service = await serviceAccessor.InitializeServiceAsync();
-			PlaylistItemsResource.ListRequest request = service.PlaylistItems.List("id,snippet");
-			request.PlaylistId = playlistId;
-			request.PageToken = pagination.PageToken;
-			request.MaxResults = pagination.MaxResults;
-			PlaylistItemListResponse response = await request.ExecuteAsync();
+
+			PlaylistItemsResource.ListRequest requestActual = service.PlaylistItems.List(request.Part);
+			requestActual.Id = request.Id;
+			requestActual.MaxResults = request.MaxResults;
+			requestActual.OnBehalfOfContentOwner = request.OnBehalfOfContentOwner;
+			requestActual.PageToken = request.PageToken;
+			requestActual.PlaylistId = request.PlaylistId;
+			requestActual.VideoId = request.VideoId;
+
+			PlaylistItemListResponse response = await requestActual.ExecuteAsync();
 			return new ActionResult<PlaylistItemListResponse>(response);
 		}
 	}

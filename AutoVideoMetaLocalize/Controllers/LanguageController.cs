@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoVideoMetaLocalize.Utilities;
 using Google.Apis.YouTube.v3;
@@ -8,6 +7,7 @@ using Google.Cloud.Translate.V3;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
+using System.Linq;
 
 namespace AutoVideoMetaLocalize.Controllers {
 	[Route("api/[controller]")]
@@ -23,11 +23,11 @@ namespace AutoVideoMetaLocalize.Controllers {
 
 		[HttpGet("YouTube-I18nLanguages")]
 		[Authorize]
-		public async Task<ActionResult<I18nLanguageListResponse>> GetYouTubeLanguages() {
+		public async Task<ActionResult<IEnumerable<I18nLanguageSnippet>>> GetYouTubeLanguages() {
 			YouTubeService service = await serviceAccessor.InitializeServiceAsync();
 			I18nLanguagesResource.ListRequest req = service.I18nLanguages.List("snippet");
 			I18nLanguageListResponse res = await req.ExecuteAsync();
-			return new ActionResult<I18nLanguageListResponse>(res);
+			return new ActionResult<IEnumerable<I18nLanguageSnippet>>(res.Items.Select(elem => elem.Snippet));
 		}
 
 		[HttpGet("GoogleTranslate-SupportedLanguages")]

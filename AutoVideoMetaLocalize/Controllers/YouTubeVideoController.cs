@@ -23,34 +23,33 @@ namespace AutoVideoMetaLocalize.Controllers {
 			this.translate = translate;
 		}
 
-		[HttpGet("id-snippet-localizations-where-id")]
-		public async Task<ActionResult<VideoListResponse>> ListWhereId(
-			[Required, FromQuery] string id, [FromQuery] PaginationRequestInformation pagination) {
-			if (string.IsNullOrEmpty(id))
-				throw new ArgumentException("message", nameof(id));
-
+		[HttpGet("List")]
+		public async Task<ActionResult<VideoListResponse>> ListWhereId([Required, FromQuery] AppVideoListRequest request) {
 			YouTubeService service = await serviceAccessor.InitializeServiceAsync();
-			VideosResource.ListRequest request = service.Videos.List("id,snippet,localizations");
-			request.Id = id;
-			request.PageToken = pagination.PageToken;
-			request.MaxResults = pagination.MaxResults;
-			VideoListResponse response = await request.ExecuteAsync();
+
+			VideosResource.ListRequest requestActual = service.Videos.List(request.Part);
+			requestActual.VideoCategoryId = request.VideoCategoryId;
+			requestActual.RegionCode = request.RegionCode;
+			requestActual.PageToken = request.PageToken;
+			requestActual.OnBehalfOfContentOwner = request.OnBehalfOfContentOwner;
+			requestActual.MyRating = request.MyRating;
+			requestActual.MaxWidth = request.MaxWidth;
+			requestActual.MaxResults = request.MaxResults;
+			requestActual.MaxHeight = request.MaxHeight;
+			requestActual.Locale = request.Locale;
+			requestActual.Id = request.Id;
+			requestActual.Hl = request.Hl;
+			requestActual.Chart = request.Chart;
+
+			VideoListResponse response = await requestActual.ExecuteAsync();
 			return new ActionResult<VideoListResponse>(response);
 		}
 
-		[HttpPost("update-localizations")]
-		public async Task<ActionResult<Video>> UpdateVideo([Required, FromForm] Video video) {
-			if (video is null)
-				throw new ArgumentNullException(nameof(video));
-
+		[HttpPost("Update")]
+		public async Task<ActionResult<Video>> UpdateVideo([Required, FromForm] Video video, [Required, FromForm] string part) {
+			//"id,localizations"
 			YouTubeService service = await serviceAccessor.InitializeServiceAsync();
-
-			Video temp = new Video {
-				Id = video.Id,
-				Localizations = video.Localizations,
-			};
-
-			VideosResource.UpdateRequest request = service.Videos.Update(temp, "id,localizations");
+			VideosResource.UpdateRequest request = service.Videos.Update(video, part);
 			Video response = await request.ExecuteAsync();
 			return new ActionResult<Video>(response);
 		}
@@ -60,7 +59,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 			DESCRIPTION = 1,
 		}
 
-		[HttpPost("add-localization")]
+		[HttpPost("AddLocalization")]
 		public async Task<ActionResult<Video>> AddLocalizationToVideo(
 			[Required, FromForm] Video video, [Required, FromForm] string targetLanguageCode) {
 			if (video is null)

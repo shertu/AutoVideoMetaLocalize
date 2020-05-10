@@ -73,7 +73,7 @@ export function PlaylistTable(props: {
       request.maxResults = pageSize;
 
       // fetch page
-      YOUTUBE_PLAYLIST_ITEM_API.apiYouTubePlaylistItemChannelTranslationConfigurationFormGet(request)
+      YOUTUBE_PLAYLIST_ITEM_API.apiYouTubePlaylistItemIdSnippetWherePlaylistidGet(request)
           .then((res) => setResponse(res));
 
       // set the page to the new value

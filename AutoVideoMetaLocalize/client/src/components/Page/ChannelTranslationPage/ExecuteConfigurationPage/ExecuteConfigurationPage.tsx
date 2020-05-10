@@ -1,10 +1,10 @@
-import { Button, Divider, Progress, Row, Typography, Card } from 'antd';
+import { Button, Card, Divider, Progress, Row, Typography } from 'antd';
 import { ProgressProps } from 'antd/lib/progress';
 import * as React from 'react';
-import { YouTubeVideoApi, Video, ApiYouTubeVideoExecuteConfigurationPageGetRequest } from '../../../../../generated-sources/openapi';
+import { Video, YouTubeVideoApi } from '../../../../../generated-sources/openapi';
+import { ChannelTranslationConfiguration } from '../../../../ChannelTranslationConfiguration';
 import { Page } from '../../Page';
 import './style.less';
-import { ChannelTranslationConfiguration } from '../../../../ChannelTranslationConfiguration';
 
 const YOUTUBE_VIDEO_API: YouTubeVideoApi = new YouTubeVideoApi();
 
