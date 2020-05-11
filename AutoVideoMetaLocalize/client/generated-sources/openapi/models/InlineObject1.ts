@@ -27,10 +27,10 @@ export interface InlineObject1 {
     id: string;
     /**
      * 
-     * @type {Array<string>}
+     * @type {string}
      * @memberof InlineObject1
      */
-    languages: Array<string>;
+    language: string;
 }
 
 export function InlineObject1FromJSON(json: any): InlineObject1 {
@@ -44,7 +44,7 @@ export function InlineObject1FromJSONTyped(json: any, ignoreDiscriminator: boole
     return {
         
         'id': json['id'],
-        'languages': json['languages'],
+        'language': json['language'],
     };
 }
 
@@ -58,7 +58,7 @@ export function InlineObject1ToJSON(value?: InlineObject1 | null): any {
     return {
         
         'id': value.id,
-        'languages': value.languages,
+        'language': value.language,
     };
 }
 

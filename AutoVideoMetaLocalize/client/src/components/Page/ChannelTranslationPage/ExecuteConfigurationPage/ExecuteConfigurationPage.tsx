@@ -53,7 +53,7 @@ export function ExecuteConfigurationPage(props: {
 
     const localizedVideo: Video = await YOUTUBE_VIDEO_API.apiYouTubeVideoLocalizePost({
       id: id,
-      languages: languages,
+      language: languages.join(','),
     });
 
     console.log("Beta", localizedVideo);

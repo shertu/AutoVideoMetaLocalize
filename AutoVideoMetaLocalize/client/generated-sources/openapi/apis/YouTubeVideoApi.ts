@@ -56,7 +56,7 @@ export interface ApiYouTubeVideoListGetRequest {
 
 export interface ApiYouTubeVideoLocalizePostRequest {
     id: string;
-    languages: Array<string>;
+    language: string;
 }
 
 export interface ApiYouTubeVideoUpdatePostRequest {
@@ -359,8 +359,8 @@ export class YouTubeVideoApi extends runtime.BaseAPI {
             throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling apiYouTubeVideoLocalizePost.');
         }
 
-        if (requestParameters.languages === null || requestParameters.languages === undefined) {
-            throw new runtime.RequiredError('languages','Required parameter requestParameters.languages was null or undefined when calling apiYouTubeVideoLocalizePost.');
+        if (requestParameters.language === null || requestParameters.language === undefined) {
+            throw new runtime.RequiredError('language','Required parameter requestParameters.language was null or undefined when calling apiYouTubeVideoLocalizePost.');
         }
 
         const queryParameters: runtime.HTTPQuery = {};
@@ -385,8 +385,8 @@ export class YouTubeVideoApi extends runtime.BaseAPI {
             formParams.append('id', requestParameters.id as any);
         }
 
-        if (requestParameters.languages) {
-            formParams.append('languages', requestParameters.languages.join(runtime.COLLECTION_FORMATS["csv"]));
+        if (requestParameters.language !== undefined) {
+            formParams.append('language', requestParameters.language as any);
         }
 
         const response = await this.request({
