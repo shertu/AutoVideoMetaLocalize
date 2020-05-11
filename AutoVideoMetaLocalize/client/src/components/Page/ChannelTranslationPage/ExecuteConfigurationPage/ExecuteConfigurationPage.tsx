@@ -33,6 +33,12 @@ export function ExecuteConfigurationPage(props: {
   const [maximumCount, setMaximumCount] =
     React.useState<number>(0);
 
+
+  console.log("props", props);
+  console.log("state", error, errorMessage, count, maximumCount);
+
+  console.log("isError", isResponse(error));
+
   React.useEffect(() => {
     execute()
       .catch((err) => setError(err));
@@ -63,9 +69,10 @@ export function ExecuteConfigurationPage(props: {
       req.pageToken = res.nextPageToken;
       console.log(res.pageInfo.totalResults * languages.length);
       setMaximumCount(res.pageInfo.totalResults * languages.length);
+      const items = res.items;
 
-      for (var i = 0; i < res.items.length && !errorMessage; i++) {
-        executeVideo(res.items[i]);
+      for (var i = 0; i < items.length; i++) {
+        executeVideo(items[i]);
       }
     } while (req.pageToken);
   }
@@ -83,7 +90,7 @@ export function ExecuteConfigurationPage(props: {
       setCount(count + 1); // increment the progress
     }
 
-    delete video.snippet; // YouTube API requires additional parts to be removed.
+    //delete video.snippet; // YouTube API requires additional parts to be removed.
 
     await YOUTUBE_VIDEO_API.apiYouTubeVideoUpdatePost({
       ...video,
@@ -96,8 +103,6 @@ export function ExecuteConfigurationPage(props: {
       ...video,
       targetLanguageCode: languageCode,
     });
-
-    console.log(video, languageCode, res);
 
     return res;
   }
