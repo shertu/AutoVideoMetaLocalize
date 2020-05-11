@@ -30,10 +30,6 @@ export function ExecuteConfigurationPage(props: {
   const [countMax, setCountMax] =
     React.useState<number>(ids.length);
 
-
-  console.log("props", props);
-  console.log("state", errorMessage, count, countMax);
-
   React.useEffect(() => {
     executeFetchVideos()
       .catch((err: Response) => {

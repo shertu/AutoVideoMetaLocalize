@@ -25,22 +25,9 @@ namespace AutoVideoMetaLocalize.Controllers {
 		}
 
 		[HttpGet("List")]
-		public async Task<ActionResult<VideoListResponse>> ListWhereId([Required, FromQuery] AppVideoListRequest request) {
+		public async Task<ActionResult<VideoListResponse>> List([Required, FromQuery] AppVideoListRequest request) {
 			YouTubeService service = await serviceAccessor.InitializeServiceAsync();
-
-			VideosResource.ListRequest requestActual = service.Videos.List(request.Part);
-			requestActual.VideoCategoryId = request.VideoCategoryId;
-			requestActual.RegionCode = request.RegionCode;
-			requestActual.PageToken = request.PageToken;
-			requestActual.OnBehalfOfContentOwner = request.OnBehalfOfContentOwner;
-			requestActual.MyRating = request.MyRating;
-			requestActual.MaxWidth = request.MaxWidth;
-			requestActual.MaxResults = request.MaxResults;
-			requestActual.MaxHeight = request.MaxHeight;
-			requestActual.Locale = request.Locale;
-			requestActual.Id = request.Id;
-			requestActual.Hl = request.Hl;
-			requestActual.Chart = request.Chart;
+			VideosResource.ListRequest requestActual = request.ToActualRequest(service);
 
 			try {
 				VideoListResponse response = await requestActual.ExecuteAsync();
@@ -51,7 +38,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 		}
 
 		[HttpPost("Update")]
-		public async Task<ActionResult<Video>> UpdateVideo([Required, FromForm] Video video, [Required, FromForm] string part) {
+		public async Task<ActionResult<Video>> Update([Required, FromForm] Video video, [Required, FromForm] string part) {
 			YouTubeService service = await serviceAccessor.InitializeServiceAsync();
 			VideosResource.UpdateRequest request = service.Videos.Update(video, part);
 
@@ -68,19 +55,27 @@ namespace AutoVideoMetaLocalize.Controllers {
 			DESCRIPTION = 1,
 		}
 
-		[HttpPost("AddLocalization")]
-		public async Task<ActionResult<Video>> AddLocalizationToVideo(
-			[Required, FromForm] Video video, [Required, FromForm] string[] languages) {
+		[HttpPost("Localize")]
+		public async Task<ActionResult<Video>> Localize(
+			[Required, FromForm] string id, [Required, FromForm] string[] languages) {
+			if (id is null)
+				throw new ArgumentNullException(nameof(id));
+
+			YouTubeService service = await serviceAccessor.InitializeServiceAsync();
+			VideosResource.ListRequest requestVideoList = service.Videos.List("id,snippet,localizations");
+			requestVideoList.MaxResults = 1;
+			requestVideoList.Id = id;
+
+			Video video;
+			try {
+				VideoListResponse response = await requestVideoList.ExecuteAsync();
+				video = response.Items.Count > 0 ? response.Items[0] : null;
+			} catch (GoogleApiException ex) {
+				return StatusCode((int) ex.HttpStatusCode, ex.Message);
+			}
+
 			if (video is null)
 				throw new ArgumentNullException(nameof(video));
-
-			throw new Exception(video.ToString());
-
-			if (video.Snippet == null)
-				throw new ArgumentNullException(nameof(video.Snippet));
-
-			if (video.Localizations == null)
-				throw new ArgumentNullException(nameof(video.Localizations));
 
 			string videoLanguage = video.Snippet.DefaultLanguage;
 

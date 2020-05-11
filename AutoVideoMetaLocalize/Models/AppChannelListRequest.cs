@@ -1,4 +1,6 @@
-﻿namespace AutoVideoMetaLocalize.Models {
+﻿using Google.Apis.YouTube.v3;
+
+namespace AutoVideoMetaLocalize.Models {
 	public class AppChannelListRequest {
 		//
 		// Summary:
@@ -71,5 +73,20 @@
 		//     be returned. In an API response, the nextPageToken and prevPageToken properties
 		//     identify other pages that could be retrieved.
 		public virtual string PageToken { get; set; }
+
+		public ChannelsResource.ListRequest ToActualRequest(YouTubeService service) {
+			ChannelsResource.ListRequest actual = service.Channels.List(Part);
+			actual.CategoryId = CategoryId;
+			actual.ForUsername = ForUsername;
+			actual.Hl = Hl;
+			actual.Id = Id;
+			actual.ManagedByMe = ManagedByMe;
+			actual.MaxResults = MaxResults;
+			actual.Mine = Mine;
+			actual.MySubscribers = MySubscribers;
+			actual.OnBehalfOfContentOwner = OnBehalfOfContentOwner;
+			actual.PageToken = PageToken;
+			return actual;
+		}
 	}
 }

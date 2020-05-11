@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Google.Apis.YouTube.v3;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -94,5 +95,22 @@ namespace AutoVideoMetaLocalize.Models {
 		//     the channelId, title, description, tags, and categoryId properties. As such,
 		//     if you set part=snippet, the API response will contain all of those properties.
 		public virtual string Part { get; set; }
+
+		public VideosResource.ListRequest ToActualRequest(YouTubeService service) {
+			VideosResource.ListRequest actual = service.Videos.List(Part);
+			actual.VideoCategoryId = VideoCategoryId;
+			actual.RegionCode = RegionCode;
+			actual.PageToken = PageToken;
+			actual.OnBehalfOfContentOwner = OnBehalfOfContentOwner;
+			actual.MyRating = MyRating;
+			actual.MaxWidth = MaxWidth;
+			actual.MaxResults = MaxResults;
+			actual.MaxHeight = MaxHeight;
+			actual.Locale = Locale;
+			actual.Id = Id;
+			actual.Hl = Hl;
+			actual.Chart = Chart;
+			return actual;
+		}
 	}
 }

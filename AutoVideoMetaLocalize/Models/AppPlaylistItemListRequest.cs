@@ -1,4 +1,6 @@
-﻿namespace AutoVideoMetaLocalize.Models {
+﻿using Google.Apis.YouTube.v3;
+
+namespace AutoVideoMetaLocalize.Models {
 	public class AppPlaylistItemListRequest {
 		//
 		// Summary:
@@ -50,5 +52,16 @@
 		//     The videoId parameter specifies that the request should return only the playlist
 		//     items that contain the specified video.
 		public virtual string VideoId { get; set; }
+
+		public PlaylistItemsResource.ListRequest ToActualRequest(YouTubeService service) {
+			PlaylistItemsResource.ListRequest actual = service.PlaylistItems.List(Part);
+			actual.Id = Id;
+			actual.MaxResults = MaxResults;
+			actual.OnBehalfOfContentOwner = OnBehalfOfContentOwner;
+			actual.PageToken = PageToken;
+			actual.PlaylistId = PlaylistId;
+			actual.VideoId = VideoId;
+			return actual;
+		}
 	}
 }
