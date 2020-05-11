@@ -57,7 +57,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 
 		[HttpPost("Localize")]
 		public async Task<ActionResult<Video>> Localize(
-			[Required, FromForm] string id, [Required, FromForm] string[] languages) {
+			[Required, FromForm] string id, [Required, FromForm] string language) {
 			if (id is null)
 				throw new ArgumentNullException(nameof(id));
 
@@ -83,10 +83,10 @@ namespace AutoVideoMetaLocalize.Controllers {
 			contents[(int) CONTENTS_INDEX.TITLE] = video.Snippet.Title;
 			contents[(int) CONTENTS_INDEX.DESCRIPTION] = video.Snippet.Description;
 
-			foreach (string language in languages) {
+			foreach (string languageCode in language.Split(',')) {
 				// setters for request prevent null values
 				TranslateTextRequest request = new TranslateTextRequest {
-					TargetLanguageCode = language,
+					TargetLanguageCode = languageCode,
 				};
 
 				if (videoLanguageCode != null) {
@@ -105,7 +105,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 					Description = translationDescription.TranslatedText,
 				};
 
-				video.Localizations[language] = localization;
+				video.Localizations[languageCode] = localization;
 			}
 
 			return new ActionResult<Video>(video);
