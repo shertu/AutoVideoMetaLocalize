@@ -36,8 +36,8 @@ export function ExecuteConfigurationPage(props: {
 
   React.useEffect(() => {
     executeFetchVideos()
-      .catch((err) => {
-        setErrorMessage("an error occured");
+      .catch((err: Response) => {
+        err.text().then((text: string) => setErrorMessage(text));
       });
   }, []);
 
@@ -71,7 +71,7 @@ export function ExecuteConfigurationPage(props: {
   async function executeLocalizeVideo(video: Video): Promise<Video> {
     const localizedVideo: Video = await YOUTUBE_VIDEO_API.apiYouTubeVideoAddLocalizationPost({
       ...video,
-      targetLanguageCode: languages[0],
+      languages: languages,
     })
 
     const updatedVideo: Video = await YOUTUBE_VIDEO_API.apiYouTubeVideoUpdatePost({

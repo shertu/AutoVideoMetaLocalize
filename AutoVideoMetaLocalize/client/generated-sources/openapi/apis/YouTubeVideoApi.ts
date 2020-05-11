@@ -39,7 +39,7 @@ import {
 } from '../models';
 
 export interface ApiYouTubeVideoAddLocalizationPostRequest {
-    targetLanguageCode: string;
+    languages: Array<string>;
     ageGatingAlcoholContent?: boolean | null;
     ageGatingRestricted?: boolean | null;
     ageGatingVideoGameRating?: string | null;
@@ -486,8 +486,8 @@ export class YouTubeVideoApi extends runtime.BaseAPI {
     /**
      */
     async apiYouTubeVideoAddLocalizationPostRaw(requestParameters: ApiYouTubeVideoAddLocalizationPostRequest): Promise<runtime.ApiResponse<Video>> {
-        if (requestParameters.targetLanguageCode === null || requestParameters.targetLanguageCode === undefined) {
-            throw new runtime.RequiredError('targetLanguageCode','Required parameter requestParameters.targetLanguageCode was null or undefined when calling apiYouTubeVideoAddLocalizationPost.');
+        if (requestParameters.languages === null || requestParameters.languages === undefined) {
+            throw new runtime.RequiredError('languages','Required parameter requestParameters.languages was null or undefined when calling apiYouTubeVideoAddLocalizationPost.');
         }
 
         const queryParameters: runtime.HTTPQuery = {};
@@ -1340,8 +1340,8 @@ export class YouTubeVideoApi extends runtime.BaseAPI {
             formParams.append('TopicDetails.ETag', requestParameters.topicDetailsETag as any);
         }
 
-        if (requestParameters.targetLanguageCode !== undefined) {
-            formParams.append('targetLanguageCode', requestParameters.targetLanguageCode as any);
+        if (requestParameters.languages) {
+            formParams.append('languages', requestParameters.languages.join(runtime.COLLECTION_FORMATS["csv"]));
         }
 
         const response = await this.request({

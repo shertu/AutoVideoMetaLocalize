@@ -1294,10 +1294,10 @@ export interface InlineObject1 {
     topicDetailsETag?: string | null;
     /**
      * 
-     * @type {string}
+     * @type {Array<string>}
      * @memberof InlineObject1
      */
-    targetLanguageCode: string;
+    languages: Array<string>;
 }
 
 export function InlineObject1FromJSON(json: any): InlineObject1 {
@@ -1519,7 +1519,7 @@ export function InlineObject1FromJSONTyped(json: any, ignoreDiscriminator: boole
         'topicDetailsTopicCategories': !exists(json, 'TopicDetails.TopicCategories') ? undefined : json['TopicDetails.TopicCategories'],
         'topicDetailsTopicIds': !exists(json, 'TopicDetails.TopicIds') ? undefined : json['TopicDetails.TopicIds'],
         'topicDetailsETag': !exists(json, 'TopicDetails.ETag') ? undefined : json['TopicDetails.ETag'],
-        'targetLanguageCode': json['targetLanguageCode'],
+        'languages': json['languages'],
     };
 }
 
@@ -1741,7 +1741,7 @@ export function InlineObject1ToJSON(value?: InlineObject1 | null): any {
         'TopicDetails.TopicCategories': value.topicDetailsTopicCategories,
         'TopicDetails.TopicIds': value.topicDetailsTopicIds,
         'TopicDetails.ETag': value.topicDetailsETag,
-        'targetLanguageCode': value.targetLanguageCode,
+        'languages': value.languages,
     };
 }
 
