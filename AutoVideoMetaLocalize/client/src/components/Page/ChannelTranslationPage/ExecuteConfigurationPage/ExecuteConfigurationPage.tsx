@@ -1,7 +1,7 @@
 import { Button, Card, Divider, Progress, Row, Typography } from 'antd';
 import { ProgressProps } from 'antd/lib/progress';
 import * as React from 'react';
-import { ApiYouTubeVideoListGetRequest, Video, VideoListResponse, YouTubeVideoApi } from '../../../../../generated-sources/openapi';
+import { ApiYouTubeVideoListGetRequest, Video, YouTubeVideoApi } from '../../../../../generated-sources/openapi';
 import { ChannelTranslationConfiguration } from '../../../../ChannelTranslationConfiguration';
 import { Page } from '../../Page';
 import './style.less';
@@ -21,7 +21,10 @@ export function ExecuteConfigurationPage(props: {
   const languages: string[] = props.configuration.languageCodes;
   const ids: string[] = props.configuration.videoIds;
 
-  const [exceptionText, setExceptionText] =
+  const [error, setError] =
+    React.useState<any>(null);
+
+  const [errorMessage, setErrorMessage] =
     React.useState<string>(null);
 
   const [count, setCount] =
@@ -31,10 +34,23 @@ export function ExecuteConfigurationPage(props: {
     React.useState<number>(0);
 
   React.useEffect(() => {
-    execute();
+    execute()
+      .catch((err) => setError(err));
   }, []);
 
-  function execute() {
+  React.useEffect(() => {
+    if (error && isResponse(error)) {
+      error.text().then((text: string) => setErrorMessage(text));
+    } else {
+      setErrorMessage(null);
+    }
+  }, [error]);
+
+  function isResponse(val: any): val is Response {
+    return (val as Response).status !== undefined;
+  }
+
+  async function execute() {
     const req: ApiYouTubeVideoListGetRequest = {
       id: ids.join(','),
       maxResults: 50,
@@ -42,48 +58,48 @@ export function ExecuteConfigurationPage(props: {
     };
 
     do {
-      YOUTUBE_VIDEO_API.apiYouTubeVideoListGet(req)
-        .then((res) => {
-          req.pageToken = res.nextPageToken;
-          setMaximumCount(res.pageInfo.totalResults * languages.length);
+      const res = await YOUTUBE_VIDEO_API.apiYouTubeVideoListGet(req);
 
-          for (var i = 0; i < res.items.length && !exceptionText; i++) {
-            executeVideo(res.items[i]);
-          }
-        })
-        .catch((err: Response) => {
-          err.text().then(text => setExceptionText(text));
-        });
-    } while (req.pageToken && !exceptionText);
+      req.pageToken = res.nextPageToken;
+      console.log(res.pageInfo.totalResults * languages.length);
+      setMaximumCount(res.pageInfo.totalResults * languages.length);
+
+      for (var i = 0; i < res.items.length && !errorMessage; i++) {
+        executeVideo(res.items[i]);
+      }
+    } while (req.pageToken);
   }
 
-  function executeVideo(video: Video) {
-    for (var j = 0; j < languages.length && !exceptionText; j++) {
-      const languageCode: string = languages[j];
+  async function executeVideo(video: Video): Promise<void> {
+    for (var i = 0; i < languages.length; i++) {
+      const languageCode: string = languages[i];
 
-      YOUTUBE_VIDEO_API.apiYouTubeVideoAddLocalizationPost({
+      const res = await YOUTUBE_VIDEO_API.apiYouTubeVideoAddLocalizationPost({
         ...video,
         targetLanguageCode: languageCode,
-      })
-        .then((res) => {
-          video.localizations = { ...video.localizations, ...res.localizations };
+      });
 
-          setCount(count + 1); // increment the progress
-        })
-        .catch((err: Response) => {
-          err.text().then(text => setExceptionText(text));
-        });
+      video.localizations = { ...video.localizations, ...res.localizations };
+      setCount(count + 1); // increment the progress
     }
 
     delete video.snippet; // YouTube API requires additional parts to be removed.
 
-    YOUTUBE_VIDEO_API.apiYouTubeVideoUpdatePost({
+    await YOUTUBE_VIDEO_API.apiYouTubeVideoUpdatePost({
       ...video,
       part: 'id,localizations',
-    })
-      .catch((err: Response) => {
-        err.text().then(text => setExceptionText(text));
-      });
+    });
+  }
+
+  async function addLocalization(video: Video, languageCode: string): Promise<Video> {
+    const res: Video = await YOUTUBE_VIDEO_API.apiYouTubeVideoAddLocalizationPost({
+      ...video,
+      targetLanguageCode: languageCode,
+    });
+
+    console.log(video, languageCode, res);
+
+    return res;
   }
 
   const completeFrac: number = (maximumCount) ? (count / maximumCount) : 1;
@@ -94,7 +110,7 @@ export function ExecuteConfigurationPage(props: {
     percent: completeFrac * 100,
   };
 
-  if (exceptionText) {
+  if (error) {
     progressProps.status = 'exception';
   }
 
@@ -109,17 +125,17 @@ export function ExecuteConfigurationPage(props: {
         <Button
           type="primary"
           htmlType="submit"
-          disabled={completeFrac < 1 && !exceptionText}
+          disabled={completeFrac < 1 && !error}
           onClick={props.onComplete}>Finish</Button>
       </Row>
 
-      {exceptionText && (
+      {errorMessage && (
         <Page>
           <Divider>Execution Error</Divider>
           <Row align="middle" justify="center">
             <Card className="max-cell-md">
               <Typography.Paragraph>
-                {exceptionText}
+                {errorMessage}
               </Typography.Paragraph>
             </Card>
           </Row>
