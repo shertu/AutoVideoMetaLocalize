@@ -77,17 +77,21 @@ namespace AutoVideoMetaLocalize.Controllers {
 			if (video is null)
 				throw new ArgumentNullException(nameof(video));
 
-			string videoLanguage = video.Snippet.DefaultLanguage;
+			string videoLanguageCode = video.Snippet.DefaultLanguage;
 
 			string[] contents = new string[2];
 			contents[(int) CONTENTS_INDEX.TITLE] = video.Snippet.Title;
 			contents[(int) CONTENTS_INDEX.DESCRIPTION] = video.Snippet.Description;
 
 			foreach (string language in languages) {
+				// setters for request prevent null values
 				TranslateTextRequest request = new TranslateTextRequest {
 					TargetLanguageCode = language,
-					SourceLanguageCode = videoLanguage,
 				};
+
+				if (videoLanguageCode != null) {
+					request.SourceLanguageCode = videoLanguageCode;
+				}
 
 				request.Contents.Add(contents);
 

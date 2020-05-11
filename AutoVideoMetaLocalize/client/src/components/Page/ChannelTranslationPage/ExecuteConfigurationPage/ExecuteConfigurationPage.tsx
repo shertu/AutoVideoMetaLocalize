@@ -31,21 +31,22 @@ export function ExecuteConfigurationPage(props: {
     React.useState<number>(ids.length);
 
   React.useEffect(() => {
+    execute()
+      .catch((err: Response) => {
+        err.text().then((text: string) => setErrorMessage(text));
+      });
+  }, []);
+
+  async function execute() {
     for (var i = 0; i < ids.length; i++) {
       const id: string = ids[i];
-
-      executeLocalizeVideo(id)
-        .then((res) => {
-          console.log("VIDEO", res);
-        })
-        .catch((err: Response) => {
-          err.text().then((text: string) => setErrorMessage(text));
-        });
+      const res = await executeLocalizeVideo(id)
+      console.log(`EXECUTE FOR VIDEO NO. ${id}`, res);
 
       // increment count
       setCount(count + 1);
     }
-  }, []);
+  }
 
   async function executeLocalizeVideo(id: string): Promise<Video> {
     const localizedVideo: Video = await YOUTUBE_VIDEO_API.apiYouTubeVideoLocalizePost({
