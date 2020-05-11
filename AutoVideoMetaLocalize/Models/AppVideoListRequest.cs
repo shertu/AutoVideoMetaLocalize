@@ -93,6 +93,6 @@ namespace AutoVideoMetaLocalize.Models {
 		//     in the response. For example, in a video resource, the snippet property contains
 		//     the channelId, title, description, tags, and categoryId properties. As such,
 		//     if you set part=snippet, the API response will contain all of those properties.
-		public virtual string Part { get; }
+		public virtual string Part { get; set; }
 	}
 }
