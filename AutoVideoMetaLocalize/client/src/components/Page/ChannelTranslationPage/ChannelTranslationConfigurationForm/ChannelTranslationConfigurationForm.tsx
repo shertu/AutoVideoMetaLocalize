@@ -42,7 +42,7 @@ export function ChannelTranslationConfigurationForm(props: {
    * @param selectedRowKeys
    * @param selectedRows
    */
-  async function onSelectVideos(selectedRowKeys: React.Key[], selectedRows: PlaylistItem[]) {
+  function onSelectVideos(selectedRowKeys: React.Key[], selectedRows: PlaylistItem[]) {
     const values: Store = form.getFieldsValue();
     values[FORM_ITEM_NAMES.VIDEO_SELECTION] = selectedRowKeys;
     form.setFieldsValue(values);
@@ -53,7 +53,7 @@ export function ChannelTranslationConfigurationForm(props: {
    *
    * @param {Store} values
    */
-  async function onFinish(values: Store): Promise<void> {
+  function onFinish(values: Store) {
     const selectedLanguageCodes: string[] = values[FORM_ITEM_NAMES.LANGUAGE_SELECTION];
     const selectedVideoIds: string[] = values[FORM_ITEM_NAMES.VIDEO_SELECTION];
 

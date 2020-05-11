@@ -1,6 +1,6 @@
-import {Button} from 'antd';
+import { Button } from 'antd';
 import * as React from 'react';
-import {GoogleAuthApi} from '../../../generated-sources/openapi';
+import { GoogleAuthApi } from '../../../generated-sources/openapi';
 import './style.less';
 
 const GOOGLE_AUTH_API: GoogleAuthApi = new GoogleAuthApi();
@@ -17,20 +17,15 @@ export function GoogleSignOutButton(props: {
 }): JSX.Element {
   const redirect: string = props.redirect || window.location.pathname;
 
-  /**
-  * The click event for this button.
-  */
+  /** The click event for this button. */
   async function onClick(): Promise<void> {
-    // set the authentication redurect uri
     await GOOGLE_AUTH_API.apiGoogleAuthAuthenticationRedirectUriPost({
       uri: redirect,
     });
 
-    // call the sign out
     const res = await GOOGLE_AUTH_API.apiGoogleAuthGoogleSignOutGetRaw();
-    if (res.raw.redirected) {
-      window.location.assign(res.raw.url);
-    }
+
+    window.location.assign(res.raw.url);
   }
 
   return (

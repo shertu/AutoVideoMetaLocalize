@@ -25,7 +25,7 @@ export function ChannelTranslationPage(): JSX.Element {
    *
    * @param value
    */
-  async function onFinishChannelSelect(value: Channel) {
+  function onFinishChannelSelect(value: Channel) {
     setChannel(value);
     setConfiguration({
       ...configuration,
@@ -38,18 +38,18 @@ export function ChannelTranslationPage(): JSX.Element {
    *
    * @param value
    */
-  async function onFinishConfiguration(value: ChannelTranslationConfiguration) {
+  function onFinishConfiguration(value: ChannelTranslationConfiguration) {
     setConfiguration(value);
     setCurrent(current + 1);
   }
 
   /** Go to the previous page. */
-  async function decrementCurrent() {
+  function decrementCurrent() {
     setCurrent(current - 1);
   }
 
   /** Go back to the start of the channel translation process. */
-  async function onCompleteExecution() {
+  function onCompleteExecution() {
     setCurrent(0);
   }
 

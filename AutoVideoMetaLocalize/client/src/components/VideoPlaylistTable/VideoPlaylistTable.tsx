@@ -51,7 +51,7 @@ export function VideoPlaylistTable(props: {
    * @param page
    * @param pageSize
    */
-  async function onChangePagination(page: number, pageSize?: number) {
+  function onChangePagination(page: number, pageSize?: number) {
     if (playlistId) {
       // build request
       const request: ApiYouTubePlaylistItemListGetRequest = {
@@ -87,7 +87,7 @@ export function VideoPlaylistTable(props: {
    * @param selectedRowKeys
    * @param selectedRows
    */
-  async function onChangeRowSelection(selectedRowKeys: React.Key[], selectedRows: PlaylistItem[]) {
+  function onChangeRowSelection(selectedRowKeys: React.Key[], selectedRows: PlaylistItem[]) {
     setSelectedRowKeysState(selectedRowKeys);
     props.onChangeRowSelection(selectedRowKeys, selectedRows);
   }

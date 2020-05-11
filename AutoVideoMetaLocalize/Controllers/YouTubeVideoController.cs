@@ -70,7 +70,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 
 		[HttpPost("AddLocalization")]
 		public async Task<ActionResult<Video>> AddLocalizationToVideo(
-			[Required, FromForm] Video video, [Required, FromForm] string targetLanguageCode) {
+			[Required, FromForm] Video video, [Required, FromForm] string[] languages) {
 			if (video is null)
 				throw new ArgumentNullException(nameof(video));
 
@@ -80,30 +80,33 @@ namespace AutoVideoMetaLocalize.Controllers {
 			if (video.Localizations is null)
 				throw new ArgumentNullException(nameof(video.Localizations));
 
-			string sourceLanguageCode = video.Snippet.DefaultLanguage;
+			string videoLanguage = video.Snippet.DefaultLanguage;
 
 			string[] contents = new string[2];
 			contents[(int) CONTENTS_INDEX.TITLE] = video.Snippet.Title;
 			contents[(int) CONTENTS_INDEX.DESCRIPTION] = video.Snippet.Description;
 
-			TranslateTextRequest request = new TranslateTextRequest {
-				TargetLanguageCode = targetLanguageCode,
-				SourceLanguageCode = sourceLanguageCode,
-			};
+			foreach (string language in languages) {
+				TranslateTextRequest request = new TranslateTextRequest {
+					TargetLanguageCode = language,
+					SourceLanguageCode = videoLanguage,
+				};
 
-			request.Contents.Add(contents);
+				request.Contents.Add(contents);
 
-			IList<Translation> response = await translate.TranslateTextAsync(request);
+				IList<Translation> response = await translate.TranslateTextAsync(request);
 
-			Translation translationTitle = response[(int) CONTENTS_INDEX.TITLE];
-			Translation translationDescription = response[(int) CONTENTS_INDEX.DESCRIPTION];
+				Translation translationTitle = response[(int) CONTENTS_INDEX.TITLE];
+				Translation translationDescription = response[(int) CONTENTS_INDEX.DESCRIPTION];
 
-			VideoLocalization localization = new VideoLocalization {
-				Title = translationTitle.TranslatedText,
-				Description = translationDescription.TranslatedText,
-			};
+				VideoLocalization localization = new VideoLocalization {
+					Title = translationTitle.TranslatedText,
+					Description = translationDescription.TranslatedText,
+				};
 
-			video.Localizations[targetLanguageCode] = localization;
+				video.Localizations[language] = localization;
+			}
+
 			return new ActionResult<Video>(video);
 		}
 	}

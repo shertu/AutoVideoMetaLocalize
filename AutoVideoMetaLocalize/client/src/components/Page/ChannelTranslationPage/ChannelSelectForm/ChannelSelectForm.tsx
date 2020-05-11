@@ -25,16 +25,14 @@ export function ChannelSelectForm(props: {
     React.useState<Channel[]>(null);
 
   React.useEffect(() => {
-    fetchOptionsAsync()
+    fetchOptions()
         .then((res) => setOptions(res));
   }, []);
 
   const DEFAULT_OPTION: string = (options && options.length) ? options[0].id : null;
 
-  /**
-   * Fetches every YouTube channel from the user's Google account.
-   */
-  async function fetchOptionsAsync(): Promise<Channel[]> {
+  /** Fetches every YouTube channel from the user's Google account. */
+  async function fetchOptions(): Promise<Channel[]> {
     let items: Channel[] = [];
     const req: ApiYouTubeChannelListGetRequest = {
       part: 'id,snippet,contentDetails',
@@ -55,7 +53,7 @@ export function ChannelSelectForm(props: {
    *
    * @param {Store} values
    */
-  async function onFinish(values: Store): Promise<void> {
+  function onFinish(values: Store) {
     const CHANNEL_RADIO_GROUP_VALUE = values[FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP];
     const selected: Channel = options.find((elem) => elem.id == CHANNEL_RADIO_GROUP_VALUE);
     props.onFinish(selected);
