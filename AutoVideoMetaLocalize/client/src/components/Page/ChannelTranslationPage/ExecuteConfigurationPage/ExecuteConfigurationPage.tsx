@@ -31,42 +31,25 @@ export function ExecuteConfigurationPage(props: {
     React.useState<number>(ids.length);
 
   React.useEffect(() => {
-    executeFetchVideos()
-      .catch((err: Response) => {
-        err.text().then((text: string) => setErrorMessage(text));
-      });
+    for (var i = 0; i < ids.length; i++) {
+      const id: string = ids[i];
+
+      executeLocalizeVideo(id)
+        .then((res) => {
+          console.log("VIDEO", res);
+        })
+        .catch((err: Response) => {
+          err.text().then((text: string) => setErrorMessage(text));
+        });
+
+      // increment count
+      setCount(count + 1);
+    }
   }, []);
 
-  /**  */
-  async function executeFetchVideos(): Promise<void> {
-    const request: ApiYouTubeVideoListGetRequest = {
-      id: ids.join(','),
-      maxResults: 50,
-      part: 'id,localizations,snippet'
-    };
-
-    do {
-      let videoListResponse: VideoListResponse = await YOUTUBE_VIDEO_API.apiYouTubeVideoListGet(request);
-      // next page
-      request.pageToken = videoListResponse.nextPageToken;
-
-      // proccess each video individually
-      const items: Video[] = videoListResponse.items;
-      for (var i = 0; i < items.length; i++) {
-        let item: Video = items[i];
-        console.log("VIDEO BEFORE", item);
-        item = await executeLocalizeVideo(item);
-        console.log("VIDEO AFTER", item);
-
-        // increment count
-        setCount(count + 1);
-      }
-    } while (request.pageToken);
-  }
-
-  async function executeLocalizeVideo(video: Video): Promise<Video> {
-    const localizedVideo: Video = await YOUTUBE_VIDEO_API.apiYouTubeVideoAddLocalizationPost({
-      ...video,
+  async function executeLocalizeVideo(id: string): Promise<Video> {
+    const localizedVideo: Video = await YOUTUBE_VIDEO_API.apiYouTubeVideoLocalizePost({
+      id: id,
       languages: languages,
     })
 
