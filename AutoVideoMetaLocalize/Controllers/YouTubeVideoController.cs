@@ -74,6 +74,8 @@ namespace AutoVideoMetaLocalize.Controllers {
 			if (video is null)
 				throw new ArgumentNullException(nameof(video));
 
+			throw new Exception(video.ToString());
+
 			if (video.Snippet == null)
 				throw new ArgumentNullException(nameof(video.Snippet));
 
