@@ -35,57 +35,51 @@ export function ExecuteConfigurationPage(props: {
   console.log("state", errorMessage, count, countMax);
 
   React.useEffect(() => {
-    executeFetchVideos();
+    executeFetchVideos()
+      .catch((err) => {
+        setErrorMessage("an error occured");
+      });
   }, []);
-
-  const request: ApiYouTubeVideoListGetRequest = {
-    id: ids.join(','),
-    maxResults: 50,
-    part: 'id,localizations,snippet'
-  };
 
   /**  */
   async function executeFetchVideos(): Promise<void> {
+    const request: ApiYouTubeVideoListGetRequest = {
+      id: ids.join(','),
+      maxResults: 50,
+      part: 'id,localizations,snippet'
+    };
+
     do {
-      try {
-        let videoListResponse: VideoListResponse = await YOUTUBE_VIDEO_API.apiYouTubeVideoListGet(request);
-        // next page
-        request.pageToken = videoListResponse.nextPageToken;
+      let videoListResponse: VideoListResponse = await YOUTUBE_VIDEO_API.apiYouTubeVideoListGet(request);
+      // next page
+      request.pageToken = videoListResponse.nextPageToken;
 
-        // proccess each video individually
-        const items: Video[] = videoListResponse.items;
-        for (var i = 0; i < items.length; i++) {
-          let item: Video = items[i];
-          console.log("VIDEO BEFORE", item);
-          item = await executeLocalizeVideo(item);
-          console.log("VIDEO AFTER", item);
+      // proccess each video individually
+      const items: Video[] = videoListResponse.items;
+      for (var i = 0; i < items.length; i++) {
+        let item: Video = items[i];
+        console.log("VIDEO BEFORE", item);
+        item = await executeLocalizeVideo(item);
+        console.log("VIDEO AFTER", item);
 
-          // increment count
-          setCount(count + 1);
-        }
-      } catch (e) {
-        e.text().then((text: string) => setErrorMessage(text));
-        break;
+        // increment count
+        setCount(count + 1);
       }
     } while (request.pageToken);
   }
 
   async function executeLocalizeVideo(video: Video): Promise<Video> {
-    try {
-      const localizedVideo: Video = await YOUTUBE_VIDEO_API.apiYouTubeVideoAddLocalizationPost({
-        ...video,
-        targetLanguageCode: languages[0],
-      })
+    const localizedVideo: Video = await YOUTUBE_VIDEO_API.apiYouTubeVideoAddLocalizationPost({
+      ...video,
+      targetLanguageCode: languages[0],
+    })
 
-      const updatedVideo: Video = await YOUTUBE_VIDEO_API.apiYouTubeVideoUpdatePost({
-        ...localizedVideo,
-        part: 'id,localizations',
-      })
+    const updatedVideo: Video = await YOUTUBE_VIDEO_API.apiYouTubeVideoUpdatePost({
+      ...localizedVideo,
+      part: 'id,localizations',
+    })
 
-      return updatedVideo;
-    } catch (e) {
-      return Promise.reject(e);
-    }
+    return updatedVideo;
   }
 
   const completeFrac: number = (countMax) ? (count / countMax) : 1;
