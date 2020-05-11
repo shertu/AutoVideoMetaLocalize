@@ -37,7 +37,7 @@ export function ExecuteConfigurationPage(props: {
   console.log("props", props);
   console.log("state", error, errorMessage, count, maximumCount);
 
-  console.log("isError", isResponse(error));
+  console.log("isError", error && isResponse(error));
 
   React.useEffect(() => {
     execute()
