@@ -57,25 +57,25 @@ namespace AutoVideoMetaLocalize.Controllers {
 			return sb.ToString();
 		}
 
-		[HttpPost("Update")]
-		public async Task<ActionResult<Video>> Update([Required, FromForm] Video video, [Required, FromForm] string part) {
-			if (video is null)
-				throw new ArgumentNullException(nameof(video));
-			if (string.IsNullOrEmpty(part))
-				throw new ArgumentException("message", nameof(part));
+		//[HttpPost("Update")]
+		//public async Task<ActionResult<Video>> Update([Required, FromForm] Video video, [Required, FromForm] string part) {
+		//	if (video is null)
+		//		throw new ArgumentNullException(nameof(video));
+		//	if (string.IsNullOrEmpty(part))
+		//		throw new ArgumentException("message", nameof(part));
 
-			throw new Exception($"id: {video.Id} || localization: {localizationsToString(video)} || snippet: {video.Snippet}");
+		//	throw new Exception($"id: {video.Id} || localization: {localizationsToString(video)} || snippet: {video.Snippet}");
 
-			YouTubeService service = await serviceAccessor.InitializeServiceAsync();
-			VideosResource.UpdateRequest request = service.Videos.Update(video, part);
+		//	YouTubeService service = await serviceAccessor.InitializeServiceAsync();
+		//	VideosResource.UpdateRequest request = service.Videos.Update(video, part);
 
-			try {
-				Video response = await request.ExecuteAsync();
-				return new ActionResult<Video>(response);
-			} catch (GoogleApiException ex) {
-				return StatusCode((int) ex.HttpStatusCode, ex.Message);
-			}
-		}
+		//	try {
+		//		Video response = await request.ExecuteAsync();
+		//		return new ActionResult<Video>(response);
+		//	} catch (GoogleApiException ex) {
+		//		return StatusCode((int) ex.HttpStatusCode, ex.Message);
+		//	}
+		//}
 
 		private enum CONTENTS_INDEX {
 			TITLE = 0,
@@ -85,6 +85,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 		[HttpPost("Localize")]
 		public async Task<ActionResult<Video>> Localize(
 			[Required, FromForm] string id, [Required, FromForm] string language) {
+			#region Fetch
 			if (id is null)
 				throw new ArgumentNullException(nameof(id));
 
@@ -100,7 +101,9 @@ namespace AutoVideoMetaLocalize.Controllers {
 			} catch (GoogleApiException ex) {
 				return StatusCode((int) ex.HttpStatusCode, ex.Message);
 			}
+			#endregion
 
+			#region Translate
 			if (video is null)
 				throw new ArgumentNullException(nameof(video));
 
@@ -134,8 +137,23 @@ namespace AutoVideoMetaLocalize.Controllers {
 
 				video.Localizations[languageCode] = localization;
 			}
+			#endregion
 
-			return new ActionResult<Video>(video);
+			#region Update
+			video = new Video {
+				Id = video.Id,
+				Localizations = video.Localizations,
+			};
+
+			VideosResource.UpdateRequest requestVideoUpdate = service.Videos.Update(video, "id,localizations");
+
+			try {
+				Video responseVideoUpdate = await requestVideoUpdate.ExecuteAsync();
+				return new ActionResult<Video>(responseVideoUpdate);
+			} catch (GoogleApiException ex) {
+				return StatusCode((int) ex.HttpStatusCode, ex.Message);
+			}
+			#endregion
 		}
 	}
 }
