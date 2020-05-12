@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace AutoVideoMetaLocalize.Controllers {
@@ -38,6 +39,24 @@ namespace AutoVideoMetaLocalize.Controllers {
 			}
 		}
 
+		private string localizationsToString(Video video) {
+			if (video == null || video.Localizations == null) {
+				return null;
+			}
+
+			StringBuilder sb = new StringBuilder();
+			sb.Append('[');
+			foreach (KeyValuePair<string, VideoLocalization> item in video.Localizations) {
+				string key = item.Key;
+				string title = item.Value?.Title;
+
+				sb.Append($"{key} : {title},");
+			}
+			sb.Append(']');
+
+			return sb.ToString();
+		}
+
 		[HttpPost("Update")]
 		public async Task<ActionResult<Video>> Update([Required, FromForm] Video video, [Required, FromForm] string part) {
 			if (video is null)
@@ -45,7 +64,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 			if (string.IsNullOrEmpty(part))
 				throw new ArgumentException("message", nameof(part));
 
-			throw new Exception($"video: {video} || id: {video.Id} || localization: {video.Localizations.Select(kv => $"[{kv.Key}, {kv.Value.Title}]").ToList()} || snippet: {video.Snippet}");
+			throw new Exception($"id: {video.Id} || localization: {localizationsToString(video)} || snippet: {video.Snippet}");
 
 			YouTubeService service = await serviceAccessor.InitializeServiceAsync();
 			VideosResource.UpdateRequest request = service.Videos.Update(video, part);
