@@ -104,7 +104,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 			#endregion
 
 			#region Translate
-			if (video is null)
+			if (video == null)
 				throw new ArgumentNullException(nameof(video));
 
 			string videoLanguageCode = video.Snippet.DefaultLanguage;
@@ -131,8 +131,8 @@ namespace AutoVideoMetaLocalize.Controllers {
 				Translation translationDescription = response[(int) CONTENTS_INDEX.DESCRIPTION];
 
 				VideoLocalization localization = new VideoLocalization {
-					Title = translationTitle.TranslatedText,
-					Description = translationDescription.TranslatedText,
+					Title = translationTitle?.TranslatedText,
+					Description = translationDescription?.TranslatedText,
 				};
 
 				video.Localizations[languageCode] = localization;
