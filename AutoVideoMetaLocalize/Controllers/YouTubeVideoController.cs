@@ -39,6 +39,13 @@ namespace AutoVideoMetaLocalize.Controllers {
 
 		[HttpPost("Update")]
 		public async Task<ActionResult<Video>> Update([Required, FromForm] Video video, [Required, FromForm] string part) {
+			if (video is null)
+				throw new ArgumentNullException(nameof(video));
+			if (string.IsNullOrEmpty(part))
+				throw new ArgumentException("message", nameof(part));
+
+			throw new Exception($"video: {video}\nid: {video.Id}\nlocalization: {video.Localizations}\n");
+
 			YouTubeService service = await serviceAccessor.InitializeServiceAsync();
 			VideosResource.UpdateRequest request = service.Videos.Update(video, part);
 

@@ -36,9 +36,6 @@ export function ExecuteConfigurationPage(props: {
 
       executeLocalizeVideo(id)
         .then((res) => {
-          // log video
-          console.log("VIDEO", res);
-
           // increment count
           setCount(count + 1);
         })
@@ -49,21 +46,19 @@ export function ExecuteConfigurationPage(props: {
   }, []);
 
   async function executeLocalizeVideo(id: string): Promise<Video> {
-    console.log("Alpha", id);
-
     const localizedVideo: Video = await YOUTUBE_VIDEO_API.apiYouTubeVideoLocalizePost({
       id: id,
       language: languages.join(','),
     });
 
-    console.log("Beta", localizedVideo);
+    console.log("Alpha", localizedVideo);
 
     const updatedVideo: Video = await YOUTUBE_VIDEO_API.apiYouTubeVideoUpdatePost({
       ...localizedVideo,
       part: 'id,localizations',
     });
 
-    console.log("Gamma", updatedVideo);
+    console.log("Beta", updatedVideo);
 
     return updatedVideo;
   }
