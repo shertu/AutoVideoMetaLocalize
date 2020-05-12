@@ -101,9 +101,9 @@ namespace AutoVideoMetaLocalize.Controllers {
 					SourceLanguageCode = video.Snippet.DefaultLanguage,
 				};
 
-				string translationTitle = (!string.IsNullOrWhiteSpace(contentTitle)) ? null : 
+				string translationTitle = (!string.IsNullOrWhiteSpace(contentTitle)) ? string.Empty : 
 					await translate.TranslateSingleTextAsync(requestTranslateText, contentTitle);
-				string translationDescription = (!string.IsNullOrWhiteSpace(contentDescription)) ? null : 
+				string translationDescription = (!string.IsNullOrWhiteSpace(contentDescription)) ? string.Empty : 
 					await translate.TranslateSingleTextAsync(requestTranslateText, contentDescription);
 
 				VideoLocalization localization = new VideoLocalization {
