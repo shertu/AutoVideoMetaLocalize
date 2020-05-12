@@ -18,6 +18,8 @@ namespace AutoVideoMetaLocalize.Controllers {
 	[Route("api/[controller]")]
 	[ApiController]
 	public class YouTubeVideoController : ControllerBase {
+		private const string LOCALIZE_PART = "id,snippet,localizations";
+
 		private readonly YouTubeServiceAccessor serviceAccessor;
 		private readonly GoogleCloudTranslateManager translate;
 
@@ -57,25 +59,25 @@ namespace AutoVideoMetaLocalize.Controllers {
 			return sb.ToString();
 		}
 
-		//[HttpPost("Update")]
-		//public async Task<ActionResult<Video>> Update([Required, FromForm] Video video, [Required, FromForm] string part) {
-		//	if (video is null)
-		//		throw new ArgumentNullException(nameof(video));
-		//	if (string.IsNullOrEmpty(part))
-		//		throw new ArgumentException("message", nameof(part));
+		[HttpPost("Update")]
+		public async Task<ActionResult<Video>> Update([Required, FromForm] Video video, [Required, FromForm] string part) {
+			if (video is null)
+				throw new ArgumentNullException(nameof(video));
+			if (string.IsNullOrEmpty(part))
+				throw new ArgumentException("message", nameof(part));
 
-		//	throw new Exception($"id: {video.Id} || localization: {localizationsToString(video)} || snippet: {video.Snippet}");
+			throw new Exception($"id: {video.Id} || localization: {localizationsToString(video)} || snippet: {video.Snippet}");
 
-		//	YouTubeService service = await serviceAccessor.InitializeServiceAsync();
-		//	VideosResource.UpdateRequest request = service.Videos.Update(video, part);
+			YouTubeService service = await serviceAccessor.InitializeServiceAsync();
+			VideosResource.UpdateRequest request = service.Videos.Update(video, part);
 
-		//	try {
-		//		Video response = await request.ExecuteAsync();
-		//		return new ActionResult<Video>(response);
-		//	} catch (GoogleApiException ex) {
-		//		return StatusCode((int) ex.HttpStatusCode, ex.Message);
-		//	}
-		//}
+			try {
+				Video response = await request.ExecuteAsync();
+				return new ActionResult<Video>(response);
+			} catch (GoogleApiException ex) {
+				return StatusCode((int) ex.HttpStatusCode, ex.Message);
+			}
+		}
 
 		private enum CONTENTS_INDEX {
 			TITLE = 0,
@@ -90,7 +92,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 				throw new ArgumentNullException(nameof(id));
 
 			YouTubeService service = await serviceAccessor.InitializeServiceAsync();
-			VideosResource.ListRequest requestVideoList = service.Videos.List("id,snippet,localizations");
+			VideosResource.ListRequest requestVideoList = service.Videos.List(LOCALIZE_PART);
 			requestVideoList.MaxResults = 1;
 			requestVideoList.Id = id;
 
@@ -103,11 +105,15 @@ namespace AutoVideoMetaLocalize.Controllers {
 			}
 			#endregion
 
+
 			#region Translate
 			if (video is null)
 				throw new ArgumentNullException(nameof(video));
 
-			string videoLanguageCode = video.Snippet.DefaultLanguage;
+			if (video.Snippet is null)
+				throw new ArgumentNullException(nameof(video.Snippet));
+
+			video.Snippet.DefaultLanguage ??= "en";
 
 			string[] contents = new string[2];
 			contents[(int) CONTENTS_INDEX.TITLE] = video.Snippet.Title;
@@ -117,11 +123,8 @@ namespace AutoVideoMetaLocalize.Controllers {
 				// setters for request prevent null values
 				TranslateTextRequest request = new TranslateTextRequest {
 					TargetLanguageCode = languageCode,
+					SourceLanguageCode = video.Snippet.DefaultLanguage,
 				};
-
-				if (videoLanguageCode != null) {
-					request.SourceLanguageCode = videoLanguageCode;
-				}
 
 				request.Contents.Add(contents);
 
@@ -142,12 +145,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 			#endregion
 
 			#region Update
-			video = new Video {
-				Id = video.Id,
-				Localizations = video.Localizations,
-			};
-
-			VideosResource.UpdateRequest requestVideoUpdate = service.Videos.Update(video, "id,localizations");
+			VideosResource.UpdateRequest requestVideoUpdate = service.Videos.Update(video, LOCALIZE_PART);
 
 			try {
 				Video responseVideoUpdate = await requestVideoUpdate.ExecuteAsync();

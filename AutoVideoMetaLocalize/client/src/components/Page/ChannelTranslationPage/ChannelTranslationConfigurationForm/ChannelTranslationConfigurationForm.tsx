@@ -2,7 +2,7 @@ import { LeftOutlined } from '@ant-design/icons';
 import { Button, Col, Divider, Form, Row, Select } from 'antd';
 import { Store } from 'antd/lib/form/interface';
 import * as React from 'react';
-import { Channel, LanguageApi, PlaylistItem, SupportedLanguage } from '../../../../../generated-sources/openapi';
+import { Channel, LanguageApi, PlaylistItem, SupportedLanguage, I18nLanguageSnippet } from '../../../../../generated-sources/openapi';
 import { ChannelTranslationConfiguration } from '../../../../ChannelTranslationConfiguration';
 import { VideoPlaylistTable } from '../../../VideoPlaylistTable/VideoPlaylistTable';
 import { Page } from '../../Page';
@@ -31,9 +31,15 @@ export function ChannelTranslationConfigurationForm(props: {
   const [googleTranslateSupportedLanguages, setGoogleTranslateSupportedLanguages] =
     React.useState<SupportedLanguage[]>(null);
 
+  const [youTubeI18nLanguages, setYouTubeI18nLanguages] =
+    React.useState<I18nLanguageSnippet[]>(null);
+
   React.useEffect(() => {
     LANGUAGE_API.apiLanguageGoogleTranslateSupportedLanguagesGet()
       .then((res) => setGoogleTranslateSupportedLanguages(res));
+
+    LANGUAGE_API.apiLanguageYouTubeI18nLanguagesGet()
+      .then((res) => setYouTubeI18nLanguages(res));
   }, []);
 
   /**
@@ -64,9 +70,9 @@ export function ChannelTranslationConfigurationForm(props: {
   }
 
   const languageSelectOptions: React.ReactNode[] = [];
-  if (googleTranslateSupportedLanguages) {
+  if (googleTranslateSupportedLanguages && youTubeI18nLanguages) {
     googleTranslateSupportedLanguages.forEach((_) => {
-      if (_.supportTarget) {
+      if (_.supportTarget && youTubeI18nLanguages.find(elem => elem.hl == _.languageCode)) {
         languageSelectOptions.push(
           <Select.Option key={_.languageCode} value={_.languageCode} label={_.displayName}>
             {_.displayName}
