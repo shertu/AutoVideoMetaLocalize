@@ -41,24 +41,6 @@ namespace AutoVideoMetaLocalize.Controllers {
 			}
 		}
 
-		private string localizationsToString(Video video) {
-			if (video == null || video.Localizations == null) {
-				return null;
-			}
-
-			StringBuilder sb = new StringBuilder();
-			sb.Append('[');
-			foreach (KeyValuePair<string, VideoLocalization> item in video.Localizations) {
-				string key = item.Key;
-				string title = item.Value?.Title;
-
-				sb.Append($"{key} : {title},");
-			}
-			sb.Append(']');
-
-			return sb.ToString();
-		}
-
 		[HttpPost("Update")]
 		public async Task<ActionResult<Video>> Update([Required, FromForm] Video video, [Required, FromForm] string part) {
 			if (video is null)
@@ -66,7 +48,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 			if (string.IsNullOrEmpty(part))
 				throw new ArgumentException("message", nameof(part));
 
-			throw new Exception($"id: {video.Id} || localization: {localizationsToString(video)} || snippet: {video.Snippet}");
+			//throw new Exception($"id: {video.Id} || localization: {localizationsToString(video)} || snippet: {video.Snippet}");
 
 			YouTubeService service = await serviceAccessor.InitializeServiceAsync();
 			VideosResource.UpdateRequest request = service.Videos.Update(video, part);
@@ -98,8 +80,8 @@ namespace AutoVideoMetaLocalize.Controllers {
 
 			Video video;
 			try {
-				VideoListResponse response = await requestVideoList.ExecuteAsync();
-				video = response.Items.Count > 0 ? response.Items[0] : null;
+				VideoListResponse responseVideoList = await requestVideoList.ExecuteAsync();
+				video = responseVideoList.Items.Count > 0 ? responseVideoList.Items[0] : null;
 			} catch (GoogleApiException ex) {
 				return StatusCode((int) ex.HttpStatusCode, ex.Message);
 			}
@@ -114,6 +96,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 				throw new ArgumentNullException(nameof(video.Snippet));
 
 			video.Snippet.DefaultLanguage ??= "en";
+			video.Snippet.PublishedAt = null; // do not set the publish date
 
 			string[] contents = new string[2];
 			contents[(int) CONTENTS_INDEX.TITLE] = video.Snippet.Title;
@@ -121,17 +104,17 @@ namespace AutoVideoMetaLocalize.Controllers {
 
 			foreach (string languageCode in language.Split(',')) {
 				// setters for request prevent null values
-				TranslateTextRequest request = new TranslateTextRequest {
+				TranslateTextRequest requestTranslateText = new TranslateTextRequest {
 					TargetLanguageCode = languageCode,
 					SourceLanguageCode = video.Snippet.DefaultLanguage,
 				};
 
-				request.Contents.Add(contents);
+				requestTranslateText.Contents.Add(contents);
 
-				IList<Translation> response = await translate.TranslateTextAsync(request);
+				IList<Translation> responseTranslateText = await translate.TranslateTextAsync(requestTranslateText);
 
-				Translation translationTitle = response[(int) CONTENTS_INDEX.TITLE];
-				Translation translationDescription = response[(int) CONTENTS_INDEX.DESCRIPTION];
+				Translation translationTitle = responseTranslateText[(int) CONTENTS_INDEX.TITLE];
+				Translation translationDescription = responseTranslateText[(int) CONTENTS_INDEX.DESCRIPTION];
 
 				VideoLocalization localization = new VideoLocalization {
 					Title = translationTitle.TranslatedText,
