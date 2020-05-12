@@ -28,7 +28,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 				PlaylistItemListResponse response = await requestActual.ExecuteAsync();
 				return new ActionResult<PlaylistItemListResponse>(response);
 			} catch (GoogleApiException ex) {
-				return StatusCode((int) ex.HttpStatusCode, ex.Message);
+				return StatusCode((int) ex.HttpStatusCode, ex.ToString());
 			}
 		}
 	}

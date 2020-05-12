@@ -83,7 +83,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 				VideoListResponse responseVideoList = await requestVideoList.ExecuteAsync();
 				video = responseVideoList.Items.Count > 0 ? responseVideoList.Items[0] : null;
 			} catch (GoogleApiException ex) {
-				return StatusCode((int) ex.HttpStatusCode, ex.Message);
+				return StatusCode((int) ex.HttpStatusCode, ex.ToString());
 			}
 			#endregion
 
@@ -99,10 +99,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 			contents[(int) CONTENTS_INDEX.TITLE] = video.Snippet.Title;
 			contents[(int) CONTENTS_INDEX.DESCRIPTION] = video.Snippet.Description;
 
-			video.Snippet = new VideoSnippet {
-				DefaultLanguage = video.Snippet.DefaultLanguage ?? "en",
-				//Description = video.Snippet.Description,
-			};
+			video.Snippet.DefaultLanguage ??= "en";
 
 			foreach (string languageCode in language.Split(',')) {
 				// setters for request prevent null values
@@ -136,7 +133,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 				Video responseVideoUpdate = await requestVideoUpdate.ExecuteAsync();
 				return new ActionResult<Video>(responseVideoUpdate);
 			} catch (GoogleApiException ex) {
-				return StatusCode((int) ex.HttpStatusCode, ex.Message);
+				return StatusCode((int) ex.HttpStatusCode, ex.ToString());
 			}
 			#endregion
 		}
