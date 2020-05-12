@@ -95,12 +95,14 @@ namespace AutoVideoMetaLocalize.Controllers {
 			if (video.Snippet is null)
 				throw new ArgumentNullException(nameof(video.Snippet));
 
-			video.Snippet.DefaultLanguage ??= "en";
-			video.Snippet.PublishedAt = null; // do not set the publish date
-
 			string[] contents = new string[2];
 			contents[(int) CONTENTS_INDEX.TITLE] = video.Snippet.Title;
 			contents[(int) CONTENTS_INDEX.DESCRIPTION] = video.Snippet.Description;
+
+			video.Snippet = new VideoSnippet {
+				DefaultLanguage = video.Snippet.DefaultLanguage ?? "en",
+				//Description = video.Snippet.Description,
+			};
 
 			foreach (string languageCode in language.Split(',')) {
 				// setters for request prevent null values
