@@ -36,8 +36,8 @@ export function ExecuteConfigurationPage(props: {
 
       executeLocalizeVideo(id)
         .then((res) => {
-          // increment count
-          setCount(count + 1);
+          console.log("execute localize video response", res);
+          setCount(count + 1); // increment count
         })
         .catch((err: Response) => {
           err.text().then((text: string) => setErrorMessage(text));
@@ -46,21 +46,12 @@ export function ExecuteConfigurationPage(props: {
   }, []);
 
   async function executeLocalizeVideo(id: string): Promise<Video> {
-    const localizedVideo: Video = await YOUTUBE_VIDEO_API.apiYouTubeVideoLocalizePost({
+    const video: Video = await YOUTUBE_VIDEO_API.apiYouTubeVideoLocalizePost({
       id: id,
       language: languages.join(','),
     });
 
-    console.log("Alpha", localizedVideo);
-
-    const updatedVideo: Video = await YOUTUBE_VIDEO_API.apiYouTubeVideoUpdatePost({
-      ...localizedVideo,
-      part: 'id,localizations',
-    });
-
-    console.log("Beta", updatedVideo);
-
-    return updatedVideo;
+    return video;
   }
 
   const completeFrac: number = (countMax) ? (count / countMax) : 1;
