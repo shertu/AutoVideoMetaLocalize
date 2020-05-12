@@ -50,6 +50,13 @@ namespace AutoVideoMetaLocalize.Utilities {
 			return response.Translations;
 		}
 
+		public async Task<string> TranslateSingleTextAsync(TranslateTextRequest request, string text) {
+			request.Contents.Clear();
+			request.Contents.Add(text);
+			IList<Translation> translations = await TranslateTextAsync(request);
+			return translations[0].TranslatedText;
+		}
+
 		public async Task<IList<SupportedLanguage>> GetSupportedLanguagesAsync(GetSupportedLanguagesRequest request) {
 			request.Parent = PARENT;
 			SupportedLanguages response = await service.GetSupportedLanguagesAsync(request);

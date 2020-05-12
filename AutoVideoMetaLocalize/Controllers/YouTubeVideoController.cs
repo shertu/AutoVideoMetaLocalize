@@ -61,11 +61,6 @@ namespace AutoVideoMetaLocalize.Controllers {
 			}
 		}
 
-		private enum CONTENTS_INDEX {
-			TITLE = 0,
-			DESCRIPTION = 1,
-		}
-
 		[HttpPost("Localize")]
 		public async Task<ActionResult<Video>> Localize(
 			[Required, FromForm] string id, [Required, FromForm] string language) {
@@ -87,7 +82,6 @@ namespace AutoVideoMetaLocalize.Controllers {
 			}
 			#endregion
 
-
 			#region Translate
 			if (video is null)
 				throw new ArgumentNullException(nameof(video));
@@ -95,9 +89,8 @@ namespace AutoVideoMetaLocalize.Controllers {
 			if (video.Snippet is null)
 				throw new ArgumentNullException(nameof(video.Snippet));
 
-			string[] contents = new string[2];
-			contents[(int) CONTENTS_INDEX.TITLE] = video.Snippet.Title;
-			contents[(int) CONTENTS_INDEX.DESCRIPTION] = video.Snippet.Description;
+			string contentTitle = video.Snippet.Title;
+			string contentDescription = video.Snippet.Description;
 
 			video.Snippet.DefaultLanguage ??= "en";
 
@@ -108,16 +101,14 @@ namespace AutoVideoMetaLocalize.Controllers {
 					SourceLanguageCode = video.Snippet.DefaultLanguage,
 				};
 
-				requestTranslateText.Contents.Add(contents);
-
-				IList<Translation> responseTranslateText = await translate.TranslateTextAsync(requestTranslateText);
-
-				Translation translationTitle = responseTranslateText[(int) CONTENTS_INDEX.TITLE];
-				Translation translationDescription = responseTranslateText[(int) CONTENTS_INDEX.DESCRIPTION];
+				string translationTitle = (contentTitle == null) ? null : 
+					await translate.TranslateSingleTextAsync(requestTranslateText, contentTitle);
+				string translationDescription = (contentDescription == null) ? null : 
+					await translate.TranslateSingleTextAsync(requestTranslateText, contentDescription);
 
 				VideoLocalization localization = new VideoLocalization {
-					Title = translationTitle.TranslatedText,
-					Description = translationDescription.TranslatedText,
+					Title = translationTitle,
+					Description = translationDescription,
 				};
 
 				IDictionary<string, VideoLocalization> localizations = video.Localizations ?? new Dictionary<string, VideoLocalization>();
@@ -137,5 +128,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 			}
 			#endregion
 		}
+
+
 	}
 }
