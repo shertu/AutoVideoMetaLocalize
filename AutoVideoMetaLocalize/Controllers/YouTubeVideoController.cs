@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace AutoVideoMetaLocalize.Controllers {
@@ -44,7 +45,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 			if (string.IsNullOrEmpty(part))
 				throw new ArgumentException("message", nameof(part));
 
-			throw new Exception($"video: {video}\nid: {video.Id}\nlocalization: {video.Localizations}\n");
+			throw new Exception($"video: {video} || id: {video.Id} || localization: {video.Localizations.Select(kv => $"[{kv.Key}, {kv.Value.Title}]").ToList()} || snippet: {video.Snippet}");
 
 			YouTubeService service = await serviceAccessor.InitializeServiceAsync();
 			VideosResource.UpdateRequest request = service.Videos.Update(video, part);
