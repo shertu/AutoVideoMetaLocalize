@@ -13,7 +13,7 @@
  */
 
 
-export const BASE_PATH = "https://autovideometalocalize.azurewebsites.net".replace(/\/+$/, "");
+export const BASE_PATH = `https://${window.location.host}`.replace(/\/+$/, "");
 
 const isBlob = (value: any) => typeof Blob !== 'undefined' && value instanceof Blob;
 
