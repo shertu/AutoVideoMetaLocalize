@@ -91,7 +91,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 			string contentDescription = video.Snippet.Description;
 
 			video.Snippet.DefaultLanguage ??= "en";
-			IDictionary<string, VideoLocalization> localizations = video.Localizations ?? new Dictionary<string, VideoLocalization>();
+			video.Localizations ??= new Dictionary<string, VideoLocalization>();
 
 			foreach (string language in languages) {
 				// setters for request prevent null values
@@ -112,13 +112,13 @@ namespace AutoVideoMetaLocalize.Controllers {
 					Description = translationDescription,
 				};
 
-				localizations[language] = localization;
-			}
+				video.Localizations[language] = localization;
 
-			video.Localizations = localizations;
+				video = (await Update(video, "id,snippet,localizations")).Value;
+			}
 			#endregion
 
-			return await Update(video, "id,snippet,localizations");
+			return video;
 		}
 
 
