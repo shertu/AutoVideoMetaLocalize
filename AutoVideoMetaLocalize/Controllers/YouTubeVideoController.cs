@@ -111,13 +111,14 @@ namespace AutoVideoMetaLocalize.Controllers {
 
 				video.Localizations[language] = localization;
 
-				VideosResource.UpdateRequest requestVideoUpdate = service.Videos.Update(video, LOCALIZE_PART);
+			}
 
-				try {
-					video = await requestVideoUpdate.ExecuteAsync();
-				} catch (GoogleApiException ex) {
-					return StatusCode((int) ex.HttpStatusCode, ex.Message);
-				}
+			VideosResource.UpdateRequest requestVideoUpdate = service.Videos.Update(video, LOCALIZE_PART);
+
+			try {
+				video = await requestVideoUpdate.ExecuteAsync();
+			} catch (GoogleApiException ex) {
+				return StatusCode((int) ex.HttpStatusCode, ex.Message);
 			}
 
 			return new ActionResult<Video>(video);
