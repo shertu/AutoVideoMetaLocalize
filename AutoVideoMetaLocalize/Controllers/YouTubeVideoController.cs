@@ -48,8 +48,6 @@ namespace AutoVideoMetaLocalize.Controllers {
 			if (string.IsNullOrEmpty(part))
 				throw new ArgumentException("message", nameof(part));
 
-			//throw new Exception($"id: {video.Id} || localization: {localizationsToString(video)} || snippet: {video.Snippet}");
-
 			YouTubeService service = await serviceAccessor.InitializeServiceAsync();
 			VideosResource.UpdateRequest request = service.Videos.Update(video, part);
 
@@ -63,7 +61,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 
 		[HttpPost("Localize")]
 		public async Task<ActionResult<Video>> Localize(
-			[Required, FromForm] string id, [Required, FromForm] string language) {
+			[Required, FromForm] string id, [Required, FromForm] string[] languages) {
 			#region Fetch
 			if (id is null)
 				throw new ArgumentNullException(nameof(id));
@@ -94,17 +92,19 @@ namespace AutoVideoMetaLocalize.Controllers {
 
 			video.Snippet.DefaultLanguage ??= "en";
 
-			foreach (string languageCode in language.Split(',')) {
+			foreach (string language in languages) {
 				// setters for request prevent null values
 				TranslateTextRequest requestTranslateText = new TranslateTextRequest {
-					TargetLanguageCode = languageCode,
+					TargetLanguageCode = language, 
 					SourceLanguageCode = video.Snippet.DefaultLanguage,
 				};
 
-				string translationTitle = (!string.IsNullOrWhiteSpace(contentTitle)) ? string.Empty : 
-					await translate.TranslateSingleTextAsync(requestTranslateText, contentTitle);
-				string translationDescription = (!string.IsNullOrWhiteSpace(contentDescription)) ? string.Empty : 
-					await translate.TranslateSingleTextAsync(requestTranslateText, contentDescription);
+				string translationTitle = "Test Title";
+					//(!string.IsNullOrWhiteSpace(contentTitle)) ? string.Empty : 
+					//await translate.TranslateSingleTextAsync(requestTranslateText, contentTitle);
+				string translationDescription = "Test Description";
+					//(!string.IsNullOrWhiteSpace(contentDescription)) ? string.Empty : 
+					//await translate.TranslateSingleTextAsync(requestTranslateText, contentDescription);
 
 				VideoLocalization localization = new VideoLocalization {
 					Title = translationTitle,
@@ -112,21 +112,12 @@ namespace AutoVideoMetaLocalize.Controllers {
 				};
 
 				IDictionary<string, VideoLocalization> localizations = video.Localizations ?? new Dictionary<string, VideoLocalization>();
-				localizations[languageCode] = localization;
+				localizations[language] = localization;
 				video.Localizations = localizations;
 			}
 			#endregion
 
-			#region Update
-			VideosResource.UpdateRequest requestVideoUpdate = service.Videos.Update(video, LOCALIZE_PART);
-
-			try {
-				Video responseVideoUpdate = await requestVideoUpdate.ExecuteAsync();
-				return new ActionResult<Video>(responseVideoUpdate);
-			} catch (GoogleApiException ex) {
-				return StatusCode((int) ex.HttpStatusCode, ex.ToString());
-			}
-			#endregion
+			return await Update(video, "id,snippet,localizations");
 		}
 
 
