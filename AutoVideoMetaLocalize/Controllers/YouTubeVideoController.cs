@@ -41,23 +41,23 @@ namespace AutoVideoMetaLocalize.Controllers {
 			}
 		}
 
-		//[HttpPost("Update")]
-		//public async Task<ActionResult<Video>> Update([Required, FromForm] Video video, [Required, FromForm] string part) {
-		//	if (video is null)
-		//		throw new ArgumentNullException(nameof(video));
-		//	if (string.IsNullOrEmpty(part))
-		//		throw new ArgumentException("message", nameof(part));
+		[HttpPost("Update")]
+		public async Task<ActionResult<Video>> Update([Required, FromForm] Video video, [Required, FromForm] string part) {
+			if (video is null)
+				throw new ArgumentNullException(nameof(video));
+			if (string.IsNullOrEmpty(part))
+				throw new ArgumentException("message", nameof(part));
 
-		//	YouTubeService service = await serviceAccessor.InitializeServiceAsync();
-		//	VideosResource.UpdateRequest request = service.Videos.Update(video, part);
+			YouTubeService service = await serviceAccessor.InitializeServiceAsync();
+			VideosResource.UpdateRequest request = service.Videos.Update(video, part);
 
-		//	try {
-		//		Video response = await request.ExecuteAsync();
-		//		return new ActionResult<Video>(response);
-		//	} catch (GoogleApiException ex) {
-		//		return StatusCode((int) ex.HttpStatusCode, ex.Message);
-		//	}
-		//}
+			try {
+				Video response = await request.ExecuteAsync();
+				return new ActionResult<Video>(response);
+			} catch (GoogleApiException ex) {
+				return StatusCode((int) ex.HttpStatusCode, ex.Message);
+			}
+		}
 
 		[HttpPost("Localize")]
 		public async Task<ActionResult<Video>> Localize(
@@ -110,18 +110,9 @@ namespace AutoVideoMetaLocalize.Controllers {
 				};
 
 				video.Localizations[language] = localization;
-
 			}
 
-			VideosResource.UpdateRequest requestVideoUpdate = service.Videos.Update(video, LOCALIZE_PART);
-
-			try {
-				video = await requestVideoUpdate.ExecuteAsync();
-			} catch (GoogleApiException ex) {
-				return StatusCode((int) ex.HttpStatusCode, ex.Message);
-			}
-
-			return new ActionResult<Video>(video);
+			return await Update(video, LOCALIZE_PART);
 		}
 	}
 }
