@@ -53,7 +53,7 @@ export function ExecuteConfigurationPage(props: {
 
     video = await YOUTUBE_VIDEO_API.apiYouTubeVideoLocalizePost({
       id: id,
-      languages: languages,
+      requestBody: languages,
     });
 
     //video = await YOUTUBE_VIDEO_API.apiYouTubeVideoUpdatePost({

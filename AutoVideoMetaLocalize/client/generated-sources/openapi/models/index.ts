@@ -20,8 +20,6 @@ export * from './ContentRating';
 export * from './GeoPoint';
 export * from './I18nLanguageSnippet';
 export * from './ImageSettings';
-export * from './InlineObject';
-export * from './InlineObject1';
 export * from './InvideoPosition';
 export * from './InvideoPromotion';
 export * from './InvideoTiming';
