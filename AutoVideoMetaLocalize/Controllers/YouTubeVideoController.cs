@@ -61,8 +61,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 
 		[HttpPost("Localize")]
 		public async Task<ActionResult<Video>> Localize(
-			[Required, FromForm] string id, [Required, FromForm] string[] languages) {
-			#region Fetch
+			[Required] string id, [Required] string[] languages) {
 			if (id is null)
 				throw new ArgumentNullException(nameof(id));
 
@@ -72,28 +71,27 @@ namespace AutoVideoMetaLocalize.Controllers {
 			requestVideoList.Id = id;
 
 			Video video;
-			try {
-				VideoListResponse responseVideoList = await requestVideoList.ExecuteAsync();
-				video = responseVideoList.Items.Count > 0 ? responseVideoList.Items[0] : null;
-			} catch (GoogleApiException ex) {
-				return StatusCode((int) ex.HttpStatusCode, ex.ToString());
-			}
-			#endregion
-
-			#region Translate
-			if (video is null)
-				throw new ArgumentNullException(nameof(video));
-
-			if (video.Snippet is null)
-				throw new ArgumentNullException(nameof(video.Snippet));
-
-			string contentTitle = video.Snippet.Title;
-			string contentDescription = video.Snippet.Description;
-
-			video.Snippet.DefaultLanguage ??= "en";
-			video.Localizations ??= new Dictionary<string, VideoLocalization>();
 
 			foreach (string language in languages) {
+				try {
+					VideoListResponse responseVideoList = await requestVideoList.ExecuteAsync();
+					video = responseVideoList.Items.Count > 0 ? responseVideoList.Items[0] : null;
+				} catch (GoogleApiException ex) {
+					return StatusCode((int) ex.HttpStatusCode, ex.ToString());
+				}
+
+				if (video is null)
+					throw new ArgumentNullException(nameof(video));
+
+				if (video.Snippet is null)
+					throw new ArgumentNullException(nameof(video.Snippet));
+
+				string contentTitle = video.Snippet.Title;
+				string contentDescription = video.Snippet.Description;
+
+				video.Snippet.DefaultLanguage ??= "en";
+				video.Localizations ??= new Dictionary<string, VideoLocalization>();
+
 				// setters for request prevent null values
 				TranslateTextRequest requestTranslateText = new TranslateTextRequest {
 					TargetLanguageCode = language, 
@@ -122,7 +120,6 @@ namespace AutoVideoMetaLocalize.Controllers {
 					return StatusCode((int) ex.HttpStatusCode, ex.Message);
 				}
 			}
-			#endregion
 
 			return new ActionResult<Video>(video);
 		}
