@@ -37,7 +37,7 @@ export function ExecuteConfigurationPage(props: {
 
       executeLocalizeVideo(id)
         .then((res: Video) => {
-          console.log("Video", synchronousCount, id, res);
+          console.log("Video", synchronousCount, res);
 
           // increment count
           setCount(++synchronousCount);
@@ -60,8 +60,6 @@ export function ExecuteConfigurationPage(props: {
     //  ...video,
     //  part: 'id,snippet,localizations',
     //});
-
-    console.log("Gamma", video);
 
     return video;
   }
