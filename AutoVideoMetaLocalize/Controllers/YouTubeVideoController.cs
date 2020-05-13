@@ -9,8 +9,6 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace AutoVideoMetaLocalize.Controllers {
@@ -42,7 +40,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 		}
 
 		[HttpPost("Update")]
-		public async Task<ActionResult<Video>> Update([Required, FromForm] Video video, [Required, FromForm] string part) {
+		public async Task<ActionResult<Video>> Update([Required] Video video, [Required] string part) {
 			if (video is null)
 				throw new ArgumentNullException(nameof(video));
 			if (string.IsNullOrEmpty(part))
@@ -84,35 +82,41 @@ namespace AutoVideoMetaLocalize.Controllers {
 			if (video.Snippet is null)
 				throw new ArgumentNullException(nameof(video.Snippet));
 
-			string contentTitle = video.Snippet.Title;
-			string contentDescription = video.Snippet.Description;
-
 			video.Snippet.DefaultLanguage ??= "en";
 			video.Localizations ??= new Dictionary<string, VideoLocalization>();
 
+			string vidTitle = video.Snippet.Title;
+			string vidDescription = video.Snippet.Description;
+			string vidLanguage = video.Snippet.DefaultLanguage;
+
 			foreach (string language in languages) {
-				// setters for request prevent null values
 				TranslateTextRequest requestTranslateText = new TranslateTextRequest {
-					TargetLanguageCode = language, 
-					SourceLanguageCode = video.Snippet.DefaultLanguage,
+					TargetLanguageCode = language,
+					SourceLanguageCode = vidLanguage,
 				};
 
-				string translationTitle = "Test Title";
-					//(!string.IsNullOrWhiteSpace(contentTitle)) ? string.Empty : 
-					//await translate.TranslateSingleTextAsync(requestTranslateText, contentTitle);
-				string translationDescription = "Test Description";
-					//(!string.IsNullOrWhiteSpace(contentDescription)) ? string.Empty : 
-					//await translate.TranslateSingleTextAsync(requestTranslateText, contentDescription);
-
 				VideoLocalization localization = new VideoLocalization {
-					Title = translationTitle,
-					Description = translationDescription,
+					Title = await SimpleTranslation(requestTranslateText, vidTitle),
+					Description = await SimpleTranslation(requestTranslateText, vidDescription),
 				};
 
 				video.Localizations[language] = localization;
 			}
 
 			return await Update(video, LOCALIZE_PART);
+		}
+
+		private async Task<string> SimpleTranslation(TranslateTextRequest request, string text) {
+			if (request is null)
+				throw new ArgumentNullException(nameof(request));
+			if (string.IsNullOrEmpty(text))
+				return text;
+
+			request.Contents.Clear();
+			request.Contents.Add(text);
+
+			IList<Translation> response = await translate.TranslateTextAsync(request);
+			return response[0].TranslatedText;
 		}
 	}
 }

@@ -16,7 +16,7 @@ namespace AutoVideoMetaLocalize.Utilities {
 		public GoogleCloudTranslateManager(string pathToServiceAccount) {
 			this.pathToServiceAccount = pathToServiceAccount;
 
-		 //var a= new Google.Cloud.Translate.V3.TranslationServiceClientBuilder {
+			//var a= new Google.Cloud.Translate.V3.TranslationServiceClientBuilder {
 			//	ChannelCredentials = new Ch
 			//}
 
@@ -38,23 +38,10 @@ namespace AutoVideoMetaLocalize.Utilities {
 			}
 		}
 
-		//public async Task<Operation<BatchTranslateResponse, BatchTranslateMetadata>> TranslateTextAsync(BatchTranslateTextRequest request) {
-		//	request.Parent = PARENT;
-		//	Operation<BatchTranslateResponse, BatchTranslateMetadata> response = await service.BatchTranslateTextAsync(request);
-		//	return response;
-		//}
-
 		public async Task<IList<Translation>> TranslateTextAsync(TranslateTextRequest request) {
 			request.Parent = PARENT;
 			TranslateTextResponse response = await service.TranslateTextAsync(request);
 			return response.Translations;
-		}
-
-		public async Task<string> TranslateSingleTextAsync(TranslateTextRequest request, string text) {
-			request.Contents.Clear();
-			request.Contents.Add(text);
-			IList<Translation> translations = await TranslateTextAsync(request);
-			return translations[0].TranslatedText;
 		}
 
 		public async Task<IList<SupportedLanguage>> GetSupportedLanguagesAsync(GetSupportedLanguagesRequest request) {

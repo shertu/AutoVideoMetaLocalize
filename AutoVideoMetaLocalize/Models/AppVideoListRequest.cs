@@ -1,8 +1,4 @@
 ﻿using Google.Apis.YouTube.v3;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using static Google.Apis.YouTube.v3.VideosResource.ListRequest;
 
 namespace AutoVideoMetaLocalize.Models {
