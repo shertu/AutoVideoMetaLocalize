@@ -31,13 +31,16 @@ export function ExecuteConfigurationPage(props: {
     React.useState<number>(ids.length);
 
   React.useEffect(() => {
+    let temp: number = 0;
     for (var i = 0; i < ids.length; i++) {
       const id: string = ids[i];
 
       executeLocalizeVideo(id)
-        .then((res) => {
+        .then((res: Video) => {
+          console.log("Video", temp, id, res);
+
           // increment count
-          setCount(count + 1);
+          setCount(++temp);
         })
         .catch((err: Response) => {
           err.text().then((text: string) => setErrorMessage(text));
@@ -52,8 +55,6 @@ export function ExecuteConfigurationPage(props: {
       id: id,
       languages: languages,
     });
-
-    console.log("Beta", video);
 
     //video = await YOUTUBE_VIDEO_API.apiYouTubeVideoUpdatePost({
     //  ...localizedVideo,
