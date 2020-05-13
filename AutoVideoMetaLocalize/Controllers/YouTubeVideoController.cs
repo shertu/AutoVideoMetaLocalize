@@ -70,28 +70,27 @@ namespace AutoVideoMetaLocalize.Controllers {
 			requestVideoList.MaxResults = 1;
 			requestVideoList.Id = id;
 
-			Video video = null;
+			Video video;
+			try {
+				VideoListResponse responseVideoList = await requestVideoList.ExecuteAsync();
+				video = responseVideoList.Items.Count > 0 ? responseVideoList.Items[0] : null;
+			} catch (GoogleApiException ex) {
+				return StatusCode((int) ex.HttpStatusCode, ex.ToString());
+			}
+
+			if (video is null)
+				throw new ArgumentNullException(nameof(video));
+
+			if (video.Snippet is null)
+				throw new ArgumentNullException(nameof(video.Snippet));
+
+			string contentTitle = video.Snippet.Title;
+			string contentDescription = video.Snippet.Description;
+
+			video.Snippet.DefaultLanguage ??= "en";
+			video.Localizations ??= new Dictionary<string, VideoLocalization>();
 
 			foreach (string language in languages) {
-				try {
-					VideoListResponse responseVideoList = await requestVideoList.ExecuteAsync();
-					video = responseVideoList.Items.Count > 0 ? responseVideoList.Items[0] : null;
-				} catch (GoogleApiException ex) {
-					return StatusCode((int) ex.HttpStatusCode, ex.ToString());
-				}
-
-				if (video is null)
-					throw new ArgumentNullException(nameof(video));
-
-				if (video.Snippet is null)
-					throw new ArgumentNullException(nameof(video.Snippet));
-
-				string contentTitle = video.Snippet.Title;
-				string contentDescription = video.Snippet.Description;
-
-				video.Snippet.DefaultLanguage ??= "en";
-				video.Localizations ??= new Dictionary<string, VideoLocalization>();
-
 				// setters for request prevent null values
 				TranslateTextRequest requestTranslateText = new TranslateTextRequest {
 					TargetLanguageCode = language, 
