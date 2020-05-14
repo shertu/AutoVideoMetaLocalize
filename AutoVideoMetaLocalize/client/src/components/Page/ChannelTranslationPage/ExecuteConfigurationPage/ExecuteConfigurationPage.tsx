@@ -56,7 +56,7 @@ export function ExecuteConfigurationPage(props: {
       requestBody: languages,
     });
 
-    //video = await YOUTUBE_VIDEO_API.apiYouTubeVideoUpdatePost({
+    //video = await YOUTUBE_VIDEO_API.({
     //  ...video,
     //  part: 'id,snippet,localizations',
     //});

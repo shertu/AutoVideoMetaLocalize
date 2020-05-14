@@ -50,6 +50,11 @@ export interface ApiYouTubeVideoLocalizePostRequest {
     requestBody: Array<string>;
 }
 
+export interface ApiYouTubeVideoUpdatePostRequest {
+    part: string;
+    video: Video;
+}
+
 /**
  * no description
  */
@@ -167,6 +172,45 @@ export class YouTubeVideoApi extends runtime.BaseAPI {
      */
     async apiYouTubeVideoLocalizePost(requestParameters: ApiYouTubeVideoLocalizePostRequest): Promise<Video> {
         const response = await this.apiYouTubeVideoLocalizePostRaw(requestParameters);
+        return await response.value();
+    }
+
+    /**
+     */
+    async apiYouTubeVideoUpdatePostRaw(requestParameters: ApiYouTubeVideoUpdatePostRequest): Promise<runtime.ApiResponse<Video>> {
+        if (requestParameters.part === null || requestParameters.part === undefined) {
+            throw new runtime.RequiredError('part','Required parameter requestParameters.part was null or undefined when calling apiYouTubeVideoUpdatePost.');
+        }
+
+        if (requestParameters.video === null || requestParameters.video === undefined) {
+            throw new runtime.RequiredError('video','Required parameter requestParameters.video was null or undefined when calling apiYouTubeVideoUpdatePost.');
+        }
+
+        const queryParameters: runtime.HTTPQuery = {};
+
+        if (requestParameters.part !== undefined) {
+            queryParameters['part'] = requestParameters.part;
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        const response = await this.request({
+            path: `/api/YouTubeVideo/Update`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: VideoToJSON(requestParameters.video),
+        });
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => VideoFromJSON(jsonValue));
+    }
+
+    /**
+     */
+    async apiYouTubeVideoUpdatePost(requestParameters: ApiYouTubeVideoUpdatePostRequest): Promise<Video> {
+        const response = await this.apiYouTubeVideoUpdatePostRaw(requestParameters);
         return await response.value();
     }
 

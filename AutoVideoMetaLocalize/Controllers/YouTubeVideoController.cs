@@ -40,11 +40,11 @@ namespace AutoVideoMetaLocalize.Controllers {
 		}
 
 		[HttpPost("Update")]
-		public async Task<ActionResult<Video>> Update([Required] Video video, [Required] string part) {
+		public async Task<ActionResult<Video>> Update([Required, FromQuery] string part, [Required, FromBody] Video video) {
+			if (part is null)
+				throw new ArgumentNullException(nameof(part));
 			if (video is null)
 				throw new ArgumentNullException(nameof(video));
-			if (string.IsNullOrEmpty(part))
-				throw new ArgumentException("message", nameof(part));
 
 			YouTubeService service = await serviceAccessor.InitializeServiceAsync();
 			VideosResource.UpdateRequest request = service.Videos.Update(video, part);
@@ -59,9 +59,11 @@ namespace AutoVideoMetaLocalize.Controllers {
 
 		[HttpPost("Localize")]
 		public async Task<ActionResult<Video>> Localize(
-			[Required] string id, [Required] string[] languages) {
+			[Required, FromQuery] string id, [Required, FromBody] string[] languages) {
 			if (id is null)
 				throw new ArgumentNullException(nameof(id));
+			if (languages is null)
+				throw new ArgumentNullException(nameof(languages));
 
 			YouTubeService service = await serviceAccessor.InitializeServiceAsync();
 			VideosResource.ListRequest requestVideoList = service.Videos.List(LOCALIZE_PART);
@@ -103,7 +105,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 				video.Localizations[language] = localization;
 			}
 
-			return await Update(video, LOCALIZE_PART);
+			return await Update(LOCALIZE_PART, video);
 		}
 
 		private async Task<string> SimpleTranslation(TranslateTextRequest request, string text) {
