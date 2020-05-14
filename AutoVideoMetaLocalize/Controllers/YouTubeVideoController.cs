@@ -105,7 +105,9 @@ namespace AutoVideoMetaLocalize.Controllers {
 				video.Localizations[language] = localization;
 			}
 
-			return await Update(LOCALIZE_PART, video);
+			return video;
+
+			//return await Update(LOCALIZE_PART, video);
 		}
 
 		private async Task<string> SimpleTranslation(TranslateTextRequest request, string text) {
