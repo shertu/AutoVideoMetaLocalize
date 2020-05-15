@@ -25,8 +25,6 @@ export function ExecuteConfigurationPage(props: {
   const languageCodes: string[] = props.configuration.languageCodes;
   const videoIds: string[] = props.configuration.videoIds;
 
-  console.log("PROPS", props.configuration);
-
   const [errorMessage, setErrorMessage] =
     React.useState<string>(null);
 
@@ -97,8 +95,6 @@ export function ExecuteConfigurationPage(props: {
     const vidDefaultLanguage: string = video.snippet.defaultLanguage;
 
     languageCodes.forEach(async (_) => {
-      console.log("ALPHA", _, languageCodes);
-
       const request: ApiTranslationGetRequest = {
         targetLanguageCode: _,
         sourceLanguageCode: vidDefaultLanguage,
