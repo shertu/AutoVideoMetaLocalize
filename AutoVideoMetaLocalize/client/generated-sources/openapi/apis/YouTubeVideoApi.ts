@@ -29,6 +29,10 @@ import {
     VideoListResponseToJSON,
 } from '../models';
 
+export interface ApiYouTubeVideoAddLocalizationPostRequest {
+    body: object;
+}
+
 export interface ApiYouTubeVideoListGetRequest {
     videoCategoryId?: string | null;
     regionCode?: string | null;
@@ -45,11 +49,6 @@ export interface ApiYouTubeVideoListGetRequest {
     part?: string | null;
 }
 
-export interface ApiYouTubeVideoLocalizePostRequest {
-    id: string;
-    requestBody: Array<string>;
-}
-
 export interface ApiYouTubeVideoUpdatePostRequest {
     part: string;
     video: Video;
@@ -59,6 +58,37 @@ export interface ApiYouTubeVideoUpdatePostRequest {
  * no description
  */
 export class YouTubeVideoApi extends runtime.BaseAPI {
+
+    /**
+     */
+    async apiYouTubeVideoAddLocalizationPostRaw(requestParameters: ApiYouTubeVideoAddLocalizationPostRequest): Promise<runtime.ApiResponse<Video>> {
+        if (requestParameters.body === null || requestParameters.body === undefined) {
+            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling apiYouTubeVideoAddLocalizationPost.');
+        }
+
+        const queryParameters: runtime.HTTPQuery = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        const response = await this.request({
+            path: `/api/YouTubeVideo/Add-Localization`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: requestParameters.body as any,
+        });
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => VideoFromJSON(jsonValue));
+    }
+
+    /**
+     */
+    async apiYouTubeVideoAddLocalizationPost(requestParameters: ApiYouTubeVideoAddLocalizationPostRequest): Promise<Video> {
+        const response = await this.apiYouTubeVideoAddLocalizationPostRaw(requestParameters);
+        return await response.value();
+    }
 
     /**
      */
@@ -133,45 +163,6 @@ export class YouTubeVideoApi extends runtime.BaseAPI {
      */
     async apiYouTubeVideoListGet(requestParameters: ApiYouTubeVideoListGetRequest): Promise<VideoListResponse> {
         const response = await this.apiYouTubeVideoListGetRaw(requestParameters);
-        return await response.value();
-    }
-
-    /**
-     */
-    async apiYouTubeVideoLocalizePostRaw(requestParameters: ApiYouTubeVideoLocalizePostRequest): Promise<runtime.ApiResponse<Video>> {
-        if (requestParameters.id === null || requestParameters.id === undefined) {
-            throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling apiYouTubeVideoLocalizePost.');
-        }
-
-        if (requestParameters.requestBody === null || requestParameters.requestBody === undefined) {
-            throw new runtime.RequiredError('requestBody','Required parameter requestParameters.requestBody was null or undefined when calling apiYouTubeVideoLocalizePost.');
-        }
-
-        const queryParameters: runtime.HTTPQuery = {};
-
-        if (requestParameters.id !== undefined) {
-            queryParameters['id'] = requestParameters.id;
-        }
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        headerParameters['Content-Type'] = 'application/json';
-
-        const response = await this.request({
-            path: `/api/YouTubeVideo/Localize`,
-            method: 'POST',
-            headers: headerParameters,
-            query: queryParameters,
-            body: requestParameters.requestBody,
-        });
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => VideoFromJSON(jsonValue));
-    }
-
-    /**
-     */
-    async apiYouTubeVideoLocalizePost(requestParameters: ApiYouTubeVideoLocalizePostRequest): Promise<Video> {
-        const response = await this.apiYouTubeVideoLocalizePostRaw(requestParameters);
         return await response.value();
     }
 

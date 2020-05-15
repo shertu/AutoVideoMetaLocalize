@@ -111,11 +111,12 @@ export function RequestBuilderForm(props: {
           />
         </Form.Item>
 
-        <Collapse>
+        <Collapse className="ant-form-item">
           <Collapse.Panel header="Advanced Options" key="1">
             <Form.Item
               name={FORM_ITEM_NAMES.SMB_CHECKBOX}
               valuePropName="checked"
+              noStyle
             >
               <Checkbox>Sheet Music Boss</Checkbox>
             </Form.Item>

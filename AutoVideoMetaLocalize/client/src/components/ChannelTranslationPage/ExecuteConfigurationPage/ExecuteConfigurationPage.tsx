@@ -1,9 +1,10 @@
 import { Button, Card, Divider, Progress, Row, Typography } from 'antd';
 import { ProgressProps } from 'antd/lib/progress';
 import * as React from 'react';
-import './style.less';
-import { YouTubeVideoApi, Video } from '../../../../generated-sources/openapi';
+import { Video, YouTubeVideoApi } from '../../../../generated-sources/openapi';
 import { ChannelTranslationConfiguration } from '../../../ChannelTranslationConfiguration';
+import { Page } from '../../Page/Page';
+import './style.less';
 
 const YOUTUBE_VIDEO_API: YouTubeVideoApi = new YouTubeVideoApi();
 

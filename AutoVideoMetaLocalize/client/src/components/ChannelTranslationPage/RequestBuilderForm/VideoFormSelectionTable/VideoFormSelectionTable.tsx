@@ -38,6 +38,8 @@ export function VideoFormSelectionTable(props: {
   const [paginationCurrent, setPaginationCurrent] =
     React.useState<number>(null);
 
+  console.log("ALPHA", channelUploadsPlaylistId, response, paginationCurrent);
+
   React.useEffect(() => {
     onChangePagination(paginationCurrent, 50);
   }, []);
@@ -86,6 +88,8 @@ export function VideoFormSelectionTable(props: {
         responseActual = await YOUTUBE_PLAYLIST_ITEM_API.apiYouTubePlaylistItemListGet(request);
         paginationCurrentActual--;
       }
+
+      console.log("BETA", channelUploadsPlaylistId, responseActual, paginationCurrentActual);
     }
 
     setResponse(responseActual);
