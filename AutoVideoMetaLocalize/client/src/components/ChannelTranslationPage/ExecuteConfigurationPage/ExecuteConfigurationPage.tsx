@@ -48,17 +48,23 @@ export function ExecuteConfigurationPage(props: {
     }
   }, []);
 
-  //async function addLocalization(video: Video, languageCode: string) {
-  //  YOUTUBE_VIDEO_API.apiYouTubeVideoLocalizePost()
-  //}
+  async function addLocalization(video: Video, languageCode: string) {
+    const res: Video = await YOUTUBE_VIDEO_API.apiYouTubeVideoAddLocalizationPost({
+      body: {
+        
+      }
+    });
+
+    return res;
+  }
 
   async function executeLocalizeVideo(id: string): Promise<Video> {
     let video: Video;
 
-    video = await YOUTUBE_VIDEO_API.apiYouTubeVideoLocalizePost({
-      id: id,
-      requestBody: languages,
-    });
+    //video = await YOUTUBE_VIDEO_API.apiYouTubeVideoLocalizePost({
+    //  id: id,
+    //  requestBody: languages,
+    //});
 
     video = await YOUTUBE_VIDEO_API.apiYouTubeVideoUpdatePost({
       video: video,

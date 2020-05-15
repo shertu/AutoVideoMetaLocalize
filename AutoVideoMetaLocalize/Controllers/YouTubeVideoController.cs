@@ -109,9 +109,9 @@ namespace AutoVideoMetaLocalize.Controllers {
 		//}
 
 		[HttpPost("Add-Localization")]
-		public async Task<ActionResult<Video>> AddLocalization([Required, FromBody] (Video video, string[] languages) body) {
-			Video video = body.video;
-			string[] languages = body.languages;
+		public async Task<ActionResult<Video>> AddLocalization([Required, FromBody] AppAddLocalizationRequest body) {
+			Video video = body.Video;
+			string[] languages = body.Languages;
 
 			video.Snippet.DefaultLanguage ??= "en";
 			video.Localizations ??= new Dictionary<string, VideoLocalization>();
