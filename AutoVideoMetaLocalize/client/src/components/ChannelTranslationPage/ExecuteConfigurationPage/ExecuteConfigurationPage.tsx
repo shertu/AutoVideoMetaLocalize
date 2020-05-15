@@ -10,6 +10,8 @@ import './style.less';
 const YOUTUBE_VIDEO_API: YouTubeVideoApi = new YouTubeVideoApi();
 const TRANSLATION_API: TranslationApi = new TranslationApi();
 
+const VIDEO_PART = 'id,snippet,localizations';
+
 /**
  * The content for the step where the user is selecting a channel.
  *
@@ -49,7 +51,7 @@ export function ExecuteConfigurationPage(props: {
    */
   async function forEveryVideo(callback: (video: Video) => void) {
     const request: ApiYouTubeVideoListGetRequest = {
-      part: 'id,snippet,localization',
+      part: VIDEO_PART,
       id: videoIds.join(','),
     };
 
@@ -74,7 +76,7 @@ export function ExecuteConfigurationPage(props: {
 
     video = await YOUTUBE_VIDEO_API.apiYouTubeVideoUpdatePost({
       video: video, 
-      part: 'id,snippet,localizations',
+      part: VIDEO_PART,
     });
 
     return video;
