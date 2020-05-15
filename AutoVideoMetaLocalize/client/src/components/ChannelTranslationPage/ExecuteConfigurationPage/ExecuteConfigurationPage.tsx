@@ -25,6 +25,8 @@ export function ExecuteConfigurationPage(props: {
   const languageCodes: string[] = props.configuration.languageCodes;
   const videoIds: string[] = props.configuration.videoIds;
 
+  console.log("PROPS", props.configuration);
+
   const [errorMessage, setErrorMessage] =
     React.useState<string>(null);
 
@@ -75,7 +77,7 @@ export function ExecuteConfigurationPage(props: {
     video = await localizeVideo(video);
 
     video = await YOUTUBE_VIDEO_API.apiYouTubeVideoUpdatePost({
-      video: video, 
+      video: video,
       part: VIDEO_PART,
     });
 
@@ -95,6 +97,8 @@ export function ExecuteConfigurationPage(props: {
     const vidDefaultLanguage: string = video.snippet.defaultLanguage;
 
     for (var languageCode in languageCodes) {
+      console.log("ALPHA", languageCode, languageCodes);
+
       const request: ApiTranslationGetRequest = {
         targetLanguageCode: languageCode,
         sourceLanguageCode: vidDefaultLanguage,
