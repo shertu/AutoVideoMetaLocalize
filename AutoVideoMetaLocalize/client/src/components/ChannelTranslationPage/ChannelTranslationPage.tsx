@@ -1,10 +1,13 @@
 import * as React from 'react';
-import { Channel } from '../../../../generated-sources/openapi';
-import { ChannelTranslationConfiguration } from '../../../ChannelTranslationConfiguration';
+import { Channel, LanguageApi, SupportedLanguage, I18nLanguageSnippet } from '../../../generated-sources/openapi';
+import { ChannelTranslationConfiguration } from '../../ChannelTranslationConfiguration';
 import { ChannelSelectForm } from './ChannelSelectForm/ChannelSelectForm';
-import { ChannelTranslationConfigurationForm } from './ChannelTranslationConfigurationForm/ChannelTranslationConfigurationForm';
 import { ExecuteConfigurationPage } from './ExecuteConfigurationPage/ExecuteConfigurationPage';
 import './style.less';
+import { RequestBuilderForm } from './RequestBuilderForm/RequestBuilderForm';
+import { TranslationLanguageProvider } from '../../context';
+
+const LANGUAGE_API: LanguageApi = new LanguageApi();
 
 /**
  * The page used to control the flow of the process.
@@ -20,6 +23,20 @@ export function ChannelTranslationPage(): JSX.Element {
 
   const [configuration, setConfiguration] =
     React.useState<ChannelTranslationConfiguration>(null);
+
+  const [googleTranslateLanguages, setGoogleTranslateLanguages] =
+    React.useState<SupportedLanguage[]>(null);
+
+  const [youtubeLanguages, setYoutubeLanguages] =
+    React.useState<I18nLanguageSnippet[]>(null);
+
+  React.useEffect(() => {
+    LANGUAGE_API.apiLanguageGoogleTranslateSupportedLanguagesGet()
+      .then((res) => setGoogleTranslateLanguages(res));
+
+    LANGUAGE_API.apiLanguageYouTubeI18nLanguagesGet()
+      .then((res) => setYoutubeLanguages(res));
+  }, []);
 
   /**
    *
@@ -38,7 +55,7 @@ export function ChannelTranslationPage(): JSX.Element {
    *
    * @param value
    */
-  function onFinishConfiguration(value: ChannelTranslationConfiguration) {
+  function onFinishRequestBuilder(value: ChannelTranslationConfiguration) {
     setConfiguration(value);
     setCurrent(current + 1);
   }
@@ -55,11 +72,11 @@ export function ChannelTranslationPage(): JSX.Element {
 
   const content: React.ReactNode[] = [
     <ChannelSelectForm
-      onFinish={onFinishChannelSelect}
+      onChange={onFinishChannelSelect}
     />,
-    <ChannelTranslationConfigurationForm
+    <RequestBuilderForm
       channel={channel}
-      onFinish={onFinishConfiguration}
+      onFinish={onFinishRequestBuilder}
       onBack={decrementCurrent}
     />,
     <ExecuteConfigurationPage
@@ -69,7 +86,12 @@ export function ChannelTranslationPage(): JSX.Element {
   ];
 
   return (
-    <div className="steps-content">{content[current]}</div>
+    <TranslationLanguageProvider value={{
+      GoogleTranslate: googleTranslateLanguages,
+      YouTube: youtubeLanguages,
+    }}>
+      <div className="steps-content">{content[current]}</div>
+    </TranslationLanguageProvider>
   );
 }
 

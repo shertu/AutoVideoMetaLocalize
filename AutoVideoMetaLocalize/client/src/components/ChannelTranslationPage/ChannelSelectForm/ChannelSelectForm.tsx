@@ -1,10 +1,10 @@
 import {Button, Col, Divider, Form, Radio, Row} from 'antd';
 import {Store} from 'antd/lib/form/interface';
 import * as React from 'react';
-import {Channel, ChannelListResponse, YouTubeChannelApi, ApiYouTubeChannelListGetRequest} from '../../../../../generated-sources/openapi';
-import {BasicComboView} from '../../../BasicComboView/BasicComboView';
-import {Page} from '../../Page';
+import {Channel, ChannelListResponse, YouTubeChannelApi, ApiYouTubeChannelListGetRequest} from '../../../../generated-sources/openapi';
+import {BasicComboView} from '../../BasicComboView/BasicComboView';
 import './style.less';
+import { Page } from '../../Page/Page';
 
 const YOUTUBE_CHANNEL_API: YouTubeChannelApi = new YouTubeChannelApi();
 
@@ -19,7 +19,7 @@ const FORM_ITEM_NAMES = {
  * @return {JSX.Element}
  */
 export function ChannelSelectForm(props: {
-  onFinish: (channel: Channel) => void
+  onChange?: (channel: Channel) => void
 }): JSX.Element {
   const [options, setOptions] =
     React.useState<Channel[]>(null);
@@ -55,10 +55,14 @@ export function ChannelSelectForm(props: {
    */
   function onFinish(values: Store) {
     const CHANNEL_RADIO_GROUP_VALUE = values[FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP];
-    const selected: Channel = options.find((elem) => elem.id == CHANNEL_RADIO_GROUP_VALUE);
-    props.onFinish(selected);
+    const selectedChannel: Channel = options.find((elem) => elem.id == CHANNEL_RADIO_GROUP_VALUE);
+
+    if (props.onChange) {
+      props.onChange(selectedChannel);
+    }
   }
 
+  // The render of the channel select form.
   return (
     <Page>
       <Divider>Channel Selection</Divider>

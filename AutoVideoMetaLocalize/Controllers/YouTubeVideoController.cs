@@ -57,32 +57,61 @@ namespace AutoVideoMetaLocalize.Controllers {
 			}
 		}
 
-		[HttpPost("Localize")]
-		public async Task<ActionResult<Video>> Localize(
-			[Required, FromQuery] string id, [Required, FromBody] string[] languages) {
-			if (id is null)
-				throw new ArgumentNullException(nameof(id));
-			if (languages is null)
-				throw new ArgumentNullException(nameof(languages));
+		//[HttpPost("Localize")]
+		//public async Task<ActionResult<Video>> Localize(
+		//	[Required, FromQuery] string id, [Required, FromBody] string[] languages) {
+		//	if (id is null)
+		//		throw new ArgumentNullException(nameof(id));
+		//	if (languages is null)
+		//		throw new ArgumentNullException(nameof(languages));
 
-			YouTubeService service = await serviceAccessor.InitializeServiceAsync();
-			VideosResource.ListRequest requestVideoList = service.Videos.List(LOCALIZE_PART);
-			requestVideoList.MaxResults = 1;
-			requestVideoList.Id = id;
+		//	YouTubeService service = await serviceAccessor.InitializeServiceAsync();
+		//	VideosResource.ListRequest requestVideoList = service.Videos.List(LOCALIZE_PART);
+		//	requestVideoList.MaxResults = 1;
+		//	requestVideoList.Id = id;
 
-			Video video;
-			try {
-				VideoListResponse responseVideoList = await requestVideoList.ExecuteAsync();
-				video = responseVideoList.Items.Count > 0 ? responseVideoList.Items[0] : null;
-			} catch (GoogleApiException ex) {
-				return StatusCode((int) ex.HttpStatusCode, ex.ToString());
-			}
+		//	Video video;
+		//	try {
+		//		VideoListResponse responseVideoList = await requestVideoList.ExecuteAsync();
+		//		video = responseVideoList.Items.Count > 0 ? responseVideoList.Items[0] : null;
+		//	} catch (GoogleApiException ex) {
+		//		return StatusCode((int) ex.HttpStatusCode, ex.ToString());
+		//	}
 
-			if (video is null)
-				throw new ArgumentNullException(nameof(video));
+		//	if (video is null)
+		//		throw new ArgumentNullException(nameof(video));
 
-			if (video.Snippet is null)
-				throw new ArgumentNullException(nameof(video.Snippet));
+		//	if (video.Snippet is null)
+		//		throw new ArgumentNullException(nameof(video.Snippet));
+
+		//	video.Snippet.DefaultLanguage ??= "en";
+		//	video.Localizations ??= new Dictionary<string, VideoLocalization>();
+
+		//	string vidTitle = video.Snippet.Title;
+		//	string vidDescription = video.Snippet.Description;
+		//	string vidLanguage = video.Snippet.DefaultLanguage;
+
+		//	foreach (string language in languages) {
+		//		TranslateTextRequest requestTranslateText = new TranslateTextRequest {
+		//			TargetLanguageCode = language,
+		//			SourceLanguageCode = vidLanguage,
+		//		};
+
+		//		VideoLocalization localization = new VideoLocalization {
+		//			Title = await SimpleTranslation(requestTranslateText, vidTitle),
+		//			Description = await SimpleTranslation(requestTranslateText, vidDescription),
+		//		};
+
+		//		video.Localizations[language] = localization;
+		//	}
+
+		//	return video;
+		//}
+
+		[HttpPost("Add-Localization")]
+		public async Task<ActionResult<Video>> AddLocalization([Required, FromBody] (Video video, string[] languages) body) {
+			Video video = body.video;
+			string[] languages = body.languages;
 
 			video.Snippet.DefaultLanguage ??= "en";
 			video.Localizations ??= new Dictionary<string, VideoLocalization>();
@@ -106,8 +135,6 @@ namespace AutoVideoMetaLocalize.Controllers {
 			}
 
 			return video;
-
-			//return await Update(LOCALIZE_PART, video);
 		}
 
 		private async Task<string> SimpleTranslation(TranslateTextRequest request, string text) {

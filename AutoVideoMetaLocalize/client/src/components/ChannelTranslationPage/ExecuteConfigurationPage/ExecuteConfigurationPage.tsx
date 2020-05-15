@@ -1,10 +1,9 @@
 import { Button, Card, Divider, Progress, Row, Typography } from 'antd';
 import { ProgressProps } from 'antd/lib/progress';
 import * as React from 'react';
-import { ApiYouTubeVideoListGetRequest, Video, YouTubeVideoApi, VideoListResponse } from '../../../../../generated-sources/openapi';
-import { ChannelTranslationConfiguration } from '../../../../ChannelTranslationConfiguration';
-import { Page } from '../../Page';
 import './style.less';
+import { YouTubeVideoApi, Video } from '../../../../generated-sources/openapi';
+import { ChannelTranslationConfiguration } from '../../../ChannelTranslationConfiguration';
 
 const YOUTUBE_VIDEO_API: YouTubeVideoApi = new YouTubeVideoApi();
 
@@ -47,6 +46,10 @@ export function ExecuteConfigurationPage(props: {
         });
     }
   }, []);
+
+  //async function addLocalization(video: Video, languageCode: string) {
+  //  YOUTUBE_VIDEO_API.apiYouTubeVideoLocalizePost()
+  //}
 
   async function executeLocalizeVideo(id: string): Promise<Video> {
     let video: Video;
