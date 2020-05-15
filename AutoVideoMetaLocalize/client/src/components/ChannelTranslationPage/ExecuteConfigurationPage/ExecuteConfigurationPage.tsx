@@ -1,11 +1,11 @@
 import { Button, Card, Divider, Progress, Row, Typography } from 'antd';
 import { ProgressProps } from 'antd/lib/progress';
 import * as React from 'react';
-import { Video, YouTubeVideoApi, VideoLocalization, VideoListResponse, ApiYouTubeVideoListGetRequest } from '../../../../generated-sources/openapi';
+import { ApiYouTubeVideoListGetRequest, Video, VideoListResponse, VideoLocalization, YouTubeVideoApi } from '../../../../generated-sources/openapi';
+import { ApiTranslationGetRequest, TranslationApi } from '../../../../generated-sources/openapi/apis/TranslationApi';
 import { ChannelTranslationConfiguration } from '../../../ChannelTranslationConfiguration';
 import { Page } from '../../Page/Page';
 import './style.less';
-import { TranslationApi, ApiTranslationGetRequest } from '../../../../generated-sources/openapi/apis/TranslationApi';
 
 const YOUTUBE_VIDEO_API: YouTubeVideoApi = new YouTubeVideoApi();
 const TRANSLATION_API: TranslationApi = new TranslationApi();
@@ -34,7 +34,10 @@ export function ExecuteConfigurationPage(props: {
   React.useEffect(() => {
     let synchronousCount: number = 0;
 
-    forEveryVideo(addLanguageLocalizationToVideoAndUpdate)
+    forEveryVideo((video) => {
+      localizeAndThenUpdateVideo(video);
+      synchronousCount++
+    })
       .catch((err: Response) => {
         err.text().then((text: string) => setErrorMessage(text));
       });
@@ -66,8 +69,8 @@ export function ExecuteConfigurationPage(props: {
    * 
    * @param video
    */
-  async function addLanguageLocalizationToVideoAndUpdate(video: Video): Promise<Video> {
-    video = await addLanguageLocalizationToVideo(video);
+  async function localizeAndThenUpdateVideo(video: Video): Promise<Video> {
+    video = await localizeVideo(video);
 
     video = await YOUTUBE_VIDEO_API.apiYouTubeVideoUpdatePost({
       video: video, 
@@ -81,7 +84,7 @@ export function ExecuteConfigurationPage(props: {
    * 
    * @param video
    */
-  async function addLanguageLocalizationToVideo(video: Video): Promise<Video> {
+  async function localizeVideo(video: Video): Promise<Video> {
     video.snippet.defaultLanguage = video.snippet.defaultLanguage || "en";
     video.localizations = video.localizations || {};
 
@@ -91,21 +94,14 @@ export function ExecuteConfigurationPage(props: {
 
     for (var languageCode in languageCodes) {
       const request: ApiTranslationGetRequest = {
-        translateTextRequest: {
-          targetLanguageCode: languageCode,
-          sourceLanguageCode: vidDefaultLanguage,
-        },
-        text: null,
+        targetLanguageCode: languageCode,
+        sourceLanguageCode: vidDefaultLanguage,
       };
 
-      //TRANSLATION_API.apiTranslationGet({
-      //  translateTextRequest
-      //})
-
-      //const localization: VideoLocalization = {
-      //  Title = await SimpleTranslation(requestTranslateText, vidTitle),
-      //  Description = await SimpleTranslation(requestTranslateText, vidDescription),
-      //};
+      const localization: VideoLocalization = {
+        title: await TRANSLATION_API.apiTranslationGet({ ...request, text: vidTitle }),
+        description: await TRANSLATION_API.apiTranslationGet({ ...request, text: vidDescription }),
+      };
 
       video.localizations[languageCode] = localization;
     }

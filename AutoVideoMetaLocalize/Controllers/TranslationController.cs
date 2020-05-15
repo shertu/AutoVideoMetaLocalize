@@ -1,12 +1,9 @@
-﻿using System;
+﻿using AutoVideoMetaLocalize.Utilities;
+using Google.Cloud.Translate.V3;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Threading.Tasks;
-using AutoVideoMetaLocalize.Utilities;
-using Google.Cloud.Translate.V3;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 
 namespace AutoVideoMetaLocalize.Controllers {
 	[Route("api/[controller]")]

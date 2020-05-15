@@ -14,15 +14,11 @@
 
 
 import * as runtime from '../runtime';
-import {
-    TranslateTextRequest,
-    TranslateTextRequestFromJSON,
-    TranslateTextRequestToJSON,
-} from '../models';
 
 export interface ApiTranslationGetRequest {
-    text: string;
-    translateTextRequest: TranslateTextRequest;
+    targetLanguageCode: string;
+    sourceLanguageCode: string;
+    text?: string | null;
 }
 
 /**
@@ -33,15 +29,23 @@ export class TranslationApi extends runtime.BaseAPI {
     /**
      */
     async apiTranslationGetRaw(requestParameters: ApiTranslationGetRequest): Promise<runtime.ApiResponse<string>> {
-        if (requestParameters.text === null || requestParameters.text === undefined) {
-            throw new runtime.RequiredError('text','Required parameter requestParameters.text was null or undefined when calling apiTranslationGet.');
+        if (requestParameters.targetLanguageCode === null || requestParameters.targetLanguageCode === undefined) {
+            throw new runtime.RequiredError('targetLanguageCode','Required parameter requestParameters.targetLanguageCode was null or undefined when calling apiTranslationGet.');
         }
 
-        if (requestParameters.translateTextRequest === null || requestParameters.translateTextRequest === undefined) {
-            throw new runtime.RequiredError('translateTextRequest','Required parameter requestParameters.translateTextRequest was null or undefined when calling apiTranslationGet.');
+        if (requestParameters.sourceLanguageCode === null || requestParameters.sourceLanguageCode === undefined) {
+            throw new runtime.RequiredError('sourceLanguageCode','Required parameter requestParameters.sourceLanguageCode was null or undefined when calling apiTranslationGet.');
         }
 
         const queryParameters: runtime.HTTPQuery = {};
+
+        if (requestParameters.targetLanguageCode !== undefined) {
+            queryParameters['targetLanguageCode'] = requestParameters.targetLanguageCode;
+        }
+
+        if (requestParameters.sourceLanguageCode !== undefined) {
+            queryParameters['sourceLanguageCode'] = requestParameters.sourceLanguageCode;
+        }
 
         if (requestParameters.text !== undefined) {
             queryParameters['text'] = requestParameters.text;
@@ -49,14 +53,11 @@ export class TranslationApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
-
         const response = await this.request({
             path: `/api/Translation`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-            body: TranslateTextRequestToJSON(requestParameters.translateTextRequest),
         });
 
         return new runtime.TextApiResponse(response) as any;
