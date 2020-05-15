@@ -40,7 +40,7 @@ export function ExecuteConfigurationPage(props: {
 
     forEveryVideo((video) => {
       localizeAndThenUpdateVideo(video);
-      synchronousCount++
+      setCount(++synchronousCount);
     })
       .catch((err: Response) => {
         err.text().then((text: string) => setErrorMessage(text));
@@ -96,11 +96,11 @@ export function ExecuteConfigurationPage(props: {
     const vidDescription: string = video.snippet.description;
     const vidDefaultLanguage: string = video.snippet.defaultLanguage;
 
-    for (var languageCode in languageCodes) {
-      console.log("ALPHA", languageCode, languageCodes);
+    languageCodes.forEach(async (_) => {
+      console.log("ALPHA", _, languageCodes);
 
       const request: ApiTranslationGetRequest = {
-        targetLanguageCode: languageCode,
+        targetLanguageCode: _,
         sourceLanguageCode: vidDefaultLanguage,
       };
 
@@ -109,8 +109,8 @@ export function ExecuteConfigurationPage(props: {
         description: await TRANSLATION_API.apiTranslationGet({ ...request, text: vidDescription }),
       };
 
-      video.localizations[languageCode] = localization;
-    }
+      video.localizations[_] = localization;
+    });
 
     return video;
   }
