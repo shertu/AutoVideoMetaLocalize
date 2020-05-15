@@ -16,14 +16,10 @@ namespace AutoVideoMetaLocalize.Controllers {
 	[Route("api/[controller]")]
 	[ApiController]
 	public class YouTubeVideoController : ControllerBase {
-		private const string LOCALIZE_PART = "id,snippet,localizations";
-
 		private readonly YouTubeServiceAccessor serviceAccessor;
-		private readonly GoogleCloudTranslateManager translate;
 
-		public YouTubeVideoController(YouTubeServiceAccessor serviceAccessor, GoogleCloudTranslateManager translate) {
+		public YouTubeVideoController(YouTubeServiceAccessor serviceAccessor) {
 			this.serviceAccessor = serviceAccessor;
-			this.translate = translate;
 		}
 
 		[HttpGet("List")]
@@ -107,47 +103,5 @@ namespace AutoVideoMetaLocalize.Controllers {
 
 		//	return video;
 		//}
-
-		[HttpPost("Add-Localization")]
-		public async Task<ActionResult<Video>> AddLocalization([Required, FromBody] AppAddLocalizationRequest body) {
-			Video video = body.Video;
-			string[] languages = body.Languages;
-
-			video.Snippet.DefaultLanguage ??= "en";
-			video.Localizations ??= new Dictionary<string, VideoLocalization>();
-
-			string vidTitle = video.Snippet.Title;
-			string vidDescription = video.Snippet.Description;
-			string vidLanguage = video.Snippet.DefaultLanguage;
-
-			foreach (string language in languages) {
-				TranslateTextRequest requestTranslateText = new TranslateTextRequest {
-					TargetLanguageCode = language,
-					SourceLanguageCode = vidLanguage,
-				};
-
-				VideoLocalization localization = new VideoLocalization {
-					Title = await SimpleTranslation(requestTranslateText, vidTitle),
-					Description = await SimpleTranslation(requestTranslateText, vidDescription),
-				};
-
-				video.Localizations[language] = localization;
-			}
-
-			return video;
-		}
-
-		private async Task<string> SimpleTranslation(TranslateTextRequest request, string text) {
-			if (request is null)
-				throw new ArgumentNullException(nameof(request));
-			if (string.IsNullOrEmpty(text))
-				return text;
-
-			request.Contents.Clear();
-			request.Contents.Add(text);
-
-			IList<Translation> response = await translate.TranslateTextAsync(request);
-			return response[0].TranslatedText;
-		}
 	}
 }

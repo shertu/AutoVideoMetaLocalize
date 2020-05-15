@@ -15,6 +15,9 @@
 
 import * as runtime from '../runtime';
 import {
+    AppAddLocalizationRequest,
+    AppAddLocalizationRequestFromJSON,
+    AppAddLocalizationRequestToJSON,
     ChartEnum,
     ChartEnumFromJSON,
     ChartEnumToJSON,
@@ -30,7 +33,7 @@ import {
 } from '../models';
 
 export interface ApiYouTubeVideoAddLocalizationPostRequest {
-    body: object;
+    appAddLocalizationRequest: AppAddLocalizationRequest;
 }
 
 export interface ApiYouTubeVideoListGetRequest {
@@ -62,8 +65,8 @@ export class YouTubeVideoApi extends runtime.BaseAPI {
     /**
      */
     async apiYouTubeVideoAddLocalizationPostRaw(requestParameters: ApiYouTubeVideoAddLocalizationPostRequest): Promise<runtime.ApiResponse<Video>> {
-        if (requestParameters.body === null || requestParameters.body === undefined) {
-            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling apiYouTubeVideoAddLocalizationPost.');
+        if (requestParameters.appAddLocalizationRequest === null || requestParameters.appAddLocalizationRequest === undefined) {
+            throw new runtime.RequiredError('appAddLocalizationRequest','Required parameter requestParameters.appAddLocalizationRequest was null or undefined when calling apiYouTubeVideoAddLocalizationPost.');
         }
 
         const queryParameters: runtime.HTTPQuery = {};
@@ -77,7 +80,7 @@ export class YouTubeVideoApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: requestParameters.body as any,
+            body: AppAddLocalizationRequestToJSON(requestParameters.appAddLocalizationRequest),
         });
 
         return new runtime.JSONApiResponse(response, (jsonValue) => VideoFromJSON(jsonValue));

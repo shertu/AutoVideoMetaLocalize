@@ -1,7 +1,7 @@
 import { Button, Card, Divider, Progress, Row, Typography } from 'antd';
 import { ProgressProps } from 'antd/lib/progress';
 import * as React from 'react';
-import { Video, YouTubeVideoApi } from '../../../../generated-sources/openapi';
+import { Video, YouTubeVideoApi, VideoLocalization } from '../../../../generated-sources/openapi';
 import { ChannelTranslationConfiguration } from '../../../ChannelTranslationConfiguration';
 import { Page } from '../../Page/Page';
 import './style.less';
@@ -48,14 +48,29 @@ export function ExecuteConfigurationPage(props: {
     }
   }, []);
 
-  async function addLocalization(video: Video, languageCode: string) {
-    const res: Video = await YOUTUBE_VIDEO_API.apiYouTubeVideoAddLocalizationPost({
-      body: {
-        
-      }
-    });
+  async function addLocalizations(video: Video, languageCodes: string[]) {
+    video.snippet.defaultLanguage = video.snippet.defaultLanguage || "en";
+    video.localizations = video.localizations || {};
 
-    return res;
+    const vidTitle: string = video.snippet.title;
+    const vidDescription: string = video.snippet.description;
+    const vidDefaultLanguage: string = video.snippet.defaultLanguage;
+
+    for (var _ in languageCodes) {
+      //TranslateTextRequest requestTranslateText = new TranslateTextRequest {
+      //  TargetLanguageCode = language,
+      //    SourceLanguageCode = vidLanguage,
+      //    };
+
+      //const localization: VideoLocalization = {
+      //  Title = await SimpleTranslation(requestTranslateText, vidTitle),
+      //  Description = await SimpleTranslation(requestTranslateText, vidDescription),
+      //};
+
+      //video.localizations[_] = localization;
+    }
+
+    return video;
   }
 
   async function executeLocalizeVideo(id: string): Promise<Video> {

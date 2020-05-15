@@ -1,4 +1,5 @@
 export * from './AccessPolicy';
+export * from './AppAddLocalizationRequest';
 export * from './Channel';
 export * from './ChannelAuditDetails';
 export * from './ChannelBrandingSettings';
