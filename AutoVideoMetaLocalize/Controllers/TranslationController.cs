@@ -19,14 +19,18 @@ namespace AutoVideoMetaLocalize.Controllers {
 		}
 
 		[HttpGet]
-		public async Task<ActionResult<string>> GetSimpleTranslation([Required, FromBody] TranslateTextRequest request, [Required, FromQuery] string text) {
-			if (request is null)
-				throw new ArgumentNullException(nameof(request));
+		public async Task<ActionResult<string>> GetSimpleTranslation(
+			[Required, FromQuery] string targetLanguageCode, 
+			[Required, FromQuery] string sourceLanguageCode, 
+			[FromQuery] string text) {
 			if (string.IsNullOrEmpty(text))
 				return text;
 
-			request.Contents.Clear();
-			request.Contents.Add(text);
+			TranslateTextRequest request = new TranslateTextRequest {
+				TargetLanguageCode = targetLanguageCode,
+				SourceLanguageCode = sourceLanguageCode,
+				Contents = { text },
+			};
 
 			IList<Translation> response = await googleCloudTranslate.TranslateTextAsync(request);
 			return response[0].TranslatedText;

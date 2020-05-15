@@ -1,12 +1,14 @@
 import { Button, Card, Divider, Progress, Row, Typography } from 'antd';
 import { ProgressProps } from 'antd/lib/progress';
 import * as React from 'react';
-import { Video, YouTubeVideoApi, VideoLocalization } from '../../../../generated-sources/openapi';
+import { Video, YouTubeVideoApi, VideoLocalization, VideoListResponse, ApiYouTubeVideoListGetRequest } from '../../../../generated-sources/openapi';
 import { ChannelTranslationConfiguration } from '../../../ChannelTranslationConfiguration';
 import { Page } from '../../Page/Page';
 import './style.less';
+import { TranslationApi, ApiTranslationGetRequest } from '../../../../generated-sources/openapi/apis/TranslationApi';
 
 const YOUTUBE_VIDEO_API: YouTubeVideoApi = new YouTubeVideoApi();
+const TRANSLATION_API: TranslationApi = new TranslationApi();
 
 /**
  * The content for the step where the user is selecting a channel.
@@ -18,8 +20,8 @@ export function ExecuteConfigurationPage(props: {
   configuration: ChannelTranslationConfiguration,
   onComplete: () => void,
 }): JSX.Element {
-  const languages: string[] = props.configuration.languageCodes;
-  const ids: string[] = props.configuration.videoIds;
+  const languageCodes: string[] = props.configuration.languageCodes;
+  const videoIds: string[] = props.configuration.videoIds;
 
   const [errorMessage, setErrorMessage] =
     React.useState<string>(null);
@@ -27,28 +29,59 @@ export function ExecuteConfigurationPage(props: {
   const [count, setCount] =
     React.useState<number>(0);
 
-  const [countMax, setCountMax] =
-    React.useState<number>(ids.length);
+  const count_max: number = videoIds.length;
 
   React.useEffect(() => {
     let synchronousCount: number = 0;
-    for (var i = 0; i < ids.length; i++) {
-      const id: string = ids[i];
 
-      executeLocalizeVideo(id)
-        .then((res: Video) => {
-          console.log("Video", synchronousCount, res);
-
-          // increment count
-          setCount(++synchronousCount);
-        })
-        .catch((err: Response) => {
-          err.text().then((text: string) => setErrorMessage(text));
-        });
-    }
+    forEveryVideo(addLanguageLocalizationToVideoAndUpdate)
+      .catch((err: Response) => {
+        err.text().then((text: string) => setErrorMessage(text));
+      });
   }, []);
 
-  async function addLocalizations(video: Video, languageCodes: string[]) {
+  /**
+   * 
+   * @param callback
+   */
+  async function forEveryVideo(callback: (video: Video) => void) {
+    const request: ApiYouTubeVideoListGetRequest = {
+      part: 'id,snippet,localization',
+      id: videoIds.join(','),
+    };
+
+    do {
+      const response: VideoListResponse = await YOUTUBE_VIDEO_API.apiYouTubeVideoListGet(request);
+      const items: Video[] = response.items;
+
+      items.forEach((_) => {
+        callback(_);
+      });
+
+      request.pageToken = response.nextPageToken;
+    } while (request.pageToken);
+  }
+
+  /**
+   * 
+   * @param video
+   */
+  async function addLanguageLocalizationToVideoAndUpdate(video: Video): Promise<Video> {
+    video = await addLanguageLocalizationToVideo(video);
+
+    video = await YOUTUBE_VIDEO_API.apiYouTubeVideoUpdatePost({
+      video: video, 
+      part: 'id,snippet,localizations',
+    });
+
+    return video;
+  }
+
+  /**
+   * 
+   * @param video
+   */
+  async function addLanguageLocalizationToVideo(video: Video): Promise<Video> {
     video.snippet.defaultLanguage = video.snippet.defaultLanguage || "en";
     video.localizations = video.localizations || {};
 
@@ -56,40 +89,31 @@ export function ExecuteConfigurationPage(props: {
     const vidDescription: string = video.snippet.description;
     const vidDefaultLanguage: string = video.snippet.defaultLanguage;
 
-    for (var _ in languageCodes) {
-      //TranslateTextRequest requestTranslateText = new TranslateTextRequest {
-      //  TargetLanguageCode = language,
-      //    SourceLanguageCode = vidLanguage,
-      //    };
+    for (var languageCode in languageCodes) {
+      const request: ApiTranslationGetRequest = {
+        translateTextRequest: {
+          targetLanguageCode: languageCode,
+          sourceLanguageCode: vidDefaultLanguage,
+        },
+        text: null,
+      };
+
+      //TRANSLATION_API.apiTranslationGet({
+      //  translateTextRequest
+      //})
 
       //const localization: VideoLocalization = {
       //  Title = await SimpleTranslation(requestTranslateText, vidTitle),
       //  Description = await SimpleTranslation(requestTranslateText, vidDescription),
       //};
 
-      //video.localizations[_] = localization;
+      video.localizations[languageCode] = localization;
     }
 
     return video;
   }
 
-  async function executeLocalizeVideo(id: string): Promise<Video> {
-    let video: Video;
-
-    //video = await YOUTUBE_VIDEO_API.apiYouTubeVideoLocalizePost({
-    //  id: id,
-    //  requestBody: languages,
-    //});
-
-    video = await YOUTUBE_VIDEO_API.apiYouTubeVideoUpdatePost({
-      video: video,
-      part: 'id,snippet,localizations',
-    });
-
-    return video;
-  }
-
-  const completeFrac: number = (countMax) ? (count / countMax) : 1;
+  const completeFrac: number = (count_max) ? (count / count_max) : 1;
 
   const progressProps: ProgressProps = {
     type: 'circle',

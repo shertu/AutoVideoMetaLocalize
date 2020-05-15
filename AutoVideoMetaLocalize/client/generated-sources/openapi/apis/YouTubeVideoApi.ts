@@ -15,9 +15,6 @@
 
 import * as runtime from '../runtime';
 import {
-    AppAddLocalizationRequest,
-    AppAddLocalizationRequestFromJSON,
-    AppAddLocalizationRequestToJSON,
     ChartEnum,
     ChartEnumFromJSON,
     ChartEnumToJSON,
@@ -31,10 +28,6 @@ import {
     VideoListResponseFromJSON,
     VideoListResponseToJSON,
 } from '../models';
-
-export interface ApiYouTubeVideoAddLocalizationPostRequest {
-    appAddLocalizationRequest: AppAddLocalizationRequest;
-}
 
 export interface ApiYouTubeVideoListGetRequest {
     videoCategoryId?: string | null;
@@ -61,37 +54,6 @@ export interface ApiYouTubeVideoUpdatePostRequest {
  * no description
  */
 export class YouTubeVideoApi extends runtime.BaseAPI {
-
-    /**
-     */
-    async apiYouTubeVideoAddLocalizationPostRaw(requestParameters: ApiYouTubeVideoAddLocalizationPostRequest): Promise<runtime.ApiResponse<Video>> {
-        if (requestParameters.appAddLocalizationRequest === null || requestParameters.appAddLocalizationRequest === undefined) {
-            throw new runtime.RequiredError('appAddLocalizationRequest','Required parameter requestParameters.appAddLocalizationRequest was null or undefined when calling apiYouTubeVideoAddLocalizationPost.');
-        }
-
-        const queryParameters: runtime.HTTPQuery = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        headerParameters['Content-Type'] = 'application/json';
-
-        const response = await this.request({
-            path: `/api/YouTubeVideo/Add-Localization`,
-            method: 'POST',
-            headers: headerParameters,
-            query: queryParameters,
-            body: AppAddLocalizationRequestToJSON(requestParameters.appAddLocalizationRequest),
-        });
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => VideoFromJSON(jsonValue));
-    }
-
-    /**
-     */
-    async apiYouTubeVideoAddLocalizationPost(requestParameters: ApiYouTubeVideoAddLocalizationPostRequest): Promise<Video> {
-        const response = await this.apiYouTubeVideoAddLocalizationPostRaw(requestParameters);
-        return await response.value();
-    }
 
     /**
      */
