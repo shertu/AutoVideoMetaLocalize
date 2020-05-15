@@ -41,7 +41,7 @@ export function VideoFormSelectionTable(props: {
   console.log("ALPHA", channelUploadsPlaylistId, response, paginationCurrent);
 
   React.useEffect(() => {
-    onChangePagination(paginationCurrent, 50);
+    onChangePagination(1, 50);
   }, []);
 
   /**
@@ -71,12 +71,12 @@ export function VideoFormSelectionTable(props: {
     let responseActual: PlaylistItemListResponse = response;
     let paginationCurrentActual: number = paginationCurrent;
 
-    while (paginationCurrentActual !== page) {
-      if (responseActual == null) {
-        responseActual = await YOUTUBE_PLAYLIST_ITEM_API.apiYouTubePlaylistItemListGet(request);
-        paginationCurrentActual = 1;
-      }
+    if (responseActual == null) {
+      responseActual = await YOUTUBE_PLAYLIST_ITEM_API.apiYouTubePlaylistItemListGet(request);
+      paginationCurrentActual = 1;
+    }
 
+    while (paginationCurrentActual !== page) {
       if (paginationCurrentActual < page) {
         request.pageToken = responseActual.nextPageToken;
         responseActual = await YOUTUBE_PLAYLIST_ITEM_API.apiYouTubePlaylistItemListGet(request);
