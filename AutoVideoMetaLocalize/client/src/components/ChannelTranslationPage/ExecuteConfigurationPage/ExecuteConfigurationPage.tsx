@@ -22,8 +22,9 @@ export function ExecuteConfigurationPage(props: {
   configuration: ChannelTranslationConfiguration,
   onComplete: () => void,
 }): JSX.Element {
-  const languageCodes: string[] = props.configuration.languageCodes;
-  const videoIds: string[] = props.configuration.videoIds;
+  const LANGUAGE_CODES: string[] = props.configuration.languageCodes;
+  const VIDEO_IDS: string[] = props.configuration.videoIds;
+  const SHEET_MUSIC_BOSS: boolean = props.configuration.sheetmusicboss;
 
   const [errorMessage, setErrorMessage] =
     React.useState<string>(null);
@@ -31,21 +32,23 @@ export function ExecuteConfigurationPage(props: {
   const [count, setCount] =
     React.useState<number>(0);
 
-  const count_max: number = videoIds.length;
+  const count_max: number = VIDEO_IDS.length;
 
   React.useEffect(() => {
     let synchronousCount: number = 0;
     forEveryVideo(async (video) => {
-      let temp: Video = await localizeVideo(video);
+      video = await localizeVideo(video);
 
-      temp = await YOUTUBE_VIDEO_API.apiYouTubeVideoUpdatePost({
-        video: temp,
+      console.log("AFTER TRANSLATION IN FOR", video);
+
+      video = await YOUTUBE_VIDEO_API.apiYouTubeVideoUpdatePost({
+        video: video,
         part: VIDEO_PART,
       });
 
       setCount(++synchronousCount);
 
-      return temp;
+      return video;
     })
       .catch((err: Response) => {
         err.text().then((text: string) => setErrorMessage(text));
@@ -59,7 +62,7 @@ export function ExecuteConfigurationPage(props: {
   async function forEveryVideo(callback: (video: Video) => void) {
     const request: ApiYouTubeVideoListGetRequest = {
       part: VIDEO_PART,
-      id: videoIds.join(','),
+      id: VIDEO_IDS.join(','),
     };
 
     do {
@@ -67,6 +70,8 @@ export function ExecuteConfigurationPage(props: {
       const items: Video[] = response.items;
 
       items.forEach((_) => {
+        console.log("VIDEO ORIGINAL", _);
+
         callback(_);
       });
 
@@ -88,24 +93,40 @@ export function ExecuteConfigurationPage(props: {
     const vidDescription: string = video.snippet.description;
     const vidDefaultLanguage: string = video.snippet.defaultLanguage;
 
-    languageCodes.forEach(async (_) => {
+    for (var i = 0; i < LANGUAGE_CODES.length; i++) {
+      const _ = LANGUAGE_CODES[i];
+
       const request: ApiTranslationGetRequest = {
         targetLanguageCode: _,
         sourceLanguageCode: vidDefaultLanguage,
       };
 
       const localization: VideoLocalization = {
-        title: await TRANSLATION_API.apiTranslationGet({ ...request, text: vidTitle }),
         description: await TRANSLATION_API.apiTranslationGet({ ...request, text: vidDescription }),
       };
+
+      if (SHEET_MUSIC_BOSS) {
+        localization.title = await substringTranslation(request, "piano tutorial", vidTitle);
+      } else {
+        localization.title = await TRANSLATION_API.apiTranslationGet({ ...request, text: vidTitle });
+      }
 
       video.localizations[_] = localization;
 
       console.log("LOCALIZTION", video);
-    });
+    }
 
     console.log("LOCALIZTION AFTER", video);
     return video;
+  }
+
+  async function substringTranslation(request: ApiTranslationGetRequest, substring: string, title: string): Promise<string> {
+    const translatedSubstring = await TRANSLATION_API.apiTranslationGet({ ...request, text: substring });
+    const regex: RegExp = new RegExp(`/${substring}/gi`);
+    const o: string = title.replace(regex, translatedSubstring);
+
+    console.log("SUBSTRING TRANSLATION", title, o)
+    return o;
   }
 
   const completeFrac: number = (count_max) ? (count / count_max) : 1;
