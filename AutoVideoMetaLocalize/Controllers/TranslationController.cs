@@ -3,7 +3,9 @@ using Google.Cloud.Translate.V3;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace AutoVideoMetaLocalize.Controllers {
 	[Route("api/[controller]")]
@@ -30,7 +32,11 @@ namespace AutoVideoMetaLocalize.Controllers {
 			};
 
 			IList<Translation> response = await googleCloudTranslate.TranslateTextAsync(request);
-			return response[0].TranslatedText;
+			string translation = response[0].TranslatedText;
+
+			using StringWriter sw = new StringWriter();
+			HttpUtility.HtmlDecode(translation, sw);
+			return sw.ToString();
 		}
 	}
 }

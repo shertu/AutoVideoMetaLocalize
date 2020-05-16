@@ -114,10 +114,7 @@ export function ExecuteConfigurationPage(props: {
   async function substringTranslation(request: ApiTranslationGetRequest, substring: string, title: string): Promise<string> {
     const translatedSubstring = await TRANSLATION_API.apiTranslationGet({ ...request, text: substring });
     const regex: RegExp = new RegExp(substring, 'gi');
-    const o: string = title.replace(regex, translatedSubstring);
-
-    console.log("SUBSTRING TRANSLATION", title, o)
-    return o;
+    return title.replace(regex, translatedSubstring);
   }
 
   const completeFrac: number = (count_max) ? (count / count_max) : 1;
