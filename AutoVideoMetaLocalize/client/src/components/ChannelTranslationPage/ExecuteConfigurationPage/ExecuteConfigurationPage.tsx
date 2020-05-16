@@ -39,8 +39,6 @@ export function ExecuteConfigurationPage(props: {
     forEveryVideo(async (video) => {
       video = await localizeVideo(video);
 
-      console.log("AFTER TRANSLATION IN FOR", video);
-
       video = await YOUTUBE_VIDEO_API.apiYouTubeVideoUpdatePost({
         video: video,
         part: VIDEO_PART,
@@ -70,8 +68,6 @@ export function ExecuteConfigurationPage(props: {
       const items: Video[] = response.items;
 
       items.forEach((_) => {
-        console.log("VIDEO ORIGINAL", _);
-
         callback(_);
       });
 
@@ -84,8 +80,6 @@ export function ExecuteConfigurationPage(props: {
    * @param video
    */
   async function localizeVideo(video: Video): Promise<Video> {
-    console.log("LOCALIZTION BEFORE", video);
-
     video.snippet.defaultLanguage = video.snippet.defaultLanguage || "en";
     video.localizations = video.localizations || {};
 
@@ -112,17 +106,14 @@ export function ExecuteConfigurationPage(props: {
       }
 
       video.localizations[_] = localization;
-
-      console.log("LOCALIZTION", video);
     }
 
-    console.log("LOCALIZTION AFTER", video);
     return video;
   }
 
   async function substringTranslation(request: ApiTranslationGetRequest, substring: string, title: string): Promise<string> {
     const translatedSubstring = await TRANSLATION_API.apiTranslationGet({ ...request, text: substring });
-    const regex: RegExp = new RegExp(`/${substring}/gi`);
+    const regex: RegExp = new RegExp(substring, 'gi');
     const o: string = title.replace(regex, translatedSubstring);
 
     console.log("SUBSTRING TRANSLATION", title, o)
