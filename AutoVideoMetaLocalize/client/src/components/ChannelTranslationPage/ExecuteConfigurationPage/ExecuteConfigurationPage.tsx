@@ -35,10 +35,17 @@ export function ExecuteConfigurationPage(props: {
 
   React.useEffect(() => {
     let synchronousCount: number = 0;
+    forEveryVideo(async (video) => {
+      let temp: Video = await localizeVideo(video);
 
-    forEveryVideo((video) => {
-      localizeAndThenUpdateVideo(video);
+      temp = await YOUTUBE_VIDEO_API.apiYouTubeVideoUpdatePost({
+        video: temp,
+        part: VIDEO_PART,
+      });
+
       setCount(++synchronousCount);
+
+      return temp;
     })
       .catch((err: Response) => {
         err.text().then((text: string) => setErrorMessage(text));
@@ -71,22 +78,9 @@ export function ExecuteConfigurationPage(props: {
    * 
    * @param video
    */
-  async function localizeAndThenUpdateVideo(video: Video): Promise<Video> {
-    video = await localizeVideo(video);
-
-    video = await YOUTUBE_VIDEO_API.apiYouTubeVideoUpdatePost({
-      video: video,
-      part: VIDEO_PART,
-    });
-
-    return video;
-  }
-
-  /**
-   * 
-   * @param video
-   */
   async function localizeVideo(video: Video): Promise<Video> {
+    console.log("LOCALIZTION BEFORE", video);
+
     video.snippet.defaultLanguage = video.snippet.defaultLanguage || "en";
     video.localizations = video.localizations || {};
 
@@ -106,8 +100,11 @@ export function ExecuteConfigurationPage(props: {
       };
 
       video.localizations[_] = localization;
+
+      console.log("LOCALIZTION", video);
     });
 
+    console.log("LOCALIZTION AFTER", video);
     return video;
   }
 
