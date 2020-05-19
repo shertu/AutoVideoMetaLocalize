@@ -1,5 +1,5 @@
 import * as React from 'react';
-import './style.less';
+
 
 /**
  * A mailto link to the developer of this web application.

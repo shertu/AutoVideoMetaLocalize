@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { I18nLanguageSnippet, SupportedLanguage } from '../../generated-sources/openapi';
+import {I18nLanguageSnippet, SupportedLanguage} from '../../../generated-sources/openapi';
 
 const TranslationLanguageContext = React.createContext<{
   YouTube?: I18nLanguageSnippet[],

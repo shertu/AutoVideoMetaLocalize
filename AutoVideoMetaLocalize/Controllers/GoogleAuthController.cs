@@ -12,6 +12,7 @@ using AutoVideoMetaLocalize.Utilities;
 using Google.Apis.Auth.OAuth2.Requests;
 using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Authorization;
+using AutoVideoMetaLocalize.Security.Claims;
 
 namespace AutoVideoMetaLocalize.Controllers {
 	[Route("api/[controller]")]
@@ -33,8 +34,6 @@ namespace AutoVideoMetaLocalize.Controllers {
 		/// Gets the redirect uri for the OAuth2 request.
 		/// </summary>
 		private string OAuthRedirectUri => Url.Action(nameof(GoogleSignIn), null, null, Request.Scheme);
-
-		private string AuthenticationRedirectUri_;
 
 		/// <summary>
 		/// Gets or sets the redirect uri for the sign in and sign out actions.

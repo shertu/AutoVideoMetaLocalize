@@ -1,10 +1,10 @@
-import {Divider, Row, Typography} from 'antd';
+import {Row, Typography} from 'antd';
 import * as React from 'react';
-import {AppExplanationGrid} from './AppExplanationGrid/AppExplanationGrid';
-import './style.less';
-import { Page } from '../Page/Page';
-import { GoogleSignInButton } from '../GoogleSignInButton/GoogleSignInButton';
 import routes from '../../routes';
+import {GoogleSignInButton} from '../GoogleSignInButton/GoogleSignInButton';
+import {Page} from '../Page/Page';
+import {AppExplanationGrid} from './AppExplanationGrid/AppExplanationGrid';
+
 
 const {Paragraph, Text} = Typography;
 
@@ -21,7 +21,7 @@ const GOOGLE_AUTH_SCOPES: string[] = [
  */
 export function HomePage(): JSX.Element {
   return (
-    <Page id="home-page">
+    <Page>
       <Row justify="center">
         <Paragraph className="max-cell-xs">
           Welcome to <Text strong>Auto Video Meta Localize.</Text>&nbsp;The
@@ -30,9 +30,7 @@ export function HomePage(): JSX.Element {
         </Paragraph>
       </Row>
 
-      <Page>
-        <Divider>Account Sign-in</Divider>
-
+      <Page title="Account Sign-in">
         <Row justify="center">
           <Paragraph className="max-cell-xs">
             To use this service please sign-in to Google and authorize this application.
@@ -44,8 +42,7 @@ export function HomePage(): JSX.Element {
         </Row>
       </Page>
 
-      <Page>
-        <Divider>How does it work?</Divider>
+      <Page title="How does it work?">
         <AppExplanationGrid />
       </Page>
     </Page>

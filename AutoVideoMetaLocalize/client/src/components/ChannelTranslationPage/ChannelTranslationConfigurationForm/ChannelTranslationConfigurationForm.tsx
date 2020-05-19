@@ -1,15 +1,12 @@
-import { LeftOutlined } from '@ant-design/icons';
-import { Button, Col, Divider, Form, Row, Select, Collapse, Checkbox } from 'antd';
-import { Store } from 'antd/lib/form/interface';
+import {LeftOutlined} from '@ant-design/icons';
+import {Button, Checkbox, Col, Collapse, Form, Row, Select} from 'antd';
+import {Store} from 'antd/lib/form/interface';
 import * as React from 'react';
-import { Channel, LanguageApi, PlaylistItem, SupportedLanguage, I18nLanguageSnippet } from '../../../../generated-sources/openapi';
-import { ChannelTranslationConfiguration } from '../../../ChannelTranslationConfiguration';
-import './style.less';
-import TranslationLanguageContext from '../../../context/TranslationLanguageContext';
-import { Page } from '../../Page/Page';
-import { VideoFormSelectionTable } from './VideoFormSelectionTable/VideoFormSelectionTable';
-
-const LANGUAGE_API = new LanguageApi();
+import {Channel} from '../../../../generated-sources/openapi';
+import {ChannelTranslationConfiguration} from '../../../ChannelTranslationConfiguration';
+import {Page} from '../../Page/Page';
+import TranslationLanguageContext from '../../TranslationLanguageContext/TranslationLanguageContext';
+import {VideoFormSelectionTable} from './VideoFormSelectionTable/VideoFormSelectionTable';
 
 const FORM_ITEM_NAMES = {
   LANGUAGE_SELECTION: 'language-selection',
@@ -23,7 +20,7 @@ const FORM_ITEM_NAMES = {
  * @param {object} props
  * @return {JSX.Element}
  */
-export function RequestBuilderForm(props: {
+export function ChannelTranslationConfigurationForm(props: {
   channel: Channel,
   onFinish: (configuration: ChannelTranslationConfiguration) => void,
   onBack?: (event: React.MouseEvent<HTMLElement, MouseEvent>) => void,
@@ -31,18 +28,6 @@ export function RequestBuilderForm(props: {
   const TRANSLATION_LANGUAGE_CONTEXT = React.useContext(TranslationLanguageContext);
 
   const [form] = Form.useForm();
-
-  ///**
-  // *
-  // *
-  // * @param selectedRowKeys
-  // * @param selectedRows
-  // */
-  //function onSelectVideos(selectedRowKeys: React.Key[], selectedRows: PlaylistItem[]) {
-  //  const values: Store = form.getFieldsValue();
-  //  values[FORM_ITEM_NAMES.VIDEO_SELECTION] = selectedRowKeys;
-  //  form.setFieldsValue(values);
-  //}
 
   /**
    * Called when the options form is successfully filled out and submitted.
@@ -64,30 +49,28 @@ export function RequestBuilderForm(props: {
   const languageSelectOptions: React.ReactNode[] = [];
   if (TRANSLATION_LANGUAGE_CONTEXT.GoogleTranslate && TRANSLATION_LANGUAGE_CONTEXT.YouTube) {
     TRANSLATION_LANGUAGE_CONTEXT.GoogleTranslate.forEach((_) => {
-      if (_.supportTarget && TRANSLATION_LANGUAGE_CONTEXT.YouTube.find(elem => elem.hl == _.languageCode)) {
+      if (_.supportTarget && TRANSLATION_LANGUAGE_CONTEXT.YouTube.find((elem) => elem.hl == _.languageCode)) {
         languageSelectOptions.push(
-          <Select.Option key={_.languageCode} value={_.languageCode} label={_.displayName}>
-            {_.displayName}
-          </Select.Option >
+            <Select.Option key={_.languageCode} value={_.languageCode} label={_.displayName}>
+              {_.displayName}
+            </Select.Option >,
         );
       }
     });
   }
 
   return (
-    <Page>
-      <Divider>Options</Divider>
-
+    <Page title="Options">
       <Form
         form={form}
-        labelCol={{ span: 4 }}
-        wrapperCol={{ span: 20 }}
+        labelCol={{span: 4}}
+        wrapperCol={{span: 20}}
         onFinish={onFinish}
       >
         <Form.Item
           label="Languages"
           name={FORM_ITEM_NAMES.LANGUAGE_SELECTION}
-          rules={[{ required: true, message: 'Please select at least one language.' }]}
+          rules={[{required: true, message: 'Please select at least one language.'}]}
         >
           <Select
             loading={!languageSelectOptions}
@@ -129,7 +112,7 @@ export function RequestBuilderForm(props: {
               shape="circle"
               icon={<LeftOutlined />}
               onClick={props.onBack}
-              style={{ width: '1em' }}
+              style={{width: '1em'}}
             />
           </Col>
           <Col>

@@ -19,7 +19,7 @@ module.exports = {
   entry: [
     require('regenerator-runtime/path').path,
     './client/src/components/App/App.tsx',
-    './client/style/index.less',
+    './client/src/style/index.less',
   ],
 
   output: {
@@ -43,7 +43,7 @@ module.exports = {
       test: /\.html$/,
       use: ['html-loader'],
     }, {
-      test: /\.(css|less)$/,
+      test: /\.less$/,
       use: [
         MiniCssExtractPlugin.loader, // creates style nodes from JS strings
         'css-loader', // translates CSS into CommonJS

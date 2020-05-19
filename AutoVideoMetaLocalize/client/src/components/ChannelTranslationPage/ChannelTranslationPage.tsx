@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { Channel, LanguageApi, SupportedLanguage, I18nLanguageSnippet } from '../../../generated-sources/openapi';
-import { ChannelTranslationConfiguration } from '../../ChannelTranslationConfiguration';
-import { ChannelSelectForm } from './ChannelSelectForm/ChannelSelectForm';
-import { ExecuteConfigurationPage } from './ExecuteConfigurationPage/ExecuteConfigurationPage';
-import './style.less';
-import { RequestBuilderForm } from './RequestBuilderForm/RequestBuilderForm';
-import { TranslationLanguageProvider } from '../../context';
+import {Channel, LanguageApi, SupportedLanguage, I18nLanguageSnippet} from '../../../generated-sources/openapi';
+import {ChannelTranslationConfiguration} from '../../ChannelTranslationConfiguration';
+import {ChannelSelectForm} from './ChannelSelectForm/ChannelSelectForm';
+import {ExecuteConfigurationPage} from './ExecuteConfigurationPage/ExecuteConfigurationPage';
+
+import {ChannelTranslationConfigurationForm} from './ChannelTranslationConfigurationForm/ChannelTranslationConfigurationForm';
+import {TranslationLanguageProvider} from '../TranslationLanguageContext/TranslationLanguageContext';
 
 const LANGUAGE_API: LanguageApi = new LanguageApi();
 
@@ -32,15 +32,16 @@ export function ChannelTranslationPage(): JSX.Element {
 
   React.useEffect(() => {
     LANGUAGE_API.apiLanguageGoogleTranslateSupportedLanguagesGet()
-      .then((res) => setGoogleTranslateLanguages(res));
+        .then((res) => setGoogleTranslateLanguages(res));
 
     LANGUAGE_API.apiLanguageYouTubeI18nLanguagesGet()
-      .then((res) => setYoutubeLanguages(res));
+        .then((res) => setYoutubeLanguages(res));
   }, []);
 
   /**
+   * Called when the channel selection form is successfully filled out and submitted.
    *
-   * @param value
+   * @param {Channel} value
    */
   function onFinishChannelSelect(value: Channel) {
     setChannel(value);
@@ -52,8 +53,9 @@ export function ChannelTranslationPage(): JSX.Element {
   }
 
   /**
+   * Called when the options form is successfully filled out and submitted.
    *
-   * @param value
+   * @param {ChannelTranslationConfiguration} value
    */
   function onFinishRequestBuilder(value: ChannelTranslationConfiguration) {
     setConfiguration(value);
@@ -72,14 +74,17 @@ export function ChannelTranslationPage(): JSX.Element {
 
   const content: React.ReactNode[] = [
     <ChannelSelectForm
+      key={0}
       onChange={onFinishChannelSelect}
     />,
-    <RequestBuilderForm
+    <ChannelTranslationConfigurationForm
+      key={1}
       channel={channel}
       onFinish={onFinishRequestBuilder}
       onBack={decrementCurrent}
     />,
     <ExecuteConfigurationPage
+      key={2}
       configuration={configuration}
       onComplete={onCompleteExecution}
     />,

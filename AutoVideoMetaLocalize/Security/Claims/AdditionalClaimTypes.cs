@@ -1,4 +1,4 @@
-﻿namespace AutoVideoMetaLocalize.Utilities {
+﻿namespace AutoVideoMetaLocalize.Security.Claims {
 	public static class AdditionalClaimTypes {
 		/// <summary>
 		/// Used to store the user's access token as defined in The OAuth 2.0 Authorization Framework.

@@ -1,11 +1,10 @@
-import { Button, Card, Divider, Progress, Row, Typography } from 'antd';
-import { ProgressProps } from 'antd/lib/progress';
+import {Button, Card, Progress, Row, Typography} from 'antd';
+import {ProgressProps} from 'antd/lib/progress';
 import * as React from 'react';
-import { ApiYouTubeVideoListGetRequest, Video, VideoListResponse, VideoLocalization, YouTubeVideoApi } from '../../../../generated-sources/openapi';
-import { ApiTranslationGetRequest, TranslationApi } from '../../../../generated-sources/openapi/apis/TranslationApi';
-import { ChannelTranslationConfiguration } from '../../../ChannelTranslationConfiguration';
-import { Page } from '../../Page/Page';
-import './style.less';
+import {ApiYouTubeVideoListGetRequest, Video, VideoListResponse, VideoLocalization, YouTubeVideoApi} from '../../../../generated-sources/openapi';
+import {ApiTranslationGetRequest, TranslationApi} from '../../../../generated-sources/openapi/apis/TranslationApi';
+import {ChannelTranslationConfiguration} from '../../../ChannelTranslationConfiguration';
+import {Page} from '../../Page/Page';
 
 const YOUTUBE_VIDEO_API: YouTubeVideoApi = new YouTubeVideoApi();
 const TRANSLATION_API: TranslationApi = new TranslationApi();
@@ -13,7 +12,7 @@ const TRANSLATION_API: TranslationApi = new TranslationApi();
 const VIDEO_PART = 'id,snippet,localizations';
 
 /**
- * The content for the step where the user is selecting a channel.
+ * The progress of the video translations and updates.
  *
  * @param {object} props
  * @return {JSX.Element}
@@ -32,11 +31,11 @@ export function ExecuteConfigurationPage(props: {
   const [count, setCount] =
     React.useState<number>(0);
 
-  const count_max: number = VIDEO_IDS.length;
+  const countMax: number = VIDEO_IDS.length;
 
   React.useEffect(() => {
     let synchronousCount: number = 0;
-    forEveryVideo(async (video) => {
+    forEachVideo(async (video) => {
       video = await localizeVideo(video);
 
       video = await YOUTUBE_VIDEO_API.apiYouTubeVideoUpdatePost({
@@ -48,16 +47,17 @@ export function ExecuteConfigurationPage(props: {
 
       return video;
     })
-      .catch((err: Response) => {
-        err.text().then((text: string) => setErrorMessage(text));
-      });
+        .catch((err: Response) => {
+          err.text().then((text: string) => setErrorMessage(text));
+        });
   }, []);
 
   /**
-   * 
-   * @param callback
+   * Method to perform an operation on every video given the video ids prop.
+   *
+   * @param {Function} callback
    */
-  async function forEveryVideo(callback: (video: Video) => void) {
+  async function forEachVideo(callback: (video: Video) => void) {
     const request: ApiYouTubeVideoListGetRequest = {
       part: VIDEO_PART,
       id: VIDEO_IDS.join(','),
@@ -68,7 +68,7 @@ export function ExecuteConfigurationPage(props: {
       const items: Video[] = response.items;
 
       items.forEach((_) => {
-        callback(_);
+        callback(_); // return is discarded
       });
 
       request.pageToken = response.nextPageToken;
@@ -76,18 +76,19 @@ export function ExecuteConfigurationPage(props: {
   }
 
   /**
-   * 
-   * @param video
+   * Adds localizations to the specified video given the languages prop.
+   *
+   * @param {Video} video
    */
   async function localizeVideo(video: Video): Promise<Video> {
-    video.snippet.defaultLanguage = video.snippet.defaultLanguage || "en";
+    video.snippet.defaultLanguage = video.snippet.defaultLanguage || 'en';
     video.localizations = video.localizations || {};
 
     const vidTitle: string = video.snippet.title;
     const vidDescription: string = video.snippet.description;
     const vidDefaultLanguage: string = video.snippet.defaultLanguage;
 
-    for (var i = 0; i < LANGUAGE_CODES.length; i++) {
+    for (let i = 0; i < LANGUAGE_CODES.length; i++) {
       const _ = LANGUAGE_CODES[i];
 
       const request: ApiTranslationGetRequest = {
@@ -96,13 +97,13 @@ export function ExecuteConfigurationPage(props: {
       };
 
       const localization: VideoLocalization = {
-        description: await TRANSLATION_API.apiTranslationGet({ ...request, text: vidDescription }),
+        description: await TRANSLATION_API.apiTranslationGet({...request, text: vidDescription}),
       };
 
       if (SHEET_MUSIC_BOSS) {
-        localization.title = await substringTranslation(request, "piano tutorial", vidTitle);
+        localization.title = await substringTranslation(request, 'piano tutorial', vidTitle);
       } else {
-        localization.title = await TRANSLATION_API.apiTranslationGet({ ...request, text: vidTitle });
+        localization.title = await TRANSLATION_API.apiTranslationGet({...request, text: vidTitle});
       }
 
       video.localizations[_] = localization;
@@ -111,13 +112,20 @@ export function ExecuteConfigurationPage(props: {
     return video;
   }
 
-  async function substringTranslation(request: ApiTranslationGetRequest, substring: string, title: string): Promise<string> {
-    const translatedSubstring = await TRANSLATION_API.apiTranslationGet({ ...request, text: substring });
+  /**
+   * A ultility method used to translate and replace a substring within a parent string.
+   *
+   * @param {ApiTranslationGetRequest} request
+   * @param {string} substring
+   * @param {string} parent
+   */
+  async function substringTranslation(request: ApiTranslationGetRequest, substring: string, parent: string): Promise<string> {
+    const translatedSubstring = await TRANSLATION_API.apiTranslationGet({...request, text: substring});
     const regex: RegExp = new RegExp(substring, 'gi');
-    return title.replace(regex, translatedSubstring);
+    return parent.replace(regex, translatedSubstring);
   }
 
-  const completeFrac: number = (count_max) ? (count / count_max) : 1;
+  const completeFrac: number = (countMax) ? (count / countMax) : 1;
 
   const progressProps: ProgressProps = {
     type: 'circle',
@@ -130,9 +138,7 @@ export function ExecuteConfigurationPage(props: {
   }
 
   return (
-    <Page>
-      <Divider>Execution Progress</Divider>
-
+    <Page title="Execution Progress">
       <Row align="middle" justify="center">
         <Progress {...progressProps} />
       </Row>
@@ -145,8 +151,7 @@ export function ExecuteConfigurationPage(props: {
       </Row>
 
       {errorMessage && (
-        <Page>
-          <Divider>Execution Error</Divider>
+        <Page title="Execution Error">
           <Row align="middle" justify="center">
             <Card className="max-cell-md">
               <Typography.Paragraph>

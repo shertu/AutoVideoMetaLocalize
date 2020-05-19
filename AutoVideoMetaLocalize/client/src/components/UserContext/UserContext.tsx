@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ClaimsPrinciple } from '../security';
+import {ClaimsPrinciple} from '../../security';
 
 const UserContext = React.createContext<ClaimsPrinciple>(null);
 

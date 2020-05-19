@@ -1,9 +1,14 @@
-import { Table } from 'antd';
-import { TableProps } from 'antd/lib/table';
-import { TableRowSelection } from 'antd/lib/table/interface';
+import {Table} from 'antd';
+import {TableProps} from 'antd/lib/table';
+import {TableRowSelection} from 'antd/lib/table/interface';
 import * as React from 'react';
-import './style.less';
 
+/**
+ * A template for a row selection table to be used in a form item.
+ *
+ * @param {object} props
+ * @return {JSX.Element}
+ */
 export function FormSelectionTable<RecordType extends object = any>(props: {
   table?: TableProps<RecordType>,
   value?: React.Key[];

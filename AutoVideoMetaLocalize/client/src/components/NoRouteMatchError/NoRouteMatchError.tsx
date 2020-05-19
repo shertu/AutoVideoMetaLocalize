@@ -1,7 +1,7 @@
 import {Typography} from 'antd';
 import * as React from 'react';
 import {MailToMe} from '../MailToMe/MailToMe';
-import './style.less';
+
 
 const {Title, Paragraph} = Typography;
 

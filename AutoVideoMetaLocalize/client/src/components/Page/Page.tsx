@@ -1,5 +1,6 @@
+import {Divider} from 'antd';
 import * as React from 'react';
-import './style.less';
+
 
 /**
  * A standard large full-width page to display a section of content.
@@ -11,10 +12,14 @@ import './style.less';
  */
 export function Page(props: {
   id?: string,
-  children?: React.ReactNode
+  children?: React.ReactNode,
+  title?: string,
 }): JSX.Element {
   return (
     <section id={props.id} className="max-cell-lg">
+      {props.title && (
+        <Divider>{props.title}</Divider>
+      )}
       {props.children}
     </section>
   );

@@ -1,11 +1,10 @@
 import * as React from 'react';
-import { Route, Switch } from 'react-router-dom';
+import {Route, Switch} from 'react-router-dom';
 import routes from '../../../routes';
-import { ChannelTranslationPage } from '../../ChannelTranslationPage/ChannelTranslationPage';
-import { HomePage } from '../../HomePage/HomePage';
-import { NoRouteMatchError } from '../../NoRouteMatchError/NoRouteMatchError';
-import { PrivacyPolicyPage } from '../../PrivacyPolicyPage/PrivacyPolicyPage';
-import './style.less';
+import {ChannelTranslationPage} from '../../ChannelTranslationPage/ChannelTranslationPage';
+import {HomePage} from '../../HomePage/HomePage';
+import {NoRouteMatchError} from '../../NoRouteMatchError/NoRouteMatchError';
+import {PrivacyPolicyPage} from '../../PrivacyPolicyPage/PrivacyPolicyPage';
 
 /**
  * The main route switch in the web application.

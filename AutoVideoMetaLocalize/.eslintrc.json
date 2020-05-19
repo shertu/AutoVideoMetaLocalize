@@ -30,6 +30,7 @@
 	],
 	"rules": {
 		// disable rules from base configurations
-		"max-len": "off"
+		"max-len": "off",
+		"no-unused-vars": "off"
 	}
 }
