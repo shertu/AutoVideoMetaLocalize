@@ -18,8 +18,6 @@ using Microsoft.OpenApi.Models;
 
 namespace AutoVideoMetaLocalize {
 	public class Startup {
-		private static readonly string CORS_POLICY = "_AllowSpecificOrigins";
-
 		public static readonly Version APIVERSION = new Version(1, 0);
 		public static readonly string APPNAME = Assembly.GetExecutingAssembly().GetName().Name;
 
@@ -53,17 +51,6 @@ namespace AutoVideoMetaLocalize {
 			// This is an implementation of the corresponding .js library
 			Chance chance = new ConcurrentChance();
 			_ = services.AddSingleton(chance);
-			#endregion
-
-			#region CORS
-			_ = services.AddCors(options => {
-				options.AddPolicy(CORS_POLICY,
-				builder => {
-					_ = builder.WithOrigins("http://www.AutoVideoMetaLocalize", "http://zukte.azurewebsites.net")
-					.AllowAnyHeader()
-					.AllowAnyMethod();
-				});
-			});
 			#endregion
 
 			#region routing
@@ -100,7 +87,6 @@ namespace AutoVideoMetaLocalize {
 			#endregion
 
 			#region YouTube
-			_ = services.AddScoped<GoogleCredentialManager>();
 			_ = services.AddScoped<YouTubeServiceAccessor>();
 			#endregion
 
@@ -135,10 +121,6 @@ namespace AutoVideoMetaLocalize {
 
 			#region routing
 			_ = app.UseRouting();
-			#endregion
-
-			#region CORS
-			_ = app.UseCors(CORS_POLICY);
 			#endregion
 
 			#region authentication
