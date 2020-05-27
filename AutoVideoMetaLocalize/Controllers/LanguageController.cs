@@ -14,18 +14,18 @@ namespace AutoVideoMetaLocalize.Controllers {
 	[Route("api/[controller]")]
 	[ApiController]
 	public class LanguageController : ControllerBase {
-		private readonly GoogleCloudTranslateManager translate;
-		private readonly YouTubeServiceAccessor serviceAccessor;
+		private readonly GoogleCloudTranslateServiceAccessor translateServiceAccessor;
+		private readonly YouTubeServiceAccessor youtubeServiceAccessor;
 
-		public LanguageController(GoogleCloudTranslateManager translate, YouTubeServiceAccessor serviceAccessor) {
-			this.translate = translate;
-			this.serviceAccessor = serviceAccessor;
+		public LanguageController(GoogleCloudTranslateServiceAccessor translateServiceAccessor, YouTubeServiceAccessor youtubeServiceAccessor) {
+			this.translateServiceAccessor = translateServiceAccessor;
+			this.youtubeServiceAccessor = youtubeServiceAccessor;
 		}
 
 		[HttpGet("YouTube-I18nLanguages")]
 		[Authorize]
 		public async Task<ActionResult<IEnumerable<I18nLanguageSnippet>>> GetYouTubeLanguages() {
-			YouTubeService service = await serviceAccessor.InitializeServiceAsync();
+			YouTubeService service = await youtubeServiceAccessor.InitializeServiceAsync();
 			I18nLanguagesResource.ListRequest req = service.I18nLanguages.List("snippet");
 
 			try {
@@ -37,7 +37,9 @@ namespace AutoVideoMetaLocalize.Controllers {
 		}
 
 		[HttpGet("GoogleTranslate-SupportedLanguages")]
+		[Authorize]
 		public async Task<ActionResult<IList<SupportedLanguage>>> GetGoogleTranslateLanguages() {
+			TranslationServiceClient service = await translateServiceAccessor.InitializeServiceAsync();
 			string[] displayLanguageCodeList = { "en" };
 
 			#region Accept Header
@@ -56,9 +58,12 @@ namespace AutoVideoMetaLocalize.Controllers {
 				}
 
 				try {
-					response = await translate.GetSupportedLanguagesAsync(new GetSupportedLanguagesRequest {
+					SupportedLanguages temp = await service.GetSupportedLanguagesAsync(new GetSupportedLanguagesRequest {
+						Parent = GoogleCloudTranslateServiceAccessor.PARENT,
 						DisplayLanguageCode = displayLanguageCode,
 					});
+
+					response = temp.Languages;
 				} catch (Grpc.Core.RpcException) {
 					i++;
 				}

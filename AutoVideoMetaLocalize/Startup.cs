@@ -91,15 +91,7 @@ namespace AutoVideoMetaLocalize {
 			#endregion
 
 			#region Google Cloud Translate
-			//string googleCloudTranslateServiceAccountFilePath = _configuration["ServiceAccounts:GoogleCloudTranslate"];
-			string googleCloudTranslateServiceAccountFilePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "ServiceAccounts", "autovideometalocalize-8833c572b8b9.json");
-			if (!File.Exists(googleCloudTranslateServiceAccountFilePath)) {
-				throw new FileNotFoundException();
-			}
-
-			GoogleCloudTranslateManager googleCloudTranslateManager = new GoogleCloudTranslateManager(googleCloudTranslateServiceAccountFilePath);
-
-			_ = services.AddSingleton(googleCloudTranslateManager);
+			_ = services.AddScoped<GoogleCloudTranslateServiceAccessor>();
 			#endregion
 		}
 
