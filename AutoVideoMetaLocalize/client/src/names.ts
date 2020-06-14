@@ -1,5 +1,5 @@
 const names = Object.freeze({
-  APPLICATION: 'YouTube Localize',
+  APPLICATION: 'Meta Localize',
 });
 
 export default names;
