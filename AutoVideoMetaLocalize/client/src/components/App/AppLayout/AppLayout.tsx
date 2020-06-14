@@ -1,12 +1,9 @@
-import {Layout, Row, Typography} from 'antd';
+import { Layout, Row, Typography } from 'antd';
 import * as React from 'react';
-import {Page} from '../../Page/Page';
-import {AppContentSwitch} from '../AppContentSwitch/AppContentSwitch';
+import { Page } from '../../Page/Page';
+import { AppContentSwitch } from '../AppContentSwitch/AppContentSwitch';
 
-
-const {Title} = Typography;
-
-const {Content} = Layout;
+const { Content } = Layout;
 
 /**
  * The general layout or structure of the web application, e.g. main, header, footer, etc.
@@ -15,13 +12,10 @@ const {Content} = Layout;
  */
 export function AppLayout(): JSX.Element {
   return (
-    <Layout style={{minHeight: '100vh'}}>
-      <Content style={{padding: 8}}>
-        <Row className="content-alignment" justify="center">
-          <Page>
-            <Title style={{textAlign: 'center'}}>YouTube Localize</Title >
-            <AppContentSwitch />
-          </Page>
+    <Layout style={{ minHeight: '100vh' }}>
+      <Content style={{ padding: '40px 8px' }}>
+        <Row id="content-alignment" justify="center">
+          <AppContentSwitch />
         </Row>
       </Content>
     </Layout>

@@ -12,12 +12,15 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Rewrite;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 
 namespace AutoVideoMetaLocalize {
 	public class Startup {
+		private const string SPA_ENTRY_FILENAME = "index.html";
 		public static readonly Version APIVERSION = new Version(1, 0);
 		public static readonly string APPNAME = Assembly.GetExecutingAssembly().GetName().Name;
 
@@ -103,32 +106,39 @@ namespace AutoVideoMetaLocalize {
 			_ = app.UseDeveloperExceptionPage();
 			#endregion
 
+			#region rewrite
+			RewriteOptions rewriteOptions = new RewriteOptions()
+				.AddRewrite("privacy-policy", SPA_ENTRY_FILENAME, true)
+				.AddRewrite("process", SPA_ENTRY_FILENAME, true)
+				;
+
+			_ = app.UseRewriter(rewriteOptions);
+			#endregion
+
 			#region static content
-			_ = app.UseStaticFiles(new StaticFileOptions {
-				OnPrepareResponse = ctx => {
-					ctx.Context.Response.Headers.Append("Cache-Control", $"public, max-age={TimeSpan.FromDays(7).Seconds}");
+			_ = app.UseDefaultFiles();
+
+			StaticFileOptions staticFileOptions = new StaticFileOptions {
+				OnPrepareResponse = staticFileResponseContext => {
+					staticFileResponseContext.Context.Response.Headers.Append("Cache-Control", $"public, max-age={TimeSpan.FromDays(7).Seconds}");
 				}
-			});
+			};
+
+			_ = app.UseStaticFiles(staticFileOptions);
 			#endregion
 
 			#region routing
 			_ = app.UseRouting();
 			#endregion
 
-			#region authentication
+			#region authentication and authorization
 			_ = app.UseAuthentication();
-			#endregion
-
-			#region authorization
 			_ = app.UseAuthorization();
 			#endregion
 
 			#region endpoints
 			_ = app.UseEndpoints(endpoints => {
 				_ = endpoints.MapControllers();
-
-				// TODO replace with actual endpoint mapping
-				_ = endpoints.MapFallbackToFile("index.html");
 			});
 			#endregion
 

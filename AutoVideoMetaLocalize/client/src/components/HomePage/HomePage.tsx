@@ -4,9 +4,9 @@ import routes from '../../routes';
 import {GoogleSignInButton} from '../GoogleSignInButton/GoogleSignInButton';
 import {Page} from '../Page/Page';
 import {AppExplanationGrid} from './AppExplanationGrid/AppExplanationGrid';
+import names from '../../names';
 
-
-const {Paragraph, Text} = Typography;
+const {Title, Paragraph} = Typography;
 
 const GOOGLE_AUTH_SCOPES: string[] = [
   'https://www.googleapis.com/auth/youtube.upload',
@@ -22,10 +22,11 @@ const GOOGLE_AUTH_SCOPES: string[] = [
 export function HomePage(): JSX.Element {
   return (
     <Page>
+      <Title style={{ textAlign: 'center' }}>{names.APPLICATION}</Title >
+
       <Row justify="center">
         <Paragraph className="max-cell-xs">
-          Welcome to <Text strong>Auto Video Meta Localize.</Text>&nbsp;The
-          service which can translate or localize the titles and descriptions
+          Welcome. This web ervice can translate or localize the titles and descriptions
           of your YouTube videos to make them accessible to a larger audience.
         </Paragraph>
       </Row>
