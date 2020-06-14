@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { Page } from '../Page/Page';
-import { Typography } from 'antd';
+import {Page} from '../Page/Page';
+import {Typography} from 'antd';
 import names from '../../names';
 
-const { Paragraph, Text, Title } = Typography;
+const {Paragraph, Text, Title} = Typography;
 
 /**
  * This page outlines the rights of the user in regards to their online privacy while using this web application.
@@ -27,8 +27,8 @@ export function PrivacyPolicyPage(): JSX.Element {
         </Paragraph>
 
         <Paragraph>
-          This website will use https://www.googleapis.com/auth/youtube to read the titles and descriptions of your YouTube channel's uploaded videos
-          as well as to update the localizations of your YouTube channel's uploaded videos.
+          This website will use https://www.googleapis.com/auth/youtube to read the titles and descriptions of your YouTube channel&#39;s uploaded videos
+          as well as to update the localizations of your YouTube channel&#39;s uploaded videos.
         </Paragraph>
 
         <Paragraph>

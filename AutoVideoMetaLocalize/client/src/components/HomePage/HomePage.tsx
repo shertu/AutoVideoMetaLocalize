@@ -22,7 +22,7 @@ const GOOGLE_AUTH_SCOPES: string[] = [
 export function HomePage(): JSX.Element {
   return (
     <Page>
-      <Title style={{ textAlign: 'center' }}>{names.APPLICATION}</Title >
+      <Title style={{textAlign: 'center'}}>{names.APPLICATION}</Title >
 
       <Row justify="center">
         <Paragraph className="max-cell-xs">

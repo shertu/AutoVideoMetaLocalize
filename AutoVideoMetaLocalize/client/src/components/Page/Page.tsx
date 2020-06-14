@@ -1,4 +1,4 @@
-import { Divider } from 'antd';
+import {Divider} from 'antd';
 import * as React from 'react';
 import classNames from 'classnames';
 
