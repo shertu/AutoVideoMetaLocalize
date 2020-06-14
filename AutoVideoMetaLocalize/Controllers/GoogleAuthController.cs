@@ -78,9 +78,10 @@ namespace AutoVideoMetaLocalize.Controllers {
 		/// Handles the OAuth2 callback from the google sign in.
 		/// </summary>
 		[HttpGet(nameof(GoogleSignIn))]
-		public async Task<IActionResult> GoogleSignIn([Required] string code) {
-			if (string.IsNullOrEmpty(code))
-				throw new ArgumentException("message", nameof(code));
+		public async Task<IActionResult> GoogleSignIn(string code, string error) {
+			if (error == "access_denied") {
+				return LocalRedirect(AuthenticationRedirectUri);
+			}
 
 			UserCredential credential = await GenerateUserCredentialFromAuthorizationCode(code);
 			ClaimsPrincipal principal = GenerateClaimsPrinciple(credential);

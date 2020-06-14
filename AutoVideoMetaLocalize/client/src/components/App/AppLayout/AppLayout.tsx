@@ -3,6 +3,7 @@ import * as React from 'react';
 import { AppContentSwitch } from '../AppContentSwitch/AppContentSwitch';
 import { Link } from 'react-router-dom';
 import routes from '../../../routes';
+import { Page } from '../../Page/Page';
 
 const { Content, Footer } = Layout;
 
@@ -16,7 +17,9 @@ export function AppLayout(): JSX.Element {
     <Layout style={{ minHeight: '100vh' }}>
       <Content style={{ padding: '40px 8px' }}>
         <Row id="content-alignment" justify="center">
-          <AppContentSwitch />
+          <Page id="content-view">
+            <AppContentSwitch />
+          </Page>
         </Row>
       </Content>
       <Footer>
