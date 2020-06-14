@@ -19,7 +19,7 @@ export function AppLayout(): JSX.Element {
       <Content style={{padding: 8}}>
         <Row className="content-alignment" justify="center">
           <Page>
-            <Title style={{textAlign: 'center'}}>Auto Video Meta Localize</Title >
+            <Title style={{textAlign: 'center'}}>YouTube Localize</Title >
             <AppContentSwitch />
           </Page>
         </Row>

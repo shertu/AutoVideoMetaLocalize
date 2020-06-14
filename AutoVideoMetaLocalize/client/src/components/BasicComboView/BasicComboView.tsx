@@ -2,7 +2,6 @@ import {Avatar, Col, Row, Typography} from 'antd';
 import * as React from 'react';
 import {Thumbnail} from '../../../generated-sources/openapi';
 
-
 const {Paragraph} = Typography;
 
 /**
