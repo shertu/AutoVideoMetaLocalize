@@ -1,4 +1,4 @@
-import { Layout, Row, Button } from 'antd';
+import { Layout, Row, Button, Avatar } from 'antd';
 import * as React from 'react';
 import { AppContentSwitch } from '../AppContentSwitch/AppContentSwitch';
 import { Link } from 'react-router-dom';
@@ -23,6 +23,9 @@ export function AppLayout(): JSX.Element {
         </Row>
       </Content>
       <Footer>
+        <Link to={routes.ROUTE_HOME}>
+          <Avatar shape="square" size={64} src="https://i.imgur.com/wU7ftuX.png"/>
+        </Link>
         <Link to={routes.ROUTE_PRIVACY_POLICY}>
           <Button type="link">Privacy Policy</Button>
         </Link>
