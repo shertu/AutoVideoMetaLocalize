@@ -9,7 +9,7 @@ import names from '../../names';
 const { Paragraph, Text, Title } = Typography;
 
 const GOOGLE_AUTH_SCOPES: string[] = [
-  'https://www.googleapis.com/auth/youtube.upload',
+  //'https://www.googleapis.com/auth/youtube.upload',
   'https://www.googleapis.com/auth/youtube',
   'https://www.googleapis.com/auth/cloud-translation',
 ];
