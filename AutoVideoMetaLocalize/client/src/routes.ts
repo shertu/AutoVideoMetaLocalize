@@ -1,7 +1,7 @@
 const routes = Object.freeze({
   ROUTE_HOME: '/',
   ROUTE_PRIVACY_POLICY: '/privacy-policy',
-  ROUTE_PROCESS: '/process',
+  ROUTE_PROCESS: '/service',
 });
 
 export default routes;

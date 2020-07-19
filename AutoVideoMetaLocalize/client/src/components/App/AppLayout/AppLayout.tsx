@@ -1,11 +1,11 @@
-import { Layout, Row, Button, Avatar } from 'antd';
+import {Layout, Row, Button, Avatar} from 'antd';
 import * as React from 'react';
-import { AppContentSwitch } from '../AppContentSwitch/AppContentSwitch';
-import { Link } from 'react-router-dom';
+import {AppContentSwitch} from '../AppContentSwitch/AppContentSwitch';
+import {Link} from 'react-router-dom';
 import routes from '../../../routes';
-import { Page } from '../../Page/Page';
+import {Page} from '../../Page/Page';
 
-const { Content, Footer } = Layout;
+const {Content, Footer} = Layout;
 
 /**
  * The general layout or structure of the web application, e.g. main, header, footer, etc.
@@ -14,8 +14,8 @@ const { Content, Footer } = Layout;
  */
 export function AppLayout(): JSX.Element {
   return (
-    <Layout style={{ minHeight: '100vh' }}>
-      <Content style={{ padding: '40px 8px' }}>
+    <Layout style={{minHeight: '100vh'}}>
+      <Content style={{padding: '40px 8px'}}>
         <Row id="content-alignment" justify="center">
           <Page id="content-view">
             <AppContentSwitch />

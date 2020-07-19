@@ -1,15 +1,15 @@
-import { Row, Typography } from 'antd';
+import {Row, Typography} from 'antd';
 import * as React from 'react';
 import routes from '../../routes';
-import { GoogleSignInButton } from '../GoogleSignInButton/GoogleSignInButton';
-import { Page } from '../Page/Page';
-import { AppExplanationGrid } from './AppExplanationGrid/AppExplanationGrid';
+import {GoogleSignInButton} from '../GoogleSignInButton/GoogleSignInButton';
+import {Page} from '../Page/Page';
+import {AppExplanationGrid} from './AppExplanationGrid/AppExplanationGrid';
 import names from '../../names';
 
-const { Paragraph, Text, Title } = Typography;
+const {Paragraph, Text, Title} = Typography;
 
 const GOOGLE_AUTH_SCOPES: string[] = [
-  //'https://www.googleapis.com/auth/youtube.upload',
+  // 'https://www.googleapis.com/auth/youtube.upload',
   'https://www.googleapis.com/auth/youtube',
   'https://www.googleapis.com/auth/cloud-translation',
 ];
@@ -22,7 +22,7 @@ const GOOGLE_AUTH_SCOPES: string[] = [
 export function HomePage(): JSX.Element {
   return (
     <Page>
-      <Title style={{ textAlign: 'center' }}>{names.APPLICATION}</Title >
+      <Title style={{textAlign: 'center'}}>{names.APPLICATION}</Title >
 
       <Row justify="center">
         <Paragraph className="max-cell-xs">
@@ -39,7 +39,7 @@ export function HomePage(): JSX.Element {
           </Paragraph>
         </Row>
 
-        <Row justify="center" style={{ marginBottom: '2em' }}>
+        <Row justify="center" style={{marginBottom: '2em'}}>
           <GoogleSignInButton scopes={GOOGLE_AUTH_SCOPES} redirect={`~${routes.ROUTE_PROCESS}`} />
         </Row>
       </Page>

@@ -71,5 +71,17 @@ namespace AutoVideoMetaLocalize.Controllers {
 
 			return new ActionResult<IList<SupportedLanguage>>(response);
 		}
+
+		[HttpGet("GoogleTranslate-SupportedLanguages-Alpha")]
+		public async Task<IActionResult> GetGoogleTranslateLanguagesAlpha() {
+			TranslationServiceClient service = await translateServiceAccessor.InitializeServiceAsync();
+
+			SupportedLanguages temp = await service.GetSupportedLanguagesAsync(new GetSupportedLanguagesRequest {
+				Parent = GoogleCloudTranslateServiceAccessor.PARENT,
+				DisplayLanguageCode = "en",
+			});
+
+			return Ok(temp.Languages);
+		}
 	}
 }

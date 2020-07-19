@@ -1,10 +1,11 @@
-import {Button, Col, Form, Radio, Row} from 'antd';
-import {Store} from 'antd/lib/form/interface';
+import { Button, Col, Form, Radio, Row, Alert } from 'antd';
+import { Store } from 'antd/lib/form/interface';
 import * as React from 'react';
-import {ApiYouTubeChannelListGetRequest, Channel, ChannelListResponse, YouTubeChannelApi} from '../../../../generated-sources/openapi';
-import {BasicComboView} from '../../BasicComboView/BasicComboView';
-import {Page} from '../../Page/Page';
+import { Channel, YouTubeChannelApi, ApiYouTubeChannelListGetRequest, ChannelListResponse } from '../../../../generated-sources/openapi';
+import { BasicComboView } from '../../BasicComboView/BasicComboView';
+import { Page } from '../../Page/Page';
 import './style.less';
+import { GoogleUnauthorizedResult } from '../GoogleUnauthorizedResult/GoogleUnauthorizedResult';
 
 const YOUTUBE_CHANNEL_API: YouTubeChannelApi = new YouTubeChannelApi();
 
@@ -18,21 +19,25 @@ const FORM_ITEM_NAMES = {
  * @param {object} props
  * @return {JSX.Element}
  */
-export function ChannelSelectForm(props: {
-  onChange?: (channel: Channel) => void
+export function YouTubeChannelSelectForm(props: {
+  onFinishSelection?: (channel: Channel) => void,
 }): JSX.Element {
+  const { onFinishSelection } = props;
+
   const [options, setOptions] =
     React.useState<Channel[]>(null);
 
+  const [googleFetchError, setGoogleFetchError] =
+    React.useState<boolean>(false);
+
   React.useEffect(() => {
-    fetchOptions()
-        .then((res) => setOptions(res));
+    fetchMineYouTubeChannelList()
+      .then((res) => setOptions(res))
+      .catch((err) => setGoogleFetchError(true));
   }, []);
 
-  const DEFAULT_OPTION: string = (options && options.length) ? options[0].id : null;
-
   /** Fetches every YouTube channel from the user's Google account. */
-  async function fetchOptions(): Promise<Channel[]> {
+  async function fetchMineYouTubeChannelList(): Promise<Channel[]> {
     let items: Channel[] = [];
     const req: ApiYouTubeChannelListGetRequest = {
       part: 'id,snippet,contentDetails',
@@ -57,14 +62,24 @@ export function ChannelSelectForm(props: {
     const CHANNEL_RADIO_GROUP_VALUE = values[FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP];
     const selectedChannel: Channel = options.find((elem) => elem.id == CHANNEL_RADIO_GROUP_VALUE);
 
-    if (props.onChange) {
-      props.onChange(selectedChannel);
+    if (onFinishSelection) {
+      onFinishSelection(selectedChannel);
     }
   }
 
+  if (options == null) { // The fetch operation is still in progress.
+    return null;
+  }
+
+  if (googleFetchError) { // An error occured while attempting to fetch the user's YouTube information.
+    return <GoogleUnauthorizedResult />;
+  }
+
+  const DEFAULT_OPTION: string = (options && options.length) ? options[0].id : null;
+
   return (
-    <Page title="Channel Selection">
-      {options && (
+    <Page title="YouTube Channel Selection">
+      {(options.length) ? (
         <Form
           onFinish={onFinish}
           initialValues={{
@@ -75,10 +90,10 @@ export function ChannelSelectForm(props: {
             <Form.Item
               className="max-cell-sm"
               name={FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP}
-              rules={[{required: true, message: 'Please select a channel.'}]}
+              rules={[{ required: true, message: 'Please select a channel.' }]}
             >
               <Radio.Group className="max-cell-sm">
-                {options && options.map((_) =>
+                {options.map((_) =>
                   <Radio.Button className="max-cell-sm" key={_.id} value={_.id} >
                     <BasicComboView
                       thumbnail={_.snippet.thumbnails._default}
@@ -97,7 +112,8 @@ export function ChannelSelectForm(props: {
             </Col>
           </Row>
         </Form>
-      )}
+      ) : <Alert message="No YouTube channels exist for this Google account." type="warning" />
+      }
     </Page>
   );
 }

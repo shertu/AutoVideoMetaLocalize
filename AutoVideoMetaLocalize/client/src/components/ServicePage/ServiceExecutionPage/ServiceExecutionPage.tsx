@@ -1,10 +1,10 @@
-import {Button, Card, Progress, Row, Typography} from 'antd';
-import {ProgressProps} from 'antd/lib/progress';
+import { Button, Card, Progress, Row, Typography } from 'antd';
+import { ProgressProps } from 'antd/lib/progress';
 import * as React from 'react';
-import {ApiYouTubeVideoListGetRequest, Video, VideoListResponse, VideoLocalization, YouTubeVideoApi} from '../../../../generated-sources/openapi';
-import {ApiTranslationGetRequest, TranslationApi} from '../../../../generated-sources/openapi/apis/TranslationApi';
-import {ChannelTranslationConfiguration} from '../../../ChannelTranslationConfiguration';
-import {Page} from '../../Page/Page';
+import { ApiYouTubeVideoListGetRequest, Video, VideoListResponse, VideoLocalization, YouTubeVideoApi } from '../../../../generated-sources/openapi';
+import { ApiTranslationGetRequest, TranslationApi } from '../../../../generated-sources/openapi/apis/TranslationApi';
+import { ServiceFormInput } from '../ServiceFormInput';
+import { Page } from '../../Page/Page';
 
 const YOUTUBE_VIDEO_API: YouTubeVideoApi = new YouTubeVideoApi();
 const TRANSLATION_API: TranslationApi = new TranslationApi();
@@ -17,12 +17,12 @@ const VIDEO_PART = 'id,snippet,localizations';
  * @param {object} props
  * @return {JSX.Element}
  */
-export function ExecuteConfigurationPage(props: {
-  configuration: ChannelTranslationConfiguration,
+export function ServiceExecutionPage(props: {
+  configuration: ServiceFormInput,
   onComplete: () => void,
 }): JSX.Element {
-  const LANGUAGE_CODES: string[] = props.configuration.languageCodes;
-  const VIDEO_IDS: string[] = props.configuration.videoIds;
+  const LANGUAGE_CODES: string[] = props.configuration.languages;
+  const VIDEO_IDS: string[] = props.configuration.videos;
   const SHEET_MUSIC_BOSS: boolean = props.configuration.sheetmusicboss;
 
   const [errorMessage, setErrorMessage] =
@@ -47,9 +47,9 @@ export function ExecuteConfigurationPage(props: {
 
       return video;
     })
-        .catch((err: Response) => {
-          err.text().then((text: string) => setErrorMessage(text));
-        });
+      .catch((err: Response) => {
+        err.text().then((text: string) => setErrorMessage(text));
+      });
   }, []);
 
   /**
@@ -97,13 +97,13 @@ export function ExecuteConfigurationPage(props: {
       };
 
       const localization: VideoLocalization = {
-        description: await TRANSLATION_API.apiTranslationGet({...request, text: vidDescription}),
+        description: await TRANSLATION_API.apiTranslationGet({ ...request, text: vidDescription }),
       };
 
       if (SHEET_MUSIC_BOSS) {
         localization.title = await substringTranslation(request, 'piano tutorial', vidTitle);
       } else {
-        localization.title = await TRANSLATION_API.apiTranslationGet({...request, text: vidTitle});
+        localization.title = await TRANSLATION_API.apiTranslationGet({ ...request, text: vidTitle });
       }
 
       video.localizations[_] = localization;
@@ -120,7 +120,7 @@ export function ExecuteConfigurationPage(props: {
    * @param {string} parent
    */
   async function substringTranslation(request: ApiTranslationGetRequest, substring: string, parent: string): Promise<string> {
-    const translatedSubstring = await TRANSLATION_API.apiTranslationGet({...request, text: substring});
+    const translatedSubstring = await TRANSLATION_API.apiTranslationGet({ ...request, text: substring });
     const regex: RegExp = new RegExp(substring, 'gi');
     return parent.replace(regex, translatedSubstring);
   }

@@ -109,14 +109,14 @@ namespace AutoVideoMetaLocalize {
 			#region rewrite
 			RewriteOptions rewriteOptions = new RewriteOptions()
 				.AddRewrite("privacy-policy", SPA_ENTRY_FILENAME, true)
-				.AddRewrite("process", SPA_ENTRY_FILENAME, true)
+				.AddRewrite("service", SPA_ENTRY_FILENAME, true)
 				;
 
 			_ = app.UseRewriter(rewriteOptions);
 			#endregion
 
 			#region static content
-			_ = app.UseDefaultFiles();
+			_ = app.UseDefaultFiles(); // adds the base route to index.html
 
 			StaticFileOptions staticFileOptions = new StaticFileOptions {
 				OnPrepareResponse = staticFileResponseContext => {
