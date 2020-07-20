@@ -1,17 +1,13 @@
 import * as React from 'react';
-import { Channel, LanguageApi, SupportedLanguage, I18nLanguageSnippet, ApiYouTubeChannelListGetRequest, ChannelListResponse, YouTubeChannelApi } from '../../../generated-sources/openapi';
-import { ServiceFormInput } from './ServiceFormInput';
-import { YouTubeChannelSelectForm } from './YouTubeChannelSelectForm/YouTubeChannelSelectForm';
-import { ServiceExecutionPage } from './ServiceExecutionPage/ServiceExecutionPage';
-import { ChannelTranslationConfigurationForm } from './ChannelTranslationConfigurationForm/ChannelTranslationConfigurationForm';
+import { Channel, I18nLanguageSnippet, LanguageApi, SupportedLanguage } from '../../../generated-sources/openapi';
 import { LanguageProvider } from '../LanguageContext/LanguageContext';
-import UserContext from '../UserContext/UserContext';
-import { Alert } from 'antd';
+import { ChannelTranslationConfigurationForm } from './ChannelTranslationConfigurationForm/ChannelTranslationConfigurationForm';
 import { GoogleUnauthorizedResult } from './GoogleUnauthorizedResult/GoogleUnauthorizedResult';
+import { MineYouTubeChannelSelectForm } from './MineYouTubeChannelSelectForm/MineYouTubeChannelSelectForm';
+import { ServiceExecutionPage } from './ServiceExecutionPage/ServiceExecutionPage';
+import { ServiceFormInput } from './ServiceFormInput';
 
 const LANGUAGE_API: LanguageApi = new LanguageApi();
-
-const YOUTUBE_CHANNEL_API: YouTubeChannelApi = new YouTubeChannelApi();
 
 /**
  * The page used to control the flow of the process.
@@ -84,7 +80,7 @@ export function ServicePage(): JSX.Element {
   }
 
   const content: React.ReactNode[] = [
-    <YouTubeChannelSelectForm
+    <MineYouTubeChannelSelectForm
       key={0}
       onFinishSelection={onFinishChannelSelect}
     />,

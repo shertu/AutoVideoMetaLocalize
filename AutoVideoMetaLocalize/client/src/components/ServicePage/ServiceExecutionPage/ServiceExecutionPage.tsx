@@ -130,7 +130,7 @@ export function ServiceExecutionPage(props: {
   const progressProps: ProgressProps = {
     type: 'circle',
     status: 'active',
-    percent: completeFrac * 100,
+    percent: Math.floor(completeFrac * 100),
   };
 
   if (errorMessage) {
