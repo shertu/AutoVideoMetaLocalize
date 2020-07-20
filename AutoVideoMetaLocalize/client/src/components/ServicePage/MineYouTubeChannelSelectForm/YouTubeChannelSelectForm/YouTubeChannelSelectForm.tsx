@@ -1,4 +1,4 @@
-import { Button, Col, Form, Radio, Row } from 'antd';
+import { Button, Col, Form, Radio, Row, Alert } from 'antd';
 import { Store } from 'antd/lib/form/interface';
 import * as React from 'react';
 import { Channel } from '../../../../../generated-sources/openapi';
@@ -16,12 +16,12 @@ const FORM_ITEM_NAMES = {
  * @return {JSX.Element}
  */
 export function YouTubeChannelSelectForm(props: {
-  name?: string,
   options?: Channel[],
   onFinishSelection?: (channel: Channel) => void,
 }): JSX.Element {
-  const options = props.options || [];
-  const { name, onFinishSelection } = props;
+  let options = props.options || [];
+  options = options.filter(x => x); // remove undefined elements from the array
+  const { onFinishSelection } = props;
 
   /**
    * Called when the channel selection form is successfully filled out and submitted.
@@ -37,42 +37,40 @@ export function YouTubeChannelSelectForm(props: {
     }
   }
 
-  const DEFAULT_OPTION: string = (options && options.length) ? options[0].id : null;
-
-//  initialValues = {{
-//    [FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP]: DEFAULT_OPTION,
-//      }
-//}
-
-
-
-
-  //name = { FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP }
-
-  //{
-  //  options.map((x) => x && x.id &&
-  //    <Radio.Button className="max-cell-sm" key={x.id} value={x.id} >
-  //      <BasicComboView
-  //        thumbnail={x.snippet?.thumbnails._default}
-  //        title={x.snippet?.title}
-  //        subtitle={x.id}
-  //      />
-  //    </Radio.Button>,
-  //  )
-  //}
+  const DEFAULT_OPTION: string = (options && options.length) ? options[0]?.id : null;
 
   return (
     <Form
-      name={name}
       onFinish={onFinish}
+      initialValues={{
+        [FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP]: DEFAULT_OPTION,
+      }}
     >
       <Row align="top" justify="center">
+        {options.length == 0 &&
+          <Alert
+            message="Error"
+            description="No YouTube channels were found to be associated with this Google account."
+            type="error"
+            showIcon
+          />
+        }
+
         <Form.Item
           className="max-cell-sm"
           name={FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP}
           rules={[{ required: true, message: 'Please select a channel.' }]}
         >
           <Radio.Group className="max-cell-sm">
+            {options.map((x) =>
+              <Radio.Button className="max-cell-sm" key={x?.id} value={x?.id} >
+                <BasicComboView
+                  thumbnail={x?.snippet?.thumbnails._default}
+                  title={x?.snippet?.title}
+                  subtitle={x?.id}
+                />
+              </Radio.Button>,
+            )}
           </Radio.Group>
         </Form.Item>
       </Row>
