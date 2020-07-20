@@ -38,12 +38,19 @@ export function YouTubeChannelSelectForm(props: {
 
   const DEFAULT_OPTION: string = (options && options.length) ? options[0].id : null;
 
+//  initialValues = {{
+//    [FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP]: DEFAULT_OPTION,
+//      }
+//}
+
+
+
+
+  //name = { FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP }
+
   return (
     <Form
       onFinish={onFinish}
-      initialValues={{
-        [FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP]: DEFAULT_OPTION,
-      }}
     >
       <Row align="top" justify="center">
         <Form.Item
