@@ -13,7 +13,7 @@ const YOUTUBE_CHANNEL_API: YouTubeChannelApi = new YouTubeChannelApi();
  * @param {object} props
  * @return {JSX.Element}
  */
-export function MineYouTubeChannelSelectForm(props: {
+export function YouTubeChannelSelectFormContainer(props: {
   onFinishSelection?: (channel: Channel) => void,
 }): JSX.Element {
   const [mineYouTubeChannels, setMineYouTubeChannels] =
@@ -54,8 +54,8 @@ export function MineYouTubeChannelSelectForm(props: {
     <Page title="YouTube Channel Selection">
       {mineYouTubeChannels ?
         <YouTubeChannelSelectForm
+          {...props}
           options={mineYouTubeChannels}
-          onFinishSelection={props.onFinishSelection}
         /> : <Skeleton />
       }
     </Page>

@@ -47,7 +47,7 @@ export function YouTubeChannelSelectForm(props: {
       }}
     >
       <Row align="top" justify="center">
-        {options.length == 0 &&
+        {!options.length &&
           <Alert
             message="Error"
             description="No YouTube channels were found to be associated with this Google account."

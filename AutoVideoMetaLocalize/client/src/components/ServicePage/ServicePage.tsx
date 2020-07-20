@@ -1,13 +1,11 @@
 import * as React from 'react';
-import { Channel, I18nLanguageSnippet, LanguageApi, SupportedLanguage } from '../../../generated-sources/openapi';
-import { LanguageProvider } from '../LanguageContext/LanguageContext';
-import { ChannelTranslationConfigurationForm } from './ChannelTranslationConfigurationForm/ChannelTranslationConfigurationForm';
-import { GoogleUnauthorizedResult } from './GoogleUnauthorizedResult/GoogleUnauthorizedResult';
-import { MineYouTubeChannelSelectForm } from './MineYouTubeChannelSelectForm/MineYouTubeChannelSelectForm';
+import { Channel } from '../../../generated-sources/openapi';
+import UserContext from '../UserContext/UserContext';
 import { ServiceExecutionPage } from './ServiceExecutionPage/ServiceExecutionPage';
+import { ServiceFormContainer } from './ServiceFormContainer/ServiceFormContainer';
 import { ServiceFormInput } from './ServiceFormInput';
-
-const LANGUAGE_API: LanguageApi = new LanguageApi();
+import { YouTubeChannelSelectFormContainer } from './YouTubeChannelSelectFormContainer/YouTubeChannelSelectFormContainer';
+import { GoogleUnauthorizedResult } from './GoogleUnauthorizedResult/GoogleUnauthorizedResult';
 
 /**
  * The page used to control the flow of the process.
@@ -15,6 +13,8 @@ const LANGUAGE_API: LanguageApi = new LanguageApi();
  * @return {JSX.Element}
  */
 export function ServicePage(): JSX.Element {
+  const user = React.useContext(UserContext);
+
   const [currentStep, setCurrentStep] =
     React.useState<number>(0);
 
@@ -25,25 +25,6 @@ export function ServicePage(): JSX.Element {
     React.useState<Channel>(null);
 
   // cached information
-
-  const [googleTranslateSupportedLanguages, setGoogleTranslateSupportedLanguages] =
-    React.useState<SupportedLanguage[]>(null);
-
-  const [youTubeI18nLanguages, setYouTubeI18nLanguages] =
-    React.useState<I18nLanguageSnippet[]>(null);
-
-  const [googleFetchError, setGoogleFetchError] =
-    React.useState<boolean>(false);
-
-  React.useEffect(() => {
-    LANGUAGE_API.apiLanguageGoogleTranslateSupportedLanguagesGet()
-      .then((res) => setGoogleTranslateSupportedLanguages(res))
-      .catch((err) => setGoogleFetchError(err));
-
-    LANGUAGE_API.apiLanguageYouTubeI18nLanguagesGet()
-      .then((res) => setYouTubeI18nLanguages(res))
-      .catch((err) => setGoogleFetchError(err));
-  }, []);
 
   /**
    * Called when the channel selection form is successfully filled out and submitted.
@@ -80,11 +61,11 @@ export function ServicePage(): JSX.Element {
   }
 
   const content: React.ReactNode[] = [
-    <MineYouTubeChannelSelectForm
+    <YouTubeChannelSelectFormContainer
       key={0}
       onFinishSelection={onFinishChannelSelect}
     />,
-    <ChannelTranslationConfigurationForm
+    <ServiceFormContainer
       key={1}
       channel={selectedChannel}
       onFinishForm={onFinishInputForm}
@@ -97,17 +78,12 @@ export function ServicePage(): JSX.Element {
     />,
   ];
 
-  if (googleFetchError) { // An error occured while attempting to fetch the user's YouTube information.
-    return <GoogleUnauthorizedResult />;
+  if (!user) {
+    return <GoogleUnauthorizedResult />
   }
 
   return (
-    <LanguageProvider value={{
-      CloudTranslation: googleTranslateSupportedLanguages,
-      YouTube: youTubeI18nLanguages,
-    }}>
-      <div className="steps-content">{content[currentStep]}</div>
-    </LanguageProvider>
+    <div className="steps-content">{content[currentStep]}</div>
   );
 }
 

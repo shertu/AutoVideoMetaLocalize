@@ -1,8 +1,8 @@
 import {ColumnsType, TablePaginationConfig} from 'antd/lib/table';
 import * as React from 'react';
-import {ApiYouTubePlaylistItemListGetRequest, Channel, PlaylistItem, PlaylistItemListResponse, YouTubePlaylistItemApi} from '../../../../../generated-sources/openapi';
-import {BasicComboView} from '../../../BasicComboView/BasicComboView';
-import {FormSelectionTable} from '../../../FormSelectionTable/FormSelectionTable';
+import {ApiYouTubePlaylistItemListGetRequest, Channel, PlaylistItem, PlaylistItemListResponse, YouTubePlaylistItemApi} from '../../../../../../generated-sources/openapi';
+import {BasicComboView} from '../../../../BasicComboView/BasicComboView';
+import {FormSelectionTable} from '../../../../FormSelectionTable/FormSelectionTable';
 
 const YOUTUBE_PLAYLIST_ITEM_API = new YouTubePlaylistItemApi();
 
