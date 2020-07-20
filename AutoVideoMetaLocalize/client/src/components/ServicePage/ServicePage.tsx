@@ -1,11 +1,13 @@
+import { Result, Button } from 'antd';
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 import { Channel } from '../../../generated-sources/openapi';
 import UserContext from '../UserContext/UserContext';
 import { ServiceExecutionPage } from './ServiceExecutionPage/ServiceExecutionPage';
 import { ServiceFormContainer } from './ServiceFormContainer/ServiceFormContainer';
 import { ServiceFormInput } from './ServiceFormInput';
 import { YouTubeChannelSelectFormContainer } from './YouTubeChannelSelectFormContainer/YouTubeChannelSelectFormContainer';
-import { GoogleUnauthorizedResult } from './GoogleUnauthorizedResult/GoogleUnauthorizedResult';
+import routes from '../../routes';
 
 /**
  * The page used to control the flow of the process.
@@ -79,7 +81,18 @@ export function ServicePage(): JSX.Element {
   ];
 
   if (!user) {
-    return <GoogleUnauthorizedResult />
+    return (
+      <Result
+        status="403"
+        title="403"
+        subTitle="Sorry, you are not authorized to access this part of the website."
+        extra={
+          <Link to={routes.ROUTE_HOME}>
+            <Button type="primary">Go Home</Button>
+          </Link>
+        }
+      />
+    );
   }
 
   return (

@@ -3,7 +3,6 @@ import * as React from 'react';
 import { ApiYouTubeChannelListGetRequest, Channel, ChannelListResponse, YouTubeChannelApi } from '../../../../generated-sources/openapi';
 import { Page } from '../../Page/Page';
 import { YouTubeChannelSelectForm } from './YouTubeChannelSelectForm/YouTubeChannelSelectForm';
-import { GoogleUnauthorizedResult } from '../GoogleUnauthorizedResult/GoogleUnauthorizedResult';
 
 const YOUTUBE_CHANNEL_API: YouTubeChannelApi = new YouTubeChannelApi();
 
@@ -19,13 +18,10 @@ export function YouTubeChannelSelectFormContainer(props: {
   const [mineYouTubeChannels, setMineYouTubeChannels] =
     React.useState<Channel[]>(null);
 
-  const [error, setError] =
-    React.useState<boolean>(false);
-
   React.useEffect(() => {
     fetchMineYouTubeChannelList()
       .then((res) => setMineYouTubeChannels(res))
-      .catch((err) => setError(true));
+      .catch((err) => setMineYouTubeChannels([])); // TODO
   }, []);
 
   /** Fetches every YouTube channel from the user's Google account. */
@@ -43,10 +39,6 @@ export function YouTubeChannelSelectFormContainer(props: {
     } while (req.pageToken);
 
     return items;
-  }
-
-  if (error) { // standard error
-    return <GoogleUnauthorizedResult />;
   }
 
   // render of YouTubeChannelSelectForm is delayed until options is defined to ensure default value is selected

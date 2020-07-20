@@ -3,7 +3,6 @@ import { Channel, SupportedLanguage, LanguageApi, I18nLanguageSnippet } from '..
 import { Page } from '../../Page/Page';
 import { ServiceFormInput } from '../ServiceFormInput';
 import { ServiceForm } from './ServiceForm/ServiceForm';
-import { GoogleUnauthorizedResult } from '../GoogleUnauthorizedResult/GoogleUnauthorizedResult';
 import { Skeleton } from 'antd';
 
 const LANGUAGE_API: LanguageApi = new LanguageApi();
@@ -25,22 +24,15 @@ export function ServiceFormContainer(props: {
   const [youTubeI18nLanguages, setYouTubeI18nLanguages] =
     React.useState<I18nLanguageSnippet[]>(null);
 
-  const [error, setError] =
-    React.useState<boolean>(false);
-
   React.useEffect(() => {
     LANGUAGE_API.apiLanguageGoogleTranslateSupportedLanguagesGet()
       .then((res) => setCloudTranslationSupportedLanguages(res))
-      .catch((err) => setError(err));
+      .catch((err) => setCloudTranslationSupportedLanguages([])); // TODO
 
     LANGUAGE_API.apiLanguageYouTubeI18nLanguagesGet()
       .then((res) => setYouTubeI18nLanguages(res))
-      .catch((err) => setError(err));
+      .catch((err) => setYouTubeI18nLanguages([])); // TODO
   }, []);
-
-  if (error) { // standard error
-    return <GoogleUnauthorizedResult />;
-  }
 
   return (
     <Page title="Options">
