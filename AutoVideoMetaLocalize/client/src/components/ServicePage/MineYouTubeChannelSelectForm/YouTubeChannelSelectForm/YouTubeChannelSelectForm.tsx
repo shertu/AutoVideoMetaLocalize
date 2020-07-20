@@ -48,6 +48,18 @@ export function YouTubeChannelSelectForm(props: {
 
   //name = { FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP }
 
+  //{
+  //  options.map((x) => x && x.id &&
+  //    <Radio.Button className="max-cell-sm" key={x.id} value={x.id} >
+  //      <BasicComboView
+  //        thumbnail={x.snippet?.thumbnails._default}
+  //        title={x.snippet?.title}
+  //        subtitle={x.id}
+  //      />
+  //    </Radio.Button>,
+  //  )
+  //}
+
   return (
     <Form
       onFinish={onFinish}
@@ -55,19 +67,11 @@ export function YouTubeChannelSelectForm(props: {
       <Row align="top" justify="center">
         <Form.Item
           className="max-cell-sm"
+          id={FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP}
           name={FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP}
           rules={[{ required: true, message: 'Please select a channel.' }]}
         >
           <Radio.Group className="max-cell-sm">
-            {options.map((x) => x && x.id &&
-              <Radio.Button className="max-cell-sm" key={x.id} value={x.id} >
-                <BasicComboView
-                  thumbnail={x.snippet?.thumbnails._default}
-                  title={x.snippet?.title}
-                  subtitle={x.id}
-                />
-              </Radio.Button>,
-            )}
           </Radio.Group>
         </Form.Item>
       </Row>
