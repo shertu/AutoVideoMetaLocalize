@@ -16,11 +16,12 @@ const FORM_ITEM_NAMES = {
  * @return {JSX.Element}
  */
 export function YouTubeChannelSelectForm(props: {
+  name?: string,
   options?: Channel[],
   onFinishSelection?: (channel: Channel) => void,
 }): JSX.Element {
   const options = props.options || [];
-  const { onFinishSelection } = props;
+  const { name, onFinishSelection } = props;
 
   /**
    * Called when the channel selection form is successfully filled out and submitted.
@@ -62,12 +63,12 @@ export function YouTubeChannelSelectForm(props: {
 
   return (
     <Form
+      name={name}
       onFinish={onFinish}
     >
       <Row align="top" justify="center">
         <Form.Item
           className="max-cell-sm"
-          id={FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP}
           name={FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP}
           rules={[{ required: true, message: 'Please select a channel.' }]}
         >

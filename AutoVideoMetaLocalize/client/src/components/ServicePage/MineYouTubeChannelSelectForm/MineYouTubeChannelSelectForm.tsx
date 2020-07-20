@@ -54,6 +54,7 @@ export function MineYouTubeChannelSelectForm(props: {
     <Page title="YouTube Channel Selection">
       {mineYouTubeChannels ?
         <YouTubeChannelSelectForm
+          name="MineYouTubeChannelSelection"
           options={mineYouTubeChannels}
           onFinishSelection={props.onFinishSelection}
         /> : <Skeleton />
