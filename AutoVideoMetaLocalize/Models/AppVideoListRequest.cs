@@ -44,7 +44,7 @@ namespace AutoVideoMetaLocalize.Models {
 		// Summary:
 		//     The maxWidth parameter specifies a maximum width of the embedded player. If maxHeight
 		//     is provided, maxWidth may not be reached in order to not violate the height request.
-		public virtual long? MaxWidth { get; set; }
+		public virtual int? MaxWidth { get; set; }
 		//
 		// Summary:
 		//     The maxResults parameter specifies the maximum number of items that should be
@@ -57,7 +57,7 @@ namespace AutoVideoMetaLocalize.Models {
 		//     The maxHeight parameter specifies a maximum height of the embedded player. If
 		//     maxWidth is provided, maxHeight may not be reached in order to not violate the
 		//     width request.
-		public virtual long? MaxHeight { get; set; }
+		public virtual int? MaxHeight { get; set; }
 		//
 		// Summary:
 		//     DEPRECATED
