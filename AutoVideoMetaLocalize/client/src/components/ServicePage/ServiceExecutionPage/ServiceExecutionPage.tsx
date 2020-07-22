@@ -1,10 +1,9 @@
 import { Button, Card, Progress, Row, Typography } from 'antd';
 import { ProgressProps } from 'antd/lib/progress';
 import * as React from 'react';
-import { ApiYouTubeVideoListGetRequest, Video, VideoListResponse, VideoLocalization, YouTubeVideoApi } from '../../../../generated-sources/openapi';
-import { ApiTranslationGetRequest, TranslationApi } from '../../../../generated-sources/openapi/apis/TranslationApi';
-import { ServiceFormInput } from '../ServiceFormInput';
+import { ApiTranslationPostRequest, ApiYouTubeVideoListGetRequest, TranslationApi, Video, VideoListResponse, VideoLocalization, YouTubeVideoApi } from '../../../../generated-sources/openapi';
 import { Page } from '../../Page/Page';
+import { ServiceFormInput } from '../ServiceFormInput';
 
 const YOUTUBE_VIDEO_API: YouTubeVideoApi = new YouTubeVideoApi();
 const TRANSLATION_API: TranslationApi = new TranslationApi();
@@ -91,29 +90,31 @@ export function ServiceExecutionPage(props: {
     const vidDefaultLanguage: string = video.snippet.defaultLanguage;
 
     for (let i = 0; i < LANGUAGE_CODES.length; i++) {
-      const _ = LANGUAGE_CODES[i];
-      console.log('LANGUAGE START', video, _);
+      const translationTargetLanguage = LANGUAGE_CODES[i];
+      const translationSourceLanguage = vidDefaultLanguage;
 
-      const request: ApiTranslationGetRequest = {
-        targetLanguageCode: _,
-        sourceLanguageCode: vidDefaultLanguage,
-        body: '',
-      };
+      console.log('LANGUAGE START', translationTargetLanguage, translationSourceLanguage);
 
-      request.body = vidDescription;
       const localization: VideoLocalization = {
-        description: await TRANSLATION_API.apiTranslationGet(request),
+        description: await TRANSLATION_API.apiTranslationPost({
+          targetLanguageCode: translationTargetLanguage,
+          sourceLanguageCode: translationSourceLanguage,
+          body: vidDescription,
+        }),
       };
 
       if (SHEET_MUSIC_BOSS) {
-        localization.title = await substringTranslation(request, 'piano tutorial', vidTitle);
+        localization.title = await substringTranslation(translationTargetLanguage, translationSourceLanguage, 'piano tutorial', vidTitle);
       } else {
-        request.body = vidTitle;
-        localization.title = await TRANSLATION_API.apiTranslationGet(request);
+        localization.title = await TRANSLATION_API.apiTranslationPost({
+          targetLanguageCode: translationTargetLanguage,
+          sourceLanguageCode: translationSourceLanguage,
+          body: vidTitle,
+        });
       }
 
-      video.localizations[_] = localization;
-      console.log('LANGUAGE END', video, _);
+      video.localizations[translationTargetLanguage] = localization;
+      console.log('LANGUAGE END', translationTargetLanguage, translationSourceLanguage);
     }
 
     return video;
@@ -122,14 +123,18 @@ export function ServiceExecutionPage(props: {
   /**
    * A ultility method used to translate and replace a substring within a parent string.
    *
-   * @param {ApiTranslationGetRequest} request
+   * @param {string} targetLanguageCode
+   * @param {string} sourceLanguageCode
    * @param {string} substring
    * @param {string} parent
    */
-  async function substringTranslation(request: ApiTranslationGetRequest, substring: string, parent: string): Promise<string> {
-    request.body = substring;
+  async function substringTranslation(targetLanguageCode: string, sourceLanguageCode: string, substring: string, parent: string): Promise<string> {
+    const translatedSubstring = await TRANSLATION_API.apiTranslationPost({
+      targetLanguageCode: targetLanguageCode,
+      sourceLanguageCode: sourceLanguageCode,
+      body: substring,
+    });
 
-    const translatedSubstring = await TRANSLATION_API.apiTranslationGet(request);
     const regex: RegExp = new RegExp(substring, 'gi');
     return parent.replace(regex, translatedSubstring);
   }

@@ -15,7 +15,7 @@
 
 import * as runtime from '../runtime';
 
-export interface ApiTranslationGetRequest {
+export interface ApiTranslationPostRequest {
     targetLanguageCode: string;
     sourceLanguageCode: string;
     body: string;
@@ -28,17 +28,17 @@ export class TranslationApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiTranslationGetRaw(requestParameters: ApiTranslationGetRequest): Promise<runtime.ApiResponse<string>> {
+    async apiTranslationPostRaw(requestParameters: ApiTranslationPostRequest): Promise<runtime.ApiResponse<string>> {
         if (requestParameters.targetLanguageCode === null || requestParameters.targetLanguageCode === undefined) {
-            throw new runtime.RequiredError('targetLanguageCode','Required parameter requestParameters.targetLanguageCode was null or undefined when calling apiTranslationGet.');
+            throw new runtime.RequiredError('targetLanguageCode','Required parameter requestParameters.targetLanguageCode was null or undefined when calling apiTranslationPost.');
         }
 
         if (requestParameters.sourceLanguageCode === null || requestParameters.sourceLanguageCode === undefined) {
-            throw new runtime.RequiredError('sourceLanguageCode','Required parameter requestParameters.sourceLanguageCode was null or undefined when calling apiTranslationGet.');
+            throw new runtime.RequiredError('sourceLanguageCode','Required parameter requestParameters.sourceLanguageCode was null or undefined when calling apiTranslationPost.');
         }
 
         if (requestParameters.body === null || requestParameters.body === undefined) {
-            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling apiTranslationGet.');
+            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling apiTranslationPost.');
         }
 
         const queryParameters: runtime.HTTPQuery = {};
@@ -57,7 +57,7 @@ export class TranslationApi extends runtime.BaseAPI {
 
         const response = await this.request({
             path: `/api/Translation`,
-            method: 'GET',
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
             body: requestParameters.body as any,
@@ -68,8 +68,8 @@ export class TranslationApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiTranslationGet(requestParameters: ApiTranslationGetRequest): Promise<string> {
-        const response = await this.apiTranslationGetRaw(requestParameters);
+    async apiTranslationPost(requestParameters: ApiTranslationPostRequest): Promise<string> {
+        const response = await this.apiTranslationPostRaw(requestParameters);
         return await response.value();
     }
 
