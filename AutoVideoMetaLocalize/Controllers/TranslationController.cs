@@ -18,7 +18,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 			this.translateServiceAccessor = translateServiceAccessor;
 		}
 
-		[HttpGet]
+		[HttpPost]
 		[Authorize]
 		public async Task<ActionResult<string>> GetSimpleTranslation(
 			[Required, FromQuery] string targetLanguageCode,
