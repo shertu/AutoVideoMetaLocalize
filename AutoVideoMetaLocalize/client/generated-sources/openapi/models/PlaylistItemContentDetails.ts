@@ -48,13 +48,7 @@ export interface PlaylistItemContentDetails {
      * @type {string}
      * @memberof PlaylistItemContentDetails
      */
-    videoPublishedAtRaw?: string | null;
-    /**
-     * 
-     * @type {Date}
-     * @memberof PlaylistItemContentDetails
-     */
-    videoPublishedAt?: Date | null;
+    videoPublishedAt?: string | null;
     /**
      * 
      * @type {string}
@@ -77,8 +71,7 @@ export function PlaylistItemContentDetailsFromJSONTyped(json: any, ignoreDiscrim
         'note': !exists(json, 'note') ? undefined : json['note'],
         'startAt': !exists(json, 'startAt') ? undefined : json['startAt'],
         'videoId': !exists(json, 'videoId') ? undefined : json['videoId'],
-        'videoPublishedAtRaw': !exists(json, 'videoPublishedAtRaw') ? undefined : json['videoPublishedAtRaw'],
-        'videoPublishedAt': !exists(json, 'videoPublishedAt') ? undefined : (json['videoPublishedAt'] === null ? null : new Date(json['videoPublishedAt'])),
+        'videoPublishedAt': !exists(json, 'videoPublishedAt') ? undefined : json['videoPublishedAt'],
         'eTag': !exists(json, 'eTag') ? undefined : json['eTag'],
     };
 }
@@ -96,8 +89,7 @@ export function PlaylistItemContentDetailsToJSON(value?: PlaylistItemContentDeta
         'note': value.note,
         'startAt': value.startAt,
         'videoId': value.videoId,
-        'videoPublishedAtRaw': value.videoPublishedAtRaw,
-        'videoPublishedAt': value.videoPublishedAt === undefined ? undefined : (value.videoPublishedAt === null ? null : value.videoPublishedAt.toISOString()),
+        'videoPublishedAt': value.videoPublishedAt,
         'eTag': value.eTag,
     };
 }

@@ -65,13 +65,7 @@ export interface PlaylistItemSnippet {
      * @type {string}
      * @memberof PlaylistItemSnippet
      */
-    publishedAtRaw?: string | null;
-    /**
-     * 
-     * @type {Date}
-     * @memberof PlaylistItemSnippet
-     */
-    publishedAt?: Date | null;
+    publishedAt?: string | null;
     /**
      * 
      * @type {ResourceId}
@@ -113,8 +107,7 @@ export function PlaylistItemSnippetFromJSONTyped(json: any, ignoreDiscriminator:
         'description': !exists(json, 'description') ? undefined : json['description'],
         'playlistId': !exists(json, 'playlistId') ? undefined : json['playlistId'],
         'position': !exists(json, 'position') ? undefined : json['position'],
-        'publishedAtRaw': !exists(json, 'publishedAtRaw') ? undefined : json['publishedAtRaw'],
-        'publishedAt': !exists(json, 'publishedAt') ? undefined : (json['publishedAt'] === null ? null : new Date(json['publishedAt'])),
+        'publishedAt': !exists(json, 'publishedAt') ? undefined : json['publishedAt'],
         'resourceId': !exists(json, 'resourceId') ? undefined : ResourceIdFromJSON(json['resourceId']),
         'thumbnails': !exists(json, 'thumbnails') ? undefined : ThumbnailDetailsFromJSON(json['thumbnails']),
         'title': !exists(json, 'title') ? undefined : json['title'],
@@ -136,8 +129,7 @@ export function PlaylistItemSnippetToJSON(value?: PlaylistItemSnippet | null): a
         'description': value.description,
         'playlistId': value.playlistId,
         'position': value.position,
-        'publishedAtRaw': value.publishedAtRaw,
-        'publishedAt': value.publishedAt === undefined ? undefined : (value.publishedAt === null ? null : value.publishedAt.toISOString()),
+        'publishedAt': value.publishedAt,
         'resourceId': ResourceIdToJSON(value.resourceId),
         'thumbnails': ThumbnailDetailsToJSON(value.thumbnails),
         'title': value.title,

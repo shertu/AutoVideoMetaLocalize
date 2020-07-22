@@ -18,7 +18,8 @@
  * @enum {string}
  */
 export enum ChartEnum {
-    NUMBER_0 = 0
+    NUMBER_0 = 0,
+    NUMBER_1 = 1
 }
 
 export function ChartEnumFromJSON(json: any): ChartEnum {

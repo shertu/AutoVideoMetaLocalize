@@ -19,7 +19,8 @@
  */
 export enum MyRatingEnum {
     NUMBER_0 = 0,
-    NUMBER_1 = 1
+    NUMBER_1 = 1,
+    NUMBER_2 = 2
 }
 
 export function MyRatingEnumFromJSON(json: any): MyRatingEnum {

@@ -24,7 +24,8 @@ export interface ApiGoogleAuthAuthorizationCodeRequestUrlGetRequest {
 }
 
 export interface ApiGoogleAuthGoogleSignInGetRequest {
-    code: string;
+    code?: string | null;
+    error?: string | null;
 }
 
 /**
@@ -95,14 +96,14 @@ export class GoogleAuthApi extends runtime.BaseAPI {
     /**
      */
     async apiGoogleAuthGoogleSignInGetRaw(requestParameters: ApiGoogleAuthGoogleSignInGetRequest): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters.code === null || requestParameters.code === undefined) {
-            throw new runtime.RequiredError('code','Required parameter requestParameters.code was null or undefined when calling apiGoogleAuthGoogleSignInGet.');
-        }
-
         const queryParameters: runtime.HTTPQuery = {};
 
         if (requestParameters.code !== undefined) {
             queryParameters['code'] = requestParameters.code;
+        }
+
+        if (requestParameters.error !== undefined) {
+            queryParameters['error'] = requestParameters.error;
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

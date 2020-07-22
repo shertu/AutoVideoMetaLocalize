@@ -30,13 +30,7 @@ export interface ChannelContentOwnerDetails {
      * @type {string}
      * @memberof ChannelContentOwnerDetails
      */
-    timeLinkedRaw?: string | null;
-    /**
-     * 
-     * @type {Date}
-     * @memberof ChannelContentOwnerDetails
-     */
-    timeLinked?: Date | null;
+    timeLinked?: string | null;
     /**
      * 
      * @type {string}
@@ -56,8 +50,7 @@ export function ChannelContentOwnerDetailsFromJSONTyped(json: any, ignoreDiscrim
     return {
         
         'contentOwner': !exists(json, 'contentOwner') ? undefined : json['contentOwner'],
-        'timeLinkedRaw': !exists(json, 'timeLinkedRaw') ? undefined : json['timeLinkedRaw'],
-        'timeLinked': !exists(json, 'timeLinked') ? undefined : (json['timeLinked'] === null ? null : new Date(json['timeLinked'])),
+        'timeLinked': !exists(json, 'timeLinked') ? undefined : json['timeLinked'],
         'eTag': !exists(json, 'eTag') ? undefined : json['eTag'],
     };
 }
@@ -72,8 +65,7 @@ export function ChannelContentOwnerDetailsToJSON(value?: ChannelContentOwnerDeta
     return {
         
         'contentOwner': value.contentOwner,
-        'timeLinkedRaw': value.timeLinkedRaw,
-        'timeLinked': value.timeLinked === undefined ? undefined : (value.timeLinked === null ? null : value.timeLinked.toISOString()),
+        'timeLinked': value.timeLinked,
         'eTag': value.eTag,
     };
 }

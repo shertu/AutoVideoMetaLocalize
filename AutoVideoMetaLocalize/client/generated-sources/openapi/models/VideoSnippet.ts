@@ -83,13 +83,7 @@ export interface VideoSnippet {
      * @type {string}
      * @memberof VideoSnippet
      */
-    publishedAtRaw?: string | null;
-    /**
-     * 
-     * @type {Date}
-     * @memberof VideoSnippet
-     */
-    publishedAt?: Date | null;
+    publishedAt?: string | null;
     /**
      * 
      * @type {Array<string>}
@@ -134,8 +128,7 @@ export function VideoSnippetFromJSONTyped(json: any, ignoreDiscriminator: boolea
         'description': !exists(json, 'description') ? undefined : json['description'],
         'liveBroadcastContent': !exists(json, 'liveBroadcastContent') ? undefined : json['liveBroadcastContent'],
         'localized': !exists(json, 'localized') ? undefined : VideoLocalizationFromJSON(json['localized']),
-        'publishedAtRaw': !exists(json, 'publishedAtRaw') ? undefined : json['publishedAtRaw'],
-        'publishedAt': !exists(json, 'publishedAt') ? undefined : (json['publishedAt'] === null ? null : new Date(json['publishedAt'])),
+        'publishedAt': !exists(json, 'publishedAt') ? undefined : json['publishedAt'],
         'tags': !exists(json, 'tags') ? undefined : json['tags'],
         'thumbnails': !exists(json, 'thumbnails') ? undefined : ThumbnailDetailsFromJSON(json['thumbnails']),
         'title': !exists(json, 'title') ? undefined : json['title'],
@@ -160,8 +153,7 @@ export function VideoSnippetToJSON(value?: VideoSnippet | null): any {
         'description': value.description,
         'liveBroadcastContent': value.liveBroadcastContent,
         'localized': VideoLocalizationToJSON(value.localized),
-        'publishedAtRaw': value.publishedAtRaw,
-        'publishedAt': value.publishedAt === undefined ? undefined : (value.publishedAt === null ? null : value.publishedAt.toISOString()),
+        'publishedAt': value.publishedAt,
         'tags': value.tags,
         'thumbnails': ThumbnailDetailsToJSON(value.thumbnails),
         'title': value.title,

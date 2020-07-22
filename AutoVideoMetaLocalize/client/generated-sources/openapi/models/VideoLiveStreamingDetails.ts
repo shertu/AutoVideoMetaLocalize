@@ -30,25 +30,13 @@ export interface VideoLiveStreamingDetails {
      * @type {string}
      * @memberof VideoLiveStreamingDetails
      */
-    actualEndTimeRaw?: string | null;
-    /**
-     * 
-     * @type {Date}
-     * @memberof VideoLiveStreamingDetails
-     */
-    actualEndTime?: Date | null;
+    actualEndTime?: string | null;
     /**
      * 
      * @type {string}
      * @memberof VideoLiveStreamingDetails
      */
-    actualStartTimeRaw?: string | null;
-    /**
-     * 
-     * @type {Date}
-     * @memberof VideoLiveStreamingDetails
-     */
-    actualStartTime?: Date | null;
+    actualStartTime?: string | null;
     /**
      * 
      * @type {number}
@@ -60,25 +48,13 @@ export interface VideoLiveStreamingDetails {
      * @type {string}
      * @memberof VideoLiveStreamingDetails
      */
-    scheduledEndTimeRaw?: string | null;
-    /**
-     * 
-     * @type {Date}
-     * @memberof VideoLiveStreamingDetails
-     */
-    scheduledEndTime?: Date | null;
+    scheduledEndTime?: string | null;
     /**
      * 
      * @type {string}
      * @memberof VideoLiveStreamingDetails
      */
-    scheduledStartTimeRaw?: string | null;
-    /**
-     * 
-     * @type {Date}
-     * @memberof VideoLiveStreamingDetails
-     */
-    scheduledStartTime?: Date | null;
+    scheduledStartTime?: string | null;
     /**
      * 
      * @type {string}
@@ -98,15 +74,11 @@ export function VideoLiveStreamingDetailsFromJSONTyped(json: any, ignoreDiscrimi
     return {
         
         'activeLiveChatId': !exists(json, 'activeLiveChatId') ? undefined : json['activeLiveChatId'],
-        'actualEndTimeRaw': !exists(json, 'actualEndTimeRaw') ? undefined : json['actualEndTimeRaw'],
-        'actualEndTime': !exists(json, 'actualEndTime') ? undefined : (json['actualEndTime'] === null ? null : new Date(json['actualEndTime'])),
-        'actualStartTimeRaw': !exists(json, 'actualStartTimeRaw') ? undefined : json['actualStartTimeRaw'],
-        'actualStartTime': !exists(json, 'actualStartTime') ? undefined : (json['actualStartTime'] === null ? null : new Date(json['actualStartTime'])),
+        'actualEndTime': !exists(json, 'actualEndTime') ? undefined : json['actualEndTime'],
+        'actualStartTime': !exists(json, 'actualStartTime') ? undefined : json['actualStartTime'],
         'concurrentViewers': !exists(json, 'concurrentViewers') ? undefined : json['concurrentViewers'],
-        'scheduledEndTimeRaw': !exists(json, 'scheduledEndTimeRaw') ? undefined : json['scheduledEndTimeRaw'],
-        'scheduledEndTime': !exists(json, 'scheduledEndTime') ? undefined : (json['scheduledEndTime'] === null ? null : new Date(json['scheduledEndTime'])),
-        'scheduledStartTimeRaw': !exists(json, 'scheduledStartTimeRaw') ? undefined : json['scheduledStartTimeRaw'],
-        'scheduledStartTime': !exists(json, 'scheduledStartTime') ? undefined : (json['scheduledStartTime'] === null ? null : new Date(json['scheduledStartTime'])),
+        'scheduledEndTime': !exists(json, 'scheduledEndTime') ? undefined : json['scheduledEndTime'],
+        'scheduledStartTime': !exists(json, 'scheduledStartTime') ? undefined : json['scheduledStartTime'],
         'eTag': !exists(json, 'eTag') ? undefined : json['eTag'],
     };
 }
@@ -121,15 +93,11 @@ export function VideoLiveStreamingDetailsToJSON(value?: VideoLiveStreamingDetail
     return {
         
         'activeLiveChatId': value.activeLiveChatId,
-        'actualEndTimeRaw': value.actualEndTimeRaw,
-        'actualEndTime': value.actualEndTime === undefined ? undefined : (value.actualEndTime === null ? null : value.actualEndTime.toISOString()),
-        'actualStartTimeRaw': value.actualStartTimeRaw,
-        'actualStartTime': value.actualStartTime === undefined ? undefined : (value.actualStartTime === null ? null : value.actualStartTime.toISOString()),
+        'actualEndTime': value.actualEndTime,
+        'actualStartTime': value.actualStartTime,
         'concurrentViewers': value.concurrentViewers,
-        'scheduledEndTimeRaw': value.scheduledEndTimeRaw,
-        'scheduledEndTime': value.scheduledEndTime === undefined ? undefined : (value.scheduledEndTime === null ? null : value.scheduledEndTime.toISOString()),
-        'scheduledStartTimeRaw': value.scheduledStartTimeRaw,
-        'scheduledStartTime': value.scheduledStartTime === undefined ? undefined : (value.scheduledStartTime === null ? null : value.scheduledStartTime.toISOString()),
+        'scheduledEndTime': value.scheduledEndTime,
+        'scheduledStartTime': value.scheduledStartTime,
         'eTag': value.eTag,
     };
 }

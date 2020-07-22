@@ -43,13 +43,7 @@ export interface VideoRecordingDetails {
      * @type {string}
      * @memberof VideoRecordingDetails
      */
-    recordingDateRaw?: string | null;
-    /**
-     * 
-     * @type {Date}
-     * @memberof VideoRecordingDetails
-     */
-    recordingDate?: Date | null;
+    recordingDate?: string | null;
     /**
      * 
      * @type {string}
@@ -70,8 +64,7 @@ export function VideoRecordingDetailsFromJSONTyped(json: any, ignoreDiscriminato
         
         'location': !exists(json, 'location') ? undefined : GeoPointFromJSON(json['location']),
         'locationDescription': !exists(json, 'locationDescription') ? undefined : json['locationDescription'],
-        'recordingDateRaw': !exists(json, 'recordingDateRaw') ? undefined : json['recordingDateRaw'],
-        'recordingDate': !exists(json, 'recordingDate') ? undefined : (json['recordingDate'] === null ? null : new Date(json['recordingDate'])),
+        'recordingDate': !exists(json, 'recordingDate') ? undefined : json['recordingDate'],
         'eTag': !exists(json, 'eTag') ? undefined : json['eTag'],
     };
 }
@@ -87,8 +80,7 @@ export function VideoRecordingDetailsToJSON(value?: VideoRecordingDetails | null
         
         'location': GeoPointToJSON(value.location),
         'locationDescription': value.locationDescription,
-        'recordingDateRaw': value.recordingDateRaw,
-        'recordingDate': value.recordingDate === undefined ? undefined : (value.recordingDate === null ? null : value.recordingDate.toISOString()),
+        'recordingDate': value.recordingDate,
         'eTag': value.eTag,
     };
 }

@@ -18,7 +18,7 @@ import * as runtime from '../runtime';
 export interface ApiTranslationGetRequest {
     targetLanguageCode: string;
     sourceLanguageCode: string;
-    text?: string | null;
+    body: string;
 }
 
 /**
@@ -37,6 +37,10 @@ export class TranslationApi extends runtime.BaseAPI {
             throw new runtime.RequiredError('sourceLanguageCode','Required parameter requestParameters.sourceLanguageCode was null or undefined when calling apiTranslationGet.');
         }
 
+        if (requestParameters.body === null || requestParameters.body === undefined) {
+            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling apiTranslationGet.');
+        }
+
         const queryParameters: runtime.HTTPQuery = {};
 
         if (requestParameters.targetLanguageCode !== undefined) {
@@ -47,17 +51,16 @@ export class TranslationApi extends runtime.BaseAPI {
             queryParameters['sourceLanguageCode'] = requestParameters.sourceLanguageCode;
         }
 
-        if (requestParameters.text !== undefined) {
-            queryParameters['text'] = requestParameters.text;
-        }
-
         const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
 
         const response = await this.request({
             path: `/api/Translation`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
+            body: requestParameters.body as any,
         });
 
         return new runtime.TextApiResponse(response) as any;

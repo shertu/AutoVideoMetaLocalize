@@ -60,13 +60,7 @@ export interface VideoStatus {
      * @type {string}
      * @memberof VideoStatus
      */
-    publishAtRaw?: string | null;
-    /**
-     * 
-     * @type {Date}
-     * @memberof VideoStatus
-     */
-    publishAt?: Date | null;
+    publishAt?: string | null;
     /**
      * 
      * @type {string}
@@ -109,8 +103,7 @@ export function VideoStatusFromJSONTyped(json: any, ignoreDiscriminator: boolean
         'madeForKids': !exists(json, 'madeForKids') ? undefined : json['madeForKids'],
         'privacyStatus': !exists(json, 'privacyStatus') ? undefined : json['privacyStatus'],
         'publicStatsViewable': !exists(json, 'publicStatsViewable') ? undefined : json['publicStatsViewable'],
-        'publishAtRaw': !exists(json, 'publishAtRaw') ? undefined : json['publishAtRaw'],
-        'publishAt': !exists(json, 'publishAt') ? undefined : (json['publishAt'] === null ? null : new Date(json['publishAt'])),
+        'publishAt': !exists(json, 'publishAt') ? undefined : json['publishAt'],
         'rejectionReason': !exists(json, 'rejectionReason') ? undefined : json['rejectionReason'],
         'selfDeclaredMadeForKids': !exists(json, 'selfDeclaredMadeForKids') ? undefined : json['selfDeclaredMadeForKids'],
         'uploadStatus': !exists(json, 'uploadStatus') ? undefined : json['uploadStatus'],
@@ -133,8 +126,7 @@ export function VideoStatusToJSON(value?: VideoStatus | null): any {
         'madeForKids': value.madeForKids,
         'privacyStatus': value.privacyStatus,
         'publicStatsViewable': value.publicStatsViewable,
-        'publishAtRaw': value.publishAtRaw,
-        'publishAt': value.publishAt === undefined ? undefined : (value.publishAt === null ? null : value.publishAt.toISOString()),
+        'publishAt': value.publishAt,
         'rejectionReason': value.rejectionReason,
         'selfDeclaredMadeForKids': value.selfDeclaredMadeForKids,
         'uploadStatus': value.uploadStatus,

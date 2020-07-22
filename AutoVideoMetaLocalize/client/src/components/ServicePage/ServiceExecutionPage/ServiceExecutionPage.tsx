@@ -97,16 +97,19 @@ export function ServiceExecutionPage(props: {
       const request: ApiTranslationGetRequest = {
         targetLanguageCode: _,
         sourceLanguageCode: vidDefaultLanguage,
+        body: '',
       };
 
+      request.body = vidDescription;
       const localization: VideoLocalization = {
-        description: await TRANSLATION_API.apiTranslationGet({ ...request, text: vidDescription }),
+        description: await TRANSLATION_API.apiTranslationGet(request),
       };
 
       if (SHEET_MUSIC_BOSS) {
         localization.title = await substringTranslation(request, 'piano tutorial', vidTitle);
       } else {
-        localization.title = await TRANSLATION_API.apiTranslationGet({ ...request, text: vidTitle });
+        request.body = vidTitle;
+        localization.title = await TRANSLATION_API.apiTranslationGet(request);
       }
 
       video.localizations[_] = localization;
@@ -124,7 +127,9 @@ export function ServiceExecutionPage(props: {
    * @param {string} parent
    */
   async function substringTranslation(request: ApiTranslationGetRequest, substring: string, parent: string): Promise<string> {
-    const translatedSubstring = await TRANSLATION_API.apiTranslationGet({ ...request, text: substring });
+    request.body = substring;
+
+    const translatedSubstring = await TRANSLATION_API.apiTranslationGet(request);
     const regex: RegExp = new RegExp(substring, 'gi');
     return parent.replace(regex, translatedSubstring);
   }
