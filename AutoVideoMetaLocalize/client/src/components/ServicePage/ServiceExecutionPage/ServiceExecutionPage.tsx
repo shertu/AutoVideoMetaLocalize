@@ -36,6 +36,7 @@ export function ServiceExecutionPage(props: {
   React.useEffect(() => {
     let synchronousCount: number = 0;
     forEachVideo(async (video) => {
+      console.log('TRANSLATE VIDEO START', synchronousCount, count);
       video = await localizeVideo(video);
 
       video = await YOUTUBE_VIDEO_API.apiYouTubeVideoUpdatePost({
@@ -45,6 +46,7 @@ export function ServiceExecutionPage(props: {
 
       setCount(++synchronousCount);
 
+      console.log('TRANSLATE VIDEO END', synchronousCount, count);
       return video;
     })
       .catch((err: Response) => {
@@ -90,6 +92,7 @@ export function ServiceExecutionPage(props: {
 
     for (let i = 0; i < LANGUAGE_CODES.length; i++) {
       const _ = LANGUAGE_CODES[i];
+      console.log('LANGUAGE START', video, _);
 
       const request: ApiTranslationGetRequest = {
         targetLanguageCode: _,
@@ -107,6 +110,7 @@ export function ServiceExecutionPage(props: {
       }
 
       video.localizations[_] = localization;
+      console.log('LANGUAGE END', video, _);
     }
 
     return video;
