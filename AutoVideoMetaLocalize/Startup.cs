@@ -131,7 +131,7 @@ namespace AutoVideoMetaLocalize {
 
 			#region cookie policy
 			_ = app.UseCookiePolicy(new CookiePolicyOptions {
-				Secure = CookieSecurePolicy.Always,
+				MinimumSameSitePolicy = SameSiteMode.Strict,
 			});
 			#endregion
 
