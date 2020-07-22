@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using AutoVideoMetaLocalize.Security.Authentication;
@@ -13,7 +12,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Rewrite;
-using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
@@ -100,7 +98,7 @@ namespace AutoVideoMetaLocalize {
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
-			// https://docs.microsoft.com/en-us/aspnet/core/fundamentals/middleware/
+			// https://docs.microsoft.com/en-us/aspnet/core/fundamentals/middleware/ 
 
 			#region developer exception
 			_ = app.UseDeveloperExceptionPage();
@@ -129,6 +127,12 @@ namespace AutoVideoMetaLocalize {
 
 			#region routing
 			_ = app.UseRouting();
+			#endregion
+
+			#region cookie policy
+			_ = app.UseCookiePolicy(new CookiePolicyOptions {
+				Secure = CookieSecurePolicy.Always,
+			});
 			#endregion
 
 			#region authentication and authorization

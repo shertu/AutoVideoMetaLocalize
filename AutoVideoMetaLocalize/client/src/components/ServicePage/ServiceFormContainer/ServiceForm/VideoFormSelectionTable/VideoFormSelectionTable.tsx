@@ -100,7 +100,7 @@ export function VideoFormSelectionTable(props: {
    * @param {number} index
    * @return {React.Key}
    */
-  function rowKey(record: PlaylistItem, index?: number): React.Key {
+  function rowKey(record: PlaylistItem): React.Key {
     return record.snippet.resourceId.videoId;
   }
 

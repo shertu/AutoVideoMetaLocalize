@@ -3,11 +3,9 @@ using AutoVideoMetaLocalize.Utilities;
 using Google;
 using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
-using Google.Cloud.Translate.V3;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 

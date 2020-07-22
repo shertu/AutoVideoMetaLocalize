@@ -1,4 +1,7 @@
-# asp .net distribution directory
+# Google service accounts
+AutoVideoMetaLocalize-249eb3a3b3f9.json
+
+# ASP .NET distribution directory
 wwwroot
 
 ## Ignore Visual Studio temporary files, build results, and
