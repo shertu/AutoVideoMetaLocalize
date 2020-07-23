@@ -1,9 +1,9 @@
- import * as React from 'react';
-import { Channel, SupportedLanguage, LanguageApi, I18nLanguageSnippet } from '../../../../generated-sources/openapi';
-import { Page } from '../../Page/Page';
-import { ServiceFormInput } from '../ServiceFormInput';
-import { ServiceForm } from './ServiceForm/ServiceForm';
 import { Skeleton } from 'antd';
+import * as React from 'react';
+import { Channel, I18nLanguageSnippet, LanguageApi, SupportedLanguage } from '../../../../generated-sources/openapi';
+import { AppVideoLocalizeRequest } from '../../../../generated-sources/openapi/models/AppVideoLocalizeRequest';
+import { Page } from '../../Page/Page';
+import { ServiceForm } from './ServiceForm/ServiceForm';
 
 const LANGUAGE_API: LanguageApi = new LanguageApi();
 
@@ -15,7 +15,7 @@ const LANGUAGE_API: LanguageApi = new LanguageApi();
  */
 export function ServiceFormContainer(props: {
   channel?: Channel,
-  onFinishForm?: (configuration: ServiceFormInput) => void,
+  onFinishForm?: (configuration: AppVideoLocalizeRequest) => void,
   onBack?: (event: React.MouseEvent<HTMLElement, MouseEvent>) => void,
 }): JSX.Element {
   const [cloudTranslationSupportedLanguages, setCloudTranslationSupportedLanguages] =

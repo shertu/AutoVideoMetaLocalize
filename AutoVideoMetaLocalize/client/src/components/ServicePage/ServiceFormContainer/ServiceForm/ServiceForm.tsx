@@ -1,11 +1,10 @@
 import { LeftOutlined } from '@ant-design/icons';
-import { Button, Checkbox, Col, Collapse, Form, Row, Select, message, Alert } from 'antd';
+import { Alert, Button, Checkbox, Col, Collapse, Form, Row, Select } from 'antd';
 import { Store } from 'antd/lib/form/interface';
 import * as React from 'react';
-import { Channel, SupportedLanguage, I18nLanguageSnippet } from '../../../../../generated-sources/openapi';
-import { Page } from '../../../Page/Page';
+import { Channel, I18nLanguageSnippet, SupportedLanguage } from '../../../../../generated-sources/openapi';
+import { AppVideoLocalizeRequest } from '../../../../../generated-sources/openapi/models/AppVideoLocalizeRequest';
 import { VideoFormSelectionTable } from './VideoFormSelectionTable/VideoFormSelectionTable';
-import { ServiceFormInput } from '../../ServiceFormInput';
 
 const FORM_ITEM_NAMES = {
   LANGUAGE_SELECTION: 'language-selection',
@@ -21,7 +20,7 @@ const FORM_ITEM_NAMES = {
  */
 export function ServiceForm(props: {
   channel?: Channel,
-  onFinishForm?: (configuration: ServiceFormInput) => void,
+  onFinishForm?: (configuration: AppVideoLocalizeRequest) => void,
   onBack?: (event: React.MouseEvent<HTMLElement, MouseEvent>) => void,
   cloudTranslationSupportedLanguages?: SupportedLanguage[],
   youTubeI18nLanguages?: I18nLanguageSnippet[],
@@ -44,7 +43,7 @@ export function ServiceForm(props: {
       onFinishForm({
         languages: LANGUAGE_SELECTION,
         videos: VIDEO_SELECTION,
-        sheetmusicboss: SMB_CHECKBOX,
+        sheetMusicBoss: SMB_CHECKBOX,
       });
     }
   }

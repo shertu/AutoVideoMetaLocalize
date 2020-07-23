@@ -1,13 +1,13 @@
-import { Result, Button } from 'antd';
+import { Button, Result } from 'antd';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
-import { Channel } from '../../../generated-sources/openapi';
+import { AppVideoLocalizeRequest } from '../../../generated-sources/openapi/models/AppVideoLocalizeRequest';
+import routes from '../../routes';
 import UserContext from '../UserContext/UserContext';
 import { ServiceExecutionPage } from './ServiceExecutionPage/ServiceExecutionPage';
 import { ServiceFormContainer } from './ServiceFormContainer/ServiceFormContainer';
-import { ServiceFormInput } from './ServiceFormInput';
 import { YouTubeChannelSelectFormContainer } from './YouTubeChannelSelectFormContainer/YouTubeChannelSelectFormContainer';
-import routes from '../../routes';
+import { Channel } from '../../../generated-sources/openapi';
 
 /**
  * The page used to control the flow of the process.
@@ -21,7 +21,7 @@ export function ServicePage(): JSX.Element {
     React.useState<number>(0);
 
   const [serviceFormInputs, setServiceFormInputs] =
-    React.useState<ServiceFormInput>(null);
+    React.useState<AppVideoLocalizeRequest>(null);
 
   const [selectedChannel, setSelectedChannel] =
     React.useState<Channel>(null);
@@ -47,7 +47,7 @@ export function ServicePage(): JSX.Element {
    *
    * @param {ServiceFormInput} value
    */
-  function onFinishInputForm(value: ServiceFormInput) {
+  function onFinishInputForm(value: AppVideoLocalizeRequest) {
     setServiceFormInputs(value);
     setCurrentStep(currentStep + 1);
   }

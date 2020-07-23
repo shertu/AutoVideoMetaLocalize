@@ -8,7 +8,7 @@
 		"lint:eslint": "eslint \"client/src/**/*.ts?(x)\" --fix",
 		"build": "webpack",
 		"serve": "webpack-dev-server --inline --hot",
-		"openapi": "openapi-generator generate -i https://autovideometalocalize.azurewebsites.net/swagger/1.0/swagger.json -g typescript-fetch -o client/generated-sources/openapi --skip-validate-spec"
+		"openapi": "openapi-generator generate -i https://autovideometalocalize.azurewebsites.net/swagger/1.0/swagger.json -g typescript-fetch -o client/generated-sources/openapi"
 	},
 	"keywords": [],
 	"author": "",

@@ -72,7 +72,6 @@ namespace AutoVideoMetaLocalize.Controllers {
 		//}
 
 		[HttpPut("Localize")]
-		// should be a list of videos in response
 		public async Task<ActionResult<IEnumerable<Video>>> LocalizeVideo([Required, FromBody] AppVideoLocalizeRequest body) {
 			LocalizationCount = 0;
 			string[] videos = body.Videos;

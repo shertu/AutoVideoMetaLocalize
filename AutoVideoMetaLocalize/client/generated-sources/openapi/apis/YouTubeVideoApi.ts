@@ -15,39 +15,16 @@
 
 import * as runtime from '../runtime';
 import {
-    ChartEnum,
-    ChartEnumFromJSON,
-    ChartEnumToJSON,
-    MyRatingEnum,
-    MyRatingEnumFromJSON,
-    MyRatingEnumToJSON,
+    AppVideoLocalizeRequest,
+    AppVideoLocalizeRequestFromJSON,
+    AppVideoLocalizeRequestToJSON,
     Video,
     VideoFromJSON,
     VideoToJSON,
-    VideoListResponse,
-    VideoListResponseFromJSON,
-    VideoListResponseToJSON,
 } from '../models';
 
-export interface ApiYouTubeVideoListGetRequest {
-    videoCategoryId?: string | null;
-    regionCode?: string | null;
-    pageToken?: string | null;
-    onBehalfOfContentOwner?: string | null;
-    myRating?: MyRatingEnum;
-    maxWidth?: number | null;
-    maxResults?: number | null;
-    maxHeight?: number | null;
-    locale?: string | null;
-    id?: string | null;
-    hl?: string | null;
-    chart?: ChartEnum;
-    part?: string | null;
-}
-
-export interface ApiYouTubeVideoUpdatePostRequest {
-    part: string;
-    video: Video;
+export interface ApiYouTubeVideoLocalizePutRequest {
+    appVideoLocalizeRequest: AppVideoLocalizeRequest;
 }
 
 /**
@@ -57,116 +34,56 @@ export class YouTubeVideoApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiYouTubeVideoListGetRaw(requestParameters: ApiYouTubeVideoListGetRequest): Promise<runtime.ApiResponse<VideoListResponse>> {
+    async apiYouTubeVideoLocalizeCountGetRaw(): Promise<runtime.ApiResponse<number>> {
         const queryParameters: runtime.HTTPQuery = {};
-
-        if (requestParameters.videoCategoryId !== undefined) {
-            queryParameters['VideoCategoryId'] = requestParameters.videoCategoryId;
-        }
-
-        if (requestParameters.regionCode !== undefined) {
-            queryParameters['RegionCode'] = requestParameters.regionCode;
-        }
-
-        if (requestParameters.pageToken !== undefined) {
-            queryParameters['PageToken'] = requestParameters.pageToken;
-        }
-
-        if (requestParameters.onBehalfOfContentOwner !== undefined) {
-            queryParameters['OnBehalfOfContentOwner'] = requestParameters.onBehalfOfContentOwner;
-        }
-
-        if (requestParameters.myRating !== undefined) {
-            queryParameters['MyRating'] = requestParameters.myRating;
-        }
-
-        if (requestParameters.maxWidth !== undefined) {
-            queryParameters['MaxWidth'] = requestParameters.maxWidth;
-        }
-
-        if (requestParameters.maxResults !== undefined) {
-            queryParameters['MaxResults'] = requestParameters.maxResults;
-        }
-
-        if (requestParameters.maxHeight !== undefined) {
-            queryParameters['MaxHeight'] = requestParameters.maxHeight;
-        }
-
-        if (requestParameters.locale !== undefined) {
-            queryParameters['Locale'] = requestParameters.locale;
-        }
-
-        if (requestParameters.id !== undefined) {
-            queryParameters['Id'] = requestParameters.id;
-        }
-
-        if (requestParameters.hl !== undefined) {
-            queryParameters['Hl'] = requestParameters.hl;
-        }
-
-        if (requestParameters.chart !== undefined) {
-            queryParameters['Chart'] = requestParameters.chart;
-        }
-
-        if (requestParameters.part !== undefined) {
-            queryParameters['Part'] = requestParameters.part;
-        }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/YouTubeVideo/List`,
+            path: `/api/YouTubeVideo/LocalizeCount`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         });
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => VideoListResponseFromJSON(jsonValue));
+        return new runtime.TextApiResponse(response) as any;
     }
 
     /**
      */
-    async apiYouTubeVideoListGet(requestParameters: ApiYouTubeVideoListGetRequest): Promise<VideoListResponse> {
-        const response = await this.apiYouTubeVideoListGetRaw(requestParameters);
+    async apiYouTubeVideoLocalizeCountGet(): Promise<number> {
+        const response = await this.apiYouTubeVideoLocalizeCountGetRaw();
         return await response.value();
     }
 
     /**
      */
-    async apiYouTubeVideoUpdatePostRaw(requestParameters: ApiYouTubeVideoUpdatePostRequest): Promise<runtime.ApiResponse<Video>> {
-        if (requestParameters.part === null || requestParameters.part === undefined) {
-            throw new runtime.RequiredError('part','Required parameter requestParameters.part was null or undefined when calling apiYouTubeVideoUpdatePost.');
-        }
-
-        if (requestParameters.video === null || requestParameters.video === undefined) {
-            throw new runtime.RequiredError('video','Required parameter requestParameters.video was null or undefined when calling apiYouTubeVideoUpdatePost.');
+    async apiYouTubeVideoLocalizePutRaw(requestParameters: ApiYouTubeVideoLocalizePutRequest): Promise<runtime.ApiResponse<Array<Video>>> {
+        if (requestParameters.appVideoLocalizeRequest === null || requestParameters.appVideoLocalizeRequest === undefined) {
+            throw new runtime.RequiredError('appVideoLocalizeRequest','Required parameter requestParameters.appVideoLocalizeRequest was null or undefined when calling apiYouTubeVideoLocalizePut.');
         }
 
         const queryParameters: runtime.HTTPQuery = {};
-
-        if (requestParameters.part !== undefined) {
-            queryParameters['part'] = requestParameters.part;
-        }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
         headerParameters['Content-Type'] = 'application/json';
 
         const response = await this.request({
-            path: `/api/YouTubeVideo/Update`,
-            method: 'POST',
+            path: `/api/YouTubeVideo/Localize`,
+            method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: VideoToJSON(requestParameters.video),
+            body: AppVideoLocalizeRequestToJSON(requestParameters.appVideoLocalizeRequest),
         });
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => VideoFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(VideoFromJSON));
     }
 
     /**
      */
-    async apiYouTubeVideoUpdatePost(requestParameters: ApiYouTubeVideoUpdatePostRequest): Promise<Video> {
-        const response = await this.apiYouTubeVideoUpdatePostRaw(requestParameters);
+    async apiYouTubeVideoLocalizePut(requestParameters: ApiYouTubeVideoLocalizePutRequest): Promise<Array<Video>> {
+        const response = await this.apiYouTubeVideoLocalizePutRaw(requestParameters);
         return await response.value();
     }
 

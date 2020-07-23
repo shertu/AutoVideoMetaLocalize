@@ -1,14 +1,11 @@
 import { Button, Card, Progress, Row, Typography } from 'antd';
 import { ProgressProps } from 'antd/lib/progress';
 import * as React from 'react';
-import { ApiTranslationPostRequest, ApiYouTubeVideoListGetRequest, TranslationApi, Video, VideoListResponse, VideoLocalization, YouTubeVideoApi } from '../../../../generated-sources/openapi';
 import { Page } from '../../Page/Page';
-import { ServiceFormInput } from '../ServiceFormInput';
+import { AppVideoLocalizeRequest } from '../../../../generated-sources/openapi/models/AppVideoLocalizeRequest';
+import { YouTubeVideoApi } from '../../../../generated-sources/openapi';
 
 const YOUTUBE_VIDEO_API: YouTubeVideoApi = new YouTubeVideoApi();
-const TRANSLATION_API: TranslationApi = new TranslationApi();
-
-const VIDEO_PART = 'id,snippet,localizations';
 
 /**
  * The progress of the video translations and updates.
@@ -17,129 +14,134 @@ const VIDEO_PART = 'id,snippet,localizations';
  * @return {JSX.Element}
  */
 export function ServiceExecutionPage(props: {
-  configuration: ServiceFormInput,
+  configuration: AppVideoLocalizeRequest,
   onComplete: () => void,
 }): JSX.Element {
   const LANGUAGE_CODES: string[] = props.configuration.languages;
   const VIDEO_IDS: string[] = props.configuration.videos;
-  const SHEET_MUSIC_BOSS: boolean = props.configuration.sheetmusicboss;
 
   const [errorMessage, setErrorMessage] =
     React.useState<string>(null);
 
-  const [count, setCount] =
+  const [localizationCount, setLocalizationCount] =
     React.useState<number>(0);
 
-  const countMax: number = VIDEO_IDS.length;
+  const localizationCountMax: number = VIDEO_IDS.length * LANGUAGE_CODES.length;
 
   React.useEffect(() => {
-    let synchronousCount: number = 0;
-    forEachVideo(async (video) => {
-      console.log('TRANSLATE VIDEO START', synchronousCount, count);
-      video = await localizeVideo(video);
-
-      video = await YOUTUBE_VIDEO_API.apiYouTubeVideoUpdatePost({
-        video: video,
-        part: VIDEO_PART,
-      });
-
-      setCount(++synchronousCount);
-
-      console.log('TRANSLATE VIDEO END', synchronousCount, count);
-      return video;
-    })
-      .catch((err: Response) => {
-        err.text().then((text: string) => setErrorMessage(text));
-      });
+    const fetchLocalizationCountInterval = setInterval(() => {
+      //YOUTUBE_VIDEO_API.
+    }, 1000)
   }, []);
 
-  /**
-   * Method to perform an operation on every video given the video ids prop.
-   *
-   * @param {Function} callback
-   */
-  async function forEachVideo(callback: (video: Video) => void) {
-    const request: ApiYouTubeVideoListGetRequest = {
-      part: VIDEO_PART,
-      id: VIDEO_IDS.join(','),
-    };
+  //React.useEffect(() => {
+  //  let synchronousCount: number = 0;
+  //  forEachVideo(async (video) => {
+  //    console.log('TRANSLATE VIDEO START', synchronousCount, count);
+  //    video = await localizeVideo(video);
 
-    do {
-      const response: VideoListResponse = await YOUTUBE_VIDEO_API.apiYouTubeVideoListGet(request);
-      const items: Video[] = response.items;
+  //    video = await YOUTUBE_VIDEO_API.apiYouTubeVideoUpdatePost({
+  //      video: video,
+  //      part: VIDEO_PART,
+  //    });
 
-      items.forEach((_) => {
-        callback(_); // return is discarded
-      });
+  //    setCount(++synchronousCount);
 
-      request.pageToken = response.nextPageToken;
-    } while (request.pageToken);
-  }
+  //    console.log('TRANSLATE VIDEO END', synchronousCount, count);
+  //    return video;
+  //  })
+  //    .catch((err: Response) => {
+  //      err.text().then((text: string) => setErrorMessage(text));
+  //    });
+  //}, []);
 
-  /**
-   * Adds localizations to the specified video given the languages prop.
-   *
-   * @param {Video} video
-   */
-  async function localizeVideo(video: Video): Promise<Video> {
-    video.snippet.defaultLanguage = video.snippet.defaultLanguage || 'en';
-    video.localizations = video.localizations || {};
+  ///**
+  // * Method to perform an operation on every video given the video ids prop.
+  // *
+  // * @param {Function} callback
+  // */
+  //async function forEachVideo(callback: (video: Video) => void) {
+  //  const request: ApiYouTubeVideoListGetRequest = {
+  //    part: VIDEO_PART,
+  //    id: VIDEO_IDS.join(','),
+  //  };
 
-    const vidTitle: string = video.snippet.title;
-    const vidDescription: string = video.snippet.description;
-    const vidDefaultLanguage: string = video.snippet.defaultLanguage;
+  //  do {
+  //    const response: VideoListResponse = await YOUTUBE_VIDEO_API.apiYouTubeVideoListGet(request);
+  //    const items: Video[] = response.items;
 
-    for (let i = 0; i < LANGUAGE_CODES.length; i++) {
-      const translationTargetLanguage = LANGUAGE_CODES[i];
-      const translationSourceLanguage = vidDefaultLanguage;
+  //    items.forEach((_) => {
+  //      callback(_); // return is discarded
+  //    });
 
-      console.log('LANGUAGE START', translationTargetLanguage, translationSourceLanguage);
+  //    request.pageToken = response.nextPageToken;
+  //  } while (request.pageToken);
+  //}
 
-      const localization: VideoLocalization = {
-        description: await TRANSLATION_API.apiTranslationPost({
-          targetLanguageCode: translationTargetLanguage,
-          sourceLanguageCode: translationSourceLanguage,
-          body: vidDescription,
-        }),
-      };
+  ///**
+  // * Adds localizations to the specified video given the languages prop.
+  // *
+  // * @param {Video} video
+  // */
+  //async function localizeVideo(video: Video): Promise<Video> {
+  //  video.snippet.defaultLanguage = video.snippet.defaultLanguage || 'en';
+  //  video.localizations = video.localizations || {};
 
-      if (SHEET_MUSIC_BOSS) {
-        localization.title = await substringTranslation(translationTargetLanguage, translationSourceLanguage, 'piano tutorial', vidTitle);
-      } else {
-        localization.title = await TRANSLATION_API.apiTranslationPost({
-          targetLanguageCode: translationTargetLanguage,
-          sourceLanguageCode: translationSourceLanguage,
-          body: vidTitle,
-        });
-      }
+  //  const vidTitle: string = video.snippet.title;
+  //  const vidDescription: string = video.snippet.description;
+  //  const vidDefaultLanguage: string = video.snippet.defaultLanguage;
 
-      video.localizations[translationTargetLanguage] = localization;
-      console.log('LANGUAGE END', translationTargetLanguage, translationSourceLanguage);
-    }
+  //  for (let i = 0; i < LANGUAGE_CODES.length; i++) {
+  //    const translationTargetLanguage = LANGUAGE_CODES[i];
+  //    const translationSourceLanguage = vidDefaultLanguage;
 
-    return video;
-  }
+  //    console.log('LANGUAGE START', translationTargetLanguage, translationSourceLanguage);
 
-  /**
-   * A ultility method used to translate and replace a substring within a parent string.
-   *
-   * @param {string} targetLanguageCode
-   * @param {string} sourceLanguageCode
-   * @param {string} substring
-   * @param {string} parent
-   */
-  async function substringTranslation(targetLanguageCode: string, sourceLanguageCode: string, substring: string, parent: string): Promise<string> {
-    const translatedSubstring = await TRANSLATION_API.apiTranslationPost({
-      targetLanguageCode: targetLanguageCode,
-      sourceLanguageCode: sourceLanguageCode,
-      body: substring,
-    });
+  //    const localization: VideoLocalization = {
+  //      description: await TRANSLATION_API.apiTranslationPost({
+  //        targetLanguageCode: translationTargetLanguage,
+  //        sourceLanguageCode: translationSourceLanguage,
+  //        body: vidDescription,
+  //      }),
+  //    };
 
-    const regex: RegExp = new RegExp(substring, 'gi');
-    return parent.replace(regex, translatedSubstring);
-  }
+  //    if (SHEET_MUSIC_BOSS) {
+  //      localization.title = await substringTranslation(translationTargetLanguage, translationSourceLanguage, 'piano tutorial', vidTitle);
+  //    } else {
+  //      localization.title = await TRANSLATION_API.apiTranslationPost({
+  //        targetLanguageCode: translationTargetLanguage,
+  //        sourceLanguageCode: translationSourceLanguage,
+  //        body: vidTitle,
+  //      });
+  //    }
 
-  const completeFrac: number = (countMax) ? (count / countMax) : 1;
+  //    video.localizations[translationTargetLanguage] = localization;
+  //    console.log('LANGUAGE END', translationTargetLanguage, translationSourceLanguage);
+  //  }
+
+  //  return video;
+  //}
+
+  ///**
+  // * A ultility method used to translate and replace a substring within a parent string.
+  // *
+  // * @param {string} targetLanguageCode
+  // * @param {string} sourceLanguageCode
+  // * @param {string} substring
+  // * @param {string} parent
+  // */
+  //async function substringTranslation(targetLanguageCode: string, sourceLanguageCode: string, substring: string, parent: string): Promise<string> {
+  //  const translatedSubstring = await TRANSLATION_API.apiTranslationPost({
+  //    targetLanguageCode: targetLanguageCode,
+  //    sourceLanguageCode: sourceLanguageCode,
+  //    body: substring,
+  //  });
+
+  //  const regex: RegExp = new RegExp(substring, 'gi');
+  //  return parent.replace(regex, translatedSubstring);
+  //}
+
+  const completeFrac: number = (localizationCountMax) ? (localizationCount / localizationCountMax) : 1;
 
   const progressProps: ProgressProps = {
     type: 'circle',

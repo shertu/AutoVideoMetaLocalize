@@ -30,29 +30,6 @@ export class LanguageApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiLanguageGoogleTranslateSupportedLanguagesAlphaGetRaw(): Promise<runtime.ApiResponse<void>> {
-        const queryParameters: runtime.HTTPQuery = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        const response = await this.request({
-            path: `/api/Language/GoogleTranslate-SupportedLanguages-Alpha`,
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        });
-
-        return new runtime.VoidApiResponse(response);
-    }
-
-    /**
-     */
-    async apiLanguageGoogleTranslateSupportedLanguagesAlphaGet(): Promise<void> {
-        await this.apiLanguageGoogleTranslateSupportedLanguagesAlphaGetRaw();
-    }
-
-    /**
-     */
     async apiLanguageGoogleTranslateSupportedLanguagesGetRaw(): Promise<runtime.ApiResponse<Array<SupportedLanguage>>> {
         const queryParameters: runtime.HTTPQuery = {};
 
