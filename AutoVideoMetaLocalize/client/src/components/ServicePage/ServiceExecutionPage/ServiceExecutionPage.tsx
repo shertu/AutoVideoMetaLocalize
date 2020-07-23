@@ -4,6 +4,7 @@ import * as React from 'react';
 import { Page } from '../../Page/Page';
 import { AppVideoLocalizeRequest } from '../../../../generated-sources/openapi/models/AppVideoLocalizeRequest';
 import { YouTubeVideoApi } from '../../../../generated-sources/openapi';
+import { useInterval } from '../../../hooks';
 
 const YOUTUBE_VIDEO_API: YouTubeVideoApi = new YouTubeVideoApi();
 
@@ -35,6 +36,7 @@ export function ServiceExecutionPage(props: {
     YOUTUBE_VIDEO_API.apiYouTubeVideoLocalizePut({
       appVideoLocalizeRequest: props.configuration,
     }).then((res) => {
+      console.log(res); // can be removed
       setComplete(true);
     }).catch((err: Response) => {
       err.text().then((text: string) => setErrorMessage(text));
@@ -42,13 +44,18 @@ export function ServiceExecutionPage(props: {
     });
   }, []);
 
-  React.useEffect(() => {
-    const interval = setInterval(async () => setLocalizationCount(await YOUTUBE_VIDEO_API.apiYouTubeVideoLocalizeCountGet()), 1000);
-    return clearInterval(interval);
-  }, []);
+  useInterval(updateLocalizationCount, 500);
+
+  async function updateLocalizationCount() {
+    if (complete) {
+      setLocalizationCount(localizationCountMax);
+    } else {
+      const count: number = await YOUTUBE_VIDEO_API.apiYouTubeVideoLocalizeCountGet();
+      setLocalizationCount(count);
+    }
+  }
 
   const progressValue: number = (localizationCountMax) ? (localizationCount / localizationCountMax) : 1;
-
   const progressProps: ProgressProps = {
     type: 'circle',
     status: 'active',
