@@ -44,7 +44,7 @@ export function ServiceExecutionPage(props: {
     });
   }, []);
 
-  useInterval(updateLocalizationCount, 500);
+  useInterval(updateLocalizationCount, 800);
 
   async function updateLocalizationCount() {
     if (complete) {

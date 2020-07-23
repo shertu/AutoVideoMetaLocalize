@@ -87,7 +87,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 				IList<Video> items = response.Items;
 
 				foreach (Video item in items) {
-					tasks[i] = LocalizeVideoTask(item, body);
+					tasks[i++] = LocalizeVideoTask(item, body);
 				}
 
 				request.PageToken = response.NextPageToken;
@@ -131,7 +131,6 @@ namespace AutoVideoMetaLocalize.Controllers {
 			for (int i = 0; i < languages.Length; i++) {
 				string language = languages[i];
 				tasks[i] = AddLocalizationToVideoTask(service, video, language, body);
-				LocalizationCount++;
 			}
 
 			await Task.WhenAll(tasks);
@@ -178,6 +177,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 			}
 
 			video.Localizations[language] = localization;
+			LocalizationCount++;
 		}
 	}
 }
