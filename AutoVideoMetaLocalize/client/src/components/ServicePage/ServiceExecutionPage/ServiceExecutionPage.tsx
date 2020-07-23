@@ -20,6 +20,9 @@ export function ServiceExecutionPage(props: {
   const LANGUAGE_CODES: string[] = props.configuration.languages;
   const VIDEO_IDS: string[] = props.configuration.videos;
 
+  const [complete, setComplete] =
+    React.useState<boolean>(false);
+
   const [errorMessage, setErrorMessage] =
     React.useState<string>(null);
 
@@ -29,10 +32,23 @@ export function ServiceExecutionPage(props: {
   const localizationCountMax: number = VIDEO_IDS.length * LANGUAGE_CODES.length;
 
   React.useEffect(() => {
-    const fetchLocalizationCountInterval = setInterval(() => {
-      //YOUTUBE_VIDEO_API.
-    }, 1000)
+    YOUTUBE_VIDEO_API.apiYouTubeVideoLocalizePut({
+      appVideoLocalizeRequest: props.configuration,
+    }).then((res) => {
+      setComplete(true);
+    }).catch((err: Response) => {
+      err.text().then((text: string) => setErrorMessage(text));
+      setComplete(true);
+    });
+
+    //const fetchLocalizationCountInterval = setInterval(() => loadLocalizationCount(), 1000);
+    //return clearInterval(fetchLocalizationCountInterval);
   }, []);
+
+  //async function loadLocalizationCount() {
+  //  const count: number = await YOUTUBE_VIDEO_API.apiYouTubeVideoLocalizeCountGet();
+  //  setLocalizationCount(count);
+  //}
 
   //React.useEffect(() => {
   //  let synchronousCount: number = 0;
