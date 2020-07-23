@@ -14,12 +14,12 @@ namespace AutoVideoMetaLocalize.Controllers {
 	[Route("api/[controller]")]
 	[ApiController]
 	public class LanguageController : ControllerBase {
-		private readonly GoogleCloudTranslateServiceAccessor translateServiceAccessor;
 		private readonly YouTubeServiceAccessor youtubeServiceAccessor;
+		private readonly GoogleCloudTranslateServiceAccessor translateServiceAccessor;
 
-		public LanguageController(GoogleCloudTranslateServiceAccessor translateServiceAccessor, YouTubeServiceAccessor youtubeServiceAccessor) {
-			this.translateServiceAccessor = translateServiceAccessor;
+		public LanguageController(YouTubeServiceAccessor youtubeServiceAccessor, GoogleCloudTranslateServiceAccessor translateServiceAccessor) {
 			this.youtubeServiceAccessor = youtubeServiceAccessor;
+			this.translateServiceAccessor = translateServiceAccessor;
 		}
 
 		[HttpGet("YouTube-I18nLanguages")]
@@ -70,18 +70,6 @@ namespace AutoVideoMetaLocalize.Controllers {
 			}
 
 			return new ActionResult<IList<SupportedLanguage>>(response);
-		}
-
-		[HttpGet("GoogleTranslate-SupportedLanguages-Alpha")]
-		public async Task<IActionResult> GetGoogleTranslateLanguagesAlpha() {
-			TranslationServiceClient service = await translateServiceAccessor.InitializeServiceAsync();
-
-			SupportedLanguages temp = await service.GetSupportedLanguagesAsync(new GetSupportedLanguagesRequest {
-				Parent = GoogleCloudTranslateServiceAccessor.PARENT,
-				DisplayLanguageCode = "en",
-			});
-
-			return Ok(temp.Languages);
 		}
 	}
 }

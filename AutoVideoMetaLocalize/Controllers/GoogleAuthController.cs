@@ -22,12 +22,12 @@ namespace AutoVideoMetaLocalize.Controllers {
 		private const string AUTHENTICATION_REDIRECT_URI_KEY = "AUTHENTICATION_REDIRECT_URI";
 		private const string AUTHENTICATION_REDIRECT_URI_DEFAULT = "~/";
 
-		private readonly GoogleAuthorizationCodeFlow flow;
-		private readonly GoogleCredentialManager gcm;
+		private readonly GoogleAuthorizationCodeFlow _flow;
+		private readonly GoogleCredentialManager _gcm;
 
 		public GoogleAuthController(GoogleAuthorizationCodeFlow.Initializer initializer, GoogleCredentialManager gcm) {
-			this.flow = new GoogleAuthorizationCodeFlow(initializer);
-			this.gcm = gcm;
+			_flow = new GoogleAuthorizationCodeFlow(initializer);
+			_gcm = gcm;
 		}
 
 		/// <summary>
@@ -68,7 +68,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 			if (string.IsNullOrEmpty(scope))
 				throw new ArgumentException("message", nameof(scope));
 
-			AuthorizationCodeRequestUrl authorizationCodeRequestUrl = flow.CreateAuthorizationCodeRequest(OAuthRedirectUri);
+			AuthorizationCodeRequestUrl authorizationCodeRequestUrl = _flow.CreateAuthorizationCodeRequest(OAuthRedirectUri);
 			authorizationCodeRequestUrl.Scope = scope;
 			Uri authorizationUrl = authorizationCodeRequestUrl.Build();
 			return authorizationUrl.AbsoluteUri;
@@ -79,16 +79,16 @@ namespace AutoVideoMetaLocalize.Controllers {
 		/// </summary>
 		[HttpGet(nameof(GoogleSignIn))]
 		public async Task<IActionResult> GoogleSignIn(string code, string error) {
-			if (error == "access_denied") {
+			if (error is null) {
+				UserCredential credential = await GenerateUserCredentialFromAuthorizationCode(code);
+				ClaimsPrincipal principal = GenerateClaimsPrinciple(credential);
+				AuthenticationProperties authenticationProperties = GenerateAuthenticationProperties(credential.Token);
+
+				await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, authenticationProperties);
 				return LocalRedirect(AuthenticationRedirectUri);
-			}
-
-			UserCredential credential = await GenerateUserCredentialFromAuthorizationCode(code);
-			ClaimsPrincipal principal = GenerateClaimsPrinciple(credential);
-			AuthenticationProperties authenticationProperties = GenerateAuthenticationProperties(credential.Token);
-
-			await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, authenticationProperties);
-			return LocalRedirect(AuthenticationRedirectUri);
+			} else { 
+				return LocalRedirect(AuthenticationRedirectUri);
+			}  
 		}
 
 		/// <summary>
@@ -96,9 +96,9 @@ namespace AutoVideoMetaLocalize.Controllers {
 		/// </summary>
 		private async Task<UserCredential> GenerateUserCredentialFromAuthorizationCode(string code) {
 			string userTokenKey = Guid.NewGuid().ToString();
-			TokenResponse token = await flow.ExchangeCodeForTokenAsync(
+			TokenResponse token = await _flow.ExchangeCodeForTokenAsync(
 				userTokenKey, code, OAuthRedirectUri, CancellationToken.None);
-			UserCredential credential = new UserCredential(flow, userTokenKey, token);
+			UserCredential credential = new UserCredential(_flow, userTokenKey, token);
 			return credential;
 		}
 
@@ -134,7 +134,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 		[HttpGet(nameof(GoogleSignOut))]
 		[Authorize]
 		public async Task<IActionResult> GoogleSignOut() {
-			UserCredential credential = await gcm.LoadUserCredentialsAsync();
+			UserCredential credential = await _gcm.LoadUserCredentialsAsync();
 			AuthenticationProperties authenticationProperties = GenerateAuthenticationProperties(credential.Token);
 			await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme, authenticationProperties);
 			return LocalRedirect(AuthenticationRedirectUri);

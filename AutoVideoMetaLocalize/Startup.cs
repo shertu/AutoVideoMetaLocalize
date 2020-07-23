@@ -32,7 +32,7 @@ namespace AutoVideoMetaLocalize {
 		// For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
 		public void ConfigureServices(IServiceCollection services) {
 			#region Google OAuth 2.0
-			GoogleAuthorizationCodeFlow.Initializer authInitializer =  new GoogleAuthorizationCodeFlow.Initializer {
+			GoogleAuthorizationCodeFlow.Initializer authInitializer = new GoogleAuthorizationCodeFlow.Initializer {
 				ClientSecrets = new ClientSecrets {
 					ClientId = _configuration["Authentication:Google:ClientId"],
 					ClientSecret = _configuration["Authentication:Google:ClientSecret"]
@@ -94,6 +94,11 @@ namespace AutoVideoMetaLocalize {
 			#region Google Cloud Translate
 			_ = services.AddScoped<GoogleCloudTranslateServiceAccessor>();
 			#endregion
+
+			#region session
+			_ = services.AddDistributedMemoryCache();
+			_ = services.AddSession();
+			#endregion
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -138,6 +143,10 @@ namespace AutoVideoMetaLocalize {
 			#region authentication and authorization
 			_ = app.UseAuthentication();
 			_ = app.UseAuthorization();
+			#endregion
+
+			#region session
+			_ = app.UseSession();
 			#endregion
 
 			#region endpoints
