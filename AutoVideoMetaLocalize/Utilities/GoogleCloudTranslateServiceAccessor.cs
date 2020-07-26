@@ -18,9 +18,7 @@ namespace AutoVideoMetaLocalize.Utilities {
 			//UserCredential credential = await gcm.LoadUserCredentialsAsync();
 			//string exedir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 			GoogleServiceAccountCredentials credentials = configuration.GetSection("AutoVideoMetaLocalize-249eb3a3b3f9").Get<GoogleServiceAccountCredentials>();
-			string TEST = credentials.ToString();
-
-			throw new System.Exception(TEST);
+			//throw new System.Exception(credentials.ToString());
 
 			TranslationServiceClientBuilder builder = new TranslationServiceClientBuilder {
 				//CredentialsPath = Path.Combine(exedir, "AutoVideoMetaLocalize-249eb3a3b3f9.json"),
