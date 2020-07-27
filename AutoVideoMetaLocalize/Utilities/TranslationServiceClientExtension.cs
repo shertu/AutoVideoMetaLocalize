@@ -31,8 +31,7 @@ namespace AutoVideoMetaLocalize.Utilities {
 			using (StringWriter sw = new StringWriter()) {
 				HttpUtility.HtmlDecode(translation, sw);
 				string temp = sw.ToString().Replace($"{HTML_BR}", Environment.NewLine);
-				temp = Regex.Replace(temp, @"<|>", string.Empty);
-				temp = Regex.Replace(temp, @"(\s)\s+", "$1");
+				//temp = Regex.Replace(temp, @"<|>", string.Empty);
 				return temp;
 			}
 		}
