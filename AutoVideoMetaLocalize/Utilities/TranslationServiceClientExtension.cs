@@ -30,7 +30,7 @@ namespace AutoVideoMetaLocalize.Utilities {
 			// Translations are HTML encoded
 			using (StringWriter sw = new StringWriter()) {
 				HttpUtility.HtmlDecode(translation, sw);
-				string temp = sw.ToString().Replace($"{HTML_BR}", Environment.NewLine);
+				string temp = sw.ToString().Replace($" {HTML_BR} ", "\n");
 				//temp = Regex.Replace(temp, @"<|>", string.Empty);
 				return temp;
 			}
