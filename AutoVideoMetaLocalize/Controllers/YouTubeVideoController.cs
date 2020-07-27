@@ -106,6 +106,8 @@ namespace AutoVideoMetaLocalize.Controllers {
 		/// <returns></returns>
 		private async Task<Video> LocalizeVideoTask(Video video, AppVideoLocalizeRequest body) {
 			video = await AddLocalizationToVideo(video, body);
+
+			throw new System.Exception(video.ToString());
 			video = await UpdateVideo(video, VIDEO_LOCALIZE_PART);
 			return video;
 		}
