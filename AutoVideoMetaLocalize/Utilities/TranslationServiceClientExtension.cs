@@ -1,5 +1,4 @@
 ﻿using Google.Cloud.Translate.V3;
-using System;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -30,7 +29,7 @@ namespace AutoVideoMetaLocalize.Utilities {
 			// Translations are HTML encoded
 			using (StringWriter sw = new StringWriter()) {
 				HttpUtility.HtmlDecode(translation, sw);
-				string temp = sw.ToString().Replace($" {HTML_BR} ", Environment.NewLine);
+				string temp = sw.ToString().Replace($" {HTML_BR} ", "\n");
 				return temp;
 			}
 		}
