@@ -6,6 +6,7 @@ using Google.Cloud.Translate.V3;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
@@ -107,7 +108,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 		private async Task<Video> LocalizeVideoTask(Video video, AppVideoLocalizeRequest body) {
 			video = await AddLocalizationToVideo(video, body);
 
-			throw new System.Exception(video.ToString());
+			throw new System.Exception(JsonConvert.SerializeObject(video));
 			video = await UpdateVideo(video, VIDEO_LOCALIZE_PART);
 			return video;
 		}
