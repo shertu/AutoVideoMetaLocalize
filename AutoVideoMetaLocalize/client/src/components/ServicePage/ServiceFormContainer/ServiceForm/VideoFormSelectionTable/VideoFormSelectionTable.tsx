@@ -17,8 +17,7 @@ const VIDEO_FORM_SELECTION_TABLE_COLUMNS: ColumnsType<PlaylistItem> = [{
       subtitle={record.snippet?.publishedAt.toLocaleString()} />;
 
     return view;
-  }
-  ,
+  },
 }];
 
 /**

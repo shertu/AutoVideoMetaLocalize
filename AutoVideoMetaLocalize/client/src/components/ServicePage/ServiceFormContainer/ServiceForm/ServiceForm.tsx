@@ -5,7 +5,7 @@ import * as React from 'react';
 import { Channel, I18nLanguageSnippet, SupportedLanguage } from '../../../../../generated-sources/openapi';
 import { AppVideoLocalizeRequest } from '../../../../../generated-sources/openapi/models/AppVideoLocalizeRequest';
 import { VideoFormSelectionTable } from './VideoFormSelectionTable/VideoFormSelectionTable';
-import { VideoSelectionList } from './VideoSelectionList/VideoSelectionList';
+import { YouTubeVideoSelectionList } from './YouTubeVideoSelectionList/YouTubeVideoSelectionList';
 
 const FORM_ITEM_NAMES = {
   LANGUAGE_SELECTION: 'language-selection',
@@ -95,7 +95,7 @@ export function ServiceForm(props: {
           message: 'Please select at least one video.',
         }]}
       >
-        <VideoSelectionList
+        <YouTubeVideoSelectionList
           channel={channel}
         />
       </Form.Item>

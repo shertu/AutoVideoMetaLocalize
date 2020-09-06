@@ -3,6 +3,7 @@ import { YouTubePlaylistItemApi, PlaylistItem, Channel, PlaylistItemListResponse
 import { Form, Checkbox, List, Skeleton, Button, message } from 'antd';
 import { CheckboxGroupProps } from 'antd/lib/checkbox';
 import { valueType } from 'antd/lib/statistic/utils';
+import { BasicComboView } from '../../../../BasicComboView/BasicComboView';
 
 const YOUTUBE_PLAYLIST_ITEM_API = new YouTubePlaylistItemApi();
 
@@ -16,7 +17,7 @@ interface VideoSelectionListProps extends CheckboxGroupProps {
  * @param {object} props
  * @return {JSX.Element}
  */
-export function VideoSelectionList(props: VideoSelectionListProps): JSX.Element {
+export function YouTubeVideoSelectionList(props: VideoSelectionListProps): JSX.Element {
   const { value, onChange, channel } = props;
   const channelUploadsPlaylistId: string = channel?.contentDetails?.relatedPlaylists?.uploads;
 
@@ -30,7 +31,7 @@ export function VideoSelectionList(props: VideoSelectionListProps): JSX.Element 
     React.useState<PlaylistItemListResponse>(null);
 
   React.useEffect(() => {
-    //onLoadMore();
+    onLoadMore();
   }, []);
 
   async function fetchNextPlaylistItemListResponse(): Promise<PlaylistItemListResponse> {
@@ -84,7 +85,11 @@ export function VideoSelectionList(props: VideoSelectionListProps): JSX.Element 
           renderItem={item => (
             <List.Item>
               <Checkbox value="E" style={{ lineHeight: '32px' }}>
-                <div>content</div>
+                <BasicComboView
+                  avatarShape="square"
+                  thumbnail={item.snippet?.thumbnails._default}
+                  title={item.snippet?.title}
+                  subtitle={item.snippet?.publishedAt.toLocaleString()} />
               </Checkbox>
             </List.Item>
           )}
