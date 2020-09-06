@@ -3,7 +3,6 @@ import { YouTubePlaylistItemApi, PlaylistItem, Channel, PlaylistItemListResponse
 import { Checkbox, List, Button, message, Row } from 'antd';
 import { CheckboxGroupProps } from 'antd/lib/checkbox';
 import { BasicComboView } from '../../../../BasicComboView/BasicComboView';
-import './style.less';
 
 const YOUTUBE_PLAYLIST_ITEM_API = new YouTubePlaylistItemApi();
 
@@ -38,7 +37,7 @@ export function YouTubeVideoSelectionList(props: VideoSelectionListProps): JSX.E
     const request: ApiYouTubePlaylistItemListGetRequest = {
       part: 'id,snippet',
       playlistId: channelUploadsPlaylistId,
-      maxResults: 2,
+      maxResults: 20,
     };
 
     if (response) {
@@ -98,7 +97,7 @@ export function YouTubeVideoSelectionList(props: VideoSelectionListProps): JSX.E
           rowKey={rowKey}
           renderItem={item => (
             <List.Item>
-              <Checkbox className="video-selection-list-checkbox" value={item.snippet.resourceId.videoId}>
+              <Checkbox className="ant-row ant-row-middle" value={item.snippet.resourceId.videoId} style={{ flexWrap: 'nowrap' }}>
                 <div style={{ width: 420 }}>
                   <BasicComboView
                     avatarShape="square"
