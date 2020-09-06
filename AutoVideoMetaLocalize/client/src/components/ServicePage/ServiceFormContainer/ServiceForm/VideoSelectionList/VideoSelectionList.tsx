@@ -30,7 +30,7 @@ export function VideoSelectionList(props: VideoSelectionListProps): JSX.Element 
     React.useState<PlaylistItemListResponse>(null);
 
   React.useEffect(() => {
-    onLoadMore();
+    //onLoadMore();
   }, []);
 
   async function fetchNextPlaylistItemListResponse(): Promise<PlaylistItemListResponse> {
@@ -52,8 +52,10 @@ export function VideoSelectionList(props: VideoSelectionListProps): JSX.Element 
 
     fetchNextPlaylistItemListResponse()
       .then((res: PlaylistItemListResponse) => {
+        const datadefault = data || [];
+
         setResponse(res);
-        setData(data.concat(res.items));
+        setData(datadefault.concat(res.items));
         setLoading(false);
 
         // Resetting window's offsetTop so as to display react-virtualized demo underfloor.
