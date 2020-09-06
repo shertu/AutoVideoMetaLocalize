@@ -24,7 +24,7 @@ export function VideoSelectionList(props: VideoSelectionListProps): JSX.Element 
     React.useState<boolean>(false);
 
   const [data, setData] =
-    React.useState<Array<PlaylistItem>>(null);
+    React.useState<Array<PlaylistItem>>([]);
 
   const [response, setResponse] =
     React.useState<PlaylistItemListResponse>(null);
@@ -52,16 +52,14 @@ export function VideoSelectionList(props: VideoSelectionListProps): JSX.Element 
 
     fetchNextPlaylistItemListResponse()
       .then((res: PlaylistItemListResponse) => {
-        const datadefault = data || [];
-
         setResponse(res);
-        setData(datadefault.concat(res.items));
+        setData(data.concat(res.items));
         setLoading(false);
 
         // Resetting window's offsetTop so as to display react-virtualized demo underfloor.
         // In real scene, you can using public method of react-virtualized:
         // https://stackoverflow.com/questions/46700726/how-to-use-public-method-updateposition-of-react-virtualized
-        window.dispatchEvent(new Event('resize'));
+        //window.dispatchEvent(new Event('resize'));
       })
       .catch((err) => message.error("An error occured while fetching playlist items."));
   }
@@ -76,20 +74,22 @@ export function VideoSelectionList(props: VideoSelectionListProps): JSX.Element 
       value={value}
       onChange={onChange}
     >
-      <List
-        className="demo-loadmore-list"
-        loading={response == null}
-        itemLayout="horizontal"
-        loadMore={loadMoreButton}
-        dataSource={data}
-        renderItem={item => (
-          <List.Item>
-            <Checkbox value="E" style={{ lineHeight: '32px' }}>
-              <div>content</div>
-            </Checkbox>
-          </List.Item>
-        )}
-      />
+      {data &&
+        <List
+          className="demo-loadmore-list"
+          loading={response == null}
+          itemLayout="horizontal"
+          loadMore={loadMoreButton}
+          dataSource={data}
+          renderItem={item => (
+            <List.Item>
+              <Checkbox value="E" style={{ lineHeight: '32px' }}>
+                <div>content</div>
+              </Checkbox>
+            </List.Item>
+          )}
+        />
+      }
     </Checkbox.Group>
   );
 }
