@@ -1,8 +1,9 @@
-import {ColumnsType, TablePaginationConfig} from 'antd/lib/table';
+import { ColumnsType, TablePaginationConfig } from 'antd/lib/table';
 import * as React from 'react';
-import {BasicComboView} from '../../../../BasicComboView/BasicComboView';
-import {FormSelectionTable} from '../../../../FormSelectionTable/FormSelectionTable';
+import { BasicComboView } from '../../../../BasicComboView/BasicComboView';
+import { FormSelectionTable } from '../../../../FormSelectionTable/FormSelectionTable';
 import { YouTubePlaylistItemApi, PlaylistItem, Channel, PlaylistItemListResponse, ApiYouTubePlaylistItemListGetRequest } from '../../../../../../generated-sources/openapi';
+import { Spin } from 'antd';
 
 const YOUTUBE_PLAYLIST_ITEM_API = new YouTubePlaylistItemApi();
 
@@ -28,8 +29,8 @@ const VIDEO_FORM_SELECTION_TABLE_COLUMNS: ColumnsType<PlaylistItem> = [{
  */
 export function VideoFormSelectionTable(props: {
   channel?: Channel,
-  value?: React.Key[];
-  onChange?: (value: React.Key[]) => void
+  value?: React.Key[],
+  onChange?: (value: React.Key[]) => void,
 }): JSX.Element {
   const channelUploadsPlaylistId: string = props.channel?.contentDetails?.relatedPlaylists.uploads;
 
@@ -49,9 +50,9 @@ export function VideoFormSelectionTable(props: {
    * @param {number} page
    * @param {number} pageSize
    */
-  function onChangePagination(page: number, pageSize?: number) {
+  function onChangePagination(page: number, pageSize?: number): void {
     onChangePaginationAsync(page, pageSize)
-        .catch((err) => console.log(err));
+      .catch((err) => console.log(err));
   }
 
   /**
@@ -60,7 +61,7 @@ export function VideoFormSelectionTable(props: {
    * @param {number} page
    * @param {number} pageSize
    */
-  async function onChangePaginationAsync(page: number, pageSize?: number) {
+  async function onChangePaginationAsync(page: number, pageSize?: number): Promise<void> {
     const request: ApiYouTubePlaylistItemListGetRequest = {
       part: 'snippet',
       playlistId: channelUploadsPlaylistId,
@@ -104,19 +105,24 @@ export function VideoFormSelectionTable(props: {
     return record.snippet.resourceId.videoId;
   }
 
+  // show loading icon if no response
+  if (response == null) {
+    return <Spin />
+  }
+
   // pagination props
   const pagination: TablePaginationConfig = {
     current: paginationCurrent,
     simple: true,
-    pageSize: response?.pageInfo.resultsPerPage,
-    total: response?.pageInfo.totalResults,
+    pageSize: response.pageInfo.resultsPerPage,
+    total: response.pageInfo.totalResults,
     onChange: onChangePagination,
   };
 
   return (
     <FormSelectionTable
       table={{
-        dataSource: response?.items,
+        dataSource: response.items,
         pagination: pagination,
         rowKey: rowKey,
         columns: VIDEO_FORM_SELECTION_TABLE_COLUMNS,

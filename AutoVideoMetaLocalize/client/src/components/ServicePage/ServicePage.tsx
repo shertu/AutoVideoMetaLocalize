@@ -1,4 +1,4 @@
-import { Button, Result } from 'antd';
+import { Button, Result, Skeleton } from 'antd';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { AppVideoLocalizeRequest } from '../../../generated-sources/openapi/models/AppVideoLocalizeRequest';
@@ -7,7 +7,7 @@ import UserContext from '../UserContext/UserContext';
 import { ServiceExecutionPage } from './ServiceExecutionPage/ServiceExecutionPage';
 import { ServiceFormContainer } from './ServiceFormContainer/ServiceFormContainer';
 import { YouTubeChannelSelectFormContainer } from './YouTubeChannelSelectFormContainer/YouTubeChannelSelectFormContainer';
-import { Channel } from '../../../generated-sources/openapi';
+import { Channel, GetClaimsPrincipleResult } from '../../../generated-sources/openapi';
 
 /**
  * The page used to control the flow of the process.
@@ -15,7 +15,7 @@ import { Channel } from '../../../generated-sources/openapi';
  * @return {JSX.Element}
  */
 export function ServicePage(): JSX.Element {
-  const user = React.useContext(UserContext);
+  const user: GetClaimsPrincipleResult = React.useContext(UserContext);
 
   const [currentStep, setCurrentStep] =
     React.useState<number>(0);
@@ -80,23 +80,23 @@ export function ServicePage(): JSX.Element {
     />,
   ];
 
-  if (!user) {
-    return (
-      <Result
-        status="403"
-        title="403"
-        subTitle="Sorry, you are not authorized to access this part of the website."
-        extra={
-          <Link to={routes.ROUTE_HOME}>
-            <Button type="primary">Go Home</Button>
-          </Link>
-        }
-      />
-    );
-  }
-
   return (
-    <div className="steps-content">{content[currentStep]}</div>
+    <Skeleton loading={user == null}>
+      {(user.isAuthenticated) ?
+        <div className="steps-content">{content[currentStep]}</div>
+        :
+        <Result
+          status="403"
+          title="403"
+          subTitle="Sorry, you are not authorized to access this part of the website."
+          extra={
+            <Link to={routes.ROUTE_HOME}>
+              <Button type="primary">Go Home</Button>
+            </Link>
+          }
+        />
+      }
+    </Skeleton>
   );
 }
 

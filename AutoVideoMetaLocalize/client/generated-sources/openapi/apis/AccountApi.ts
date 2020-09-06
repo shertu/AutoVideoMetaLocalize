@@ -15,9 +15,9 @@
 
 import * as runtime from '../runtime';
 import {
-    Claim,
-    ClaimFromJSON,
-    ClaimToJSON,
+    GetClaimsPrincipleResult,
+    GetClaimsPrincipleResultFromJSON,
+    GetClaimsPrincipleResultToJSON,
 } from '../models';
 
 /**
@@ -27,7 +27,7 @@ export class AccountApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiAccountGetRaw(): Promise<runtime.ApiResponse<Array<Claim>>> {
+    async apiAccountGetRaw(): Promise<runtime.ApiResponse<GetClaimsPrincipleResult>> {
         const queryParameters: runtime.HTTPQuery = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -39,12 +39,12 @@ export class AccountApi extends runtime.BaseAPI {
             query: queryParameters,
         });
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(ClaimFromJSON));
+        return new runtime.JSONApiResponse(response, (jsonValue) => GetClaimsPrincipleResultFromJSON(jsonValue));
     }
 
     /**
      */
-    async apiAccountGet(): Promise<Array<Claim>> {
+    async apiAccountGet(): Promise<GetClaimsPrincipleResult> {
         const response = await this.apiAccountGetRaw();
         return await response.value();
     }

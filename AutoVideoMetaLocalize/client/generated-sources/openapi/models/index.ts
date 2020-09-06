@@ -18,6 +18,7 @@ export * from './Claim';
 export * from './ClaimsIdentity';
 export * from './ContentRating';
 export * from './GeoPoint';
+export * from './GetClaimsPrincipleResult';
 export * from './I18nLanguageSnippet';
 export * from './ImageSettings';
 export * from './InvideoPosition';

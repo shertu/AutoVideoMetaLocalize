@@ -44,12 +44,12 @@ export function YouTubeChannelSelectFormContainer(props: {
   // render of YouTubeChannelSelectForm is delayed until options is defined to ensure default value is selected
   return (
     <Page title="YouTube Channel Selection">
-      {mineYouTubeChannels ?
+      <Skeleton loading={mineYouTubeChannels == null}>
         <YouTubeChannelSelectForm
-          {...props}
+          onFinishSelection={props.onFinishSelection}
           options={mineYouTubeChannels}
-        /> : <Skeleton />
-      }
+        />
+      </Skeleton >
     </Page>
   );
 }

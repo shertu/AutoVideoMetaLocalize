@@ -1,7 +1,7 @@
 import * as React from 'react';
-import {ClaimsPrinciple} from '../../security';
+import { GetClaimsPrincipleResult } from '../../../generated-sources/openapi';
 
-const UserContext = React.createContext<ClaimsPrinciple>(null);
+const UserContext = React.createContext<GetClaimsPrincipleResult>(null);
 
 export const UserProvider = UserContext.Provider;
 export const UserConsumer = UserContext.Consumer;

@@ -1,8 +1,7 @@
 import * as React from 'react';
 import {render} from 'react-dom';
 import {BrowserRouter as Router} from 'react-router-dom';
-import {AccountApi} from '../../../generated-sources/openapi';
-import {ClaimsPrinciple} from '../../security';
+import {AccountApi, GetClaimsPrincipleResult} from '../../../generated-sources/openapi';
 import {UserProvider} from '../UserContext/UserContext';
 import {AppLayout} from './AppLayout/AppLayout';
 
@@ -16,12 +15,12 @@ const ACCOUNT_API: AccountApi = new AccountApi();
  */
 export function App(): JSX.Element {
   const [user, setUser] =
-    React.useState<ClaimsPrinciple>(null);
+    React.useState<GetClaimsPrincipleResult>(null);
 
   React.useEffect(() => {
     ACCOUNT_API.apiAccountGet()
-        .then((res) => setUser(new ClaimsPrinciple(res)))
-        .catch((err) => {/* do nothing */});
+      .then((res) => setUser(res))
+      .catch((err) => {/* do nothing */ });
   }, []);
 
   return (

@@ -5,6 +5,7 @@ import * as React from 'react';
 import { Channel, I18nLanguageSnippet, SupportedLanguage } from '../../../../../generated-sources/openapi';
 import { AppVideoLocalizeRequest } from '../../../../../generated-sources/openapi/models/AppVideoLocalizeRequest';
 import { VideoFormSelectionTable } from './VideoFormSelectionTable/VideoFormSelectionTable';
+import { VideoSelectionList } from './VideoSelectionList/VideoSelectionList';
 
 const FORM_ITEM_NAMES = {
   LANGUAGE_SELECTION: 'language-selection',
@@ -48,6 +49,7 @@ export function ServiceForm(props: {
     }
   }
 
+  // CALCULATE languages options
   const youTubeI18nLanguageCodes = youTubeI18nLanguages.map(x => x.hl);
   const languagesUnion: SupportedLanguage[] = cloudTranslationSupportedLanguages.filter(x => youTubeI18nLanguageCodes.includes(x.languageCode));
   const languageSelectOptions = languagesUnion.map(x =>
@@ -93,7 +95,7 @@ export function ServiceForm(props: {
           message: 'Please select at least one video.',
         }]}
       >
-        <VideoFormSelectionTable
+        <VideoSelectionList
           channel={channel}
         />
       </Form.Item>

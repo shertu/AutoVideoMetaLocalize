@@ -19,9 +19,7 @@ export function YouTubeChannelSelectForm(props: {
   options?: Channel[],
   onFinishSelection?: (channel: Channel) => void,
 }): JSX.Element {
-  let options = props.options || [];
-  options = options.filter(x => x); // remove undefined elements from the array
-  const { onFinishSelection } = props;
+  const { options, onFinishSelection } = props;
 
   /**
    * Called when the channel selection form is successfully filled out and submitted.
@@ -30,14 +28,15 @@ export function YouTubeChannelSelectForm(props: {
    */
   function onFinish(values: Store) {
     const CHANNEL_RADIO_GROUP_VALUE = values[FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP];
-    const selectedChannel: Channel = options.find((elem) => elem.id == CHANNEL_RADIO_GROUP_VALUE);
+    const selectedChannel: Channel = options.find((elem: Channel) => elem.id == CHANNEL_RADIO_GROUP_VALUE);
 
     if (onFinishSelection) {
       onFinishSelection(selectedChannel);
     }
   }
 
-  const DEFAULT_OPTION: string = (options && options.length) ? options[0]?.id : null;
+  const NO_OPTIONS: boolean = (options == null || options.length === 0);
+  const DEFAULT_OPTION: string = NO_OPTIONS ? null : options[0].id;
 
   return (
     <Form
@@ -47,10 +46,10 @@ export function YouTubeChannelSelectForm(props: {
       }}
     >
       <Row align="top" justify="center">
-        {!options.length &&
+        {NO_OPTIONS &&
           <Alert
             message="Error"
-            description="No YouTube channels were found to be associated with this Google account."
+            description="No YouTube channels were found to be associated with your Google account."
             type="error"
             showIcon
           />
@@ -62,7 +61,7 @@ export function YouTubeChannelSelectForm(props: {
           rules={[{ required: true, message: 'Please select a channel.' }]}
         >
           <Radio.Group className="max-cell-sm">
-            {options.map((x) =>
+            {options && options.map((x) =>
               <Radio.Button className="max-cell-sm" key={x?.id} value={x?.id} >
                 <BasicComboView
                   thumbnail={x?.snippet?.thumbnails._default}
