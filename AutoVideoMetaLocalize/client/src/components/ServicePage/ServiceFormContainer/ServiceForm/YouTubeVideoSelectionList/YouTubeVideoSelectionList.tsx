@@ -3,6 +3,7 @@ import { YouTubePlaylistItemApi, PlaylistItem, Channel, PlaylistItemListResponse
 import { Checkbox, List, Button, message, Row } from 'antd';
 import { CheckboxGroupProps } from 'antd/lib/checkbox';
 import { BasicComboView } from '../../../../BasicComboView/BasicComboView';
+import './style.less';
 
 const YOUTUBE_PLAYLIST_ITEM_API = new YouTubePlaylistItemApi();
 
@@ -35,7 +36,7 @@ export function YouTubeVideoSelectionList(props: VideoSelectionListProps): JSX.E
 
   async function fetchNextPlaylistItemListResponse(): Promise<PlaylistItemListResponse> {
     const request: ApiYouTubePlaylistItemListGetRequest = {
-      part: 'snippet',
+      part: 'id,snippet',
       playlistId: channelUploadsPlaylistId,
       maxResults: 2,
     };
@@ -64,6 +65,17 @@ export function YouTubeVideoSelectionList(props: VideoSelectionListProps): JSX.E
       .catch((err) => message.error("An error occured while fetching playlist items."));
   }
 
+  /**
+   * Gets a row's unique key.
+   *
+   * @param {PlaylistItem} record
+   * @param {number} index
+   * @return {React.Key}
+   */
+  function rowKey(record: PlaylistItem): string {
+    return record.id;
+  }
+
   const loadMoreButton: React.ReactNode =
     loading || (response && response.nextPageToken == null) ? null : (
       <Row align="middle" justify="center">
@@ -83,14 +95,18 @@ export function YouTubeVideoSelectionList(props: VideoSelectionListProps): JSX.E
           itemLayout="vertical"
           loadMore={loadMoreButton}
           dataSource={data}
+          rowKey={rowKey}
           renderItem={item => (
             <List.Item>
-              <Checkbox className="ant-row ant-row-middle" value={item.snippet.resourceId.videoId}>
-                <BasicComboView
-                  avatarShape="square"
-                  thumbnail={item.snippet.thumbnails._default}
-                  title={item.snippet.title}
-                  subtitle={item.snippet.publishedAt.toLocaleString()} />
+              <Checkbox className="video-selection-list-checkbox" value={item.snippet.resourceId.videoId}>
+                <div style={{ width: 420 }}>
+                  <BasicComboView
+                    avatarShape="square"
+                    thumbnail={item.snippet.thumbnails._default}
+                    title={item.snippet.title}
+                    subtitle={item.snippet.publishedAt.toLocaleString()}
+                  />
+                </div>
               </Checkbox>
             </List.Item>
           )}
