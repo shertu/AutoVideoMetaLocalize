@@ -66,7 +66,7 @@ export function YouTubeVideoSelectionList(props: VideoSelectionListProps): JSX.E
   }
 
   const loadMoreButton: React.ReactNode =
-    loading ? null : (
+    loading || (response && response.nextPageToken == null) ? null : (
       <Button onClick={() => onLoadMore()}>loading more</Button>
     );
 
@@ -78,18 +78,18 @@ export function YouTubeVideoSelectionList(props: VideoSelectionListProps): JSX.E
       {data &&
         <List
           className="demo-loadmore-list"
-          loading={response == null}
-          itemLayout="horizontal"
+          loading={loading}
+          itemLayout="vertical"
           loadMore={loadMoreButton}
           dataSource={data}
           renderItem={item => (
             <List.Item>
-              <Checkbox value="E" style={{ lineHeight: '32px' }}>
+              <Checkbox value={item.snippet.resourceId.videoId}>
                 <BasicComboView
                   avatarShape="square"
-                  thumbnail={item.snippet?.thumbnails._default}
-                  title={item.snippet?.title}
-                  subtitle={item.snippet?.publishedAt.toLocaleString()} />
+                  thumbnail={item.snippet.thumbnails._default}
+                  title={item.snippet.title}
+                  subtitle={item.snippet.publishedAt.toLocaleString()} />
               </Checkbox>
             </List.Item>
           )}

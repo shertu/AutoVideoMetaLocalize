@@ -1,9 +1,9 @@
 import * as React from 'react';
-import {render} from 'react-dom';
-import {BrowserRouter as Router} from 'react-router-dom';
-import {AccountApi, GetClaimsPrincipleResult} from '../../../generated-sources/openapi';
-import {UserProvider} from '../UserContext/UserContext';
-import {AppLayout} from './AppLayout/AppLayout';
+import { render } from 'react-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
+import { AccountApi, GetClaimsPrincipleResult } from '../../../generated-sources/openapi';
+import { UserProvider } from '../UserContext/UserContext';
+import { AppLayout } from './AppLayout/AppLayout';
 
 
 const ACCOUNT_API: AccountApi = new AccountApi();
@@ -20,7 +20,7 @@ export function App(): JSX.Element {
   React.useEffect(() => {
     ACCOUNT_API.apiAccountGet()
       .then((res) => setUser(res))
-      .catch((err) => {/* do nothing */ });
+      .catch((err) => { /* do nothing */ });
   }, []);
 
   return (
