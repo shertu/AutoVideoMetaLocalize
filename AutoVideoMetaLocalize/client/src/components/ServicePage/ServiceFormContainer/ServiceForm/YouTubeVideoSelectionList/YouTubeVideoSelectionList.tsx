@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { YouTubePlaylistItemApi, PlaylistItem, Channel, PlaylistItemListResponse, ApiYouTubePlaylistItemListGetRequest } from '../../../../../../generated-sources/openapi';
-import { Form, Checkbox, List, Skeleton, Button, message } from 'antd';
+import { Form, Checkbox, List, Skeleton, Button, message, Row } from 'antd';
 import { CheckboxGroupProps } from 'antd/lib/checkbox';
 import { valueType } from 'antd/lib/statistic/utils';
 import { BasicComboView } from '../../../../BasicComboView/BasicComboView';
@@ -67,7 +67,9 @@ export function YouTubeVideoSelectionList(props: VideoSelectionListProps): JSX.E
 
   const loadMoreButton: React.ReactNode =
     loading || (response && response.nextPageToken == null) ? null : (
-      <Button onClick={() => onLoadMore()}>loading more</Button>
+      <Row align="middle" justify="center">
+        <Button onClick={() => onLoadMore()}>loading more</Button>
+      </Row>
     );
 
   return (
@@ -84,7 +86,10 @@ export function YouTubeVideoSelectionList(props: VideoSelectionListProps): JSX.E
           dataSource={data}
           renderItem={item => (
             <List.Item>
-              <Checkbox value={item.snippet.resourceId.videoId}>
+              <Checkbox className="TESTING" value={item.snippet.resourceId.videoId} style={{
+                display: "flex",
+                alignItems: "center",
+              }}>
                 <BasicComboView
                   avatarShape="square"
                   thumbnail={item.snippet.thumbnails._default}
