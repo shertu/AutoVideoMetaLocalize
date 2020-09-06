@@ -45,10 +45,12 @@ export function YouTubeChannelSelectFormContainer(props: {
   return (
     <Page title="YouTube Channel Selection">
       <Skeleton loading={mineYouTubeChannels == null}>
-        <YouTubeChannelSelectForm
-          onFinishSelection={props.onFinishSelection}
-          options={mineYouTubeChannels}
-        />
+        {mineYouTubeChannels &&
+          <YouTubeChannelSelectForm
+            onFinishSelection={props.onFinishSelection}
+            options={mineYouTubeChannels}
+          />
+        }
       </Skeleton >
     </Page>
   );

@@ -1,4 +1,4 @@
-import { Button, Result, Skeleton } from 'antd';
+import { Button, Result, Skeleton, Spin } from 'antd';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { AppVideoLocalizeRequest } from '../../../generated-sources/openapi/models/AppVideoLocalizeRequest';
@@ -81,20 +81,24 @@ export function ServicePage(): JSX.Element {
   ];
 
   return (
-    <Skeleton loading={user == null}>
-      {(user.isAuthenticated) ?
-        <div className="steps-content">{content[currentStep]}</div>
-        :
-        <Result
-          status="403"
-          title="403"
-          subTitle="Sorry, you are not authorized to access this part of the website."
-          extra={
-            <Link to={routes.ROUTE_HOME}>
-              <Button type="primary">Go Home</Button>
-            </Link>
-          }
-        />
+    <Skeleton loading={user == null} >
+      {user &&
+        <div className="authenticated-content">
+          {user.isAuthenticated ? (
+            <div className="steps-content">{content[currentStep]}</div>
+          ) : (
+              <Result
+                status="403"
+                title="403"
+                subTitle="Sorry, you are not authorized to access this part of the website."
+                extra={
+                  <Link to={routes.ROUTE_HOME}>
+                    <Button type="primary">Go Home</Button>
+                  </Link>
+                }
+              />
+            )}
+        </div>
       }
     </Skeleton>
   );
