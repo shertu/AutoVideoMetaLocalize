@@ -16,15 +16,17 @@ export function BasicComboView(props: {
   subtitle?: string,
   avatarShape?: 'circle' | 'square',
 }): JSX.Element {
+  const { thumbnail, title, subtitle, avatarShape } = props;
+
   return (
-    <Row className="max-cell-xs" align="middle" justify="start">
+    <Row className="max-cell-xs" align="middle" justify="start" style={{minHeight: 120}}>
       <Col span={8}>
         <Row align="middle" justify="center">
-          {props.thumbnail && (
+          {thumbnail && (
             <Avatar
-              src={props.thumbnail.url}
-              style={{width: props.thumbnail.width, height: props.thumbnail.height}}
-              shape={props.avatarShape}
+              src={thumbnail.url}
+              style={{width: thumbnail.width, height: thumbnail.height}}
+              shape={avatarShape}
             />
           )}
         </Row>
@@ -32,8 +34,8 @@ export function BasicComboView(props: {
 
       <Col span={14} offset={2}>
         <Typography style={{overflowWrap: 'break-word'}}>
-          <Paragraph strong>{props.title}</Paragraph>
-          <Paragraph>{props.subtitle}</Paragraph>
+          <Paragraph strong>{title}</Paragraph>
+          <Paragraph>{subtitle}</Paragraph>
         </Typography>
       </Col>
     </Row>

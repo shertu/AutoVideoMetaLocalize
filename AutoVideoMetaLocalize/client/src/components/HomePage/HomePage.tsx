@@ -1,12 +1,12 @@
-import {Row, Typography} from 'antd';
+import { Row, Typography, Space } from 'antd';
 import * as React from 'react';
 import routes from '../../routes';
-import {GoogleSignInButton} from '../GoogleSignInButton/GoogleSignInButton';
-import {Page} from '../Page/Page';
-import {AppExplanationGrid} from './AppExplanationGrid/AppExplanationGrid';
+import { GoogleSignInButton } from '../GoogleSignInButton/GoogleSignInButton';
+import { Page } from '../Page/Page';
+import { AppExplanationGrid } from './AppExplanationGrid/AppExplanationGrid';
 import names from '../../names';
 
-const {Paragraph, Text, Title} = Typography;
+const { Paragraph, Text, Title } = Typography;
 
 const GOOGLE_AUTH_SCOPES: string[] = [
   // 'https://www.googleapis.com/auth/youtube.upload',
@@ -21,32 +21,28 @@ const GOOGLE_AUTH_SCOPES: string[] = [
  */
 export function HomePage(): JSX.Element {
   return (
-    <Page>
-      <Title style={{textAlign: 'center'}}>{names.APPLICATION}</Title >
+    <Space direction="vertical" align="center" size="large">
+      <Title style={{ textAlign: 'center' }}>{names.APPLICATION}</Title >
 
-      <Row justify="center">
-        <Paragraph className="max-cell-xs">
-          Welcome to <Text strong>{names.APPLICATION}.</Text>&nbsp;The
+      <Paragraph className="max-cell-xs">
+        Welcome to <Text strong>{names.APPLICATION}.</Text>&nbsp;The
           service which can translate or localize the titles and descriptions
           of your YouTube videos to make them accessible to a larger audience.
         </Paragraph>
-      </Row>
 
       <Page title="Account Sign-in">
-        <Row justify="center">
+        <Space direction="vertical" align="center">
           <Paragraph className="max-cell-xs">
             To use this service please sign-in to Google and authorize this application.
-          </Paragraph>
-        </Row>
+            </Paragraph>
 
-        <Row justify="center" style={{marginBottom: '2em'}}>
           <GoogleSignInButton scopes={GOOGLE_AUTH_SCOPES} redirect={`~${routes.ROUTE_PROCESS}`} />
-        </Row>
+        </Space>
       </Page>
 
       <Page title="How does it work?">
         <AppExplanationGrid />
       </Page>
-    </Page>
+    </Space>
   );
 }

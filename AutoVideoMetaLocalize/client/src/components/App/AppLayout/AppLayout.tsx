@@ -16,8 +16,8 @@ export function AppLayout(): JSX.Element {
   return (
     <Layout style={{minHeight: '100vh'}}>
       <Content style={{padding: '40px 8px'}}>
-        <Row id="content-alignment" justify="center">
-          <Page id="content-view">
+        <Row justify="center">
+          <Page id="content-viewport">
             <AppContentSwitch />
           </Page>
         </Row>

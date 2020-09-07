@@ -34,7 +34,7 @@ export function AppContentSwitch(): JSX.Element {
           title={ERROR_TITLE}
           extra={
             <Paragraph>
-              Please&nbsp;<MailToMe subject={ERROR_TITLE}>report the problem to a developer.</MailToMe>
+              Please&nbsp;<MailToMe subject={ERROR_TITLE}>report this error to a developer.</MailToMe>
             </Paragraph>
           }
         />
