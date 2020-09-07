@@ -20,13 +20,15 @@ const VIDEO_FORM_SELECTION_TABLE_COLUMNS: ColumnsType<PlaylistItem> = [{
   },
 }];
 
+const DEFAULT_PAGE_SIZE = 2;
+
 /**
  * The table which displays a channel's videos.
  *
  * @param {object} props
  * @return {JSX.Element}
  */
-export function VideoFormSelectionTable(props: {
+export function YouTubeVideoFormSelectionTable(props: {
   channel?: Channel,
   value?: React.Key[],
   onChange?: (value: React.Key[]) => void,
@@ -37,10 +39,16 @@ export function VideoFormSelectionTable(props: {
     React.useState<PlaylistItemListResponse>(null);
 
   const [paginationCurrent, setPaginationCurrent] =
-    React.useState<number>(null);
+    React.useState<number>(0);
+
+  const [data, setData] =
+    React.useState<Array<PlaylistItem>>([]);
+
+  const [loading, setLoading] =
+    React.useState<boolean>(false);
 
   React.useEffect(() => {
-    onChangePagination(1, 50);
+    onChangePagination(1); // pagination starts at one
   }, []);
 
   /**
@@ -54,6 +62,10 @@ export function VideoFormSelectionTable(props: {
       .catch((err) => console.log(err));
   }
 
+  function canLoadMore(res: PlaylistItemListResponse): boolean {
+    return res == null || res.nextPageToken != null;
+  }
+
   /**
    * Called when the page number is changed, and it takes the resulting page number and pageSize as its arguments.
    *
@@ -61,36 +73,41 @@ export function VideoFormSelectionTable(props: {
    * @param {number} pageSize
    */
   async function onChangePaginationAsync(page: number, pageSize?: number): Promise<void> {
+    pageSize = pageSize || DEFAULT_PAGE_SIZE;
+    const reqLen = page * pageSize;
+
+    let tempStateResponse: PlaylistItemListResponse = response;
+    let tempStateData: PlaylistItem[] = data;
+
+    while (tempStateData.length < reqLen && canLoadMore(tempStateResponse)) {
+      setLoading(true);
+
+      tempStateResponse = await onLoadMore(pageSize);
+      tempStateData = tempStateData.concat(tempStateResponse.items);
+    }
+
+    setLoading(false);
+
+    setResponse(tempStateResponse);
+    setData(tempStateData);
+    setPaginationCurrent(page);
+  }
+
+  /**
+   * Called when an additional page needs to be loaded.
+   */
+  async function onLoadMore(maxResults?: number): Promise<PlaylistItemListResponse> {
     const request: ApiYouTubePlaylistItemListGetRequest = {
       part: 'snippet',
       playlistId: channelUploadsPlaylistId,
-      maxResults: pageSize,
+      maxResults: maxResults,
     };
 
-    let responseActual: PlaylistItemListResponse = response;
-    let paginationCurrentActual: number = paginationCurrent;
-
-    if (responseActual == null) {
-      responseActual = await YOUTUBE_PLAYLIST_ITEM_API.apiYouTubePlaylistItemListGet(request);
-      paginationCurrentActual = 1;
+    if (response) {
+      request.pageToken = response.nextPageToken;
     }
 
-    while (paginationCurrentActual !== page) {
-      if (paginationCurrentActual < page) {
-        request.pageToken = responseActual.nextPageToken;
-        responseActual = await YOUTUBE_PLAYLIST_ITEM_API.apiYouTubePlaylistItemListGet(request);
-        paginationCurrentActual++;
-      }
-
-      if (paginationCurrentActual > page) {
-        request.pageToken = responseActual.prevPageToken;
-        responseActual = await YOUTUBE_PLAYLIST_ITEM_API.apiYouTubePlaylistItemListGet(request);
-        paginationCurrentActual--;
-      }
-    }
-
-    setResponse(responseActual);
-    setPaginationCurrent(paginationCurrentActual);
+    return await YOUTUBE_PLAYLIST_ITEM_API.apiYouTubePlaylistItemListGet(request);
   }
 
   /**
@@ -104,24 +121,20 @@ export function VideoFormSelectionTable(props: {
     return record.snippet.resourceId.videoId;
   }
 
-  // show loading icon if no response
-  if (response == null) {
-    return <Spin />
-  }
-
   // pagination props
   const pagination: TablePaginationConfig = {
-    current: paginationCurrent,
+    current: paginationCurrent + 1,
     simple: true,
-    pageSize: response.pageInfo.resultsPerPage,
-    total: response.pageInfo.totalResults,
+    pageSize: response?.pageInfo.resultsPerPage,
+    total: response?.pageInfo.totalResults,
     onChange: onChangePagination,
   };
 
-  return (
+  return (loading ?
+    <Spin /> :
     <FormSelectionTable
       table={{
-        dataSource: response.items,
+        dataSource: data,
         pagination: pagination,
         rowKey: rowKey,
         columns: VIDEO_FORM_SELECTION_TABLE_COLUMNS,
