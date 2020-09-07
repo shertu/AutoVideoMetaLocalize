@@ -32,6 +32,7 @@ export function YouTubeVideoFormSelectionTable(props: {
   channel?: Channel,
   value?: React.Key[],
   onChange?: (value: React.Key[]) => void,
+  initialData?: PlaylistItem[],
 }): JSX.Element {
   const channelUploadsPlaylistId: string = props.channel?.contentDetails?.relatedPlaylists.uploads;
 
@@ -42,13 +43,13 @@ export function YouTubeVideoFormSelectionTable(props: {
     React.useState<number>(0);
 
   const [data, setData] =
-    React.useState<Array<PlaylistItem>>([]);
+    React.useState<PlaylistItem[]>(props.initialData || []);
 
   const [loading, setLoading] =
     React.useState<boolean>(false);
 
   React.useEffect(() => {
-    onChangePagination(1); // pagination starts at one
+    onChangePagination(1, DEFAULT_PAGE_SIZE); // pagination starts at one
   }, []);
 
   /**
@@ -107,7 +108,7 @@ export function YouTubeVideoFormSelectionTable(props: {
       request.pageToken = response.nextPageToken;
     }
 
-    return await YOUTUBE_PLAYLIST_ITEM_API.apiYouTubePlaylistItemListGet(request);
+    return await YOUTUBE_PLAYLIST_ITEM_API.apiYouTubePlaylistItemListGet(request);1
   }
 
   /**
@@ -123,7 +124,7 @@ export function YouTubeVideoFormSelectionTable(props: {
 
   // pagination props
   const pagination: TablePaginationConfig = {
-    current: paginationCurrent + 1,
+    current: paginationCurrent,
     simple: true,
     pageSize: response?.pageInfo.resultsPerPage,
     total: response?.pageInfo.totalResults,
