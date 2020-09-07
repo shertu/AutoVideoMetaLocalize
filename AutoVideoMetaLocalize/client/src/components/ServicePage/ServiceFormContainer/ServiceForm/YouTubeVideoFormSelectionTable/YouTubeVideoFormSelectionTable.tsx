@@ -84,7 +84,7 @@ export function YouTubeVideoFormSelectionTable(props: {
     while (tempStateData.length < reqLen && canLoadMore(tempStateResponse)) {
       setLoading(true);
 
-      tempStateResponse = await onLoadMore(pageSize);
+      tempStateResponse = await onLoadMore(pageSize, tempStateResponse);
       tempStateData = tempStateData.concat(tempStateResponse.items);
     }
 
@@ -98,15 +98,15 @@ export function YouTubeVideoFormSelectionTable(props: {
   /**
    * Called when an additional page needs to be loaded.
    */
-  async function onLoadMore(maxResults?: number): Promise<PlaylistItemListResponse> {
+  async function onLoadMore(maxResults?: number, currentResponse?: PlaylistItemListResponse): Promise<PlaylistItemListResponse> {
     const request: ApiYouTubePlaylistItemListGetRequest = {
       part: 'snippet',
       playlistId: channelUploadsPlaylistId,
       maxResults: maxResults,
     };
 
-    if (response) {
-      request.pageToken = response.nextPageToken;
+    if (currentResponse) {
+      request.pageToken = currentResponse.nextPageToken;
     }
 
     return await YOUTUBE_PLAYLIST_ITEM_API.apiYouTubePlaylistItemListGet(request); 1
@@ -132,9 +132,8 @@ export function YouTubeVideoFormSelectionTable(props: {
     onChange: onChangePagination,
   };
 
-  return (loading ?
-    <Spin /> :
-    <Skeleton loading={loading} paragraph={{ rows: 2 }} active>
+  return (
+    <Skeleton loading={loading} active>
       <FormSelectionTable
         table={{
           dataSource: data,
