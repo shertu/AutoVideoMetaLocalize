@@ -59,7 +59,7 @@ export function ServiceFormPage(): JSX.Element {
           <Row>
             <YouTubeChannelRadioGroup
               onChangeChannel={setSelectedMineYouTubeChannel}
-              value={selectedMineYouTubeChannel.id}
+              value={selectedMineYouTubeChannel?.id}
             />
           </Row>
 
