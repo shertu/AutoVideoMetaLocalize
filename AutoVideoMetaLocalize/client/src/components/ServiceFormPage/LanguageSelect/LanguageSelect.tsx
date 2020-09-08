@@ -1,7 +1,8 @@
-import { Select, Space, Alert } from 'antd';
+import { Select, Space, Alert, Row } from 'antd';
 import * as React from 'react';
 import { SupportedLanguage, I18nLanguageSnippet, LanguageApi } from '../../../../generated-sources/openapi';
 import { SelectProps } from 'antd/lib/select';
+import { AuthorizedContent } from '../../AuthorizedContent/AuthorizedContent';
 
 const LANGUAGE_API: LanguageApi = new LanguageApi();
 
@@ -37,26 +38,28 @@ export function LanguageSelect(props: SelectProps<string>): JSX.Element {
   }
 
   return (
-    <Space direction="vertical">
-      {error && cloudTranslationSupportedLanguages == null &&
-        <Alert message="Error" description="Failed to load Google Could Translation or YouTube languages languages with this Google account." type="error" showIcon />
-      }
+    <AuthorizedContent>
+      <Row align="top">
+        {error && cloudTranslationSupportedLanguages == null &&
+          <Alert message="Error" description="Failed to load Google Could Translation or YouTube languages languages with this Google account." type="error" showIcon />
+        }
 
-      {error && youTubeI18nLanguages == null &&
-        <Alert message="Error" description="Failed to load YouTube languages with this Google account." type="error" showIcon />
-      }
+        {error && youTubeI18nLanguages == null &&
+          <Alert message="Error" description="Failed to load YouTube languages with this Google account." type="error" showIcon />
+        }
 
-      <Select {...props}
-        mode="multiple"
-        optionFilterProp="label"
-      >
-        {languagesUnion && languagesUnion.map(language =>
-          <Select.Option key={language.languageCode} value={language.languageCode} label={language.displayName}>
-            {language.displayName}
-          </Select.Option >
-        )}
-      </Select>
-    </Space>
+        <Select {...props}
+          mode="multiple"
+          optionFilterProp="label"
+        >
+          {languagesUnion && languagesUnion.map(language =>
+            <Select.Option key={language.languageCode} value={language.languageCode} label={language.displayName}>
+              {language.displayName}
+            </Select.Option >
+          )}
+        </Select>
+      </Row>
+    </AuthorizedContent >
   );
 }
 

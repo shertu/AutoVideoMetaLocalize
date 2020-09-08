@@ -142,7 +142,7 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
 
   return (
     <AuthorizedContent>
-      <Space direction="vertical">
+      <Row align="top">
         {error && mineYouTubeChannels == null &&
           <Alert message="Error" description="Failed to load Google Could Translation or YouTube languages languages with this Google account." type="error" showIcon />
         }
@@ -160,7 +160,7 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
             rowKey={rowKey}
             renderItem={(channel: Channel) => (
               <List.Item>
-                <Radio.Button className="max-cell-sm" key={channel.id} value={channel.id}>
+                <Radio.Button className="max-cell" key={channel.id} value={channel.id}>
                   <BasicComboView
                     thumbnail={channel.snippet?.thumbnails._default}
                     title={channel.snippet?.title}
@@ -171,7 +171,7 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
             )}
           />
         </Radio.Group>
-      </Space>
+      </Row>
     </AuthorizedContent >
   );
 }
