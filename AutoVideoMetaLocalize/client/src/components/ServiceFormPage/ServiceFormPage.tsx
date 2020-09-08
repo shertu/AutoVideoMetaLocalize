@@ -42,43 +42,33 @@ export function ServiceFormPage(): JSX.Element {
         labelCol={{ span: 4 }}
         wrapperCol={{ span: 20 }}
       >
-        <Row>
-          <Space direction="vertical">
-            <Form.Item
-              label="Languages"
-              name={FORM_ITEM_NAMES.LANGUAGE_SELECTION}
-              rules={[{ required: true, message: 'Please select at least one language.' }]}
-              initialValue={INITIAL_VALUE_LANGUAGE_SELECTION}
-            >
-              <LanguageSelect />
-            </Form.Item>
-          </Space>
-        </Row>
+        <Form.Item
+          label="Languages"
+          name={FORM_ITEM_NAMES.LANGUAGE_SELECTION}
+          rules={[{ required: true, message: 'Please select at least one language.' }]}
+          initialValue={INITIAL_VALUE_LANGUAGE_SELECTION}
+        >
+          <LanguageSelect />
+        </Form.Item>
 
-        <Row>
-          <Row>
-            <YouTubeChannelRadioGroup
-              onChangeChannel={setSelectedMineYouTubeChannel}
-              value={selectedMineYouTubeChannel?.id}
-            />
-          </Row>
+        <YouTubeChannelRadioGroup
+          onChangeChannel={setSelectedMineYouTubeChannel}
+          value={selectedMineYouTubeChannel?.id}
+        />
 
-          <div>
-            {selectedMineYouTubeChannel?.id}
-          </div>
+        <div>
+          {selectedMineYouTubeChannel?.id}
+        </div>
 
-          {selectedMineYouTubeChannel &&
-            <Row>
-              <Form.Item
-                label="Videos"
-                name={FORM_ITEM_NAMES.VIDEO_SELECTION}
-                rules={[{ required: true, message: 'Please select at least one video.' }]}
-              >
-                <input />
-              </Form.Item>
-            </Row>
-          }
-        </Row>
+        {selectedMineYouTubeChannel &&
+          <Form.Item
+            label="Videos"
+            name={FORM_ITEM_NAMES.VIDEO_SELECTION}
+            rules={[{ required: true, message: 'Please select at least one video.' }]}
+          >
+            <input />
+          </Form.Item>
+        }
 
         <Row justify="end">
           <Button type="primary" htmlType="submit">Execute</Button>

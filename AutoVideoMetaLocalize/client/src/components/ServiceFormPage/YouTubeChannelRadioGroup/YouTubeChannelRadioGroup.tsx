@@ -152,15 +152,14 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
           onChange={onChange}
         >
           <List
-            className="demo-loadmore-list"
             loading={loading}
-            itemLayout="horizontal"
+            itemLayout="vertical"
             loadMore={loadMore}
             dataSource={mineYouTubeChannels}
             rowKey={rowKey}
             renderItem={(channel: Channel) => (
               <List.Item>
-                <Radio.Button className="max-cell" key={channel.id} value={channel.id}>
+                <Radio.Button className="max-cell-sm" key={channel.id} value={channel.id} style={{ height: '100%' }}>
                   <BasicComboView
                     thumbnail={channel.snippet?.thumbnails._default}
                     title={channel.snippet?.title}
