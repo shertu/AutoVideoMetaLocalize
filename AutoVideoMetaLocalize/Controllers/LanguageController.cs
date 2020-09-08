@@ -50,12 +50,8 @@ namespace AutoVideoMetaLocalize.Controllers {
 
 			int i = 0; // iterate over display language code list
 			IList<SupportedLanguage> response = null;
-			while (response == null) {
-				string displayLanguageCode = (i < displayLanguageCodeList.Length) ? displayLanguageCodeList[i] : null;
-
-				if (displayLanguageCode == null) {
-					break;
-				}
+			while (response == null && i < displayLanguageCodeList.Length) {
+				string displayLanguageCode = displayLanguageCodeList[i];
 
 				try {
 					SupportedLanguages temp = await service.GetSupportedLanguagesAsync(new GetSupportedLanguagesRequest {

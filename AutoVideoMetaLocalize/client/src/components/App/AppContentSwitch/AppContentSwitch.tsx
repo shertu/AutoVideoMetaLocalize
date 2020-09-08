@@ -1,19 +1,19 @@
 import * as React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import routes from '../../../routes';
-import { ServicePage } from '../../ServicePage/ServicePage';
 import { HomePage } from '../../HomePage/HomePage';
 import { PrivacyPolicyPage } from '../../PrivacyPolicyPage/PrivacyPolicyPage';
 import { Result, Typography } from 'antd';
 import { MailToMe } from '../../MailToMe/MailToMe';
+import { ServiceFormPage } from '../../ServiceFormPage/ServiceFormPage';
 
 const { Paragraph } = Typography;
 
 const ERROR_TITLE = 'client-side no route match error';
 
 /**
- * The main route switch in the web application.
- *
+ * The main content router in the web application.
+ * 
  * @return {JSX.Element}
  */
 export function AppContentSwitch(): JSX.Element {
@@ -23,7 +23,7 @@ export function AppContentSwitch(): JSX.Element {
         <HomePage />
       </Route>
       <Route exact path={routes.ROUTE_PROCESS}>
-        <ServicePage />
+        <ServiceFormPage />
       </Route>
       <Route exact path={routes.ROUTE_PRIVACY_POLICY}>
         <PrivacyPolicyPage />

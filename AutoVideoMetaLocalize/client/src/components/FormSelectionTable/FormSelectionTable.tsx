@@ -4,7 +4,7 @@ import {TableRowSelection} from 'antd/lib/table/interface';
 import * as React from 'react';
 
 /**
- * A template for a row selection table to be used in a form item.
+ * A row selection table to be used in a form item.
  *
  * @param {object} props
  * @return {JSX.Element}

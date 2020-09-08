@@ -9,7 +9,7 @@ const {Content, Footer} = Layout;
 
 /**
  * The general layout or structure of the web application, e.g. main, header, footer, etc.
- *
+ * 
  * @return {JSX.Element}
  */
 export function AppLayout(): JSX.Element {
