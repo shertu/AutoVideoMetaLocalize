@@ -83,8 +83,11 @@ export function ServiceFormPage(): JSX.Element {
   }
 
   function onClickClear() {
-    //form.resetFields();
-    form.setFieldsValue(null);
+    form.setFieldsValue({
+      [FORM_ITEM_NAMES.LANGUAGE_SELECTION]: null,
+      [FORM_ITEM_NAMES.VIDEO_SELECTION]: null,
+      [FORM_ITEM_NAMES.SMB_CHECKBOX]: null,
+    });
   }
 
   const INITIAL_VALUE_LANGUAGE_SELECTION: string[] = cookie.parse(document.cookie)[FORM_ITEM_NAMES.LANGUAGE_SELECTION]?.split(',');
