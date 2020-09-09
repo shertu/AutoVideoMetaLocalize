@@ -146,7 +146,7 @@ export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProp
   const pagination: TablePaginationConfig = {
     current: paginationCurrent,
     position: ['topRight'],
-    //simple: true,
+    simple: true,
     pageSize: response?.pageInfo.resultsPerPage,
     total: response?.pageInfo.totalResults,
     onChange: onChangePagination,

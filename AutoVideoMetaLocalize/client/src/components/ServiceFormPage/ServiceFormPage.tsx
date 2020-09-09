@@ -84,9 +84,9 @@ export function ServiceFormPage(): JSX.Element {
 
   function onClickClear() {
     form.setFieldsValue({
-      [FORM_ITEM_NAMES.LANGUAGE_SELECTION]: null,
-      [FORM_ITEM_NAMES.VIDEO_SELECTION]: null,
-      [FORM_ITEM_NAMES.SMB_CHECKBOX]: null,
+      [FORM_ITEM_NAMES.LANGUAGE_SELECTION]: [],
+      [FORM_ITEM_NAMES.VIDEO_SELECTION]: [],
+      [FORM_ITEM_NAMES.SMB_CHECKBOX]: false,
     });
   }
 
