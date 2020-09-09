@@ -10,6 +10,7 @@ import { LanguageSelect } from './LanguageSelect/LanguageSelect';
 import * as cookie from 'cookie';
 import { YouTubeChannelRadioGroup } from './YouTubeChannelRadioGroup/YouTubeChannelRadioGroup';
 import { RadioChangeEvent } from 'antd/lib/radio';
+import { YouTubeVideoSelectionTable } from './YouTubeVideoSelectionTable/YouTubeVideoSelectionTable';
 
 const LANGUAGE_API: LanguageApi = new LanguageApi();
 
@@ -49,21 +50,16 @@ export function ServiceFormPage(): JSX.Element {
           initialValue={INITIAL_VALUE_LANGUAGE_SELECTION}
         >
           <LanguageSelect />
-        </Form.Item> 
-
-        <Form.Item
-          label="Channel"
-          name={FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP}
-        >
-          <YouTubeChannelRadioGroup
-            onChangeChannel={setSelectedMineYouTubeChannel}
-            value={selectedMineYouTubeChannel?.id}
-          />
         </Form.Item>
 
-        <div>
-          {selectedMineYouTubeChannel?.id}
-        </div>
+        <Row>
+          <Col offset={4} span={20}>
+            <YouTubeChannelRadioGroup
+              onChangeChannel={setSelectedMineYouTubeChannel}
+              value={selectedMineYouTubeChannel?.id}
+            />
+          </Col>
+        </Row>
 
         {selectedMineYouTubeChannel &&
           <Form.Item
@@ -71,7 +67,9 @@ export function ServiceFormPage(): JSX.Element {
             name={FORM_ITEM_NAMES.VIDEO_SELECTION}
             rules={[{ required: true, message: 'Please select at least one video.' }]}
           >
-            <input />
+            <YouTubeVideoSelectionTable
+              selectedMineYouTubeChannel={selectedMineYouTubeChannel}
+            />
           </Form.Item>
         }
 
@@ -86,3 +84,13 @@ export function ServiceFormPage(): JSX.Element {
     </AuthorizedContent>
   );
 }
+
+//<Form.Item
+//  label="Channel"
+//  name={FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP}
+//>
+//  <YouTubeChannelRadioGroup
+//    onChangeChannel={setSelectedMineYouTubeChannel}
+//    value={selectedMineYouTubeChannel?.id}
+//  />
+//</Form.Item>

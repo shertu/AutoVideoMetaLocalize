@@ -1,4 +1,4 @@
-import { Radio, Space, Alert, List, Row, Button } from 'antd';
+import { Radio, Alert, List, Row } from 'antd';
 import * as React from 'react';
 import { BasicComboView } from '../../BasicComboView/BasicComboView';
 import { Channel, YouTubeChannelApi, ApiYouTubeChannelListGetRequest, ChannelListResponse } from '../../../../generated-sources/openapi';
@@ -28,9 +28,6 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
   const [response, setResponse] =
     React.useState<ChannelListResponse>(null);
 
-  const [paginationCurrent, setPaginationCurrent] =
-    React.useState<number>(0);
-
   const [loading, setLoading] =
     React.useState<boolean>(null);
 
@@ -40,19 +37,13 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
   const DEFAULT_VALUE: Channel = mineYouTubeChannels && mineYouTubeChannels.length ? mineYouTubeChannels[0] : null;
 
   React.useEffect(() => {
-    onChangePagination(1, DEFAULT_PAGE_SIZE); // pagination starts at one
-  }, []);
-
-  React.useEffect(() => {
-    if (onChangeChannel) {
-      onChangeChannel(DEFAULT_VALUE);
-    }
+    if (onChangeChannel) { onChangeChannel(DEFAULT_VALUE); }
   }, [DEFAULT_VALUE]);
 
   /**
    * Called when the radio group selection is changed.
    */
-  function onChange(e: RadioChangeEvent) {
+  function onChangeValue(e: RadioChangeEvent) {
     const value: string = e.target.value;
     const selectedChannel: Channel = mineYouTubeChannels.find((channel: Channel) => channel.id == value);
 
@@ -94,7 +85,6 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
     setLoading(false);
     setResponse(tempStateResponse);
     setMineYouTubeChannels(tempStateData);
-    setPaginationCurrent(page);
   }
 
   /**
@@ -114,7 +104,7 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
       request.pageToken = currentResponse.nextPageToken;
     }
 
-    return await YOUTUBE_CHANNEL_API.apiYouTubeChannelListGet(request); 1
+    return await YOUTUBE_CHANNEL_API.apiYouTubeChannelListGet(request);
   }
 
   /**
@@ -135,22 +125,20 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
     return record.id; // The key is the video to correctly enable the form.
   }
 
-  //const loadMore = loading && canLoadMore(response) ? null : (
-  //  <Row justify="center">
-  //    <Button onClick={() => onChangePaginationAsync(paginationCurrent + 1)}>load more</Button>
-  //  </Row>
-  //);
-
   return (
     <AuthorizedContent>
       <Row align="top" justify="center">
         {error && mineYouTubeChannels == null &&
-          <Alert message="Error" description="Failed to load Google Could Translation or YouTube languages languages with this Google account." type="error" showIcon />
+          <Alert message="Error" description="Failed to load YouTube channel information." type="error" showIcon />
+        }
+
+        {mineYouTubeChannels && mineYouTubeChannels.length == 0 &&
+          <Alert message="Error" description="No YouTube channels are associated with this Google account." type="error" showIcon />
         }
 
         <Radio.Group {...props}
           defaultValue={DEFAULT_VALUE}
-          onChange={onChange}
+          onChange={onChangeValue}
           className="max-cell-sm"
         >
           <InfiniteScroll
@@ -165,7 +153,7 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
               rowKey={rowKey}
               renderItem={(channel: Channel) => (
                 <List.Item>
-                  <Radio.Button className="max-cell" key={channel.id} value={channel.id} style={{ height: '100%' }}>
+                  <Radio.Button className="max-cell max-height" key={channel.id} value={channel.id}>
                     <BasicComboView
                       thumbnail={channel.snippet?.thumbnails._default}
                       title={channel.snippet?.title}
