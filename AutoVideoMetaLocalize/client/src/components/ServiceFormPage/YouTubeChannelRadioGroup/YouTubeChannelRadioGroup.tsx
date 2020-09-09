@@ -5,6 +5,7 @@ import { Channel, YouTubeChannelApi, ApiYouTubeChannelListGetRequest, ChannelLis
 import { RadioGroupProps, RadioChangeEvent } from 'antd/lib/radio';
 import { AuthorizedContent } from '../../AuthorizedContent/AuthorizedContent';
 import InfiniteScroll from 'react-infinite-scroller';
+import classNames from 'classnames';
 
 const YOUTUBE_CHANNEL_API: YouTubeChannelApi = new YouTubeChannelApi();
 const DEFAULT_PAGE_SIZE: number = 30;
@@ -126,45 +127,43 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
 
   return (
     <AuthorizedContent>
-      <Row align="top" justify="center">
-        {error && mineYouTubeChannels == null &&
-          <Alert className="max-cell-sm" message="Error" description="Failed to load YouTube channel information." type="error" showIcon />
-        }
+      {error && mineYouTubeChannels == null &&
+        <Alert className="max-cell-sm" message="Error" description="Failed to load YouTube channel information." type="error" showIcon />
+      }
 
-        {mineYouTubeChannels && mineYouTubeChannels.length == 0 && loading === false &&
-          <Alert className="max-cell-sm" message="Warning" description="No YouTube channels are associated with this Google account." type="warning" showIcon />
-        }
+      {mineYouTubeChannels && mineYouTubeChannels.length == 0 && loading === false &&
+        <Alert className="max-cell-sm" message="Warning" description="No YouTube channels are associated with this Google account." type="warning" showIcon />
+      }
 
-        <Radio.Group {...props}
-          defaultValue={DEFAULT_VALUE}
-          onChange={onChangeValue}
-          className="max-cell-sm"
+      <Radio.Group {...props}
+        defaultValue={DEFAULT_VALUE}
+        onChange={onChangeValue}
+        className="max-cell-sm"
+      >
+        <InfiniteScroll
+          loadMore={onChangePaginationAsync}
+          hasMore={!loading && canLoadMore(response)}
+          loader={<Spin key="infinite-scroll-loader" />}
+          useWindow={false}
         >
-          <InfiniteScroll
-            loadMore={onChangePaginationAsync}
-            hasMore={!loading && canLoadMore(response)}
-            loader={<Spin key="infinite-scroll-loader" />}
-            useWindow={false}
-          >
-            <List
-              itemLayout="vertical"
-              dataSource={mineYouTubeChannels}
-              rowKey={rowKey}
-              renderItem={(channel: Channel) => (
-                <List.Item>
-                  <Radio.Button className="max-cell max-height" key={channel.id} value={channel.id}>
-                    <BasicComboView
-                      thumbnail={channel.snippet?.thumbnails._default}
-                      title={channel.snippet?.title}
-                      subtitle={channel.id}
-                    />
-                  </Radio.Button>
-                </List.Item>
-              )}
-            />
-          </InfiniteScroll>
-        </Radio.Group>
-      </Row>
+          <List
+            itemLayout="vertical"
+            dataSource={mineYouTubeChannels}
+            rowKey={rowKey}
+            renderItem={(channel: Channel) => (
+              <List.Item>
+                <Radio.Button className="max-cell max-height" key={channel.id} value={channel.id}>
+                  <BasicComboView
+                    thumbnail={channel.snippet?.thumbnails._default}
+                    title={channel.snippet?.title}
+                    subtitle={channel.id}
+                  />
+                </Radio.Button>
+              </List.Item>
+            )}
+          />
+        </InfiniteScroll>
+      </Radio.Group>
     </AuthorizedContent >
   );
 }

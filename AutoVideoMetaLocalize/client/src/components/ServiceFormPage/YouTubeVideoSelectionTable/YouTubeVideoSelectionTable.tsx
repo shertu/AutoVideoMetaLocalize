@@ -23,8 +23,10 @@ const VIDEO_FORM_SELECTION_TABLE_COLUMNS: ColumnsType<PlaylistItem> = [{
   },
 }];
 
-export interface YouTubeVideoSelectionTableProps extends FormSelectionTableProps<Video> {
+export interface YouTubeVideoSelectionTableProps {
   selectedMineYouTubeChannel?: Channel,
+  value?: React.Key[];
+  onChange?: (value: React.Key[]) => void,
 }
 
 /**
@@ -55,18 +57,6 @@ export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProp
   React.useEffect(() => {
     onChangePagination(1); // pagination starts at one
   }, []);
-
-  ///**
-  // * Called when the radio group selection is changed.
-  // */
-  //function onChangeValue(e: RadioChangeEvent) {
-  //  const value: string = e.target.value;
-  //  const selectedChannel: Channel = mineYouTubeChannels.find((channel: Channel) => channel.id == value);
-
-  //  if (onChangeChannel) {
-  //    onChangeChannel(selectedChannel);
-  //  }
-  //}
 
   /**
    * Called when the page number is changed, and it takes the resulting page number and pageSize as its arguments.
@@ -145,7 +135,7 @@ export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProp
   // pagination props
   const pagination: TablePaginationConfig = {
     current: paginationCurrent,
-    position: ['topRight'],
+    position: ['topLeft'],
     simple: true,
     pageSize: response?.pageInfo.resultsPerPage,
     total: response?.pageInfo.totalResults,
@@ -154,29 +144,27 @@ export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProp
 
   return (
     <AuthorizedContent>
-      <Row align="top" justify="center">
-        {error && channelUploadsPlaylistItems == null &&
-          <Alert className="max-cell-sm" message="Error" description="Failed to load YouTube video information." type="error" showIcon />
-        }
+      {error && channelUploadsPlaylistItems == null &&
+        <Alert className="max-cell-sm" message="Error" description="Failed to load YouTube video information." type="error" showIcon />
+      }
 
-        {channelUploadsPlaylistItems && channelUploadsPlaylistItems.length == 0 && loading === false &&
-          <Alert className="max-cell-sm" message="Warning" description="No YouTube videos are associated with this YouTube channel." type="warning" showIcon />
-        }
+      {channelUploadsPlaylistItems && channelUploadsPlaylistItems.length == 0 && loading === false &&
+        <Alert className="max-cell-sm" message="Warning" description="No YouTube videos are associated with this YouTube channel." type="warning" showIcon />
+      }
 
-        <Skeleton loading={loading} active className="max-cell-sm">
-          <FormSelectionTable
-            table={{
-              className: "max-cell-sm",
-              dataSource: channelUploadsPlaylistItems,
-              pagination: pagination,
-              rowKey: rowKey,
-              columns: VIDEO_FORM_SELECTION_TABLE_COLUMNS,
-            }}
-            value={value}
-            onChange={onChange}
-          />
-        </Skeleton>
-      </Row>
+      <Skeleton loading={loading} active className="max-cell-sm">
+        <FormSelectionTable
+          table={{
+            className: "max-cell-sm",
+            dataSource: channelUploadsPlaylistItems,
+            pagination: pagination,
+            rowKey: rowKey,
+            columns: VIDEO_FORM_SELECTION_TABLE_COLUMNS,
+          }}
+          value={value}
+          onChange={onChange}
+        />
+      </Skeleton>
     </AuthorizedContent >
   );
 }

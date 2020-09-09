@@ -15,24 +15,21 @@ export function AuthorizedContent(props: {
 }): JSX.Element {
   const user: GetClaimsPrincipleResult = React.useContext(UserContext);
 
+  const content: React.ReactNode = user.isAuthenticated ? props.children :
+    <Result
+      status="403"
+      title="403"
+      subTitle="Sorry, you are not authorized to access this part of the website."
+      extra={
+        <Link to={routes.ROUTE_HOME}>
+          <Button type="primary">Go Home</Button>
+        </Link>
+      }
+    />;
+
   return (
     <Skeleton loading={user == null}>
-      {user &&
-        <div className="authorized-content">
-          {user.isAuthenticated ? props.children :
-            <Result
-              status="403"
-              title="403"
-              subTitle="Sorry, you are not authorized to access this part of the website."
-              extra={
-                <Link to={routes.ROUTE_HOME}>
-                  <Button type="primary">Go Home</Button>
-                </Link>
-              }
-            />
-          }
-        </div>
-      }
+      {user && content}
     </Skeleton>
   );
 };

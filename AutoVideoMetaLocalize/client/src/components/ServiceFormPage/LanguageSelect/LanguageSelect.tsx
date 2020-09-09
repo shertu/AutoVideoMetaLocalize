@@ -1,4 +1,4 @@
-import { Select, Space, Alert, Row } from 'antd';
+import { Select, Alert } from 'antd';
 import * as React from 'react';
 import { SupportedLanguage, I18nLanguageSnippet, LanguageApi } from '../../../../generated-sources/openapi';
 import { SelectProps } from 'antd/lib/select';
@@ -39,26 +39,25 @@ export function LanguageSelect(props: SelectProps<string>): JSX.Element {
 
   return (
     <AuthorizedContent>
-      <Row align="top" justify="center">
-        {error && cloudTranslationSupportedLanguages == null &&
-          <Alert className="max-cell-sm" message="Error" description="Failed to load Google Cloud Translate language information." type="error" showIcon />
-        }
+      {error && cloudTranslationSupportedLanguages == null &&
+        <Alert className="max-cell-sm" message="Error" description="Failed to load Google Cloud Translate language information." type="error" showIcon />
+      }
 
-        {error && youTubeI18nLanguages == null &&
-          <Alert className="max-cell-sm" message="Error" description="Failed to load YouTube language information." type="error" showIcon />
-        }
+      {error && youTubeI18nLanguages == null &&
+        <Alert className="max-cell-sm" message="Error" description="Failed to load YouTube language information." type="error" showIcon />
+      }
 
-        <Select {...props}
-          mode="multiple"
-          optionFilterProp="label"
-        >
-          {languagesUnion && languagesUnion.map(language =>
-            <Select.Option key={language.languageCode} value={language.languageCode} label={language.displayName}>
-              {language.displayName}
-            </Select.Option >
-          )}
-        </Select>
-      </Row>
+      <Select {...props}
+        mode="multiple"
+        optionFilterProp="label"
+        className="max-cell-sm"
+      >
+        {languagesUnion && languagesUnion.map(language =>
+          <Select.Option key={language.languageCode} value={language.languageCode} label={language.displayName}>
+            {language.displayName}
+          </Select.Option >
+        )}
+      </Select>
     </AuthorizedContent >
   );
 }
