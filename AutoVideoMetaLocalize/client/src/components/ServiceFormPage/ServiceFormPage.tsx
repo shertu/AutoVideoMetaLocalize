@@ -65,16 +65,12 @@ export function ServiceFormPage(): JSX.Element {
       setExecutionState(EventStates.continuitive);
       setExecutionError(false);
       setExecutionProgressMax(serviceFormInputs.videos.length * serviceFormInputs.languages.length);
-
-      document.cookie = cookie.serialize(FORM_ITEM_NAMES.LANGUAGE_SELECTION, serviceFormInputs.languages.join(','), {
-        sameSite: 'lax',
-      });
+      serializeLanguageCookie(serviceFormInputs.languages);
 
       YOUTUBE_VIDEO_API.apiYouTubeVideoLocalizePut({
         appVideoLocalizeRequest: serviceFormInputs,
       }).then(() => {
         setExecutionState(EventStates.retropective);
-        setExecutionError(false);
       }).catch(() => {
         setExecutionState(EventStates.retropective);
         setExecutionError(true);
@@ -87,6 +83,16 @@ export function ServiceFormPage(): JSX.Element {
       [FORM_ITEM_NAMES.LANGUAGE_SELECTION]: [],
       [FORM_ITEM_NAMES.VIDEO_SELECTION]: [],
       [FORM_ITEM_NAMES.SMB_CHECKBOX]: false,
+    });
+
+    serializeLanguageCookie(null);
+  }
+
+  function serializeLanguageCookie(languageValues: string[]) {
+    languageValues = languageValues || [];
+
+    document.cookie = cookie.serialize(FORM_ITEM_NAMES.LANGUAGE_SELECTION, languageValues.join(','), {
+      sameSite: 'lax',
     });
   }
 
