@@ -21,7 +21,7 @@ export function ServiceFormExecutionPage(props: {
     React.useState<number>(0);
 
   const { error, executionProgressMax, executionState } = props;
-  const percent: number = executionProgressMax ? executionProgress / executionProgressMax : 1;
+  const progressValue: number = executionProgressMax ? executionProgress / executionProgressMax : 1;
 
   useInterval(updateLocalizationCount, 800);
 
@@ -40,14 +40,14 @@ export function ServiceFormExecutionPage(props: {
 
   return (
     <Page title="Execution">
-      <Row align="top" justify="center">
-        {error &&
-          <Alert className="max-cell-sm" message="Error" description="Failed to load YouTube video information." type="error" showIcon />
-        }
-
-        <Row align="middle" justify="center">
-          <Progress type="circle" percent={percent} status={error ? 'exception' : null} />
+      {error &&
+        <Row justify="center">
+          <Alert className="max-cell-sm" message="Error" description="An error occured ." type="error" showIcon />
         </Row>
+      }
+
+      <Row justify="center">
+        <Progress type="circle" percent={progressValue * 100} status={error ? 'exception' : null} />
       </Row>
     </Page>
   );
