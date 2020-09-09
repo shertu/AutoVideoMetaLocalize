@@ -25,6 +25,8 @@ export function ServiceFormExecutionPage(props: {
 
   useInterval(updateLocalizationCount, 800);
 
+  console.log("executionProgress", executionProgress, "executionProgressMax", executionProgressMax);
+
   function updateLocalizationCount() {
     if (executionState == EventStates.continuitive) {
       YOUTUBE_VIDEO_API.apiYouTubeVideoLocalizeCountGet()
