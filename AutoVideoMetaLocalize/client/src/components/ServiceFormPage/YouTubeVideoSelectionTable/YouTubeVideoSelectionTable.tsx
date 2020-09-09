@@ -149,6 +149,7 @@ export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProp
     pageSize: response?.pageInfo.resultsPerPage,
     total: response?.pageInfo.totalResults,
     onChange: onChangePagination,
+    position: ['topRight'],
   };
 
   return (
