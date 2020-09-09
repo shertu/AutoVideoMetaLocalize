@@ -96,7 +96,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 		}
 
 		[HttpGet("LocalizeCount")]
-		public ActionResult<int> LocalizeVideos() {
+		public ActionResult<int> GetLocalizeCount() {
 			return LocalizationCount;
 		}
 

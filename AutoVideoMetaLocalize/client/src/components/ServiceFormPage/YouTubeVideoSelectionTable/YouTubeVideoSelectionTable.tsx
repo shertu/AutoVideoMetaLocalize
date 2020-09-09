@@ -165,7 +165,7 @@ export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProp
         <Skeleton loading={loading} active>
           <FormSelectionTable
             table={{
-              className: "HEHEHEHEHE",
+              className: "max-cell-sm",
               dataSource: channelUploadsPlaylistItems,
               pagination: pagination,
               rowKey: rowKey,
