@@ -1,4 +1,4 @@
-import { Button, Form, Row, Col, Collapse, Checkbox } from 'antd';
+import { Button, Form, Row, Col, Collapse, Checkbox, Space } from 'antd';
 import * as React from 'react';
 import { Channel, AppVideoLocalizeRequest, YouTubeVideoApi } from '../../../generated-sources/openapi';
 import { AuthorizedContent } from '../AuthorizedContent/AuthorizedContent';
@@ -37,6 +37,8 @@ export function ServiceFormPage(): JSX.Element {
 
   const [executionProgressMax, setExecutionProgressMax] =
     React.useState<number>(0);
+
+  const [form] = Form.useForm();
 
   /**
    * Called when the options form is successfully filled out and submitted.
@@ -80,6 +82,11 @@ export function ServiceFormPage(): JSX.Element {
     }
   }
 
+  function onClickClear() {
+    //form.resetFields();
+    form.setFieldsValue(null);
+  }
+
   const INITIAL_VALUE_LANGUAGE_SELECTION: string[] = cookie.parse(document.cookie)[FORM_ITEM_NAMES.LANGUAGE_SELECTION]?.split(',');
 
   // When the channel options are set then set the selected channel to the first option
@@ -91,6 +98,7 @@ export function ServiceFormPage(): JSX.Element {
           labelCol={{ span: 4 }}
           wrapperCol={{ span: 20 }}
           onFinish={onFinish}
+          form={form}
         >
           <Form.Item
             label="Languages"
@@ -135,7 +143,10 @@ export function ServiceFormPage(): JSX.Element {
           </Collapse>
 
           <Row justify="end">
-            <Button type="primary" htmlType="submit" disabled={executionState === EventStates.continuitive}>Execute</Button>
+            <Space>
+              <Button onClick={() => onClickClear()}>Clear</Button>
+              <Button type="primary" htmlType="submit" disabled={executionState === EventStates.continuitive}>Execute</Button>
+            </Space>
           </Row>
         </Form>
 
