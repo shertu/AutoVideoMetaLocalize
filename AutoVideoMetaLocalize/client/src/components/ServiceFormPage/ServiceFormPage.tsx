@@ -106,7 +106,6 @@ export function ServiceFormPage(): JSX.Element {
               <YouTubeChannelRadioGroup
                 onChangeChannel={setSelectedMineYouTubeChannel}
                 value={selectedMineYouTubeChannel?.id}
-                style={{ display: 'none' }}
               />
             </Col>
           </Row>
