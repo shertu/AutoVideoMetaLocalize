@@ -46,7 +46,7 @@ export function ServiceFormPage(): JSX.Element {
           <LanguageSelect />
         </Form.Item>
 
-        <Row className="ant-form-item" hidden>
+        <Row className="ant-form-item" style={{display: 'none'}}>
           <Col offset={4} span={20}>
             <YouTubeChannelRadioGroup
               onChangeChannel={setSelectedMineYouTubeChannel}

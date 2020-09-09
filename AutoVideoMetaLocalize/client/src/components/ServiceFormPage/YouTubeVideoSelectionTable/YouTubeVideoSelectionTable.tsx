@@ -57,7 +57,7 @@ export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProp
     React.useState<number>(0);
 
   React.useEffect(() => {
-    onChangePagination(1, DEFAULT_PAGE_SIZE); // pagination starts at one
+    onChangePagination(1); // pagination starts at one
   }, []);
 
   ///**
