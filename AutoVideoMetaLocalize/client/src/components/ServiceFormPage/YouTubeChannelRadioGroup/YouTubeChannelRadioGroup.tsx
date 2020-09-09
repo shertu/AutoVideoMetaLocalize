@@ -1,4 +1,4 @@
-import { Radio, Alert, List, Row } from 'antd';
+import { Radio, Alert, List, Row, Spin } from 'antd';
 import * as React from 'react';
 import { BasicComboView } from '../../BasicComboView/BasicComboView';
 import { Channel, YouTubeChannelApi, ApiYouTubeChannelListGetRequest, ChannelListResponse } from '../../../../generated-sources/openapi';
@@ -143,7 +143,7 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
           <InfiniteScroll
             loadMore={onChangePaginationAsync}
             hasMore={!loading && canLoadMore(response)}
-            loader={<div className="loader" key={0}>Loading ...</div>}
+            loader={<Spin key="infinite-scroll-loader" />}
             useWindow={false}
           >
             <List

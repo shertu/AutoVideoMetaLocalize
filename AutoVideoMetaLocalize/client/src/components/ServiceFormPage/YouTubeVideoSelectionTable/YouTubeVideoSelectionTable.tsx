@@ -7,7 +7,7 @@ import { FormSelectionTable, FormSelectionTableProps } from '../../FormSelection
 import { TablePaginationConfig, ColumnsType } from 'antd/lib/table';
 
 const YOUTUBE_PLAYLIST_ITEM_API = new YouTubePlaylistItemApi();
-const DEFAULT_PAGE_SIZE: number = 3;
+const DEFAULT_PAGE_SIZE: number = 30;
 
 const VIDEO_FORM_SELECTION_TABLE_COLUMNS: ColumnsType<PlaylistItem> = [{
   title: 'Video',
@@ -162,7 +162,7 @@ export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProp
           <Alert className="max-cell-sm" message="Warning" description="No YouTube videos are associated with this YouTube channel." type="warning" showIcon />
         }
 
-        <Skeleton loading={loading} active>
+        <Skeleton loading={loading} active className="max-cell-sm">
           <FormSelectionTable
             table={{
               className: "max-cell-sm",
