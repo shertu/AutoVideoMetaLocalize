@@ -1,18 +1,12 @@
-import { Button, Result, Skeleton, message, Form, Row, Alert, Space, Col } from 'antd';
+import { Button, Form, Row, Col, Collapse, Checkbox } from 'antd';
 import * as React from 'react';
-import { Link } from 'react-router-dom';
-import { AppVideoLocalizeRequest } from '../../../generated-sources/openapi/models/AppVideoLocalizeRequest';
-import routes from '../../routes';
-import UserContext from '../UserContext/UserContext';
-import { Channel, GetClaimsPrincipleResult, SupportedLanguage, I18nLanguageSnippet, LanguageApi } from '../../../generated-sources/openapi';
+import { Channel } from '../../../generated-sources/openapi';
 import { AuthorizedContent } from '../AuthorizedContent/AuthorizedContent';
 import { LanguageSelect } from './LanguageSelect/LanguageSelect';
 import * as cookie from 'cookie';
 import { YouTubeChannelRadioGroup } from './YouTubeChannelRadioGroup/YouTubeChannelRadioGroup';
-import { RadioChangeEvent } from 'antd/lib/radio';
 import { YouTubeVideoSelectionTable } from './YouTubeVideoSelectionTable/YouTubeVideoSelectionTable';
 
-const LANGUAGE_API: LanguageApi = new LanguageApi();
 
 const FORM_ITEM_NAMES = {
   LANGUAGE_SELECTION: 'language-selection',
@@ -52,7 +46,7 @@ export function ServiceFormPage(): JSX.Element {
           <LanguageSelect />
         </Form.Item>
 
-        <Row>
+        <Row className="ant-form-item" hidden>
           <Col offset={4} span={20}>
             <YouTubeChannelRadioGroup
               onChangeChannel={setSelectedMineYouTubeChannel}
@@ -72,6 +66,18 @@ export function ServiceFormPage(): JSX.Element {
             />
           </Form.Item>
         }
+
+        <Collapse className="ant-form-item">
+          <Collapse.Panel header="Advanced Options" key="1">
+            <Form.Item
+              name={FORM_ITEM_NAMES.SMB_CHECKBOX}
+              valuePropName="checked"
+              noStyle
+            >
+              <Checkbox>Sheet Music Boss</Checkbox>
+            </Form.Item>
+          </Collapse.Panel>
+        </Collapse>
 
         <Row justify="end">
           <Button type="primary" htmlType="submit">Execute</Button>

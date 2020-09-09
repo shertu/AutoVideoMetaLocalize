@@ -132,7 +132,7 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
           <Alert message="Error" description="Failed to load YouTube channel information." type="error" showIcon />
         }
 
-        {mineYouTubeChannels && mineYouTubeChannels.length == 0 &&
+        {mineYouTubeChannels && mineYouTubeChannels.length == 0 && loading === false &&
           <Alert message="Error" description="No YouTube channels are associated with this Google account." type="error" showIcon />
         }
 
