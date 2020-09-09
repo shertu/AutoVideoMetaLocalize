@@ -29,6 +29,9 @@ export function ServiceFormPage(): JSX.Element {
   const [selectedMineYouTubeChannel, setSelectedMineYouTubeChannel] =
     React.useState<Channel>(null);
 
+  const [youTubeChannelRadioGroupHidden, setYouTubeChannelRadioGroupHidden] =
+    React.useState<boolean>(false);
+
   const [executionState, setExecutionState] =
     React.useState<EventStates>(EventStates.prospective);
 
@@ -125,10 +128,11 @@ export function ServiceFormPage(): JSX.Element {
             <LanguageSelect />
           </Form.Item>
 
-          <Row className="ant-form-item" hidden={selectedMineYouTubeChannel != null}>
+          <Row className="ant-form-item" hidden={youTubeChannelRadioGroupHidden}>
             <Col offset={4} span={20}>
               <YouTubeChannelRadioGroup
-                onChangeChannel={setSelectedMineYouTubeChannel}
+                setSelectedMineYouTubeChannel={setSelectedMineYouTubeChannel}
+                setYouTubeChannelRadioGroupHidden={setYouTubeChannelRadioGroupHidden}
                 value={selectedMineYouTubeChannel?.id}
               />
             </Col>
