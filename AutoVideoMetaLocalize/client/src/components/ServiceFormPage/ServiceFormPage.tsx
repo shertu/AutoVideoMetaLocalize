@@ -17,7 +17,7 @@ const FORM_ITEM_NAMES = {
   LANGUAGE_SELECTION: 'language-selection',
   VIDEO_SELECTION: 'video-selection',
   SMB_CHECKBOX: 'smb-checkbox',
-  CHANNEL_RADIO_GROUP: 'channel-selection',
+  //CHANNEL_RADIO_GROUP: 'channel-selection',
 };
 
 /**
@@ -46,9 +46,9 @@ export function ServiceFormPage(): JSX.Element {
    * @param {Store} values
    */
   function onFinish(values: Store) {
-    const LANGUAGE_SELECTION: string[] = values[FORM_ITEM_NAMES.LANGUAGE_SELECTION];
-    const VIDEO_SELECTION: string[] = values[FORM_ITEM_NAMES.VIDEO_SELECTION];
-    const SMB_CHECKBOX: boolean = values[FORM_ITEM_NAMES.SMB_CHECKBOX];
+    const LANGUAGE_SELECTION: string[] = values[FORM_ITEM_NAMES.LANGUAGE_SELECTION] || [];
+    const VIDEO_SELECTION: string[] = values[FORM_ITEM_NAMES.VIDEO_SELECTION] || [];
+    const SMB_CHECKBOX: boolean = values[FORM_ITEM_NAMES.SMB_CHECKBOX] || false;
 
     const serviceFormInputs: AppVideoLocalizeRequest = {
       languages: LANGUAGE_SELECTION,
@@ -60,12 +60,17 @@ export function ServiceFormPage(): JSX.Element {
     executeService(serviceFormInputs);
   }
 
+  /**
+   * 
+   * @param serviceFormInputs
+   */
   function executeService(serviceFormInputs: AppVideoLocalizeRequest) {
     if (executionState == EventStates.prospective || executionState == EventStates.retropective) {
       setExecutionState(EventStates.continuitive);
       setExecutionError(false);
       setExecutionProgressMax(serviceFormInputs.videos.length * serviceFormInputs.languages.length);
-      serializeLanguageCookie(serviceFormInputs.languages);
+
+      serializeLanguagesCookie();
 
       YOUTUBE_VIDEO_API.apiYouTubeVideoLocalizePut({
         appVideoLocalizeRequest: serviceFormInputs,
@@ -78,6 +83,7 @@ export function ServiceFormPage(): JSX.Element {
     }
   }
 
+  /** Clears the form's fields and the language cookie. */
   function onClickClear() {
     form.setFieldsValue({
       [FORM_ITEM_NAMES.LANGUAGE_SELECTION]: [],
@@ -85,20 +91,21 @@ export function ServiceFormPage(): JSX.Element {
       [FORM_ITEM_NAMES.SMB_CHECKBOX]: false,
     });
 
-    serializeLanguageCookie([]);
+    serializeLanguagesCookie();
   }
 
-  function serializeLanguageCookie(languageValues: string[]) {
-    languageValues = languageValues || [];
-    document.cookie = cookie.serialize(FORM_ITEM_NAMES.LANGUAGE_SELECTION, languageValues.join(','), {
+  /**
+   * Stores the current value of the languages form item into a cookie.
+   */
+  function serializeLanguagesCookie() {
+    const LANGUAGE_SELECTION: string[] = form.getFieldValue(FORM_ITEM_NAMES.LANGUAGE_SELECTION) || [];
+    document.cookie = cookie.serialize(FORM_ITEM_NAMES.LANGUAGE_SELECTION, LANGUAGE_SELECTION.join(','), {
       sameSite: 'lax',
     });
   }
 
-  const languageSelectionCookieValue = cookie.parse(document.cookie)[FORM_ITEM_NAMES.LANGUAGE_SELECTION];
-  const LANGUAGE_SELECTION_INITIAL_VALUE: string[] = languageSelectionCookieValue ? languageSelectionCookieValue.split(',') : [];
-
-  // When the channel options are set then set the selected channel to the first option
+  const languageSelectionCookieValue: string = cookie.parse(document.cookie)[FORM_ITEM_NAMES.LANGUAGE_SELECTION];
+  const languageSelectionInitialValue: string[] = languageSelectionCookieValue ? languageSelectionCookieValue.split(',') : [];
 
   return (
     <AuthorizedContent>
@@ -113,7 +120,7 @@ export function ServiceFormPage(): JSX.Element {
             label="Languages"
             name={FORM_ITEM_NAMES.LANGUAGE_SELECTION}
             rules={[{ required: true, message: 'Please select at least one language.' }]}
-            initialValue={LANGUAGE_SELECTION_INITIAL_VALUE}
+            initialValue={languageSelectionInitialValue}
           >
             <LanguageSelect />
           </Form.Item>
