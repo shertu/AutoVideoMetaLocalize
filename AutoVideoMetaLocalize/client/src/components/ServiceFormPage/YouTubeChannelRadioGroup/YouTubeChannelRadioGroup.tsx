@@ -4,6 +4,7 @@ import { BasicComboView } from '../../BasicComboView/BasicComboView';
 import { Channel, YouTubeChannelApi, ApiYouTubeChannelListGetRequest, ChannelListResponse } from '../../../../generated-sources/openapi';
 import { RadioGroupProps, RadioChangeEvent } from 'antd/lib/radio';
 import { AuthorizedContent } from '../../AuthorizedContent/AuthorizedContent';
+import InfiniteScroll from 'react-infinite-scroller';
 
 const YOUTUBE_CHANNEL_API: YouTubeChannelApi = new YouTubeChannelApi();
 const DEFAULT_PAGE_SIZE: number = 30;
@@ -134,15 +135,15 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
     return record.id; // The key is the video to correctly enable the form.
   }
 
-  const loadMore = loading ? null : (
-    <Row justify="center">
-      <Button onClick={() => onChangePaginationAsync(paginationCurrent + 1)}>load more</Button>
-    </Row>
-  );
+  //const loadMore = loading && canLoadMore(response) ? null : (
+  //  <Row justify="center">
+  //    <Button onClick={() => onChangePaginationAsync(paginationCurrent + 1)}>load more</Button>
+  //  </Row>
+  //);
 
   return (
     <AuthorizedContent>
-      <Row align="top">
+      <Row align="top" justify="center">
         {error && mineYouTubeChannels == null &&
           <Alert message="Error" description="Failed to load Google Could Translation or YouTube languages languages with this Google account." type="error" showIcon />
         }
@@ -150,25 +151,31 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
         <Radio.Group {...props}
           defaultValue={DEFAULT_VALUE}
           onChange={onChange}
+          className="max-cell-sm"
         >
-          <List
-            loading={loading}
-            itemLayout="vertical"
-            loadMore={loadMore}
-            dataSource={mineYouTubeChannels}
-            rowKey={rowKey}
-            renderItem={(channel: Channel) => (
-              <List.Item>
-                <Radio.Button className="max-cell-sm" key={channel.id} value={channel.id} style={{ height: '100%' }}>
-                  <BasicComboView
-                    thumbnail={channel.snippet?.thumbnails._default}
-                    title={channel.snippet?.title}
-                    subtitle={channel.id}
-                  />
-                </Radio.Button>,
-              </List.Item>
-            )}
-          />
+          <InfiniteScroll
+            loadMore={onChangePaginationAsync}
+            hasMore={!loading && canLoadMore(response)}
+            loader={<div className="loader" key={0}>Loading ...</div>}
+            useWindow={false}
+          >
+            <List
+              itemLayout="vertical"
+              dataSource={mineYouTubeChannels}
+              rowKey={rowKey}
+              renderItem={(channel: Channel) => (
+                <List.Item>
+                  <Radio.Button className="max-cell" key={channel.id} value={channel.id} style={{ height: '100%' }}>
+                    <BasicComboView
+                      thumbnail={channel.snippet?.thumbnails._default}
+                      title={channel.snippet?.title}
+                      subtitle={channel.id}
+                    />
+                  </Radio.Button>
+                </List.Item>
+              )}
+            />
+          </InfiniteScroll>
         </Radio.Group>
       </Row>
     </AuthorizedContent >

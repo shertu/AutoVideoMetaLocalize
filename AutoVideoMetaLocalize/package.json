@@ -63,7 +63,9 @@
 	},
 	"devDependencies": {
 		"@types/cookie": "^0.4.0",
+		"@types/react-infinite-scroller": "^1.2.1",
 		"cookie": "^0.4.1",
-		"react-google-button": "^0.7.1"
+		"react-google-button": "^0.7.1",
+		"react-infinite-scroller": "^1.2.4"
 	}
 }

@@ -1,4 +1,4 @@
-import { Button, Result, Skeleton, message, Form, Row, Alert, Space } from 'antd';
+import { Button, Result, Skeleton, message, Form, Row, Alert, Space, Col } from 'antd';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { AppVideoLocalizeRequest } from '../../../generated-sources/openapi/models/AppVideoLocalizeRequest';
@@ -17,7 +17,7 @@ const FORM_ITEM_NAMES = {
   LANGUAGE_SELECTION: 'language-selection',
   VIDEO_SELECTION: 'video-selection',
   SMB_CHECKBOX: 'smb-checkbox',
-  //CHANNEL_RADIO_GROUP: 'channel-selection',
+  CHANNEL_RADIO_GROUP: 'channel-selection',
 };
 
 /**
@@ -49,12 +49,17 @@ export function ServiceFormPage(): JSX.Element {
           initialValue={INITIAL_VALUE_LANGUAGE_SELECTION}
         >
           <LanguageSelect />
-        </Form.Item>
+        </Form.Item> 
 
-        <YouTubeChannelRadioGroup
-          onChangeChannel={setSelectedMineYouTubeChannel}
-          value={selectedMineYouTubeChannel?.id}
-        />
+        <Form.Item
+          label="Channel"
+          name={FORM_ITEM_NAMES.CHANNEL_RADIO_GROUP}
+        >
+          <YouTubeChannelRadioGroup
+            onChangeChannel={setSelectedMineYouTubeChannel}
+            value={selectedMineYouTubeChannel?.id}
+          />
+        </Form.Item>
 
         <div>
           {selectedMineYouTubeChannel?.id}
