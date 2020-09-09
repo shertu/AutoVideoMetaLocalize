@@ -39,13 +39,13 @@ export function LanguageSelect(props: SelectProps<string>): JSX.Element {
 
   return (
     <AuthorizedContent>
-      <Row align="top">
+      <Row align="top" justify="center">
         {error && cloudTranslationSupportedLanguages == null &&
-          <Alert message="Error" description="Failed to load Google Cloud Translate language information." type="error" showIcon />
+          <Alert className="max-cell-sm" message="Error" description="Failed to load Google Cloud Translate language information." type="error" showIcon />
         }
 
         {error && youTubeI18nLanguages == null &&
-          <Alert message="Error" description="Failed to load YouTube language information." type="error" showIcon />
+          <Alert className="max-cell-sm" message="Error" description="Failed to load YouTube language information." type="error" showIcon />
         }
 
         <Select {...props}

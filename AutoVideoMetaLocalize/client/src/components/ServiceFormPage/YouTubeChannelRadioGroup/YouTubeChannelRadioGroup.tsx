@@ -59,8 +59,7 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
    * @param {number} pageSize
    */
   function onChangePagination(page: number, pageSize?: number): void {
-    onChangePaginationAsync(page, pageSize)
-      .catch(() => setError(true));
+    onChangePaginationAsync(page, pageSize);
   }
 
   /**
@@ -93,7 +92,7 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
    * @param currentResponse
    * @param maxResults
    */
-  async function onLoadNext(currentResponse?: ChannelListResponse, maxResults?: number): Promise<ChannelListResponse> {
+  function onLoadNext(currentResponse?: ChannelListResponse, maxResults?: number): Promise<ChannelListResponse> {
     const request: ApiYouTubeChannelListGetRequest = {
       part: 'id,snippet,contentDetails',
       mine: true,
@@ -104,7 +103,7 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
       request.pageToken = currentResponse.nextPageToken;
     }
 
-    return await YOUTUBE_CHANNEL_API.apiYouTubeChannelListGet(request);
+    return YOUTUBE_CHANNEL_API.apiYouTubeChannelListGet(request);
   }
 
   /**
@@ -129,11 +128,11 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
     <AuthorizedContent>
       <Row align="top" justify="center">
         {error && mineYouTubeChannels == null &&
-          <Alert message="Error" description="Failed to load YouTube channel information." type="error" showIcon />
+          <Alert className="max-cell-sm" message="Error" description="Failed to load YouTube channel information." type="error" showIcon />
         }
 
         {mineYouTubeChannels && mineYouTubeChannels.length == 0 && loading === false &&
-          <Alert message="Error" description="No YouTube channels are associated with this Google account." type="error" showIcon />
+          <Alert className="max-cell-sm" message="Warning" description="No YouTube channels are associated with this Google account." type="warning" showIcon />
         }
 
         <Radio.Group {...props}

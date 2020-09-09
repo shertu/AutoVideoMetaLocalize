@@ -105,7 +105,7 @@ export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProp
     setLoading(false);
     setResponse(tempStateResponse);
     setChannelUploadsPlaylistItems(tempStateData);
-    setPaginationCurrent(paginationCurrent + 1);
+    setPaginationCurrent(page);
   }
 
   /**
@@ -114,7 +114,7 @@ export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProp
    * @param currentResponse
    * @param maxResults
    */
-  async function onLoadNext(currentResponse?: ChannelListResponse, maxResults?: number): Promise<ChannelListResponse> {
+  function onLoadNext(currentResponse?: ChannelListResponse, maxResults?: number): Promise<ChannelListResponse> {
     const request: ApiYouTubePlaylistItemListGetRequest = {
       part: 'id,snippet',
       playlistId: channelUploadsPlaylistId,
@@ -125,7 +125,7 @@ export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProp
       request.pageToken = currentResponse.nextPageToken;
     }
 
-    return await YOUTUBE_PLAYLIST_ITEM_API.apiYouTubePlaylistItemListGet(request);
+    return YOUTUBE_PLAYLIST_ITEM_API.apiYouTubePlaylistItemListGet(request);
   }
 
   /**
@@ -159,15 +159,15 @@ export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProp
     <AuthorizedContent>
       <Row align="top" justify="center">
         {error && channelUploadsPlaylistItems == null &&
-          <Alert message="Error" description="Failed to load YouTube video information." type="error" showIcon />
+          <Alert className="max-cell-sm" message="Error" description="Failed to load YouTube video information." type="error" showIcon />
         }
 
         {channelUploadsPlaylistItems && channelUploadsPlaylistItems.length == 0 && loading === false &&
-          <Alert message="Error" description="No YouTube videos are associated with this YouTube channel." type="error" showIcon />
+          <Alert className="max-cell-sm" message="Warning" description="No YouTube videos are associated with this YouTube channel." type="warning" showIcon />
         }
 
         <SizeMe children={({ size }) => {
-          setMaxHeight(size.height);
+          setMaxHeight(Math.max(size.height, maxHeight));
 
           return (
             <Skeleton loading={loading} active>
