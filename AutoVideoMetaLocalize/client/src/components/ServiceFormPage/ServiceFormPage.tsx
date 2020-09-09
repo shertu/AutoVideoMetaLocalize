@@ -88,15 +88,14 @@ export function ServiceFormPage(): JSX.Element {
     serializeLanguageCookie(null);
   }
 
-  function serializeLanguageCookie(languageValues: string[]) {
+  function serializeLanguageCookie(languageValues?: string[]) {
     languageValues = languageValues || [];
-
     document.cookie = cookie.serialize(FORM_ITEM_NAMES.LANGUAGE_SELECTION, languageValues.join(','), {
       sameSite: 'lax',
     });
   }
 
-  const INITIAL_VALUE_LANGUAGE_SELECTION: string[] = cookie.parse(document.cookie)[FORM_ITEM_NAMES.LANGUAGE_SELECTION]?.split(',');
+  const languagesInitialValue: string[] = cookie.parse(document.cookie)[FORM_ITEM_NAMES.LANGUAGE_SELECTION]?.split(',');
 
   // When the channel options are set then set the selected channel to the first option
 
@@ -113,12 +112,12 @@ export function ServiceFormPage(): JSX.Element {
             label="Languages"
             name={FORM_ITEM_NAMES.LANGUAGE_SELECTION}
             rules={[{ required: true, message: 'Please select at least one language.' }]}
-            initialValue={INITIAL_VALUE_LANGUAGE_SELECTION}
+            initialValue={languagesInitialValue || []}
           >
             <LanguageSelect />
           </Form.Item>
 
-          <Row className="ant-form-item">
+          <Row className="ant-form-item" hidden={selectedMineYouTubeChannel != null}>
             <Col offset={4} span={20}>
               <YouTubeChannelRadioGroup
                 onChangeChannel={setSelectedMineYouTubeChannel}
