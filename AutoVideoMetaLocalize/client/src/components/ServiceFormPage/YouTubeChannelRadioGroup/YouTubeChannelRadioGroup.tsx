@@ -60,7 +60,8 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
    * @param {number} pageSize
    */
   function onChangePagination(page: number, pageSize?: number): void {
-    onChangePaginationAsync(page, pageSize);
+    onChangePaginationAsync(page, pageSize)
+      .catch(() => setError(true));
   }
 
   /**
@@ -141,7 +142,7 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
         className="max-cell-sm"
       >
         <InfiniteScroll
-          loadMore={onChangePaginationAsync}
+          loadMore={onChangePagination}
           hasMore={!loading && canLoadMore(response)}
           loader={<Spin key="infinite-scroll-loader" />}
           useWindow={false}

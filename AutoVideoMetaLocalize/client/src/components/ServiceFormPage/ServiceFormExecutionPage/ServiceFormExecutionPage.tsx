@@ -42,7 +42,7 @@ export function ServiceFormExecutionPage(props: {
     <Page title="Execution">
       {error &&
         <Row justify="center">
-          <Alert className="max-cell-sm" message="Error" description="An error occured ." type="error" showIcon />
+          <Alert className="max-cell-sm" message="Error" description="An error occured which has halted execution." type="error" showIcon />
         </Row>
       }
 
