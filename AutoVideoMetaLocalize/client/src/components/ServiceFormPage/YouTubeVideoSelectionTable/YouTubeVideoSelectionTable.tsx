@@ -5,7 +5,6 @@ import { Channel, ChannelListResponse, Video, PlaylistItem, PlaylistItemListResp
 import { AuthorizedContent } from '../../AuthorizedContent/AuthorizedContent';
 import { FormSelectionTable, FormSelectionTableProps } from '../../FormSelectionTable/FormSelectionTable';
 import { TablePaginationConfig, ColumnsType } from 'antd/lib/table';
-import { SizeMe } from 'react-sizeme';
 
 const YOUTUBE_PLAYLIST_ITEM_API = new YouTubePlaylistItemApi();
 const DEFAULT_PAGE_SIZE: number = 3;
@@ -52,9 +51,6 @@ export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProp
 
   const [error, setError] =
     React.useState<boolean>(null);
-
-  const [maxHeight, setMaxHeight] =
-    React.useState<number>(0);
 
   React.useEffect(() => {
     onChangePagination(1); // pagination starts at one
@@ -166,25 +162,19 @@ export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProp
           <Alert className="max-cell-sm" message="Warning" description="No YouTube videos are associated with this YouTube channel." type="warning" showIcon />
         }
 
-        <SizeMe children={({ size }) => {
-          setMaxHeight(Math.max(size.height, maxHeight));
-
-          return (
-            <Skeleton loading={loading} active>
-              <FormSelectionTable
-                table={{
-                  dataSource: channelUploadsPlaylistItems,
-                  pagination: pagination,
-                  rowKey: rowKey,
-                  columns: VIDEO_FORM_SELECTION_TABLE_COLUMNS,
-                  style: { height: maxHeight },
-                }}
-                value={value}
-                onChange={onChange}
-              />
-            </Skeleton>
-          );
-        }} />
+        <Skeleton loading={loading} active>
+          <FormSelectionTable
+            table={{
+              className: "max-cell-sm",
+              dataSource: channelUploadsPlaylistItems,
+              pagination: pagination,
+              rowKey: rowKey,
+              columns: VIDEO_FORM_SELECTION_TABLE_COLUMNS,
+            }}
+            value={value}
+            onChange={onChange}
+          />
+        </Skeleton>
       </Row>
     </AuthorizedContent >
   );
