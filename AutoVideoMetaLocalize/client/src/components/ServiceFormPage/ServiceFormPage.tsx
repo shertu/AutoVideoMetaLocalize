@@ -85,17 +85,18 @@ export function ServiceFormPage(): JSX.Element {
       [FORM_ITEM_NAMES.SMB_CHECKBOX]: false,
     });
 
-    serializeLanguageCookie(null);
+    serializeLanguageCookie([]);
   }
 
-  function serializeLanguageCookie(languageValues?: string[]) {
+  function serializeLanguageCookie(languageValues: string[]) {
     languageValues = languageValues || [];
     document.cookie = cookie.serialize(FORM_ITEM_NAMES.LANGUAGE_SELECTION, languageValues.join(','), {
       sameSite: 'lax',
     });
   }
 
-  const languagesInitialValue: string[] = cookie.parse(document.cookie)[FORM_ITEM_NAMES.LANGUAGE_SELECTION]?.split(',');
+  const languageSelectionCookieValue = cookie.parse(document.cookie)[FORM_ITEM_NAMES.LANGUAGE_SELECTION];
+  const LANGUAGE_SELECTION_INITIAL_VALUE: string[] = languageSelectionCookieValue ? languageSelectionCookieValue.split(',') : [];
 
   // When the channel options are set then set the selected channel to the first option
 
@@ -112,7 +113,7 @@ export function ServiceFormPage(): JSX.Element {
             label="Languages"
             name={FORM_ITEM_NAMES.LANGUAGE_SELECTION}
             rules={[{ required: true, message: 'Please select at least one language.' }]}
-            initialValue={languagesInitialValue || []}
+            initialValue={LANGUAGE_SELECTION_INITIAL_VALUE}
           >
             <LanguageSelect />
           </Form.Item>
