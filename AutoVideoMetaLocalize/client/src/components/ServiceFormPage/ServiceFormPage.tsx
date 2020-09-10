@@ -10,6 +10,7 @@ import { Page } from '../Page/Page';
 import { Store } from 'antd/lib/form/interface';
 import { ServiceFormExecutionPage } from './ServiceFormExecutionPage/ServiceFormExecutionPage';
 import EventStates from '../../event-states';
+import { CSSTransition } from 'react-transition-group';
 
 const YOUTUBE_VIDEO_API: YouTubeVideoApi = new YouTubeVideoApi();
 
@@ -40,6 +41,9 @@ export function ServiceFormPage(): JSX.Element {
 
   const [executionProgressMax, setExecutionProgressMax] =
     React.useState<number>(0);
+
+  const [inProp, setInProp] =
+    React.useState<boolean>(false);
 
   const [form] = Form.useForm();
 
@@ -112,72 +116,78 @@ export function ServiceFormPage(): JSX.Element {
 
   return (
     <AuthorizedContent>
-      <Page title="Service">
-        <Form
-          labelCol={{ span: 4 }}
-          wrapperCol={{ span: 20 }}
-          onFinish={onFinish}
-          form={form}
-        >
-          <Form.Item
-            label="Languages"
-            name={FORM_ITEM_NAMES.LANGUAGE_SELECTION}
-            rules={[{ required: true, message: 'Please select at least one language.' }]}
-            initialValue={languageSelectionInitialValue}
+      <CSSTransition in={executionState === EventStates.prospective} timeout={1000} classNames="fade-left">
+        <Page title="Service">
+          <Form
+            labelCol={{ span: 4 }}
+            wrapperCol={{ span: 20 }}
+            onFinish={onFinish}
+            form={form}
           >
-            <LanguageSelect />
-          </Form.Item>
-
-          <Row className="ant-form-item" hidden={youTubeChannelRadioGroupHidden}>
-            <Col offset={4} span={20}>
-              <YouTubeChannelRadioGroup
-                setSelectedMineYouTubeChannel={setSelectedMineYouTubeChannel}
-                setYouTubeChannelRadioGroupHidden={setYouTubeChannelRadioGroupHidden}
-                value={selectedMineYouTubeChannel?.id}
-              />
-            </Col>
-          </Row>
-
-          {selectedMineYouTubeChannel &&
             <Form.Item
-              label="Videos"
-              name={FORM_ITEM_NAMES.VIDEO_SELECTION}
-              rules={[{ required: true, message: 'Please select at least one video.' }]}
+              label="Languages"
+              name={FORM_ITEM_NAMES.LANGUAGE_SELECTION}
+              rules={[{ required: true, message: 'Please select at least one language.' }]}
+              initialValue={languageSelectionInitialValue}
             >
-              <YouTubeVideoSelectionTable
-                selectedMineYouTubeChannel={selectedMineYouTubeChannel}
-              />
+              <LanguageSelect />
             </Form.Item>
-          }
 
-          <Collapse className="ant-form-item">
-            <Collapse.Panel header="Additional Options" key="1">
+            <Row className="ant-form-item" hidden={youTubeChannelRadioGroupHidden}>
+              <Col offset={4} span={20}>
+                <YouTubeChannelRadioGroup
+                  setSelectedMineYouTubeChannel={setSelectedMineYouTubeChannel}
+                  setYouTubeChannelRadioGroupHidden={setYouTubeChannelRadioGroupHidden}
+                  value={selectedMineYouTubeChannel?.id}
+                />
+              </Col>
+            </Row>
+
+            {selectedMineYouTubeChannel &&
               <Form.Item
-                name={FORM_ITEM_NAMES.SMB_CHECKBOX}
-                valuePropName="checked"
-                noStyle
+                label="Videos"
+                name={FORM_ITEM_NAMES.VIDEO_SELECTION}
+                rules={[{ required: true, message: 'Please select at least one video.' }]}
               >
-                <Checkbox>Sheet Music Boss</Checkbox>
+                <YouTubeVideoSelectionTable
+                  selectedMineYouTubeChannel={selectedMineYouTubeChannel}
+                />
               </Form.Item>
-            </Collapse.Panel>
-          </Collapse>
+            }
 
-          <Row justify="end">
-            <Space>
-              <Button onClick={() => onClickClear()}>Clear</Button>
-              <Button type="primary" htmlType="submit" disabled={executionState === EventStates.continuitive}>Execute</Button>
-            </Space>
-          </Row>
-        </Form>
+            <Collapse className="ant-form-item">
+              <Collapse.Panel header="Additional Options" key="1">
+                <Form.Item
+                  name={FORM_ITEM_NAMES.SMB_CHECKBOX}
+                  valuePropName="checked"
+                  noStyle
+                >
+                  <Checkbox>Sheet Music Boss</Checkbox>
+                </Form.Item>
+              </Collapse.Panel>
+            </Collapse>
 
-        {executionState === EventStates.continuitive || executionState === EventStates.retropective &&
-          <ServiceFormExecutionPage
-            error={executionError}
-            executionProgressMax={executionProgressMax}
-            executionState={executionState}
-          />
-        }
-      </Page>
+            <Row justify="end">
+              <Space>
+                <Button onClick={() => onClickClear()}>Clear</Button>
+                <Button type="primary" htmlType="submit" disabled={executionState === EventStates.continuitive}>Execute</Button>
+              </Space>
+            </Row>
+          </Form>
+        </Page>
+      </CSSTransition>
+
+      <CSSTransition in={executionState === EventStates.continuitive || executionState === EventStates.retropective} timeout={1000} classNames="fade-right">
+        <ServiceFormExecutionPage
+          error={executionError}
+          executionProgressMax={executionProgressMax}
+          executionState={executionState}
+        />
+
+        <Row justify="end">
+          <Button onClick={() => setExecutionState(EventStates.prospective)}>Return</Button>
+        </Row>
+      </CSSTransition>
     </AuthorizedContent>
   );
 }
