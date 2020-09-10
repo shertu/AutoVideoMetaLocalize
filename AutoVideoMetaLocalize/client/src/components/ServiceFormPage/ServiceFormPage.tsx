@@ -178,15 +178,17 @@ export function ServiceFormPage(): JSX.Element {
       </CSSTransition>
 
       <CSSTransition in={executionState === EventStates.continuitive || executionState === EventStates.retropective} timeout={1000} classNames="fade-right">
-        <ServiceFormExecutionPage
-          error={executionError}
-          executionProgressMax={executionProgressMax}
-          executionState={executionState}
-        />
+        <Page>
+          <ServiceFormExecutionPage
+            error={executionError}
+            executionProgressMax={executionProgressMax}
+            executionState={executionState}
+          />
 
-        <Row justify="end">
-          <Button onClick={() => setExecutionState(EventStates.prospective)}>Return</Button>
-        </Row>
+          <Row justify="end">
+            <Button onClick={() => setExecutionState(EventStates.prospective)}>Return</Button>
+          </Row>
+        </Page>
       </CSSTransition>
     </AuthorizedContent>
   );
