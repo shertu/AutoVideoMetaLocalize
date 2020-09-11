@@ -42,9 +42,6 @@ export function ServiceFormPage(): JSX.Element {
   const [executionProgressMax, setExecutionProgressMax] =
     React.useState<number>(0);
 
-  const [inProp, setInProp] =
-    React.useState<boolean>(false);
-
   const [form] = Form.useForm();
   const carouselRef = React.useRef<Carousel>();
 
@@ -114,12 +111,10 @@ export function ServiceFormPage(): JSX.Element {
 
   const languageSelectionCookieValue: string = cookie.parse(document.cookie)[FORM_ITEM_NAMES.LANGUAGE_SELECTION];
   const languageSelectionInitialValue: string[] = languageSelectionCookieValue ? languageSelectionCookieValue.split(',') : [];
-
   const showExecutionPage: boolean = executionState === EventStates.continuitive || executionState === EventStates.retropective;
 
   React.useEffect(() => {
     if (carouselRef && carouselRef.current) {
-      // this 'ref' has access to 'goTo', 'prev' and 'next'
       const carouselTarget: number = showExecutionPage ? 1 : 0;
       carouselRef.current.goTo(carouselTarget);
     }
@@ -187,11 +182,19 @@ export function ServiceFormPage(): JSX.Element {
           </Form>
         </Page>
 
-        <ServiceFormExecutionPage
-          error={executionError}
-          executionProgressMax={executionProgressMax}
-          executionState={executionState}
-        />
+        <Page>
+          <ServiceFormExecutionPage
+            error={executionError}
+            executionProgressMax={executionProgressMax}
+            executionState={executionState}
+          />
+
+          <Row justify="end">
+            <Space>
+              <Button onClick={() => setExecutionState(EventStates.prospective)}>Return to Service Form</Button>
+            </Space>
+          </Row>
+        </Page>
       </Carousel>
     </AuthorizedContent>
   );

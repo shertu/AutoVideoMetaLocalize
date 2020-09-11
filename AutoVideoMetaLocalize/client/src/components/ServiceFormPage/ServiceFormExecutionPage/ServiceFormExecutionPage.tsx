@@ -17,10 +17,18 @@ export function ServiceFormExecutionPage(props: {
   executionProgressMax: number,
   executionState: EventStates,
 }): JSX.Element {
+  const { error, executionProgressMax, executionState } = props;
+
   const [executionProgress, setExecutionProgress] =
     React.useState<number>(0);
 
-  const { error, executionProgressMax, executionState } = props;
+
+  React.useEffect(() => {
+    if (executionState === EventStates.continuitive) {
+      setExecutionProgress(0);
+    }
+  }, [props.executionState]);
+
   const progressValue: number = executionProgressMax ? executionProgress / executionProgressMax : 1;
 
   useInterval(updateLocalizationCount, 800);
