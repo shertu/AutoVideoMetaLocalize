@@ -1,8 +1,8 @@
 import { Select, Alert } from 'antd';
 import * as React from 'react';
-import { SupportedLanguage, I18nLanguageSnippet, LanguageApi } from '../../../../generated-sources/openapi';
+import { SupportedLanguage, I18nLanguageSnippet, LanguageApi } from '../../../../../generated-sources/openapi';
 import { SelectProps } from 'antd/lib/select';
-import { AuthorizedContent } from '../../AuthorizedContent/AuthorizedContent';
+import { AuthorizedContent } from '../../../AuthorizedContent/AuthorizedContent';
 
 const LANGUAGE_API: LanguageApi = new LanguageApi();
 

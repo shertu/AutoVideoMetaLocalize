@@ -2,6 +2,7 @@ import * as React from 'react';
 import {Page} from '../Page/Page';
 import {Typography} from 'antd';
 import names from '../../names';
+import { MailToMe } from '../MailToMe/MailToMe';
 
 const {Paragraph, Text, Title} = Typography;
 
@@ -31,15 +32,16 @@ export function PrivacyPolicyPage(): JSX.Element {
           as well as to update the localizations of your YouTube channel&#39;s uploaded videos.
         </Paragraph>
 
-        <Paragraph>
-          This website will use https://www.googleapis.com/auth/cloud-translation to translate the titles and descriptions of some YouTube videos
-          for the purpose of then updating their localizations.
-        </Paragraph>
-
         <Title level={2}>Cookies</Title>
 
         <Paragraph>
-          Like many other websites, this website uses computer cookies to help the website keep track of your preferences, authenticaiton, etc.
+          This website, like many other websites, uses computer cookies to help keep track of your preferences, authenticaiton session, etc.
+        </Paragraph>
+
+        <Title level={2}>Support</Title>
+
+        <Paragraph>
+          For any enquiries about this web application's privacy policy, <MailToMe>please contact its developer.</MailToMe>
         </Paragraph>
       </Typography>
     </Page>

@@ -11,7 +11,7 @@ const { Paragraph, Text, Title } = Typography;
 const GOOGLE_AUTH_SCOPES: string[] = [
   // 'https://www.googleapis.com/auth/youtube.upload',
   'https://www.googleapis.com/auth/youtube',
-  'https://www.googleapis.com/auth/cloud-translation',
+  //'https://www.googleapis.com/auth/cloud-translation',
 ];
 
 /**
@@ -22,22 +22,22 @@ const GOOGLE_AUTH_SCOPES: string[] = [
 export function HomePage(): JSX.Element {
   return (
     <Space direction="vertical" align="center" size="large">
-      <Title style={{ textAlign: 'center' }}>{names.APPLICATION}</Title >
+      <Title>{names.APPLICATION}</Title >
 
       <Paragraph className="max-cell-xs">
-        Welcome to <Text strong>{names.APPLICATION}.</Text>&nbsp;The
-          service which can translate or localize the titles and descriptions
-          of your YouTube videos to make them accessible to a larger audience.
-        </Paragraph>
+        <Text strong>{names.APPLICATION}.</Text>&nbsp; a
+        service which can localize the titles and descriptions
+        of your YouTube videos to make them accessible to a larger audience.
+      </Paragraph>
 
       <Page title="Account Sign-in">
-        <Space direction="vertical" align="center">
-          <Paragraph className="max-cell-xs">
-            To use this service please sign-in to Google and authorize this application.
-            </Paragraph>
+        <Paragraph className="max-cell-xs">
+          To use this service please sign-in to Google and authorize this application.
+        </Paragraph>
 
+        <div className="max-cell-xs" style={{ marginBottom: 24 }}>
           <GoogleSignInButton scopes={GOOGLE_AUTH_SCOPES} redirect={`~${routes.ROUTE_PROCESS}`} />
-        </Space>
+        </div>
       </Page>
 
       <Page title="How does it work?">

@@ -13,7 +13,7 @@ const GOOGLE_AUTH_API: GoogleAuthApi = new GoogleAuthApi();
  * @return {JSX.Element}
  */
 export function GoogleSignOutButton(props: {
-  redirect?: string,
+  redirect?: string;
 }): JSX.Element {
   const redirect: string = props.redirect || window.location.pathname;
 

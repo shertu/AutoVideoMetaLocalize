@@ -1,11 +1,12 @@
-import {Layout, Row, Button, Avatar} from 'antd';
+import { Layout, Row, Button, Avatar } from 'antd';
 import * as React from 'react';
-import {AppContentSwitch} from '../AppContentSwitch/AppContentSwitch';
-import {Link} from 'react-router-dom';
+import { AppContentSwitch } from '../AppContentSwitch/AppContentSwitch';
+import { Link } from 'react-router-dom';
 import routes from '../../../routes';
-import {Page} from '../../Page/Page';
+import { Page } from '../../Page/Page';
+import './style.less';
 
-const {Content, Footer} = Layout;
+const { Content, Footer } = Layout;
 
 /**
  * The general layout or structure of the web application, e.g. main, header, footer, etc.
@@ -14,17 +15,15 @@ const {Content, Footer} = Layout;
  */
 export function AppLayout(): JSX.Element {
   return (
-    <Layout style={{minHeight: '100vh'}}>
-      <Content style={{padding: '40px 8px'}}>
-        <Row justify="center">
-          <Page id="content-viewport">
-            <AppContentSwitch />
-          </Page>
-        </Row>
+    <Layout>
+      <Content>
+        <Page id="content-viewport">
+          <AppContentSwitch />
+        </Page>
       </Content>
       <Footer>
         <Link to={routes.ROUTE_HOME}>
-          <Avatar shape="square" size={64} src="https://i.imgur.com/wU7ftuX.png"/>
+          <Avatar shape="square" size={64} src="https://i.imgur.com/wU7ftuX.png" />
         </Link>
         <Link to={routes.ROUTE_PRIVACY_POLICY}>
           <Button type="link">Privacy Policy</Button>

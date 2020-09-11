@@ -14,8 +14,8 @@ const GOOGLE_AUTH_API: GoogleAuthApi = new GoogleAuthApi();
  * @return {JSX.Element}
  */
 export function GoogleSignInButton(props: {
-  scopes?: string[],
-  redirect?: string,
+  scopes?: string[];
+  redirect?: string;
 }): JSX.Element {
   const scopes: string[] = props.scopes || ['https://www.googleapis.com/auth/userinfo.profile'];
   const redirect: string = props.redirect || window.location.pathname;

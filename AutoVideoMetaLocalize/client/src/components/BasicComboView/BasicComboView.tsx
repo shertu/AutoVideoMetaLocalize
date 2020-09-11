@@ -11,10 +11,10 @@ const {Paragraph} = Typography;
  * @return {JSX.Element}
  */
 export function BasicComboView(props: {
-  thumbnail?: Thumbnail,
-  title?: string,
-  subtitle?: string,
-  avatarShape?: 'circle' | 'square',
+  thumbnail?: Thumbnail;
+  title?: string;
+  subtitle?: string;
+  avatarShape?: 'circle' | 'square';
 }): JSX.Element {
   const { thumbnail, title, subtitle, avatarShape } = props;
 

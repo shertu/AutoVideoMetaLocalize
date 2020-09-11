@@ -1,17 +1,17 @@
 import { Radio, Alert, List, Spin } from 'antd';
 import * as React from 'react';
-import { BasicComboView } from '../../BasicComboView/BasicComboView';
-import { Channel, YouTubeChannelApi, ApiYouTubeChannelListGetRequest, ChannelListResponse } from '../../../../generated-sources/openapi';
+import { BasicComboView } from '../../../BasicComboView/BasicComboView';
+import { Channel, YouTubeChannelApi, ApiYouTubeChannelListGetRequest, ChannelListResponse } from '../../../../../generated-sources/openapi';
 import { RadioGroupProps, RadioChangeEvent } from 'antd/lib/radio';
-import { AuthorizedContent } from '../../AuthorizedContent/AuthorizedContent';
+import { AuthorizedContent } from '../../../AuthorizedContent/AuthorizedContent';
 import InfiniteScroll from 'react-infinite-scroller';
 
 const YOUTUBE_CHANNEL_API: YouTubeChannelApi = new YouTubeChannelApi();
 const DEFAULT_PAGE_SIZE: number = 30;
 
 export interface YouTubeChannelRadioGroupProps extends RadioGroupProps {
-  setSelectedMineYouTubeChannel: React.Dispatch<React.SetStateAction<Channel>>,
-  setYouTubeChannelRadioGroupHidden: React.Dispatch<React.SetStateAction<boolean>>
+  setSelectedMineYouTubeChannel: React.Dispatch<React.SetStateAction<Channel>>;
+  setYouTubeChannelRadioGroupHidden: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 /**
@@ -37,9 +37,9 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
 
   const DEFAULT_VALUE: Channel = mineYouTubeChannels && mineYouTubeChannels.length ? mineYouTubeChannels[0] : null;
 
-  React.useEffect(() => {
-    setSelectedMineYouTubeChannel(DEFAULT_VALUE);
-  }, [DEFAULT_VALUE]);
+  //React.useEffect(() => {
+  //  setSelectedMineYouTubeChannel(DEFAULT_VALUE);
+  //}, [DEFAULT_VALUE]);
 
   React.useEffect(() => {
     setYouTubeChannelRadioGroupHidden(mineYouTubeChannels && mineYouTubeChannels.length == 1 && !canLoadMore(response))
@@ -48,7 +48,7 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
   /**
    * Called when the radio group selection is changed.
    */
-  function onChangeValue(e: RadioChangeEvent) {
+  function onChange(e: RadioChangeEvent) {
     const value: string = e.target.value;
     const selectedChannel: Channel = mineYouTubeChannels.find((channel: Channel) => channel.id == value);
     setSelectedMineYouTubeChannel(selectedChannel);
@@ -139,7 +139,7 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
 
       <Radio.Group {...props}
         defaultValue={DEFAULT_VALUE}
-        onChange={onChangeValue}
+        onChange={onChange}
         className="max-cell-sm"
       >
         <InfiniteScroll

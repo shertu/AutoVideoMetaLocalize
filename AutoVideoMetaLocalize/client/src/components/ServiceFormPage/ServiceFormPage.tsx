@@ -1,16 +1,13 @@
-import { Button, Form, Row, Col, Collapse, Checkbox, Space, Carousel } from 'antd';
+import { Button, Form, Row, Space, Carousel } from 'antd';
 import * as React from 'react';
 import { Channel, AppVideoLocalizeRequest, YouTubeVideoApi } from '../../../generated-sources/openapi';
 import { AuthorizedContent } from '../AuthorizedContent/AuthorizedContent';
-import { LanguageSelect } from './LanguageSelect/LanguageSelect';
 import * as cookie from 'cookie';
-import { YouTubeChannelRadioGroup } from './YouTubeChannelRadioGroup/YouTubeChannelRadioGroup';
-import { YouTubeVideoSelectionTable } from './YouTubeVideoSelectionTable/YouTubeVideoSelectionTable';
 import { Page } from '../Page/Page';
 import { Store } from 'antd/lib/form/interface';
 import { ServiceFormExecutionPage } from './ServiceFormExecutionPage/ServiceFormExecutionPage';
 import EventStates from '../../event-states';
-import { CSSTransition } from 'react-transition-group';
+import { ServiceForm } from './ServiceForm/ServiceForm';
 
 const YOUTUBE_VIDEO_API: YouTubeVideoApi = new YouTubeVideoApi();
 
@@ -27,12 +24,6 @@ const FORM_ITEM_NAMES = {
  * @return {JSX.Element}
  */
 export function ServiceFormPage(): JSX.Element {
-  const [selectedMineYouTubeChannel, setSelectedMineYouTubeChannel] =
-    React.useState<Channel>(null);
-
-  const [youTubeChannelRadioGroupHidden, setYouTubeChannelRadioGroupHidden] =
-    React.useState<boolean>(false);
-
   const [executionState, setExecutionState] =
     React.useState<EventStates>(EventStates.prospective);
 
@@ -88,16 +79,6 @@ export function ServiceFormPage(): JSX.Element {
     }
   }
 
-  /** Clears the form's fields and the language cookie. */
-  function onClickClear() {
-    form.setFieldsValue({
-      [FORM_ITEM_NAMES.LANGUAGE_SELECTION]: [],
-      [FORM_ITEM_NAMES.VIDEO_SELECTION]: [],
-      [FORM_ITEM_NAMES.SMB_CHECKBOX]: false,
-    });
-
-    serializeLanguagesCookie();
-  }
 
   /**
    * Stores the current value of the languages form item into a cookie.
@@ -109,8 +90,6 @@ export function ServiceFormPage(): JSX.Element {
     });
   }
 
-  const languageSelectionCookieValue: string = cookie.parse(document.cookie)[FORM_ITEM_NAMES.LANGUAGE_SELECTION];
-  const languageSelectionInitialValue: string[] = languageSelectionCookieValue ? languageSelectionCookieValue.split(',') : [];
   const showExecutionPage: boolean = executionState === EventStates.continuitive || executionState === EventStates.retropective;
 
   React.useEffect(() => {
@@ -124,62 +103,13 @@ export function ServiceFormPage(): JSX.Element {
     <AuthorizedContent>
       <Carousel ref={carouselRef} dots={false}>
         <Page title="Service">
-          <Form
+          <ServiceForm
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 20 }}
             onFinish={onFinish}
             form={form}
           >
-            <Form.Item
-              label="Languages"
-              name={FORM_ITEM_NAMES.LANGUAGE_SELECTION}
-              rules={[{ required: true, message: 'Please select at least one language.' }]}
-              initialValue={languageSelectionInitialValue}
-            >
-              <LanguageSelect />
-            </Form.Item>
-
-            <Row className="ant-form-item" hidden={youTubeChannelRadioGroupHidden}>
-              <Col offset={4} span={20}>
-                <YouTubeChannelRadioGroup
-                  setSelectedMineYouTubeChannel={setSelectedMineYouTubeChannel}
-                  setYouTubeChannelRadioGroupHidden={setYouTubeChannelRadioGroupHidden}
-                  value={selectedMineYouTubeChannel?.id}
-                />
-              </Col>
-            </Row>
-
-            {selectedMineYouTubeChannel &&
-              <Form.Item
-                label="Videos"
-                name={FORM_ITEM_NAMES.VIDEO_SELECTION}
-                rules={[{ required: true, message: 'Please select at least one video.' }]}
-              >
-                <YouTubeVideoSelectionTable
-                  selectedMineYouTubeChannel={selectedMineYouTubeChannel}
-                />
-              </Form.Item>
-            }
-
-            <Collapse className="ant-form-item">
-              <Collapse.Panel header="Additional Options" key="1">
-                <Form.Item
-                  name={FORM_ITEM_NAMES.SMB_CHECKBOX}
-                  valuePropName="checked"
-                  noStyle
-                >
-                  <Checkbox>Sheet Music Boss</Checkbox>
-                </Form.Item>
-              </Collapse.Panel>
-            </Collapse>
-
-            <Row justify="end">
-              <Space>
-                <Button onClick={() => onClickClear()}>Clear</Button>
-                <Button type="primary" htmlType="submit" disabled={executionState === EventStates.continuitive}>Execute</Button>
-              </Space>
-            </Row>
-          </Form>
+          </ServiceForm>
         </Page>
 
         <Page>

@@ -1,9 +1,9 @@
-import { Alert, Row, Skeleton } from 'antd';
+import { Alert, Skeleton } from 'antd';
 import * as React from 'react';
-import { BasicComboView } from '../../BasicComboView/BasicComboView';
-import { Channel, ChannelListResponse, Video, PlaylistItem, PlaylistItemListResponse, YouTubePlaylistItemApi, ApiYouTubePlaylistItemListGetRequest } from '../../../../generated-sources/openapi';
-import { AuthorizedContent } from '../../AuthorizedContent/AuthorizedContent';
-import { FormSelectionTable, FormSelectionTableProps } from '../../FormSelectionTable/FormSelectionTable';
+import { BasicComboView } from '../../../BasicComboView/BasicComboView';
+import { Channel, ChannelListResponse, PlaylistItem, PlaylistItemListResponse, YouTubePlaylistItemApi, ApiYouTubePlaylistItemListGetRequest } from '../../../../../generated-sources/openapi';
+import { AuthorizedContent } from '../../../AuthorizedContent/AuthorizedContent';
+import { FormSelectionTable } from '../../../FormSelectionTable/FormSelectionTable';
 import { TablePaginationConfig, ColumnsType } from 'antd/lib/table';
 
 const YOUTUBE_PLAYLIST_ITEM_API = new YouTubePlaylistItemApi();
@@ -24,9 +24,9 @@ const VIDEO_FORM_SELECTION_TABLE_COLUMNS: ColumnsType<PlaylistItem> = [{
 }];
 
 export interface YouTubeVideoSelectionTableProps {
-  selectedMineYouTubeChannel?: Channel,
+  selectedMineYouTubeChannel?: Channel;
   value?: React.Key[];
-  onChange?: (value: React.Key[]) => void,
+  onChange?: (value: React.Key[]) => void;
 }
 
 /**

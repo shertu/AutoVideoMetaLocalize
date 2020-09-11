@@ -6,18 +6,18 @@ import { Link } from 'react-router-dom';
 import routes from '../../routes';
 
 /**
- * A wrapper component which renders if the user is authenticated and authorized.
+ * A wrapper component which renders child content if the user is authenticated and authorized.
  * 
  * @param props
  */
 export function AuthorizedContent(props: {
-  children?: React.ReactNode,
+  children?: React.ReactNode;
 }): JSX.Element {
   const user: GetClaimsPrincipleResult = React.useContext(UserContext);
 
   return (
     <Skeleton loading={user == null}>
-      {user ? user.isAuthenticated ?
+      {user && user.isAuthenticated ?
         props.children :
         <Result
           status="403"
@@ -28,7 +28,7 @@ export function AuthorizedContent(props: {
               <Button type="primary">Go Home</Button>
             </Link>
           }
-        /> : null
+        />
       }
     </Skeleton>
   );

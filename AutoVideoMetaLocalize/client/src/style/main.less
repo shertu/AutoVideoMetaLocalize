@@ -1,4 +1,4 @@
-﻿// automatically account for font-size
+// automatically account for font-size
 button {
   height: auto !important;
 }
@@ -8,7 +8,22 @@ button {
   margin: 0.5em 0;
 }
 
-// a common macro to maximise the height of an object
+// a common class to maximise a node's height
 .max-height {
   height: 100%;
+}
+
+// automatically maximise image width
+img {
+  width: 100%;
+}
+
+// an class for banner images, etc.
+.image-cover {
+  width: 100%;
+  height: 100%;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  object-fit: cover;
 }
