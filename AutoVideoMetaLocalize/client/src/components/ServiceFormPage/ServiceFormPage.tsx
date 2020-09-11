@@ -187,13 +187,11 @@ export function ServiceFormPage(): JSX.Element {
           </Form>
         </Page>
 
-        {showExecutionPage &&
-          <ServiceFormExecutionPage
-            error={executionError}
-            executionProgressMax={executionProgressMax}
-            executionState={executionState}
-          />
-        }
+        <ServiceFormExecutionPage
+          error={executionError}
+          executionProgressMax={executionProgressMax}
+          executionState={executionState}
+        />
       </Carousel>
     </AuthorizedContent>
   );
