@@ -1,4 +1,4 @@
-import { Button, Form, Row, Col, Collapse, Checkbox, Space } from 'antd';
+import { Button, Form, Row, Col, Collapse, Checkbox, Space, Carousel } from 'antd';
 import * as React from 'react';
 import { Channel, AppVideoLocalizeRequest, YouTubeVideoApi } from '../../../generated-sources/openapi';
 import { AuthorizedContent } from '../AuthorizedContent/AuthorizedContent';
@@ -46,6 +46,7 @@ export function ServiceFormPage(): JSX.Element {
     React.useState<boolean>(false);
 
   const [form] = Form.useForm();
+  const carouselRef = React.useRef<Carousel>();
 
   /**
    * Called when the options form is successfully filled out and submitted.
@@ -114,9 +115,19 @@ export function ServiceFormPage(): JSX.Element {
   const languageSelectionCookieValue: string = cookie.parse(document.cookie)[FORM_ITEM_NAMES.LANGUAGE_SELECTION];
   const languageSelectionInitialValue: string[] = languageSelectionCookieValue ? languageSelectionCookieValue.split(',') : [];
 
+  const showExecutionPage: boolean = executionState === EventStates.continuitive || executionState === EventStates.retropective;
+
+  React.useEffect(() => {
+    if (carouselRef && carouselRef.current) {
+      // this 'ref' has access to 'goTo', 'prev' and 'next'
+      const carouselTarget: number = showExecutionPage ? 2 : 1;
+      carouselRef.current.goTo(carouselTarget);
+    }
+  }, [executionState]);
+
   return (
     <AuthorizedContent>
-      <CSSTransition in={executionState === EventStates.prospective} timeout={1000} classNames="fade-left">
+      <Carousel ref={carouselRef} dots={false}>
         <Page title="Service">
           <Form
             labelCol={{ span: 4 }}
@@ -175,21 +186,15 @@ export function ServiceFormPage(): JSX.Element {
             </Row>
           </Form>
         </Page>
-      </CSSTransition>
 
-      <CSSTransition in={executionState === EventStates.continuitive || executionState === EventStates.retropective} timeout={1000} classNames="fade-right">
-        <Page>
+        {showExecutionPage &&
           <ServiceFormExecutionPage
             error={executionError}
             executionProgressMax={executionProgressMax}
             executionState={executionState}
           />
-
-          <Row justify="end">
-            <Button onClick={() => setExecutionState(EventStates.prospective)}>Return</Button>
-          </Row>
-        </Page>
-      </CSSTransition>
+        }
+      </Carousel>
     </AuthorizedContent>
   );
 }
