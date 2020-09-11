@@ -120,7 +120,7 @@ export function ServiceFormPage(): JSX.Element {
   React.useEffect(() => {
     if (carouselRef && carouselRef.current) {
       // this 'ref' has access to 'goTo', 'prev' and 'next'
-      const carouselTarget: number = showExecutionPage ? 2 : 1;
+      const carouselTarget: number = showExecutionPage ? 1 : 0;
       carouselRef.current.goTo(carouselTarget);
     }
   }, [executionState]);
