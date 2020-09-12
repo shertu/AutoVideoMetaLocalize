@@ -32,7 +32,7 @@ export function AppContentSwitch(): JSX.Element {
           title='client-side no route match error'
           extra={
             <Paragraph>
-              Please&nbsp;<MailToMe subject={`Error occured during ${window.location.href}`}>report this error to a developer.</MailToMe>
+              Please&nbsp;<MailToMe subject={`An error occured when I visited ${window.location.href}`}>report this error to a developer.</MailToMe>
             </Paragraph>
           }
         />

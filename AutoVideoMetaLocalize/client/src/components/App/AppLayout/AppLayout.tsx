@@ -15,7 +15,7 @@ const { Content, Footer } = Layout;
  */
 export function AppLayout(): JSX.Element {
   return (
-    <Layout>
+    <Layout id="app-layout">
       <Content>
         <Page id="content-viewport">
           <AppContentSwitch />

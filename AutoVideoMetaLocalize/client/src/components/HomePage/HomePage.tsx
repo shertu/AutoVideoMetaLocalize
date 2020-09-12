@@ -25,19 +25,19 @@ export function HomePage(): JSX.Element {
       <Title>{names.APPLICATION}</Title >
 
       <Paragraph className="max-cell-xs">
-        <Text strong>{names.APPLICATION}.</Text>&nbsp; a
+        <Text strong>{names.APPLICATION}</Text> is a
         service which can localize the titles and descriptions
         of your YouTube videos to make them accessible to a larger audience.
       </Paragraph>
 
-      <Page title="Account Sign-in">
+      <Page title="YouTube Authorization">
         <Paragraph className="max-cell-xs">
-          To use this service please sign-in to Google and authorize this application.
+          To use this service please sign-in to Google and authorize this application to access your YouTube account.
         </Paragraph>
 
-        <div className="max-cell-xs" style={{ marginBottom: 24 }}>
+        <Row align="middle" justify="center" className="max-cell-xs" style={{ padding: '1em' }}>
           <GoogleSignInButton scopes={GOOGLE_AUTH_SCOPES} redirect={`~${routes.ROUTE_PROCESS}`} />
-        </div>
+        </Row>
       </Page>
 
       <Page title="How does it work?">

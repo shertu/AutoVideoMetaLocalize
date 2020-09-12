@@ -69,27 +69,21 @@ export function ServiceForm<Values = any>(props: FormProps<Values>): JSX.Element
           <LanguageSelect />
         </Form.Item>
 
-        <Row className="ant-form-item" hidden={isExactlyOneMineYouTubeChannel}>
-          <Col offset={props.labelCol.span} span={props.wrapperCol.span}>
-            <YouTubeChannelRadioGroup
-              setSelectedMineYouTubeChannel={setSelectedMineYouTubeChannel}
-              setYouTubeChannelRadioGroupHidden={setIsExactlyOneMineYouTubeChannel}
-              value={selectedMineYouTubeChannel?.id}
-            />
-          </Col>
-        </Row>
+        <YouTubeChannelRadioGroup
+          setSelectedMineYouTubeChannel={setSelectedMineYouTubeChannel}
+          setYouTubeChannelRadioGroupHidden={setIsExactlyOneMineYouTubeChannel}
+          value={selectedMineYouTubeChannel?.id}
+        />
 
-        {selectedMineYouTubeChannel &&
-          <Form.Item
-            label="Videos"
-            name={FORM_ITEM_NAMES.VIDEO_SELECTION}
-            rules={[{ required: true, message: 'Please select at least one video.' }]}
-          >
-            <YouTubeVideoSelectionTable
-              selectedMineYouTubeChannel={selectedMineYouTubeChannel}
-            />
-          </Form.Item>
-        }
+        <Form.Item
+          label="Videos"
+          name={FORM_ITEM_NAMES.VIDEO_SELECTION}
+          rules={[{ required: true, message: 'Please select at least one video.' }]}
+        >
+          <YouTubeVideoSelectionTable
+            selectedMineYouTubeChannel={selectedMineYouTubeChannel}
+          />
+        </Form.Item>
 
         <Collapse className="ant-form-item">
           <Collapse.Panel header="Additional Options" key="1">
@@ -115,3 +109,12 @@ export function ServiceForm<Values = any>(props: FormProps<Values>): JSX.Element
 }
 
 //disabled = { executionState === EventStates.continuitive}
+//<Row className="ant-form-item" hidden={isExactlyOneMineYouTubeChannel}>
+//  <Col offset={props.labelCol.span} span={props.wrapperCol.span}>
+//    <YouTubeChannelRadioGroup
+//      setSelectedMineYouTubeChannel={setSelectedMineYouTubeChannel}
+//      setYouTubeChannelRadioGroupHidden={setIsExactlyOneMineYouTubeChannel}
+//      value={selectedMineYouTubeChannel?.id}
+//    />
+//  </Col>
+//</Row>

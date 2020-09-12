@@ -39,10 +39,6 @@ export function PrivacyPolicyPage(): JSX.Element {
         </Paragraph>
 
         <Title level={2}>Support</Title>
-
-        <Paragraph>
-          For any enquiries about this web application's privacy policy, <MailToMe>please contact its developer.</MailToMe>
-        </Paragraph>
       </Typography>
     </Page>
   );
