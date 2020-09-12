@@ -13,13 +13,13 @@ const LANGUAGE_API: LanguageApi = new LanguageApi();
  */
 export function LanguageSelect(props: SelectProps<string>): JSX.Element {
   const [cloudTranslationSupportedLanguages, setCloudTranslationSupportedLanguages] =
-    React.useState<Array<SupportedLanguage>>(null);
+    React.useState<Array<SupportedLanguage>>(undefined);
 
   const [youTubeI18nLanguages, setYouTubeI18nLanguages] =
-    React.useState<Array<I18nLanguageSnippet>>(null);
+    React.useState<Array<I18nLanguageSnippet>>(undefined);
 
   const [error, setError] =
-    React.useState<boolean>(null);
+    React.useState<boolean>(false);
 
   React.useEffect(() => {
     LANGUAGE_API.apiLanguageGoogleTranslateSupportedLanguagesGet()
@@ -39,12 +39,8 @@ export function LanguageSelect(props: SelectProps<string>): JSX.Element {
 
   return (
     <AuthorizedContent>
-      {error && cloudTranslationSupportedLanguages == null &&
-        <Alert className="max-cell-sm" message="Error" description="Failed to load Google Cloud Translate language information." type="error" showIcon />
-      }
-
-      {error && youTubeI18nLanguages == null &&
-        <Alert className="max-cell-sm" message="Error" description="Failed to load YouTube language information." type="error" showIcon />
+      {error &&
+        <Alert className="max-cell-sm" message="Error" description="Failed to load Google Cloud Translate or YouTube language information." type="error" showIcon />
       }
 
       <Select {...props}

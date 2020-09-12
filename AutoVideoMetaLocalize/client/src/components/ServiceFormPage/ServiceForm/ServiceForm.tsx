@@ -24,10 +24,10 @@ const FORM_ITEM_NAMES = {
  */
 export function ServiceForm<Values = any>(props: FormProps<Values>): JSX.Element {
   const [selectedMineYouTubeChannel, setSelectedMineYouTubeChannel] =
-    React.useState<Channel>(null);
+    React.useState<Channel>(undefined);
 
-  const [isExactlyOneMineYouTubeChannel, setIsExactlyOneMineYouTubeChannel] =
-    React.useState<boolean>(false);
+  const [mineYouTubeChannelTotalCount, setMineYouTubeChannelTotalCount] =
+    React.useState<number>(undefined);
 
   const [form] = Form.useForm();
 
@@ -70,9 +70,9 @@ export function ServiceForm<Values = any>(props: FormProps<Values>): JSX.Element
         </Form.Item>
 
         <YouTubeChannelRadioGroup
-          setSelectedMineYouTubeChannel={setSelectedMineYouTubeChannel}
-          setYouTubeChannelRadioGroupHidden={setIsExactlyOneMineYouTubeChannel}
-          value={selectedMineYouTubeChannel?.id}
+          value={selectedMineYouTubeChannel}
+          onChange={setSelectedMineYouTubeChannel}
+          setResponseTotal={setMineYouTubeChannelTotalCount}
         />
 
         <Form.Item

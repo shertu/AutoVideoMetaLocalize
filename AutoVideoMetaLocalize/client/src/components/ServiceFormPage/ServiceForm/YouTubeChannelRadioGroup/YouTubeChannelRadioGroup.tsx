@@ -9,9 +9,10 @@ import InfiniteScroll from 'react-infinite-scroller';
 const YOUTUBE_CHANNEL_API: YouTubeChannelApi = new YouTubeChannelApi();
 const DEFAULT_PAGE_SIZE: number = 30;
 
-export interface YouTubeChannelRadioGroupProps extends RadioGroupProps {
-  setSelectedMineYouTubeChannel: React.Dispatch<React.SetStateAction<Channel>>;
-  setYouTubeChannelRadioGroupHidden: React.Dispatch<React.SetStateAction<boolean>>;
+export interface YouTubeChannelRadioGroupProps {
+  value?: Channel;
+  onChange?: (channel: Channel) => void;
+  setResponseTotal?: (count: number) => void;
 }
 
 /**
@@ -21,37 +22,38 @@ export interface YouTubeChannelRadioGroupProps extends RadioGroupProps {
  * @return {JSX.Element}
  */
 export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): JSX.Element {
-  const { setSelectedMineYouTubeChannel, setYouTubeChannelRadioGroupHidden } = props;
+  const { value, onChange, setResponseTotal } = props;
 
   const [mineYouTubeChannels, setMineYouTubeChannels] =
-    React.useState<Array<Channel>>([]);
+    React.useState<Array<Channel>>(undefined);
 
-  const [response, setResponse] =
-    React.useState<ChannelListResponse>(null);
+  const [currentResponse, setCurrentResponse] =
+    React.useState<ChannelListResponse>(undefined);
 
   const [loading, setLoading] =
-    React.useState<boolean>(null);
+    React.useState<boolean>(false);
 
   const [error, setError] =
-    React.useState<boolean>(null);
+    React.useState<boolean>(false);
 
-  const DEFAULT_VALUE: Channel = mineYouTubeChannels && mineYouTubeChannels.length ? mineYouTubeChannels[0] : null;
+  // default value
+  const atLeastOneMineYouTubeChannel: boolean = mineYouTubeChannels != null && mineYouTubeChannels.length > 0;
+  const defaultValue: Channel = atLeastOneMineYouTubeChannel ? mineYouTubeChannels[0] : null;
 
-  //React.useEffect(() => {
-  //  setSelectedMineYouTubeChannel(DEFAULT_VALUE);
-  //}, [DEFAULT_VALUE]);
-
+  // total response count
   React.useEffect(() => {
-    setYouTubeChannelRadioGroupHidden(mineYouTubeChannels && mineYouTubeChannels.length == 1 && !canLoadMore(response))
-  }, [mineYouTubeChannels, response]);
+    if (currentResponse && setResponseTotal) {
+      setResponseTotal(currentResponse.pageInfo.totalResults);
+    }
+  }, [currentResponse]);
 
   /**
    * Called when the radio group selection is changed.
    */
-  function onChange(e: RadioChangeEvent) {
+  function onChangeActual(e: RadioChangeEvent) {
     const value: string = e.target.value;
     const selectedChannel: Channel = mineYouTubeChannels.find((channel: Channel) => channel.id == value);
-    setSelectedMineYouTubeChannel(selectedChannel);
+    onChange(selectedChannel);
   }
 
   /**
@@ -75,7 +77,7 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
     pageSize = pageSize || DEFAULT_PAGE_SIZE;
     const reqLen = page * pageSize;
 
-    let tempStateResponse: ChannelListResponse = response;
+    let tempStateResponse: ChannelListResponse = currentResponse;
     let tempStateData: Channel[] = mineYouTubeChannels;
 
     while (tempStateData.length < reqLen && canLoadMore(tempStateResponse)) {
@@ -85,25 +87,25 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
     }
 
     setLoading(false);
-    setResponse(tempStateResponse);
+    setCurrentResponse(tempStateResponse);
     setMineYouTubeChannels(tempStateData);
   }
 
   /**
    * Fetches the next page of data relative to the current one.
    * 
-   * @param currentResponse
+   * @param response
    * @param maxResults
    */
-  function onLoadNext(currentResponse?: ChannelListResponse, maxResults?: number): Promise<ChannelListResponse> {
+  function onLoadNext(response?: ChannelListResponse, maxResults?: number): Promise<ChannelListResponse> {
     const request: ApiYouTubeChannelListGetRequest = {
       part: 'id,snippet,contentDetails',
       mine: true,
       maxResults: maxResults,
     };
 
-    if (currentResponse) {
-      request.pageToken = currentResponse.nextPageToken;
+    if (response) {
+      request.pageToken = response.nextPageToken;
     }
 
     return YOUTUBE_CHANNEL_API.apiYouTubeChannelListGet(request);
@@ -112,10 +114,10 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
   /**
    * Checks if additional data exists.
    * 
-   * @param currentResponse
+   * @param response
    */
-  function canLoadMore(currentResponse: ChannelListResponse): boolean {
-    return currentResponse == null || currentResponse.nextPageToken != null;
+  function canLoadMore(response: ChannelListResponse): boolean {
+    return response == null || response.nextPageToken != null;
   }
 
   /**
@@ -133,18 +135,19 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
         <Alert className="max-cell-sm" message="Error" description="Failed to load YouTube channel information." type="error" showIcon />
       }
 
-      {mineYouTubeChannels && mineYouTubeChannels.length == 0 && loading === false &&
+      {!atLeastOneMineYouTubeChannel && loading === false &&
         <Alert className="max-cell-sm" message="Warning" description="No YouTube channels are associated with this Google account." type="warning" showIcon />
       }
 
-      <Radio.Group {...props}
-        defaultValue={DEFAULT_VALUE}
-        onChange={onChange}
+      <Radio.Group
+        value={value.id}
+        onChange={onChangeActual}
+        defaultValue={defaultValue.id}
         className="max-cell-sm"
       >
         <InfiniteScroll
           loadMore={onChangePagination}
-          hasMore={!loading && canLoadMore(response)}
+          hasMore={!loading && canLoadMore(currentResponse)}
           loader={<Spin key="infinite-scroll-loader" />}
           useWindow={false}
         >

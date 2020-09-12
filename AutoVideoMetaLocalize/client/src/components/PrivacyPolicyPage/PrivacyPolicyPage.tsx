@@ -2,7 +2,6 @@ import * as React from 'react';
 import {Page} from '../Page/Page';
 import {Typography} from 'antd';
 import names from '../../names';
-import { MailToMe } from '../MailToMe/MailToMe';
 
 const {Paragraph, Text, Title} = Typography;
 
@@ -37,8 +36,6 @@ export function PrivacyPolicyPage(): JSX.Element {
         <Paragraph>
           This website, like many other websites, uses computer cookies to help keep track of your preferences, authenticaiton session, etc.
         </Paragraph>
-
-        <Title level={2}>Support</Title>
       </Typography>
     </Page>
   );

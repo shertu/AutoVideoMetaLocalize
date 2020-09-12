@@ -1,10 +1,10 @@
+import { Result, Typography } from 'antd';
 import * as React from 'react';
+import Mailto from 'react-mailto.js';
 import { Route, Switch } from 'react-router-dom';
 import routes from '../../../routes';
 import { HomePage } from '../../HomePage/HomePage';
 import { PrivacyPolicyPage } from '../../PrivacyPolicyPage/PrivacyPolicyPage';
-import { Result, Typography } from 'antd';
-import { MailToMe } from '../../MailToMe/MailToMe';
 import { ServiceFormPage } from '../../ServiceFormPage/ServiceFormPage';
 
 const { Paragraph } = Typography;
@@ -32,7 +32,7 @@ export function AppContentSwitch(): JSX.Element {
           title='client-side no route match error'
           extra={
             <Paragraph>
-              Please&nbsp;<MailToMe subject={`An error occured when I visited ${window.location.href}`}>report this error to a developer.</MailToMe>
+              Please&nbsp;<Mailto subject={`An error occured when I visited ${window.location.href}`} to="djared.xeknau@outlook.com" >report this error to a developer.</Mailto>
             </Paragraph>
           }
         />
