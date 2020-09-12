@@ -75,16 +75,6 @@ export function ServiceForm<Values = any>(props: FormProps<Values>): JSX.Element
           setResponseTotal={setMineYouTubeChannelTotalCount}
         />
 
-        <Form.Item
-          label="Videos"
-          name={FORM_ITEM_NAMES.VIDEO_SELECTION}
-          rules={[{ required: true, message: 'Please select at least one video.' }]}
-        >
-          <YouTubeVideoSelectionTable
-            selectedMineYouTubeChannel={selectedMineYouTubeChannel}
-          />
-        </Form.Item>
-
         <Collapse className="ant-form-item">
           <Collapse.Panel header="Additional Options" key="1">
             <Form.Item
@@ -107,6 +97,16 @@ export function ServiceForm<Values = any>(props: FormProps<Values>): JSX.Element
     </AuthorizedContent>
   );
 }
+
+//<Form.Item
+//  label="Videos"
+//  name={FORM_ITEM_NAMES.VIDEO_SELECTION}
+//  rules={[{ required: true, message: 'Please select at least one video.' }]}
+//>
+//  <YouTubeVideoSelectionTable
+//    selectedMineYouTubeChannel={selectedMineYouTubeChannel}
+//  />
+//</Form.Item>
 
 //disabled = { executionState === EventStates.continuitive}
 //<Row className="ant-form-item" hidden={isExactlyOneMineYouTubeChannel}>
