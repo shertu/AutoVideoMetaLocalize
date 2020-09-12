@@ -11,7 +11,7 @@ const DEFAULT_PAGE_SIZE: number = 30;
 
 export interface YouTubeChannelRadioGroupProps {
   value?: Channel;
-  onChange?: (channel: Channel) => void;
+  onChangeChannel?: (channel: Channel) => void;
   setResponseTotal?: (count: number) => void;
 }
 
@@ -22,7 +22,7 @@ export interface YouTubeChannelRadioGroupProps {
  * @return {JSX.Element}
  */
 export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): JSX.Element {
-  const { value, onChange, setResponseTotal } = props;
+  const { value, onChangeChannel, setResponseTotal } = props;
 
   const [mineYouTubeChannels, setMineYouTubeChannels] =
     React.useState<Array<Channel>>(undefined);
@@ -50,10 +50,10 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
   /**
    * Called when the radio group selection is changed.
    */
-  function onChangeActual(e: RadioChangeEvent) {
+  function onChange(e: RadioChangeEvent) {
     const value: string = e.target.value;
     const selectedChannel: Channel = mineYouTubeChannels.find((channel: Channel) => channel.id == value);
-    onChange(selectedChannel);
+    onChangeChannel(selectedChannel);
   }
 
   /**
@@ -141,7 +141,7 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
 
       <Radio.Group
         value={value?.id}
-        onChange={onChangeActual}
+        onChange={onChange}
         defaultValue={defaultValue?.id}
         className="max-cell-sm"
       >

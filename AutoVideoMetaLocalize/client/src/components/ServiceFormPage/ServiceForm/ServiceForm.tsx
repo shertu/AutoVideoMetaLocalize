@@ -71,7 +71,7 @@ export function ServiceForm<Values = any>(props: FormProps<Values>): JSX.Element
 
         <YouTubeChannelRadioGroup
           value={selectedMineYouTubeChannel}
-          onChange={setSelectedMineYouTubeChannel}
+          onChangeChannel={setSelectedMineYouTubeChannel}
           setResponseTotal={setMineYouTubeChannelTotalCount}
         />
 
