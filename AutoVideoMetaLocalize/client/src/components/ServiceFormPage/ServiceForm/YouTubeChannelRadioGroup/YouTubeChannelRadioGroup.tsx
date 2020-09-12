@@ -140,9 +140,9 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
       }
 
       <Radio.Group
-        value={value.id}
+        value={value?.id}
         onChange={onChangeActual}
-        defaultValue={defaultValue.id}
+        defaultValue={defaultValue?.id}
         className="max-cell-sm"
       >
         <InfiniteScroll
