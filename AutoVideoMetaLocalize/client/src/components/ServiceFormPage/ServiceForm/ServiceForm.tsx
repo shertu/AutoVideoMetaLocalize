@@ -69,11 +69,15 @@ export function ServiceForm<Values = any>(props: FormProps<Values>): JSX.Element
           <LanguageSelect />
         </Form.Item>
 
-        <YouTubeChannelRadioGroup
-          value={selectedMineYouTubeChannel}
-          onChangeChannel={setSelectedMineYouTubeChannel}
-          setResponseTotal={setMineYouTubeChannelTotalCount}
-        />
+        <Row className="ant-form-item">
+          <Col offset={props.labelCol.span} span={props.wrapperCol.span}>
+            <YouTubeChannelRadioGroup
+              value={selectedMineYouTubeChannel}
+              onChangeChannel={setSelectedMineYouTubeChannel}
+              setResponseTotal={setMineYouTubeChannelTotalCount}
+            />
+          </Col>
+        </Row>
 
         <Collapse className="ant-form-item">
           <Collapse.Panel header="Additional Options" key="1">
@@ -109,12 +113,3 @@ export function ServiceForm<Values = any>(props: FormProps<Values>): JSX.Element
 //</Form.Item>
 
 //disabled = { executionState === EventStates.continuitive}
-//<Row className="ant-form-item" hidden={isExactlyOneMineYouTubeChannel}>
-//  <Col offset={props.labelCol.span} span={props.wrapperCol.span}>
-//    <YouTubeChannelRadioGroup
-//      setSelectedMineYouTubeChannel={setSelectedMineYouTubeChannel}
-//      setYouTubeChannelRadioGroupHidden={setIsExactlyOneMineYouTubeChannel}
-//      value={selectedMineYouTubeChannel?.id}
-//    />
-//  </Col>
-//</Row>
