@@ -22,8 +22,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 			this.translateServiceAccessor = translateServiceAccessor;
 		}
 
-		[HttpGet("YouTube-I18nLanguages")]
-		[Authorize]
+		[Authorize, HttpGet("YouTube-I18nLanguages")]
 		public async Task<ActionResult<IEnumerable<I18nLanguageSnippet>>> GetYouTubeLanguages() {
 			YouTubeService service = await youtubeServiceAccessor.InitializeServiceAsync();
 			I18nLanguagesResource.ListRequest req = service.I18nLanguages.List("snippet");
@@ -37,7 +36,6 @@ namespace AutoVideoMetaLocalize.Controllers {
 		}
 
 		[HttpGet("GoogleTranslate-SupportedLanguages")]
-		[Authorize]
 		public async Task<ActionResult<IList<SupportedLanguage>>> GetGoogleTranslateLanguages() {
 			TranslationServiceClient service = await translateServiceAccessor.InitializeServiceAsync();
 			string[] displayLanguageCodeList = { "en" };

@@ -57,17 +57,15 @@ namespace AutoVideoMetaLocalize.Controllers {
 		[HttpPost("AuthenticationRedirectUri")]
 		public ActionResult<string> SetAuthenticationRedirectUri(string uri) {
 			AuthenticationRedirectUri = uri;
-			return Ok(AuthenticationRedirectUri);
+			return new ActionResult<string>(AuthenticationRedirectUri);
 		}
 
 		/// <summary>
 		/// Gets the uri to which to redirect the user to sign-in to.
 		/// </summary>
 		[HttpGet("AuthorizationCodeRequestUrl")]
-		public ActionResult<string> GetAuthorizationCodeRequestUrl([Required] string scope) {
-			if (string.IsNullOrEmpty(scope))
-				throw new ArgumentException("message", nameof(scope));
-
+		public ActionResult<string> GetAuthorizationCodeRequestUrl(string scope) {
+			scope ??= "https://www.googleapis.com/auth/userinfo.profile";
 			AuthorizationCodeRequestUrl authorizationCodeRequestUrl = _flow.CreateAuthorizationCodeRequest(OAuthRedirectUri);
 			authorizationCodeRequestUrl.Scope = scope;
 			Uri authorizationUrl = authorizationCodeRequestUrl.Build();
@@ -131,8 +129,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 		/// <summary>
 		/// Signs a user out of the application and revokes their Google Auth Token.
 		/// </summary>
-		[HttpGet(nameof(GoogleSignOut))]
-		[Authorize]
+		[Authorize, HttpGet(nameof(GoogleSignOut))]
 		public async Task<IActionResult> GoogleSignOut() {
 			UserCredential credential = await _gcm.LoadUserCredentialsAsync();
 			AuthenticationProperties authenticationProperties = GenerateAuthenticationProperties(credential.Token);

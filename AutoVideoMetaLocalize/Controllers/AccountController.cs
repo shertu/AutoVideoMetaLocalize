@@ -30,8 +30,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 		/// <summary>
 		/// Gets a representation of the user as a collection of claims.
 		/// </summary>
-		[Authorize]
-		[HttpGet]
+		[Authorize, HttpGet]
 		public ActionResult<GetClaimsPrincipleResult> GetClaimsPrinciple() {
 			IEnumerable<Claim> claims = User.Claims.Select(elem => new Claim(
 				elem.Type, elem.Value, elem.ValueType, elem.Issuer, elem.OriginalIssuer)

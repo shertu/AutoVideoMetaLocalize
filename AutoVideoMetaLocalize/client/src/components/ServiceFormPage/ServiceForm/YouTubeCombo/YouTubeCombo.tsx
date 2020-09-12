@@ -11,7 +11,7 @@ const LANGUAGE_API: LanguageApi = new LanguageApi();
  *
  * @return {JSX.Element}
  */
-export function LanguageSelect(props: SelectProps<string>): JSX.Element {
+export function YouTubeCombo(props: SelectProps<string>): JSX.Element {
   const [cloudTranslationSupportedLanguages, setCloudTranslationSupportedLanguages] =
     React.useState<Array<SupportedLanguage>>(undefined);
 
@@ -48,7 +48,7 @@ export function LanguageSelect(props: SelectProps<string>): JSX.Element {
         optionFilterProp="label"
         className="max-cell-sm"
       >
-        {languagesUnion?.map(language =>
+        {languagesUnion && languagesUnion.map(language =>
           <Select.Option key={language.languageCode} value={language.languageCode} label={language.displayName}>
             {language.displayName}
           </Select.Option >
