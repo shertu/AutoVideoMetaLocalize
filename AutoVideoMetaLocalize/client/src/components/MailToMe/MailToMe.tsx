@@ -1,19 +1,14 @@
 import * as React from 'react';
+import Mailto from 'react-mailto.js';
 
-import { openComposer } from 'react-native-email-link'
-
-export interface MailToMeProps {
-  children?: React.ReactNode;
-  app?: string | null;
-  title?: string;
-  message?: string;
-  cancelLabel?: string;
-  removeText?: boolean;
-  to?: string;
-  cc?: string;
-  bcc?: string;
+export interface MailToMeProps extends React.HTMLAttributes<HTMLAnchorElement> {
+  //to: string | string[];
+  cc?: string | string[];
+  bcc?: string | string[];
   subject?: string;
   body?: string;
+  secure?: boolean;
+  children: React.ReactNode;
 }
 
 /**
@@ -25,14 +20,7 @@ export interface MailToMeProps {
  * @return {JSX.Element}
  */
 export function MailToMe(props: MailToMeProps): JSX.Element {
-  function openEmail() {
-    openComposer({
-      ...props,
-      to: 'djared.xeknau@example.com',
-    })
-  }
-
   return (
-    <a onClick={openEmail}>{props.children}</a>
+    <Mailto {...props} to="djared.xeknau@outlook.com" />
   );
-};
+}

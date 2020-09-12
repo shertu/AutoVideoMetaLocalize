@@ -20,7 +20,7 @@ const UNAUTHORIZED_USER: GetClaimsPrincipleResult = {
  */
 export function App(): JSX.Element {
   const [user, setUser] =
-    React.useState<GetClaimsPrincipleResult>(null);
+    React.useState<GetClaimsPrincipleResult>(undefined);
 
   React.useEffect(() => {
     ACCOUNT_API.apiAccountGet()

@@ -67,7 +67,7 @@
 		"cookie": "^0.4.1",
 		"react-google-button": "^0.7.1",
 		"react-infinite-scroller": "^1.2.4",
-		"react-native-email-link": "^1.9.2",
+		"react-mailto.js": "^2.2.1",
 		"react-transition-group": "^4.4.1"
 	}
 }
