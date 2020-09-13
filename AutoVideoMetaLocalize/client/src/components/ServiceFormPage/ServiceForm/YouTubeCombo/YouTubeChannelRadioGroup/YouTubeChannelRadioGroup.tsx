@@ -141,37 +141,28 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
         <Alert className="max-cell" message="Warning" description="No YouTube channels are associated with this Google account." type="warning" showIcon />
       }
 
-      <Radio.Group {...props}
-        value={value}
-        onChange={onChange}
-        defaultValue={defaultValue?.id}
+      <InfiniteScroll
+        loadMore={onChangePagination}
+        hasMore={canLoadMore(currentResponse)}
+        loader={<Row key="infinite-scroll-loader" justify="center"><Spin /></Row>}
+        useWindow={false}
       >
-        <InfiniteScroll
-          loadMore={onChangePagination}
-          hasMore={!loading && canLoadMore(currentResponse)}
-          loader={
-            <Row key="infinite-scroll-loader" justify="center"><Spin /></Row>
-          }
-          useWindow={false}
+        <Radio.Group {...props}
+          value={value}
+          onChange={onChange}
+          defaultValue={defaultValue?.id}
         >
-          <List
-            itemLayout="vertical"
-            dataSource={mineYouTubeChannels}
-            rowKey={rowKey}
-            renderItem={(channel: Channel) => (
-              <List.Item>
-                <Radio.Button className="max-cell max-height" key={channel.id} value={channel.id}>
-                  <BasicComboView
-                    thumbnail={channel.snippet?.thumbnails._default}
-                    title={channel.snippet?.title}
-                    subtitle={channel.id}
-                  />
-                </Radio.Button>
-              </List.Item>
-            )}
-          />
-        </InfiniteScroll>
-      </Radio.Group>
+          {mineYouTubeChannels && mineYouTubeChannels.map((channel: Channel) =>
+            <Radio.Button className="max-cell max-height" key={channel.id} value={channel.id}>
+              <BasicComboView
+                thumbnail={channel.snippet?.thumbnails._default}
+                title={channel.snippet?.title}
+                subtitle={channel.id}
+              />
+            </Radio.Button>
+          )}
+        </Radio.Group>
+      </InfiniteScroll>
     </Row>
   );
 }
