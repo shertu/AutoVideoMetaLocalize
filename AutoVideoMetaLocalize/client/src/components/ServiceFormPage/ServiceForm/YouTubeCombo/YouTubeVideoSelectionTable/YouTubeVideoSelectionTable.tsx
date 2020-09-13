@@ -65,8 +65,7 @@ export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProp
    * @param {number} pageSize
    */
   function onChangePagination(page: number, pageSize?: number): void {
-    onChangePaginationAsync(page, pageSize)
-      .catch(() => setError(true));
+    onChangePaginationAsync(page, pageSize);
   }
 
   /**
@@ -85,7 +84,10 @@ export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProp
     while (tempStateData.length < reqLen && canLoadMore(tempStateResponse)) {
       setLoading(true);
       tempStateResponse = await onLoadNext(tempStateResponse, pageSize);
-      tempStateData = tempStateData.concat(tempStateResponse.items);
+
+      if (tempStateResponse) {
+        tempStateData = tempStateData.concat(tempStateResponse.items);
+      }
     }
 
     setLoading(false);
@@ -111,7 +113,11 @@ export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProp
       request.pageToken = currentResponse.nextPageToken;
     }
 
-    return YOUTUBE_PLAYLIST_ITEM_API.apiYouTubePlaylistItemListGet(request);
+    return YOUTUBE_PLAYLIST_ITEM_API.apiYouTubePlaylistItemListGet(request)
+      .catch(() => {
+        setError(true);
+        return null;
+      });
   }
 
   /**
