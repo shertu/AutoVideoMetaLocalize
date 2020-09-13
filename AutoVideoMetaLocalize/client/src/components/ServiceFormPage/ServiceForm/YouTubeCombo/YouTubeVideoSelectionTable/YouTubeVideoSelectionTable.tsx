@@ -81,7 +81,8 @@ export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProp
     let tempStateResponse: PlaylistItemListResponse = response;
     let tempStateData: PlaylistItem[] = channelUploadsPlaylistItems;
 
-    while (tempStateData.length < reqLen && canLoadMore(tempStateResponse)) {
+    const tempStateDataLen: number = tempStateData ? tempStateData.length : 0;
+    while (tempStateDataLen < reqLen && canLoadMore(tempStateResponse)) {
       setLoading(true);
       tempStateResponse = await onLoadNext(tempStateResponse, pageSize);
 

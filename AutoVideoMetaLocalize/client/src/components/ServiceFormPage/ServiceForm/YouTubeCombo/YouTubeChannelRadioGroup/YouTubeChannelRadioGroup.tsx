@@ -86,8 +86,8 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
     let tempStateResponse: ChannelListResponse = currentResponse;
     let tempStateData: Channel[] = mineYouTubeChannels;
 
-    console.log("values", tempStateData?.length < reqLen, tempStateData?.length, reqLen, canLoadMore(tempStateResponse))
-    while (tempStateData?.length < reqLen && canLoadMore(tempStateResponse)) {
+    const tempStateDataLen: number = tempStateData ? tempStateData.length : 0;
+    while (tempStateDataLen < reqLen && canLoadMore(tempStateResponse)) {
       setLoading(true);
       tempStateResponse = await onLoadNext(tempStateResponse, pageSize);
 
