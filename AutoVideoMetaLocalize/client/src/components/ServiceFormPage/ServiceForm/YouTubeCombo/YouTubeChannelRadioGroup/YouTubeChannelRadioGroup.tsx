@@ -69,6 +69,7 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
   function onChangePagination(page: number, pageSize?: number): void {
     console.log("onChangePagination initiate");
     onChangePaginationAsync(page, pageSize);
+      //.catch(() => setError(true));
     console.log("onChangePagination complete.");
   }
 
@@ -91,7 +92,7 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
       setLoading(true);
       tempStateResponse = await onLoadNext(tempStateResponse, pageSize);
 
-      if (tempStateResponse != null) {
+      if (tempStateResponse !== undefined || tempStateResponse !== null) {
         tempStateData = tempStateData.concat(tempStateResponse.items);
       }
     }
@@ -121,11 +122,7 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
     }
 
     console.log("onLoadNext complete.");
-    return YOUTUBE_CHANNEL_API.apiYouTubeChannelListGet(request)
-      .catch(() => {
-        setError(true);
-        return null;
-      });
+    return YOUTUBE_CHANNEL_API.apiYouTubeChannelListGet(request);
   }
 
   /**
