@@ -18,10 +18,27 @@ export interface ServiceFormProps<Values = any> extends FormProps<Values> {
  * @return {JSX.Element}
  */
 export function ServiceForm<Values = any>(props: ServiceFormProps<Values>): JSX.Element {
-  const { onClearFormInputs, submitButtonDisabled } = props;
+  const { onClearFormInputs, submitButtonDisabled, form } = props;
 
   const languageSelectionCookieValue: string = cookie.parse(document.cookie)[ServiceFormItemNames.LANGUAGE_SELECTION];
   const languageSelectionInitialValue: string[] = languageSelectionCookieValue ? languageSelectionCookieValue.split(',') : [];
+
+  /** Clears the form's fields and the language cookie. */
+  function onClearForm() {
+    const fieldValues: { [id: string]: any; } = {
+      [ServiceFormItemNames.LANGUAGE_SELECTION]: [],
+      [ServiceFormItemNames.VIDEO_SELECTION]: [],
+      [ServiceFormItemNames.SMB_CHECKBOX]: false,
+    };
+
+    form.setFields([
+      { name: ServiceFormItemNames.LANGUAGE_SELECTION, value: undefined },
+      { name: ServiceFormItemNames.VIDEO_SELECTION, value: undefined },
+      { name: ServiceFormItemNames.SMB_CHECKBOX, value: false },
+    ])
+
+    document.cookie = cookie.serialize(ServiceFormItemNames.LANGUAGE_SELECTION, null);
+  }
 
   return (
     <AuthorizedContent>
@@ -38,7 +55,7 @@ export function ServiceForm<Values = any>(props: ServiceFormProps<Values>): JSX.
           />
         </Form.Item>
 
-        <YouTubeCombo/>
+        <YouTubeCombo />
 
         <Collapse className="ant-form-item">
           <Collapse.Panel header="Additional Options" key="1">
@@ -57,7 +74,7 @@ export function ServiceForm<Values = any>(props: ServiceFormProps<Values>): JSX.
             {onClearFormInputs &&
               <Button onClick={onClearFormInputs}>Clear</Button>
             }
-            
+
             <Button type="primary" htmlType="submit" disabled={submitButtonDisabled}>Execute</Button>
           </Space>
         </Row>

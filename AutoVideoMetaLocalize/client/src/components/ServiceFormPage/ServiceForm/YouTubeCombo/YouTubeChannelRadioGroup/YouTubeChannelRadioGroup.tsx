@@ -10,8 +10,7 @@ const YOUTUBE_CHANNEL_API: YouTubeChannelApi = new YouTubeChannelApi();
 const DEFAULT_PAGE_SIZE: number = 30;
 
 export interface YouTubeChannelRadioGroupProps extends RadioGroupProps {
-  channelValue?: Channel;
-  channelOnChange?: (channel: Channel) => void;
+  onChangeChannel?: (channel: Channel) => void;
   setResponseTotal?: (count: number) => void;
 }
 
@@ -21,7 +20,10 @@ export interface YouTubeChannelRadioGroupProps extends RadioGroupProps {
  * @return {JSX.Element}
  */
 export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): JSX.Element {
-  const { channelValue, channelOnChange, setResponseTotal } = props;
+  const { onChangeChannel, setResponseTotal } = props;
+
+  const [value, setValue] =
+    React.useState<string>(undefined);
 
   const [mineYouTubeChannels, setMineYouTubeChannels] =
     React.useState<Array<Channel>>(undefined);
@@ -36,7 +38,7 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
     React.useState<boolean>(false);
 
   // default value
-  const atLeastOneMineYouTubeChannel: boolean = mineYouTubeChannels != null && mineYouTubeChannels.length > 0;
+  const atLeastOneMineYouTubeChannel: boolean = mineYouTubeChannels?.length > 0;
   const defaultValue: Channel = atLeastOneMineYouTubeChannel ? mineYouTubeChannels[0] : null;
 
   // total response count
@@ -52,7 +54,9 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
   function onChange(e: RadioChangeEvent) {
     const value: string = e.target.value;
     const selectedChannel: Channel = mineYouTubeChannels.find((channel: Channel) => channel.id == value);
-    channelOnChange(selectedChannel);
+
+    setValue(value);
+    onChangeChannel(selectedChannel);
   }
 
   /**
@@ -139,7 +143,7 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
       }
 
       <Radio.Group {...props}
-        value={channelValue?.id}
+        value={value}
         onChange={onChange}
         defaultValue={defaultValue?.id}
       >

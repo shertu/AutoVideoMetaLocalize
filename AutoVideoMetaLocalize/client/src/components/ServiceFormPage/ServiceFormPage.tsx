@@ -60,7 +60,10 @@ export function ServiceFormPage(): JSX.Element {
       setExecutionError(false);
       setExecutionProgressMax(serviceFormInputs.videos.length * serviceFormInputs.languages.length);
 
-      serializeLanguagesCookie();
+      const languageSelection: string[] = form.getFieldValue(ServiceFormItemNames.LANGUAGE_SELECTION) || [];
+      document.cookie = cookie.serialize(ServiceFormItemNames.LANGUAGE_SELECTION, languageSelection.join(','), {
+        sameSite: 'lax',
+      });
 
       YOUTUBE_VIDEO_API.apiYouTubeVideoLocalizePut({
         appVideoLocalizeRequest: serviceFormInputs,
@@ -71,27 +74,6 @@ export function ServiceFormPage(): JSX.Element {
         setExecutionError(true);
       });
     }
-  }
-
-  /** Clears the form's fields and the language cookie. */
-  function onClearServiceForm() {
-    form.setFieldsValue({
-      [ServiceFormItemNames.LANGUAGE_SELECTION]: [],
-      [ServiceFormItemNames.VIDEO_SELECTION]: [],
-      [ServiceFormItemNames.SMB_CHECKBOX]: false,
-    });
-
-    serializeLanguagesCookie();
-  }
-
-  /**
-   * Stores the current value of the languages form item into a cookie.
-   */
-  function serializeLanguagesCookie() {
-    const languageSelection: string[] = form.getFieldValue(ServiceFormItemNames.LANGUAGE_SELECTION) || [];
-    document.cookie = cookie.serialize(ServiceFormItemNames.LANGUAGE_SELECTION, languageSelection.join(','), {
-      sameSite: 'lax',
-    });
   }
 
   const showExecutionPage: boolean = executionState === EventStates.continuitive || executionState === EventStates.retropective;
@@ -115,7 +97,6 @@ export function ServiceFormPage(): JSX.Element {
             onFinish={onFinish}
             form={form}
             onClearFormInputs={onClearServiceForm}
-            layout='vertical'
           >
           </ServiceForm>
         </Page>

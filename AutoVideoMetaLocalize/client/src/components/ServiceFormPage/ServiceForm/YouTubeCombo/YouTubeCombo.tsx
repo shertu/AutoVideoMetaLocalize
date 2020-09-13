@@ -24,12 +24,10 @@ export function YouTubeCombo(): JSX.Element {
         label="Channel"
         name={ServiceFormItemNames.VIDEO_SELECTION}
         rules={[{ required: false, message: 'Please select at least one channel.' }]}
-        valuePropName="channelValue"
-        trigger="channelOnChange"
+        className="max-cell-sm"
       >
         <YouTubeChannelRadioGroup
-          channelValue={selectedMineYouTubeChannel}
-          channelOnChange={setSelectedMineYouTubeChannel}
+          onChangeChannel={setSelectedMineYouTubeChannel}
           setResponseTotal={setMineYouTubeChannelTotalCount}
         />
       </Form.Item>
