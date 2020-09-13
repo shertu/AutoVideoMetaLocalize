@@ -67,7 +67,9 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
    * @param {number} pageSize
    */
   function onChangePagination(page: number, pageSize?: number): void {
+    console.log("onChangePagination initiate");
     onChangePaginationAsync(page, pageSize);
+    console.log("onChangePagination complete.");
   }
 
   /**
@@ -77,6 +79,7 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
    * @param {number} pageSize
    */
   async function onChangePaginationAsync(page: number, pageSize?: number): Promise<void> {
+    console.log("onChangePaginationAsync initiate");
     pageSize = pageSize || DEFAULT_PAGE_SIZE;
     const reqLen = page * pageSize;
 
@@ -84,6 +87,7 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
     let tempStateData: Channel[] = mineYouTubeChannels;
 
     while (tempStateData?.length < reqLen && canLoadMore(tempStateResponse)) {
+      console.log("OnChange");
       setLoading(true);
       tempStateResponse = await onLoadNext(tempStateResponse, pageSize);
 
@@ -95,6 +99,7 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
     setLoading(false);
     setCurrentResponse(tempStateResponse);
     setMineYouTubeChannels(tempStateData);
+    console.log("onChangePaginationAsync complete.");
   }
 
   /**
@@ -104,6 +109,7 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
    * @param maxResults
    */
   function onLoadNext(response?: ChannelListResponse, maxResults?: number): Promise<ChannelListResponse> {
+    console.log("onLoadNext initiate");
     const request: ApiYouTubeChannelListGetRequest = {
       part: 'id,snippet,contentDetails',
       mine: true,
@@ -114,6 +120,7 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
       request.pageToken = response.nextPageToken;
     }
 
+    console.log("onLoadNext complete.");
     return YOUTUBE_CHANNEL_API.apiYouTubeChannelListGet(request)
       .catch(() => {
         setError(true);
@@ -127,7 +134,6 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
    * @param response
    */
   function canLoadMore(response: ChannelListResponse): boolean {
-    console.log(response, response == null || response.nextPageToken != null);
     return response == null || response.nextPageToken != null;
   }
 
