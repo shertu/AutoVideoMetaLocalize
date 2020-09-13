@@ -43,7 +43,9 @@ export function LanguageSelect(props: SelectProps<string>): JSX.Element {
         <Alert className="max-cell-sm" message="Error" description="Failed to load Google Cloud Translate or YouTube language information." type="error" showIcon />
       }
 
-      <Select>
+      <Select {...props}
+        optionFilterProp="label"
+      >
         {languagesUnion?.map(language =>
           <Select.Option key={language.languageCode} value={language.languageCode} label={language.displayName}>
             {language.displayName}

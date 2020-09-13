@@ -34,7 +34,6 @@ export function ServiceForm<Values = any>(props: ServiceFormProps<Values>): JSX.
         >
           <LanguageSelect
             mode="multiple"
-            optionFilterProp="label"
             className="max-cell-sm"
           />
         </Form.Item>

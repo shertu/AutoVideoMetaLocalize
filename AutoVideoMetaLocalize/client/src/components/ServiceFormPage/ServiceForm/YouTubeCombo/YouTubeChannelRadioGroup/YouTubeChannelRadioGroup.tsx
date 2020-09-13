@@ -9,20 +9,19 @@ import InfiniteScroll from 'react-infinite-scroller';
 const YOUTUBE_CHANNEL_API: YouTubeChannelApi = new YouTubeChannelApi();
 const DEFAULT_PAGE_SIZE: number = 30;
 
-export interface YouTubeChannelRadioGroupProps {
-  value?: Channel;
-  onChangeChannel?: (channel: Channel) => void;
+export interface YouTubeChannelRadioGroupProps extends RadioGroupProps {
+  channelValue?: Channel;
+  channelOnChange?: (channel: Channel) => void;
   setResponseTotal?: (count: number) => void;
 }
 
 /**
  * A react component used to display a paginated list of the user's YouTube channels as a radio group.
  * 
- * @param props {RadioGroupProps}
  * @return {JSX.Element}
  */
 export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): JSX.Element {
-  const { value, onChangeChannel, setResponseTotal } = props;
+  const { channelValue, channelOnChange, setResponseTotal } = props;
 
   const [mineYouTubeChannels, setMineYouTubeChannels] =
     React.useState<Array<Channel>>(undefined);
@@ -53,7 +52,7 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
   function onChange(e: RadioChangeEvent) {
     const value: string = e.target.value;
     const selectedChannel: Channel = mineYouTubeChannels.find((channel: Channel) => channel.id == value);
-    onChangeChannel(selectedChannel);
+    channelOnChange(selectedChannel);
   }
 
   /**
@@ -126,7 +125,7 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
    * @param record
    */
   function rowKey(record: Channel): string {
-    return record.id; // The key is the video to correctly enable the form.
+    return record.id;
   }
 
   return (
@@ -139,19 +138,19 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
         <Alert className="max-cell-sm" message="Warning" description="No YouTube channels are associated with this Google account." type="warning" showIcon />
       }
 
-      <Radio.Group
-        value={value?.id}
+      <Radio.Group {...props}
+        value={channelValue?.id}
         onChange={onChange}
         defaultValue={defaultValue?.id}
-        className="max-cell-sm"
       >
         <InfiniteScroll
           loadMore={onChangePagination}
-          hasMore={!loading && canLoadMore(currentResponse)}
+          hasMore={canLoadMore(currentResponse)}
           loader={
             <Row key="infinite-scroll-loader" justify="center"><Spin /></Row>
           }
           useWindow={false}
+          initialLoad
         >
           <List
             itemLayout="vertical"

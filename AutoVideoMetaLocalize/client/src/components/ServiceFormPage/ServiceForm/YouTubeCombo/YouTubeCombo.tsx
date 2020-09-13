@@ -1,9 +1,8 @@
-import { Row, Col, Form } from 'antd';
+import { Form } from 'antd';
 import * as React from 'react';
 import { Channel } from '../../../../../generated-sources/openapi';
 import { YouTubeChannelRadioGroup } from './YouTubeChannelRadioGroup/YouTubeChannelRadioGroup';
 import { YouTubeVideoSelectionTable } from './YouTubeVideoSelectionTable/YouTubeVideoSelectionTable';
-import { NamePath } from 'antd/lib/form/interface';
 import ServiceFormItemNames from '../../ServiceFormItemNames';
 
 
@@ -20,14 +19,17 @@ export function YouTubeCombo(): JSX.Element {
     React.useState<number>(undefined);
 
   return (
-    <Row>
+    <>
       <Form.Item
         label="Channel"
         name={ServiceFormItemNames.VIDEO_SELECTION}
+        rules={[{ required: false, message: 'Please select at least one channel.' }]}
+        valuePropName="channelValue"
+        trigger="channelOnChange"
       >
         <YouTubeChannelRadioGroup
-          value={selectedMineYouTubeChannel}
-          onChangeChannel={setSelectedMineYouTubeChannel}
+          channelValue={selectedMineYouTubeChannel}
+          channelOnChange={setSelectedMineYouTubeChannel}
           setResponseTotal={setMineYouTubeChannelTotalCount}
         />
       </Form.Item>
@@ -41,7 +43,7 @@ export function YouTubeCombo(): JSX.Element {
           selectedMineYouTubeChannel={selectedMineYouTubeChannel}
         />
       </Form.Item>
-    </Row>
+    </>
   );
 }
 

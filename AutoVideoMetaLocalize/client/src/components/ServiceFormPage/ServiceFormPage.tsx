@@ -115,6 +115,7 @@ export function ServiceFormPage(): JSX.Element {
             onFinish={onFinish}
             form={form}
             onClearFormInputs={onClearServiceForm}
+            layout='vertical'
           >
           </ServiceForm>
         </Page>
