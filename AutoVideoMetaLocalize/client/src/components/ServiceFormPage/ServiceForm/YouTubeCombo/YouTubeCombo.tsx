@@ -23,6 +23,7 @@ export function YouTubeCombo(): JSX.Element {
       <YouTubeChannelRadioGroup
         onChangeChannel={setSelectedMineYouTubeChannel}
         setResponseTotal={setMineYouTubeChannelTotalCount}
+        className="max-cell-sm"
       />
     </>
   );

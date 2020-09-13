@@ -2,7 +2,6 @@ import { Select, Alert, Row } from 'antd';
 import * as React from 'react';
 import { SupportedLanguage, I18nLanguageSnippet, LanguageApi, GetClaimsPrincipleResult } from '../../../../../generated-sources/openapi';
 import { SelectProps } from 'antd/lib/select';
-import UserContext from '../../../UserContext/UserContext';
 
 const LANGUAGE_API: LanguageApi = new LanguageApi();
 

@@ -137,7 +137,7 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
         <Alert className="max-cell" message="Error" description="Failed to load YouTube channel information." type="error" showIcon />
       }
 
-      {!atLeastOneMineYouTubeChannel && loading === false &&
+      {!atLeastOneMineYouTubeChannel && !canLoadMore(currentResponse) &&
         <Alert className="max-cell" message="Warning" description="No YouTube channels are associated with this Google account." type="warning" showIcon />
       }
 
@@ -148,12 +148,11 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
       >
         <InfiniteScroll
           loadMore={onChangePagination}
-          hasMore={canLoadMore(currentResponse)}
+          hasMore={!loading && canLoadMore(currentResponse)}
           loader={
             <Row key="infinite-scroll-loader" justify="center"><Spin /></Row>
           }
           useWindow={false}
-          initialLoad
         >
           <List
             itemLayout="vertical"
