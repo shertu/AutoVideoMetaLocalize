@@ -36,6 +36,8 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
   const [error, setError] =
     React.useState<boolean>(false);
 
+  console.log(value, mineYouTubeChannels, currentResponse, loading, error);
+
   // default value
   const atLeastOneMineYouTubeChannel: boolean = mineYouTubeChannels?.length > 0;
   const defaultValue: Channel = atLeastOneMineYouTubeChannel ? mineYouTubeChannels[0] : null;
