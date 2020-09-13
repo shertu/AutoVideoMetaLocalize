@@ -5,6 +5,9 @@
 		<TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
 		<UserSecretsId>ad18c10d-d4eb-4c56-970c-bf83b644067d</UserSecretsId>
 	</PropertyGroup>
+	<ItemGroup>
+	  <None Remove="client\src\components\ServiceFormPage\ServiceFormItemNames.tsx" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Chance.NET" Version="2.2.0" />
@@ -21,6 +24,10 @@
 		<PackageReference Include="SkiaSharp" Version="2.80.1" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="5.5.1" />
 		<PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <TypeScriptCompile Include="client\src\components\ServiceFormPage\ServiceFormItemNames.tsx" />
 	</ItemGroup>
 
 	<ItemGroup>

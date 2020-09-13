@@ -1,9 +1,9 @@
 import { Radio, Alert, List, Spin, Row } from 'antd';
 import * as React from 'react';
-import { BasicComboView } from '../../../BasicComboView/BasicComboView';
-import { Channel, YouTubeChannelApi, ApiYouTubeChannelListGetRequest, ChannelListResponse } from '../../../../../generated-sources/openapi';
+import { BasicComboView } from '../../../../BasicComboView/BasicComboView';
+import { Channel, YouTubeChannelApi, ApiYouTubeChannelListGetRequest, ChannelListResponse } from '../../../../../../generated-sources/openapi';
 import { RadioGroupProps, RadioChangeEvent } from 'antd/lib/radio';
-import { AuthorizedContent } from '../../../AuthorizedContent/AuthorizedContent';
+import { AuthorizedContent } from '../../../../AuthorizedContent/AuthorizedContent';
 import InfiniteScroll from 'react-infinite-scroller';
 
 const YOUTUBE_CHANNEL_API: YouTubeChannelApi = new YouTubeChannelApi();

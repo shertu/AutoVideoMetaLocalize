@@ -1,60 +1,48 @@
-import { Select, Alert } from 'antd';
+import { Row, Col, Form } from 'antd';
 import * as React from 'react';
-import { SupportedLanguage, I18nLanguageSnippet, LanguageApi } from '../../../../../generated-sources/openapi';
-import { SelectProps } from 'antd/lib/select';
-import { AuthorizedContent } from '../../../AuthorizedContent/AuthorizedContent';
+import { Channel } from '../../../../../generated-sources/openapi';
+import { YouTubeChannelRadioGroup } from './YouTubeChannelRadioGroup/YouTubeChannelRadioGroup';
+import { YouTubeVideoSelectionTable } from './YouTubeVideoSelectionTable/YouTubeVideoSelectionTable';
+import { NamePath } from 'antd/lib/form/interface';
+import ServiceFormItemNames from '../../ServiceFormItemNames';
 
-const LANGUAGE_API: LanguageApi = new LanguageApi();
 
 /**
  * The page used to control the flow of the process.
  *
  * @return {JSX.Element}
  */
-export function YouTubeCombo(props: SelectProps<string>): JSX.Element {
-  const [cloudTranslationSupportedLanguages, setCloudTranslationSupportedLanguages] =
-    React.useState<Array<SupportedLanguage>>(undefined);
+export function YouTubeCombo(): JSX.Element {
+  const [selectedMineYouTubeChannel, setSelectedMineYouTubeChannel] =
+    React.useState<Channel>(undefined);
 
-  const [youTubeI18nLanguages, setYouTubeI18nLanguages] =
-    React.useState<Array<I18nLanguageSnippet>>(undefined);
-
-  const [error, setError] =
-    React.useState<boolean>(false);
-
-  React.useEffect(() => {
-    LANGUAGE_API.apiLanguageGoogleTranslateSupportedLanguagesGet()
-      .then((res) => setCloudTranslationSupportedLanguages(res))
-      .catch(() => setError(true));
-
-    LANGUAGE_API.apiLanguageYouTubeI18nLanguagesGet()
-      .then((res) => setYouTubeI18nLanguages(res))
-      .catch(() => setError(true));
-  }, []);
-
-  let languagesUnion: SupportedLanguage[] = null;
-  if (cloudTranslationSupportedLanguages && youTubeI18nLanguages) {
-    const youTubeI18nLanguageCodes = youTubeI18nLanguages.map(x => x.hl);
-    languagesUnion = cloudTranslationSupportedLanguages.filter(x => youTubeI18nLanguageCodes.includes(x.languageCode));
-  }
+  const [mineYouTubeChannelTotalCount, setMineYouTubeChannelTotalCount] =
+    React.useState<number>(undefined);
 
   return (
-    <AuthorizedContent>
-      {error &&
-        <Alert className="max-cell-sm" message="Error" description="Failed to load Google Cloud Translate or YouTube language information." type="error" showIcon />
-      }
-
-      <Select {...props}
-        mode="multiple"
-        optionFilterProp="label"
-        className="max-cell-sm"
+    <Row>
+      <Form.Item
+        label="Channel"
+        name={ServiceFormItemNames.VIDEO_SELECTION}
       >
-        {languagesUnion && languagesUnion.map(language =>
-          <Select.Option key={language.languageCode} value={language.languageCode} label={language.displayName}>
-            {language.displayName}
-          </Select.Option >
-        )}
-      </Select>
-    </AuthorizedContent >
+        <YouTubeChannelRadioGroup
+          value={selectedMineYouTubeChannel}
+          onChangeChannel={setSelectedMineYouTubeChannel}
+          setResponseTotal={setMineYouTubeChannelTotalCount}
+        />
+      </Form.Item>
+
+      <Form.Item
+        label="Videos"
+        name={ServiceFormItemNames.VIDEO_SELECTION}
+        rules={[{ required: true, message: 'Please select at least one video.' }]}
+      >
+        <YouTubeVideoSelectionTable
+          selectedMineYouTubeChannel={selectedMineYouTubeChannel}
+        />
+      </Form.Item>
+    </Row>
   );
 }
 
+//hidden = { mineYouTubeChannelTotalCount === 1}

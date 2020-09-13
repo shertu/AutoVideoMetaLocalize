@@ -8,15 +8,9 @@ import { Store } from 'antd/lib/form/interface';
 import { ServiceFormExecutionPage } from './ServiceFormExecutionPage/ServiceFormExecutionPage';
 import EventStates from '../../event-states';
 import { ServiceForm } from './ServiceForm/ServiceForm';
+import ServiceFormItemNames from './ServiceFormItemNames';
 
 const YOUTUBE_VIDEO_API: YouTubeVideoApi = new YouTubeVideoApi();
-
-const FORM_ITEM_NAMES = {
-  LANGUAGE_SELECTION: 'language-selection',
-  VIDEO_SELECTION: 'video-selection',
-  SMB_CHECKBOX: 'smb-checkbox',
-  //CHANNEL_RADIO_GROUP: 'channel-selection',
-};
 
 /**
  * The page used to control the flow of the process.
@@ -42,14 +36,14 @@ export function ServiceFormPage(): JSX.Element {
    * @param {Store} values
    */
   function onFinish(values: Store) {
-    const LANGUAGE_SELECTION: string[] = values[FORM_ITEM_NAMES.LANGUAGE_SELECTION] || [];
-    const VIDEO_SELECTION: string[] = values[FORM_ITEM_NAMES.VIDEO_SELECTION] || [];
-    const SMB_CHECKBOX: boolean = values[FORM_ITEM_NAMES.SMB_CHECKBOX] || false;
+    const languageSelection: string[] = values[ServiceFormItemNames.LANGUAGE_SELECTION] || [];
+    const videoSelection: string[] = values[ServiceFormItemNames.VIDEO_SELECTION] || [];
+    const smbCheckbox: boolean = values[ServiceFormItemNames.SMB_CHECKBOX] || false;
 
     const serviceFormInputs: AppVideoLocalizeRequest = {
-      languages: LANGUAGE_SELECTION,
-      videos: VIDEO_SELECTION,
-      sheetMusicBoss: SMB_CHECKBOX,
+      languages: languageSelection,
+      videos: videoSelection,
+      sheetMusicBoss: smbCheckbox,
     }
 
     console.log("Service form inputs: ", serviceFormInputs);
@@ -79,13 +73,23 @@ export function ServiceFormPage(): JSX.Element {
     }
   }
 
+  /** Clears the form's fields and the language cookie. */
+  function onClearServiceForm() {
+    form.setFieldsValue({
+      [ServiceFormItemNames.LANGUAGE_SELECTION]: [],
+      [ServiceFormItemNames.VIDEO_SELECTION]: [],
+      [ServiceFormItemNames.SMB_CHECKBOX]: false,
+    });
+
+    serializeLanguagesCookie();
+  }
 
   /**
    * Stores the current value of the languages form item into a cookie.
    */
   function serializeLanguagesCookie() {
-    const LANGUAGE_SELECTION: string[] = form.getFieldValue(FORM_ITEM_NAMES.LANGUAGE_SELECTION) || [];
-    document.cookie = cookie.serialize(FORM_ITEM_NAMES.LANGUAGE_SELECTION, LANGUAGE_SELECTION.join(','), {
+    const languageSelection: string[] = form.getFieldValue(ServiceFormItemNames.LANGUAGE_SELECTION) || [];
+    document.cookie = cookie.serialize(ServiceFormItemNames.LANGUAGE_SELECTION, languageSelection.join(','), {
       sameSite: 'lax',
     });
   }
@@ -93,9 +97,11 @@ export function ServiceFormPage(): JSX.Element {
   const showExecutionPage: boolean = executionState === EventStates.continuitive || executionState === EventStates.retropective;
 
   React.useEffect(() => {
-    if (carouselRef && carouselRef.current) {
-      const carouselTarget: number = showExecutionPage ? 1 : 0;
-      carouselRef.current.goTo(carouselTarget);
+    const currentCarouselRef = carouselRef?.current;
+
+    if (currentCarouselRef) {
+      const carouselTargetIndex: number = showExecutionPage ? 1 : 0;
+      currentCarouselRef.goTo(carouselTargetIndex);
     }
   }, [executionState]);
 
@@ -108,24 +114,25 @@ export function ServiceFormPage(): JSX.Element {
             wrapperCol={{ span: 20 }}
             onFinish={onFinish}
             form={form}
+            onClearFormInputs={onClearServiceForm}
           >
           </ServiceForm>
-        </Page>
-
-        <Page>
-          <ServiceFormExecutionPage
-            error={executionError}
-            executionProgressMax={executionProgressMax}
-            executionState={executionState}
-          />
-
-          <Row justify="end">
-            <Space>
-              <Button onClick={() => setExecutionState(EventStates.prospective)}>Return to Service Form</Button>
-            </Space>
-          </Row>
         </Page>
       </Carousel>
     </AuthorizedContent>
   );
 }
+
+//<Page>
+//  <ServiceFormExecutionPage
+//    error={executionError}
+//    executionProgressMax={executionProgressMax}
+//    executionState={executionState}
+//  />
+
+//  <Row justify="end">
+//    <Space>
+//      <Button onClick={() => setExecutionState(EventStates.prospective)}>Return to Service Form</Button>
+//    </Space>
+//  </Row>
+//</Page>

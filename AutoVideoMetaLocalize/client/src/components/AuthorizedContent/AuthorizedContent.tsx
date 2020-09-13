@@ -17,7 +17,7 @@ export function AuthorizedContent(props: {
 
   return (
     <Skeleton loading={user == null}>
-      {user && user.isAuthenticated ?
+      {user?.isAuthenticated ?
         props.children :
         <Result
           status="403"
