@@ -147,11 +147,7 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
         loader={<Row key="infinite-scroll-loader" justify="center"><Spin /></Row>}
         useWindow={false}
       >
-        <Radio.Group {...props}
-          value={value}
-          onChange={onChange}
-          defaultValue={defaultValue?.id}
-        >
+        <Radio.Group>
           {mineYouTubeChannels && mineYouTubeChannels.map((channel: Channel) =>
             <Radio.Button className="max-cell max-height" key={channel.id} value={channel.id}>
               <BasicComboView
@@ -167,3 +163,8 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
   );
 }
 
+//<Radio.Group {...props}
+//  value={value}
+//  onChange={onChange}
+//  defaultValue={defaultValue?.id}
+//>
