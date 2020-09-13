@@ -16,17 +16,16 @@ export function GoogleSignInButton(props: {
   scopes?: string[];
   redirect?: string;
 }): JSX.Element {
-  const scopes: string[] = props.scopes || ['https://www.googleapis.com/auth/userinfo.profile'];
-  const redirect: string = props.redirect || window.location.pathname;
+  const { scopes, redirect } = props;
 
   /** The click event for this button. */
   async function onClick(): Promise<void> {
     await GOOGLE_AUTH_API.apiGoogleAuthAuthenticationRedirectUriPost({
-      uri: redirect,
+      uri: redirect || window.location.pathname,
     });
 
     const authorizationCodeRequestUrl: string = await GOOGLE_AUTH_API.apiGoogleAuthAuthorizationCodeRequestUrlGet({
-      scope: scopes.join(' '),
+      scope: scopes && scopes.join(' '),
     });
 
     window.location.assign(authorizationCodeRequestUrl);

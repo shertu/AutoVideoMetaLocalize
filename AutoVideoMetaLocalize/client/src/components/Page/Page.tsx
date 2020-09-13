@@ -13,12 +13,12 @@ export interface PageProps extends React.DetailedHTMLProps<React.HTMLAttributes<
  * @return {JSX.Element}
  */
 export function Page(props: PageProps): JSX.Element {
-  const className = classNames(props.className, 'max-cell-lg');
+  const { className, title, children, ...extra } = props;
 
   return (
-    <section {...props} className={className}>
-      {props.title && <Divider>{props.title}</Divider>}
-      {props.children}
+    <section {...extra} className={classNames(className, 'max-cell-lg')}>
+      {title && <Divider>{title}</Divider>}
+      {children}
     </section>
   );
 };

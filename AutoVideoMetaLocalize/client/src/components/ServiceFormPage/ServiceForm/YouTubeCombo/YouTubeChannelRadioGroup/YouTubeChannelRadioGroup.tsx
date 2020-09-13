@@ -3,7 +3,6 @@ import * as React from 'react';
 import { BasicComboView } from '../../../../BasicComboView/BasicComboView';
 import { Channel, YouTubeChannelApi, ApiYouTubeChannelListGetRequest, ChannelListResponse } from '../../../../../../generated-sources/openapi';
 import { RadioGroupProps, RadioChangeEvent } from 'antd/lib/radio';
-import { AuthorizedContent } from '../../../../AuthorizedContent/AuthorizedContent';
 import InfiniteScroll from 'react-infinite-scroller';
 
 const YOUTUBE_CHANNEL_API: YouTubeChannelApi = new YouTubeChannelApi();
@@ -133,13 +132,13 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
   }
 
   return (
-    <AuthorizedContent>
+    <Row className="max-cell-sm">
       {error && mineYouTubeChannels == null &&
-        <Alert className="max-cell-sm" message="Error" description="Failed to load YouTube channel information." type="error" showIcon />
+        <Alert className="max-cell" message="Error" description="Failed to load YouTube channel information." type="error" showIcon />
       }
 
       {!atLeastOneMineYouTubeChannel && loading === false &&
-        <Alert className="max-cell-sm" message="Warning" description="No YouTube channels are associated with this Google account." type="warning" showIcon />
+        <Alert className="max-cell" message="Warning" description="No YouTube channels are associated with this Google account." type="warning" showIcon />
       }
 
       <Radio.Group {...props}
@@ -174,7 +173,7 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
           />
         </InfiniteScroll>
       </Radio.Group>
-    </AuthorizedContent >
+    </Row>
   );
 }
 

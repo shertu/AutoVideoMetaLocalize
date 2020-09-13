@@ -1,8 +1,8 @@
-import { Select, Alert } from 'antd';
+import { Select, Alert, Row } from 'antd';
 import * as React from 'react';
-import { SupportedLanguage, I18nLanguageSnippet, LanguageApi } from '../../../../../generated-sources/openapi';
+import { SupportedLanguage, I18nLanguageSnippet, LanguageApi, GetClaimsPrincipleResult } from '../../../../../generated-sources/openapi';
 import { SelectProps } from 'antd/lib/select';
-import { AuthorizedContent } from '../../../AuthorizedContent/AuthorizedContent';
+import UserContext from '../../../UserContext/UserContext';
 
 const LANGUAGE_API: LanguageApi = new LanguageApi();
 
@@ -12,6 +12,8 @@ const LANGUAGE_API: LanguageApi = new LanguageApi();
  * @return {JSX.Element}
  */
 export function LanguageSelect(props: SelectProps<string>): JSX.Element {
+  const user: GetClaimsPrincipleResult = React.useContext(UserContext);
+
   const [cloudTranslationSupportedLanguages, setCloudTranslationSupportedLanguages] =
     React.useState<Array<SupportedLanguage>>(undefined);
 
@@ -29,7 +31,7 @@ export function LanguageSelect(props: SelectProps<string>): JSX.Element {
     LANGUAGE_API.apiLanguageYouTubeI18nLanguagesGet()
       .then((res) => setYouTubeI18nLanguages(res))
       .catch(() => setError(true));
-  }, []);
+  }, [user]);
 
   let languagesUnion: SupportedLanguage[] = null;
   if (cloudTranslationSupportedLanguages && youTubeI18nLanguages) {
@@ -38,21 +40,19 @@ export function LanguageSelect(props: SelectProps<string>): JSX.Element {
   }
 
   return (
-    <AuthorizedContent>
+    <Row className="max-cell-sm">
       {error &&
-        <Alert className="max-cell-sm" message="Error" description="Failed to load Google Cloud Translate or YouTube language information." type="error" showIcon />
+        <Alert className="max-cell" message="Error" description="Failed to load Google Cloud Translate or YouTube language information." type="error" showIcon />
       }
 
-      <Select {...props}
-        optionFilterProp="label"
-      >
+      <Select {...props} optionFilterProp="label">
         {languagesUnion?.map(language =>
           <Select.Option key={language.languageCode} value={language.languageCode} label={language.displayName}>
             {language.displayName}
           </Select.Option >
         )}
       </Select>
-    </AuthorizedContent >
+    </Row>
   );
 }
 

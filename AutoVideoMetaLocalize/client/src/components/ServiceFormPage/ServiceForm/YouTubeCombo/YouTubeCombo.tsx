@@ -20,29 +20,33 @@ export function YouTubeCombo(): JSX.Element {
 
   return (
     <>
-      <Form.Item
-        label="Channel"
-        name={ServiceFormItemNames.VIDEO_SELECTION}
-        rules={[{ required: false, message: 'Please select at least one channel.' }]}
-        className="max-cell-sm"
-      >
-        <YouTubeChannelRadioGroup
-          onChangeChannel={setSelectedMineYouTubeChannel}
-          setResponseTotal={setMineYouTubeChannelTotalCount}
-        />
-      </Form.Item>
-
-      <Form.Item
-        label="Videos"
-        name={ServiceFormItemNames.VIDEO_SELECTION}
-        rules={[{ required: true, message: 'Please select at least one video.' }]}
-      >
-        <YouTubeVideoSelectionTable
-          selectedMineYouTubeChannel={selectedMineYouTubeChannel}
-        />
-      </Form.Item>
+      <YouTubeChannelRadioGroup
+        onChangeChannel={setSelectedMineYouTubeChannel}
+        setResponseTotal={setMineYouTubeChannelTotalCount}
+      />
     </>
   );
 }
+
+//<Form.Item
+//  label="Channel"
+//  name={ServiceFormItemNames.VIDEO_SELECTION}
+//  rules={[{ required: false, message: 'Please select at least one channel.' }]}
+//>
+//  <YouTubeChannelRadioGroup
+//    onChangeChannel={setSelectedMineYouTubeChannel}
+//    setResponseTotal={setMineYouTubeChannelTotalCount}
+//  />
+//</Form.Item>
+
+//<Form.Item
+//  label="Videos"
+//  name={ServiceFormItemNames.VIDEO_SELECTION}
+//  rules={[{ required: true, message: 'Please select at least one video.' }]}
+//>
+//  <YouTubeVideoSelectionTable
+//    selectedMineYouTubeChannel={selectedMineYouTubeChannel}
+//  />
+//</Form.Item>
 
 //hidden = { mineYouTubeChannelTotalCount === 1}
