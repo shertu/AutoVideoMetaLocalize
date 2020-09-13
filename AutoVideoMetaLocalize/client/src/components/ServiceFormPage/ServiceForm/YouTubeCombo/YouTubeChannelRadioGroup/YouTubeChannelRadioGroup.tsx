@@ -127,6 +127,7 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
    * @param response
    */
   function canLoadMore(response: ChannelListResponse): boolean {
+    console.log(response, response == null || response.nextPageToken != null);
     return response == null || response.nextPageToken != null;
   }
 
