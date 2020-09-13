@@ -86,7 +86,7 @@ export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProp
       setLoading(true);
       tempStateResponse = await onLoadNext(tempStateResponse, pageSize);
 
-      if (tempStateResponse) {
+      if (tempStateResponse != null) {
         tempStateData = tempStateData.concat(tempStateResponse.items);
       }
     }

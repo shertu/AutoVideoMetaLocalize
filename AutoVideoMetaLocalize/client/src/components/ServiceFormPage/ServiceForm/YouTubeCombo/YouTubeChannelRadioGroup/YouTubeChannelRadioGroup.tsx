@@ -91,7 +91,7 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
       setLoading(true);
       tempStateResponse = await onLoadNext(tempStateResponse, pageSize);
 
-      if (tempStateResponse) {
+      if (tempStateResponse != null) {
         tempStateData = tempStateData.concat(tempStateResponse.items);
       }
     }
