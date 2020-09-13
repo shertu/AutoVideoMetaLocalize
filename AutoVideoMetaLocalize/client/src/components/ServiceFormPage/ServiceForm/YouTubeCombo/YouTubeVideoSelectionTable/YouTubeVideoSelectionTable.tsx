@@ -79,17 +79,17 @@ export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProp
     const reqLen = page * pageSize;
 
     let tempStateResponse: PlaylistItemListResponse = response;
-    let tempStateData: PlaylistItem[] = channelUploadsPlaylistItems;
+    let tempStateData: PlaylistItem[] = channelUploadsPlaylistItems || []; // important to default data value
 
-    const tempStateDataLen: number = tempStateData ? tempStateData.length : 0;
-    while (tempStateDataLen < reqLen && canLoadMore(tempStateResponse)) {
+    while (tempStateData.length < reqLen && canLoadMore(tempStateResponse)) {
       setLoading(true);
       tempStateResponse = await onLoadNext(tempStateResponse, pageSize);
 
-      if (tempStateResponse != null) {
+      if (tempStateResponse) {
         tempStateData = tempStateData.concat(tempStateResponse.items);
       }
     }
+
 
     setLoading(false);
     setResponse(tempStateResponse);
