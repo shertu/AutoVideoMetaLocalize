@@ -68,7 +68,7 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
    */
   function onChangePagination(page: number, pageSize?: number): void {
     onChangePaginationAsync(page, pageSize)
-      .catch(() => setError(true));
+      //.catch(() => setError(true));
   }
 
   /**
