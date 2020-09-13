@@ -12,8 +12,6 @@ const LANGUAGE_API: LanguageApi = new LanguageApi();
  * @return {JSX.Element}
  */
 export function LanguageSelect(props: SelectProps<string>): JSX.Element {
-  const user: GetClaimsPrincipleResult = React.useContext(UserContext);
-
   const [cloudTranslationSupportedLanguages, setCloudTranslationSupportedLanguages] =
     React.useState<Array<SupportedLanguage>>(undefined);
 
@@ -31,7 +29,7 @@ export function LanguageSelect(props: SelectProps<string>): JSX.Element {
     LANGUAGE_API.apiLanguageYouTubeI18nLanguagesGet()
       .then((res) => setYouTubeI18nLanguages(res))
       .catch(() => setError(true));
-  }, [user]);
+  }, []);
 
   let languagesUnion: SupportedLanguage[] = null;
   if (cloudTranslationSupportedLanguages && youTubeI18nLanguages) {

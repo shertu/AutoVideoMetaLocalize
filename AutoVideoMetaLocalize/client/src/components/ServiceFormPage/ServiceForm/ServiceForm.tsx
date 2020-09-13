@@ -8,7 +8,7 @@ import { YouTubeCombo } from './YouTubeCombo/YouTubeCombo';
 import ServiceFormItemNames from '../ServiceFormItemNames';
 
 export interface ServiceFormProps<Values = any> extends FormProps<Values> {
-  submitButtonDisabled?: boolean;
+  submitDisabled?: boolean;
 }
 
 /**
@@ -17,7 +17,7 @@ export interface ServiceFormProps<Values = any> extends FormProps<Values> {
  * @return {JSX.Element}
  */
 export function ServiceForm<Values = any>(props: ServiceFormProps<Values>): JSX.Element {
-  const { submitButtonDisabled, form } = props;
+  const { submitDisabled, form, ...extra } = props;
 
   const languageSelectionCookieValue: string = cookie.parse(document.cookie)[ServiceFormItemNames.LANGUAGE_SELECTION];
   const languageSelectionInitialValue: string[] = languageSelectionCookieValue ? languageSelectionCookieValue.split(',') : [];
@@ -41,7 +41,7 @@ export function ServiceForm<Values = any>(props: ServiceFormProps<Values>): JSX.
 
   return (
     <AuthorizedContent>
-      <Form {...props}>
+      <Form {...extra} form={form}>
         <Form.Item
           label="Languages"
           name={ServiceFormItemNames.LANGUAGE_SELECTION}
@@ -72,7 +72,7 @@ export function ServiceForm<Values = any>(props: ServiceFormProps<Values>): JSX.
           <Space>
             <Button onClick={() => onClearForm()}>Clear</Button>
 
-            <Button type="primary" htmlType="submit" disabled={submitButtonDisabled}>Execute</Button>
+            <Button type="primary" htmlType="submit" disabled={submitDisabled}>Execute</Button>
           </Space>
         </Row>
       </Form>

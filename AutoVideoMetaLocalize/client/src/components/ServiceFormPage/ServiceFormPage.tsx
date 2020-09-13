@@ -96,7 +96,7 @@ export function ServiceFormPage(): JSX.Element {
             wrapperCol={{ span: 20 }}
             onFinish={onFinish}
             form={form}
-            submitButtonDisabled={executionState === EventStates.continuitive}
+            submitDisabled={executionState === EventStates.continuitive}
           >
           </ServiceForm>
         </Page>
