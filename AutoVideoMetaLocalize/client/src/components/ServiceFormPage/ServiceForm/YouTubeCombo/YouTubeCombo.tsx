@@ -3,15 +3,20 @@ import * as React from 'react';
 import { Channel } from '../../../../../generated-sources/openapi';
 import { YouTubeChannelRadioGroup } from './YouTubeChannelRadioGroup/YouTubeChannelRadioGroup';
 import { YouTubeVideoSelectionTable } from './YouTubeVideoSelectionTable/YouTubeVideoSelectionTable';
-import ServiceFormItemNames from '../../ServiceFormItemNames';
-
+import { FormItemProps } from 'antd/lib/form';
+import { NamePath } from 'antd/lib/form/interface';
 
 /**
  * The page used to control the flow of the process.
  *
  * @return {JSX.Element}
  */
-export function YouTubeCombo(): JSX.Element {
+export function YouTubeCombo(props: {
+  YouTubeChannelRadioGroupFormItemName?: NamePath;
+  YouTubeVideoSelectionTableFormItemName?: NamePath;
+}): JSX.Element {
+  const { YouTubeChannelRadioGroupFormItemName, YouTubeVideoSelectionTableFormItemName } = props;
+
   const [selectedMineYouTubeChannel, setSelectedMineYouTubeChannel] =
     React.useState<Channel>(undefined);
 
@@ -20,34 +25,33 @@ export function YouTubeCombo(): JSX.Element {
 
   return (
     <>
-      <YouTubeChannelRadioGroup
-        onChangeChannel={setSelectedMineYouTubeChannel}
-        setResponseTotal={setMineYouTubeChannelTotalCount}
-        className="max-cell-sm"
-      />
+      <Form.Item
+        label="Channel"
+        name={YouTubeChannelRadioGroupFormItemName}
+        rules={[{ required: false, message: 'Please select at least one channel.' }]}
+      >
+        <YouTubeChannelRadioGroup
+          onChangeChannel={setSelectedMineYouTubeChannel}
+          setResponseTotal={setMineYouTubeChannelTotalCount}
+          className="max-cell-sm"
+        />
+      </Form.Item>
+
+      <Form.Item
+        label="Videos"
+        name={YouTubeVideoSelectionTableFormItemName}
+        rules={[{ required: true, message: 'Please select at least one video.' }]}
+      >
+        <YouTubeVideoSelectionTable
+          selectedMineYouTubeChannel={selectedMineYouTubeChannel}
+        />
+      </Form.Item>
     </>
   );
 }
 
-//<Form.Item
-//  label="Channel"
-//  name={ServiceFormItemNames.VIDEO_SELECTION}
-//  rules={[{ required: false, message: 'Please select at least one channel.' }]}
-//>
-//  <YouTubeChannelRadioGroup
-//    onChangeChannel={setSelectedMineYouTubeChannel}
-//    setResponseTotal={setMineYouTubeChannelTotalCount}
-//  />
-//</Form.Item>
 
-//<Form.Item
-//  label="Videos"
-//  name={ServiceFormItemNames.VIDEO_SELECTION}
-//  rules={[{ required: true, message: 'Please select at least one video.' }]}
-//>
-//  <YouTubeVideoSelectionTable
-//    selectedMineYouTubeChannel={selectedMineYouTubeChannel}
-//  />
-//</Form.Item>
+
+
 
 //hidden = { mineYouTubeChannelTotalCount === 1}

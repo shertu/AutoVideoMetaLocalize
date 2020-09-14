@@ -5,10 +5,9 @@ import { AuthorizedContent } from '../AuthorizedContent/AuthorizedContent';
 import * as cookie from 'cookie';
 import { Page } from '../Page/Page';
 import { Store } from 'antd/lib/form/interface';
-import { ServiceFormExecutionPage } from './ServiceFormExecutionPage/ServiceFormExecutionPage';
 import EventStates from '../../event-states';
-import { ServiceForm } from './ServiceForm/ServiceForm';
-import ServiceFormItemNames from './ServiceFormItemNames';
+import { ServiceForm, ServiceFormItemNames } from './ServiceForm/ServiceForm';
+import { ExecutionStateProvider } from './ExecutionStateContext/ExecutionStateContext';
 
 const YOUTUBE_VIDEO_API: YouTubeVideoApi = new YouTubeVideoApi();
 
@@ -36,8 +35,8 @@ export function ServiceFormPage(): JSX.Element {
    * @param {Store} values
    */
   function onFinish(values: Store) {
-    const languageSelection: string[] = values[ServiceFormItemNames.LANGUAGE_SELECTION] || [];
-    const videoSelection: string[] = values[ServiceFormItemNames.VIDEO_SELECTION] || [];
+    const languageSelection: string[] = values[ServiceFormItemNames.LANGUAGE_SELECT] || [];
+    const videoSelection: string[] = values[ServiceFormItemNames.YOUTUBE_VIDEO_SELECTION_TABLE] || [];
     const smbCheckbox: boolean = values[ServiceFormItemNames.SMB_CHECKBOX] || false;
 
     const serviceFormInputs: AppVideoLocalizeRequest = {
@@ -60,8 +59,8 @@ export function ServiceFormPage(): JSX.Element {
       setExecutionError(false);
       setExecutionProgressMax(serviceFormInputs.videos.length * serviceFormInputs.languages.length);
 
-      const languageSelection: string[] = form.getFieldValue(ServiceFormItemNames.LANGUAGE_SELECTION) || [];
-      document.cookie = cookie.serialize(ServiceFormItemNames.LANGUAGE_SELECTION, languageSelection.join(','), {
+      const languageSelection: string[] = form.getFieldValue(ServiceFormItemNames.LANGUAGE_SELECT) || [];
+      document.cookie = cookie.serialize(ServiceFormItemNames.LANGUAGE_SELECT, languageSelection.join(','), {
         sameSite: 'lax',
       });
 
@@ -89,18 +88,19 @@ export function ServiceFormPage(): JSX.Element {
 
   return (
     <AuthorizedContent>
-      <Carousel ref={carouselRef} dots={false}>
-        <Page title="Service">
-          <ServiceForm
-            labelCol={{ span: 4 }}
-            wrapperCol={{ span: 20 }}
-            onFinish={onFinish}
-            form={form}
-            submitDisabled={executionState === EventStates.continuitive}
-          >
-          </ServiceForm>
-        </Page>
-      </Carousel>
+      <ExecutionStateProvider value={executionState}>
+        <Carousel ref={carouselRef} dots={false}>
+          <Page title="Service">
+            <ServiceForm
+              labelCol={{ span: 4 }}
+              wrapperCol={{ span: 20 }}
+              onFinish={onFinish}
+              form={form}
+            >
+            </ServiceForm>
+          </Page>
+        </Carousel>
+      </ExecutionStateProvider>
     </AuthorizedContent>
   );
 }

@@ -19,7 +19,7 @@ export interface YouTubeChannelRadioGroupProps extends RadioGroupProps {
  * @return {JSX.Element}
  */
 export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): JSX.Element {
-  const { onChangeChannel, setResponseTotal } = props;
+  const { onChangeChannel, setResponseTotal, ...radioGroupProps } = props;
 
   const [value, setValue] =
     React.useState<string>(undefined);
@@ -35,8 +35,6 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
 
   const [error, setError] =
     React.useState<boolean>(false);
-
-  console.log(value, mineYouTubeChannels, currentResponse, loading, error);
 
   // default value
   const atLeastOneMineYouTubeChannel: boolean = mineYouTubeChannels?.length > 0;
@@ -146,13 +144,17 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
         <Alert className="max-cell" message="Warning" description="No YouTube channels are associated with this Google account." type="warning" showIcon />
       }
 
-      <InfiniteScroll
-        loadMore={onChangePagination}
-        hasMore={canLoadMore(currentResponse)}
-        loader={<Row key="infinite-scroll-loader" justify="center"><Spin /></Row>}
-        useWindow={false}
+      <Radio.Group {...radioGroupProps}
+        value={value}
+        onChange={onChange}
+        defaultValue={defaultValue?.id}
       >
-        <Radio.Group>
+        <InfiniteScroll
+          loadMore={onChangePagination}
+          hasMore={canLoadMore(currentResponse)}
+          loader={<Row key="infinite-scroll-loader" justify="center"><Spin /></Row>}
+          useWindow={false}
+        >
           {mineYouTubeChannels && mineYouTubeChannels.map((channel: Channel) =>
             <Radio.Button className="max-cell max-height" key={channel.id} value={channel.id}>
               <BasicComboView
@@ -162,14 +164,9 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
               />
             </Radio.Button>
           )}
-        </Radio.Group>
-      </InfiniteScroll>
+        </InfiniteScroll>
+      </Radio.Group>
     </Row>
   );
 }
 
-//<Radio.Group {...props}
-//  value={value}
-//  onChange={onChange}
-//  defaultValue={defaultValue?.id}
-//>

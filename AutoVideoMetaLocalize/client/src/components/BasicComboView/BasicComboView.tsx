@@ -1,8 +1,8 @@
-import {Avatar, Col, Row, Typography} from 'antd';
+import { Avatar, Col, Row, Typography } from 'antd';
 import * as React from 'react';
-import {Thumbnail} from '../../../generated-sources/openapi';
+import { Thumbnail } from '../../../generated-sources/openapi';
 
-const {Paragraph} = Typography;
+const { Paragraph } = Typography;
 
 /**
  * A basic information card with an image, title and subtitle.
@@ -19,13 +19,13 @@ export function BasicComboView(props: {
   const { thumbnail, title, subtitle, avatarShape } = props;
 
   return (
-    <Row className="max-cell-xs" align="middle" justify="start" style={{minHeight: 120}}>
+    <Row className="max-cell-xs" align="middle" justify="start" style={{ minHeight: 120 }}>
       <Col span={8}>
         <Row align="middle" justify="center">
           {thumbnail && (
             <Avatar
               src={thumbnail.url}
-              style={{width: thumbnail.width, height: thumbnail.height}}
+              style={{ width: thumbnail.width, height: thumbnail.height }}
               shape={avatarShape}
             />
           )}
@@ -33,10 +33,12 @@ export function BasicComboView(props: {
       </Col>
 
       <Col span={14} offset={2}>
-        <Typography style={{overflowWrap: 'break-word'}}>
-          <Paragraph strong>{title}</Paragraph>
-          <Paragraph>{subtitle}</Paragraph>
-        </Typography>
+        <Row align="middle" justify="start">
+          <Typography style={{ overflowWrap: 'break-word' }}>
+            <Paragraph strong>{title}</Paragraph>
+            <Paragraph>{subtitle}</Paragraph>
+          </Typography>
+        </Row>
       </Col>
     </Row>
   );
