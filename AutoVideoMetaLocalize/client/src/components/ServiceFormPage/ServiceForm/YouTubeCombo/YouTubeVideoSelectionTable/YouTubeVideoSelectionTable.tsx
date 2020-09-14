@@ -40,10 +40,10 @@ export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProp
   const channelUploadsPlaylistId: string = selectedMineYouTubeChannel?.contentDetails?.relatedPlaylists.uploads;
 
   const [channelUploadsPlaylistItems, setChannelUploadsPlaylistItems] =
-    React.useState<Array<PlaylistItem>>([]);
+    React.useState<Array<PlaylistItem>>(undefined);
 
   const [response, setResponse] =
-    React.useState<PlaylistItemListResponse>(null);
+    React.useState<PlaylistItemListResponse>(undefined);
 
   const [paginationCurrent, setPaginationCurrent] =
     React.useState<number>(0);
@@ -60,19 +60,14 @@ export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProp
 
   /**
    * Called when the page number is changed, and it takes the resulting page number and pageSize as its arguments.
-   *
-   * @param {number} page
-   * @param {number} pageSize
    */
   function onChangePagination(page: number, pageSize?: number): void {
-    onChangePaginationAsync(page, pageSize);
+    onChangePaginationAsync(page, pageSize)
+      .catch(() => setError(true));
   }
 
   /**
    * Called when the page number is changed, and it takes the resulting page number and pageSize as its arguments.
-   *
-   * @param {number} page
-   * @param {number} pageSize
    */
   async function onChangePaginationAsync(page: number, pageSize?: number): Promise<void> {
     pageSize = pageSize || DEFAULT_PAGE_SIZE;
@@ -81,15 +76,16 @@ export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProp
     let tempStateResponse: PlaylistItemListResponse = response;
     let tempStateData: PlaylistItem[] = channelUploadsPlaylistItems || []; // important to default data value
 
-    while (tempStateData.length < reqLen && canLoadMore(tempStateResponse)) {
-      setLoading(true);
-      tempStateResponse = await onLoadNext(tempStateResponse, pageSize);
+    if (!loading) {
+      while (tempStateData.length < reqLen && canLoadMore(tempStateResponse)) {
+        setLoading(true);
+        tempStateResponse = await onLoadNext(tempStateResponse, pageSize);
 
-      if (tempStateResponse) {
-        tempStateData = tempStateData.concat(tempStateResponse.items);
+        if (tempStateResponse) {
+          tempStateData = tempStateData.concat(tempStateResponse.items);
+        }
       }
     }
-
 
     setLoading(false);
     setResponse(tempStateResponse);
@@ -99,11 +95,12 @@ export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProp
 
   /**
    * Fetches the next page of data relative to the current one.
-   * 
-   * @param currentResponse
-   * @param maxResults
    */
   function onLoadNext(currentResponse?: ChannelListResponse, maxResults?: number): Promise<ChannelListResponse> {
+    if (channelUploadsPlaylistId == null) {
+      return null;
+    }
+
     const request: ApiYouTubePlaylistItemListGetRequest = {
       part: 'id,snippet',
       playlistId: channelUploadsPlaylistId,
@@ -114,17 +111,11 @@ export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProp
       request.pageToken = currentResponse.nextPageToken;
     }
 
-    return YOUTUBE_PLAYLIST_ITEM_API.apiYouTubePlaylistItemListGet(request)
-      .catch(() => {
-        setError(true);
-        return null;
-      });
+    return YOUTUBE_PLAYLIST_ITEM_API.apiYouTubePlaylistItemListGet(request);
   }
 
   /**
    * Checks if additional data exists.
-   * 
-   * @param currentResponse
    */
   function canLoadMore(currentResponse: ChannelListResponse): boolean {
     return currentResponse == null || currentResponse.nextPageToken != null;
@@ -132,8 +123,6 @@ export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProp
 
   /**
    * Gets a row's unique key.
-   * 
-   * @param record
    */
   function rowKey(record: PlaylistItem): string {
     return record.snippet.resourceId.videoId; // The key is the video to correctly enable the form.

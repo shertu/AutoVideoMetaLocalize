@@ -60,9 +60,6 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
 
   /**
    * Called when the page number is changed, and it takes the resulting page number and pageSize as its arguments.
-   *
-   * @param {number} page
-   * @param {number} pageSize
    */
   function onChangePagination(page: number, pageSize?: number): void {
     onChangePaginationAsync(page, pageSize)
@@ -71,9 +68,6 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
 
   /**
    * Called when the page number is changed, and it takes the resulting page number and pageSize as its arguments.
-   *
-   * @param {number} page
-   * @param {number} pageSize
    */
   async function onChangePaginationAsync(page: number, pageSize?: number): Promise<void> {
     pageSize = pageSize || DEFAULT_PAGE_SIZE;
@@ -82,12 +76,14 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
     let tempStateResponse: ChannelListResponse = currentResponse;
     let tempStateData: Channel[] = mineYouTubeChannels || []; // important to default data value
 
-    while (tempStateData.length < reqLen && canLoadMore(tempStateResponse)) {
-      setLoading(true);
-      tempStateResponse = await onLoadNext(tempStateResponse, pageSize);
+    if (!loading) {
+      while (tempStateData.length < reqLen && canLoadMore(tempStateResponse)) {
+        setLoading(true);
+        tempStateResponse = await onLoadNext(tempStateResponse, pageSize);
 
-      if (tempStateResponse) {
-        tempStateData = tempStateData.concat(tempStateResponse.items);
+        if (tempStateResponse) {
+          tempStateData = tempStateData.concat(tempStateResponse.items);
+        }
       }
     }
 
@@ -98,9 +94,6 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
 
   /**
    * Fetches the next page of data relative to the current one.
-   * 
-   * @param response
-   * @param maxResults
    */
   function onLoadNext(response?: ChannelListResponse, maxResults?: number): Promise<ChannelListResponse> {
     const request: ApiYouTubeChannelListGetRequest = {
@@ -118,8 +111,6 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
 
   /**
    * Checks if additional data exists.
-   * 
-   * @param response
    */
   function canLoadMore(response: ChannelListResponse): boolean {
     return response == null || response.nextPageToken != null;
@@ -127,8 +118,6 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
 
   /**
    * Gets a row's unique key.
-   * 
-   * @param record
    */
   function rowKey(record: Channel): string {
     return record.id;
