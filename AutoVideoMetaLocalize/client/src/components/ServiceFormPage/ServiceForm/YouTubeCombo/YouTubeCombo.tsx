@@ -36,22 +36,20 @@ export function YouTubeCombo(props: {
           className="max-cell-sm"
         />
       </Form.Item>
-
-      <Form.Item
-        label="Videos"
-        name={YouTubeVideoSelectionTableFormItemName}
-        rules={[{ required: true, message: 'Please select at least one video.' }]}
-      >
-        <YouTubeVideoSelectionTable
-          selectedMineYouTubeChannel={selectedMineYouTubeChannel}
-        />
-      </Form.Item>
     </>
   );
 }
 
 
-
+//<Form.Item
+//  label="Videos"
+//  name={YouTubeVideoSelectionTableFormItemName}
+//  rules={[{ required: true, message: 'Please select at least one video.' }]}
+//>
+//  <YouTubeVideoSelectionTable
+//    selectedMineYouTubeChannel={selectedMineYouTubeChannel}
+//  />
+//</Form.Item>
 
 
 //hidden = { mineYouTubeChannelTotalCount === 1}

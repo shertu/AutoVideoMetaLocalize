@@ -63,7 +63,7 @@ export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProp
    */
   function onChangePagination(page: number, pageSize?: number): void {
     onChangePaginationAsync(page, pageSize)
-      .catch(() => setError(true));
+      //.catch(() => setError(true));
   }
 
   /**
@@ -75,17 +75,21 @@ export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProp
 
     let tempStateResponse: PlaylistItemListResponse = response;
     let tempStateData: PlaylistItem[] = channelUploadsPlaylistItems || []; // important to default data value
+    let tempStateLoading: boolean = loading;
 
-    if (!loading) {
-      while (tempStateData.length < reqLen && canLoadMore(tempStateResponse)) {
-        setLoading(true);
-        tempStateResponse = await onLoadNext(tempStateResponse, pageSize);
+    while (tempStateData.length < reqLen && canLoadMore(tempStateResponse)) {
+      if (tempStateLoading) {
+        break;
+      } else {
+        tempStateLoading = true;
+      }
 
-        if (tempStateResponse) {
-          tempStateData = tempStateData.concat(tempStateResponse.items);
-        } else {
-          break;
-        }
+      tempStateResponse = await onLoadNext(tempStateResponse, pageSize);
+
+      if (tempStateResponse) {
+        tempStateData = tempStateData.concat(tempStateResponse.items);
+      } else {
+        break;
       }
     }
 
