@@ -3,7 +3,7 @@ import * as React from 'react';
 import { Channel } from '../../../../../generated-sources/openapi';
 import { YouTubeChannelRadioGroup } from './YouTubeChannelRadioGroup/YouTubeChannelRadioGroup';
 import { YouTubeVideoSelectionTable } from './YouTubeVideoSelectionTable/YouTubeVideoSelectionTable';
-import { FormItemProps } from 'antd/lib/form';
+import { FormItemProps, FormInstance } from 'antd/lib/form';
 import { NamePath } from 'antd/lib/form/interface';
 
 /**
@@ -12,27 +12,33 @@ import { NamePath } from 'antd/lib/form/interface';
  * @return {JSX.Element}
  */
 export function YouTubeCombo(props: {
-  YouTubeChannelRadioGroupFormItemName?: NamePath;
-  YouTubeVideoSelectionTableFormItemName?: NamePath;
+  form: FormInstance;
+  youTubeChannelRadioGroupFormItemName?: NamePath;
+  youTubeVideoSelectionTableFormItemName?: NamePath;
 }): JSX.Element {
-  const { YouTubeChannelRadioGroupFormItemName, YouTubeVideoSelectionTableFormItemName } = props;
+  const { form, youTubeChannelRadioGroupFormItemName, youTubeVideoSelectionTableFormItemName } = props;
 
-  const [selectedMineYouTubeChannel, setSelectedMineYouTubeChannel] =
-    React.useState<Channel>(undefined);
+  const [mineYouTubeChannels, setMineYouTubeChannels] =
+    React.useState<Array<Channel>>(undefined);
 
-  const [mineYouTubeChannelTotalCount, setMineYouTubeChannelTotalCount] =
-    React.useState<number>(undefined);
+  const selectedChannelId: string = form.getFieldValue(youTubeChannelRadioGroupFormItemName);
+  const selectedChannel: Channel = mineYouTubeChannels.find((channel: Channel) => channel.id == selectedChannelId);
+  console.log(selectedChannel);
+
+  //React.useEffect(() => {
+  //  onChangePagination(1); // pagination starts at one
+  //}, [mineYouTubeChannels]);
 
   return (
     <>
       <Form.Item
         label="Channel"
-        name={YouTubeChannelRadioGroupFormItemName}
+        name={youTubeChannelRadioGroupFormItemName}
         rules={[{ required: false, message: 'Please select at least one channel.' }]}
       >
         <YouTubeChannelRadioGroup
-          onChangeChannel={setSelectedMineYouTubeChannel}
-          setResponseTotal={setMineYouTubeChannelTotalCount}
+          mineYouTubeChannels={mineYouTubeChannels}
+          setMineYouTubeChannels={setMineYouTubeChannels}
           className="max-cell-sm"
         />
       </Form.Item>

@@ -20,13 +20,12 @@ export const ServiceFormItemNames = Object.freeze({
  *
  * @return {JSX.Element}
  */
-export function ServiceForm<Values = any>(props: FormProps<Values>): JSX.Element {
+export function ServiceForm(props: FormProps): JSX.Element {
   const { form } = props;
 
   const executionState: EventStates = React.useContext(ExecutionStateContext);
 
-  const languageSelectCookieValue: string = cookie.parse(document.cookie)[ServiceFormItemNames.LANGUAGE_SELECT];
-  const languageSelectInitialValue: string[] = languageSelectCookieValue ? languageSelectCookieValue.split(',') : [];
+  const languageSelectCookieValue: string = cookie.parse(document.cookie)[ServiceFormItemNames.LANGUAGE_SELECT] || '';
 
   /** Clears the form's fields and the language cookie. */
   function onClearForm() {
@@ -36,7 +35,7 @@ export function ServiceForm<Values = any>(props: FormProps<Values>): JSX.Element
       { name: ServiceFormItemNames.SMB_CHECKBOX, value: false },
     ])
 
-    document.cookie = cookie.serialize(ServiceFormItemNames.LANGUAGE_SELECT, null);
+    document.cookie = cookie.serialize(ServiceFormItemNames.LANGUAGE_SELECT, '');
   }
 
   return (
@@ -45,7 +44,7 @@ export function ServiceForm<Values = any>(props: FormProps<Values>): JSX.Element
         label="Languages"
         name={ServiceFormItemNames.LANGUAGE_SELECT}
         rules={[{ required: true, message: 'Please select at least one language.' }]}
-        initialValue={languageSelectInitialValue}
+        initialValue={languageSelectCookieValue.split(',')}
       >
         <LanguageSelect
           mode="multiple"
@@ -54,8 +53,8 @@ export function ServiceForm<Values = any>(props: FormProps<Values>): JSX.Element
       </Form.Item>
 
       <YouTubeCombo
-        YouTubeVideoSelectionTableFormItemName={ServiceFormItemNames.YOUTUBE_VIDEO_SELECTION_TABLE}
-        YouTubeChannelRadioGroupFormItemName={ServiceFormItemNames.YOUTUBE_CHANNEL_RADIO_GROUP}
+        youTubeVideoSelectionTableFormItemName={ServiceFormItemNames.YOUTUBE_VIDEO_SELECTION_TABLE}
+        youTubeChannelRadioGroupFormItemName={ServiceFormItemNames.YOUTUBE_CHANNEL_RADIO_GROUP}
       />
 
       <Collapse className="ant-form-item">

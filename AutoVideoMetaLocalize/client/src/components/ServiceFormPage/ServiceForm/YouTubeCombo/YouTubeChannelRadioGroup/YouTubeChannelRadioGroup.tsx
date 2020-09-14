@@ -9,9 +9,11 @@ const YOUTUBE_CHANNEL_API: YouTubeChannelApi = new YouTubeChannelApi();
 const DEFAULT_PAGE_SIZE: number = 30;
 
 export interface YouTubeChannelRadioGroupProps extends RadioGroupProps {
-  onChangeChannel?: (channel: Channel) => void;
-  setResponseTotal?: (count: number) => void;
+  mineYouTubeChannels?: Array<Channel>;
+  setMineYouTubeChannels?: React.Dispatch<React.SetStateAction<Array<Channel>>>;
 }
+
+let YouTubeChannelRadioGroupLoading: boolean = false;
 
 /**
  * A react component used to display a paginated list of the user's YouTube channels as a radio group.
@@ -19,44 +21,22 @@ export interface YouTubeChannelRadioGroupProps extends RadioGroupProps {
  * @return {JSX.Element}
  */
 export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): JSX.Element {
-  const { onChangeChannel, setResponseTotal, ...radioGroupProps } = props;
-
-  const [value, setValue] =
-    React.useState<string>(undefined);
-
-  const [mineYouTubeChannels, setMineYouTubeChannels] =
-    React.useState<Array<Channel>>(undefined);
+  const { mineYouTubeChannels, setMineYouTubeChannels, ...radioGroupProps } = props;
 
   const [currentResponse, setCurrentResponse] =
     React.useState<ChannelListResponse>(undefined);
 
-  const [loading, setLoading] =
-    React.useState<boolean>(false);
+  //const [paginationCurrent, setPaginationCurrent] =
+  //  React.useState<number>(0);
+
+  //const [loading, setLoading] =
+  //  React.useState<boolean>(null);
 
   const [error, setError] =
-    React.useState<boolean>(false);
+    React.useState<boolean>(null);
 
   // default value
-  const atLeastOneMineYouTubeChannel: boolean = mineYouTubeChannels?.length > 0;
-  const defaultValue: Channel = atLeastOneMineYouTubeChannel ? mineYouTubeChannels[0] : null;
-
-  // total response count
-  React.useEffect(() => {
-    if (currentResponse && setResponseTotal) {
-      setResponseTotal(currentResponse.pageInfo.totalResults);
-    }
-  }, [currentResponse]);
-
-  /**
-   * Called when the radio group selection is changed.
-   */
-  function onChange(e: RadioChangeEvent) {
-    const value: string = e.target.value;
-    const selectedChannel: Channel = mineYouTubeChannels.find((channel: Channel) => channel.id == value);
-
-    setValue(value);
-    onChangeChannel(selectedChannel);
-  }
+  const atLeastOneMineYouTubeChannel: boolean = mineYouTubeChannels && mineYouTubeChannels.length > 0;
 
   /**
    * Called when the page number is changed, and it takes the resulting page number and pageSize as its arguments.
@@ -70,26 +50,26 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
    * Called when the page number is changed, and it takes the resulting page number and pageSize as its arguments.
    */
   async function onChangePaginationAsync(page: number, pageSize?: number): Promise<void> {
+    if (YouTubeChannelRadioGroupLoading) {
+      return;
+    }
+
     pageSize = pageSize || DEFAULT_PAGE_SIZE;
     const reqLen = page * pageSize;
 
     let tempStateResponse: ChannelListResponse = currentResponse;
     let tempStateData: Channel[] = mineYouTubeChannels || []; // important to default data value
 
-    if (!loading) {
-      while (tempStateData.length < reqLen && canLoadMore(tempStateResponse)) {
-        setLoading(true);
-        tempStateResponse = await onFetchNext(tempStateResponse, pageSize);
+    while (tempStateData.length < reqLen && canLoadMore(tempStateResponse)) {
+      YouTubeChannelRadioGroupLoading = true;
+      tempStateResponse = await onFetchNext(tempStateResponse, pageSize);
 
-        if (tempStateResponse) {
-          tempStateData = tempStateData.concat(tempStateResponse.items);
-        } else {
-          break;
-        }
+      if (tempStateResponse) {
+        tempStateData = tempStateData.concat(tempStateResponse.items);
       }
     }
 
-    setLoading(false);
+    YouTubeChannelRadioGroupLoading = false;
     setCurrentResponse(tempStateResponse);
     setMineYouTubeChannels(tempStateData);
   }
@@ -142,14 +122,9 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
         loader={<Row key="infinite-scroll-loader" justify="center"><Spin /></Row>}
         useWindow={false}
       >
-        <Radio.Group {...radioGroupProps}
-          value={value}
-          onChange={onChange}
-          defaultValue={defaultValue?.id}
-        >
-
+        <Radio.Group {...radioGroupProps}>
           {mineYouTubeChannels && mineYouTubeChannels.map((channel: Channel) =>
-            <Radio.Button className="max-cell max-height" key={channel.id} value={channel.id}>
+            <Radio.Button className="max-cell max-height" key={rowKey(channel)} value={channel.id}>
               <BasicComboView
                 thumbnail={channel.snippet?.thumbnails._default}
                 title={channel.snippet?.title}
