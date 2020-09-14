@@ -133,17 +133,18 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
         <Alert className="max-cell" message="Warning" description="No YouTube channels are associated with this Google account." type="warning" showIcon />
       }
 
-      <Radio.Group {...radioGroupProps}
-        value={value}
-        onChange={onChange}
-        defaultValue={defaultValue?.id}
+      <InfiniteScroll
+        loadMore={onChangePagination}
+        hasMore={canLoadMore(currentResponse)}
+        loader={<Row key="infinite-scroll-loader" justify="center"><Spin /></Row>}
+        useWindow={false}
       >
-        <InfiniteScroll
-          loadMore={onChangePagination}
-          hasMore={canLoadMore(currentResponse)}
-          loader={<Row key="infinite-scroll-loader" justify="center"><Spin /></Row>}
-          useWindow={false}
+        <Radio.Group {...radioGroupProps}
+          value={value}
+          onChange={onChange}
+          defaultValue={defaultValue?.id}
         >
+
           {mineYouTubeChannels && mineYouTubeChannels.map((channel: Channel) =>
             <Radio.Button className="max-cell max-height" key={channel.id} value={channel.id}>
               <BasicComboView
@@ -153,8 +154,8 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
               />
             </Radio.Button>
           )}
-        </InfiniteScroll>
-      </Radio.Group>
+        </Radio.Group>
+      </InfiniteScroll>
     </Row>
   );
 }
