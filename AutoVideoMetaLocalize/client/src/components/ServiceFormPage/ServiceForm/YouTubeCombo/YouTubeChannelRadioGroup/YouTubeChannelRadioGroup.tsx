@@ -79,7 +79,7 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
     if (!loading) {
       while (tempStateData.length < reqLen && canLoadMore(tempStateResponse)) {
         setLoading(true);
-        tempStateResponse = await onLoadNext(tempStateResponse, pageSize);
+        tempStateResponse = await onFetchNext(tempStateResponse, pageSize);
 
         if (tempStateResponse) {
           tempStateData = tempStateData.concat(tempStateResponse.items);
@@ -97,7 +97,7 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
   /**
    * Fetches the next page of data relative to the current one.
    */
-  function onLoadNext(response?: ChannelListResponse, maxResults?: number): Promise<ChannelListResponse> {
+  function onFetchNext(response?: ChannelListResponse, maxResults?: number): Promise<ChannelListResponse> {
     const request: ApiYouTubeChannelListGetRequest = {
       part: 'id,snippet,contentDetails',
       mine: true,
@@ -128,14 +128,15 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
   return (
     <Row className="max-cell-sm">
       {error && mineYouTubeChannels == null &&
-        <Alert className="max-cell" message="Error" description="Failed to load YouTube channel information." type="error" showIcon />
+        <Alert message="Error" description="Failed to load YouTube channel information." type="error" showIcon />
       }
 
       {!atLeastOneMineYouTubeChannel && !canLoadMore(currentResponse) &&
-        <Alert className="max-cell" message="Warning" description="No YouTube channels are associated with this Google account." type="warning" showIcon />
+        <Alert message="Warning" description="No YouTube channels are associated with this Google account." type="warning" showIcon />
       }
 
       <InfiniteScroll
+        className="max-cell"
         loadMore={onChangePagination}
         hasMore={canLoadMore(currentResponse)}
         loader={<Row key="infinite-scroll-loader" justify="center"><Spin /></Row>}

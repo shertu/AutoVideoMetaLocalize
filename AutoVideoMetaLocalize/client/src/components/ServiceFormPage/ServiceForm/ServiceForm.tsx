@@ -26,7 +26,7 @@ export function ServiceForm<Values = any>(props: FormProps<Values>): JSX.Element
   const executionState: EventStates = React.useContext(ExecutionStateContext);
 
   const languageSelectCookieValue: string = cookie.parse(document.cookie)[ServiceFormItemNames.LANGUAGE_SELECT];
-  const languageSelectInitialValue: string[] = languageSelectCookieValue ? languageSelectCookieValue.split(',') : null;
+  const languageSelectInitialValue: string[] = languageSelectCookieValue ? languageSelectCookieValue.split(',') : [];
 
   /** Clears the form's fields and the language cookie. */
   function onClearForm() {
@@ -45,7 +45,7 @@ export function ServiceForm<Values = any>(props: FormProps<Values>): JSX.Element
         label="Languages"
         name={ServiceFormItemNames.LANGUAGE_SELECT}
         rules={[{ required: true, message: 'Please select at least one language.' }]}
-        initialValue={languageSelectInitialValue || []}
+        initialValue={languageSelectInitialValue}
       >
         <LanguageSelect
           mode="multiple"

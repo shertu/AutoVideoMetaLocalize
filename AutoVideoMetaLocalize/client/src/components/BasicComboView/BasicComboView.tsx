@@ -34,7 +34,7 @@ export function BasicComboView(props: {
 
       <Col span={14} offset={2}>
         <Row align="middle" justify="start">
-          <Typography style={{ overflowWrap: 'break-word' }}>
+          <Typography>
             <Paragraph strong>{title}</Paragraph>
             <Paragraph>{subtitle}</Paragraph>
           </Typography>

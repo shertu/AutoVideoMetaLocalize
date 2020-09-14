@@ -1,6 +1,6 @@
 import { Select, Alert, Row } from 'antd';
 import * as React from 'react';
-import { SupportedLanguage, I18nLanguageSnippet, LanguageApi, GetClaimsPrincipleResult } from '../../../../../generated-sources/openapi';
+import { SupportedLanguage, I18nLanguageSnippet, LanguageApi } from '../../../../../generated-sources/openapi';
 import { SelectProps } from 'antd/lib/select';
 
 const LANGUAGE_API: LanguageApi = new LanguageApi();
@@ -39,7 +39,7 @@ export function LanguageSelect(props: SelectProps<string>): JSX.Element {
   return (
     <Row className="max-cell-sm">
       {error &&
-        <Alert className="max-cell" message="Error" description="Failed to load Google Cloud Translate or YouTube language information." type="error" showIcon />
+        <Alert message="Error" description="Failed to load Google Cloud Translate or YouTube language information." type="error" showIcon />
       }
 
       <Select {...props} optionFilterProp="label">
