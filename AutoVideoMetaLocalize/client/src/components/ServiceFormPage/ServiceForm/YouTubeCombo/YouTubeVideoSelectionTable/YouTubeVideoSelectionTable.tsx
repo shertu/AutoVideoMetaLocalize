@@ -83,6 +83,8 @@ export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProp
 
         if (tempStateResponse) {
           tempStateData = tempStateData.concat(tempStateResponse.items);
+        } else {
+          break;
         }
       }
     }

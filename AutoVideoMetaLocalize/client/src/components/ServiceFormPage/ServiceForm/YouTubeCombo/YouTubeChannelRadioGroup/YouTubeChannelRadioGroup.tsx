@@ -83,6 +83,8 @@ export function YouTubeChannelRadioGroup(props: YouTubeChannelRadioGroupProps): 
 
         if (tempStateResponse) {
           tempStateData = tempStateData.concat(tempStateResponse.items);
+        } else {
+          break;
         }
       }
     }
