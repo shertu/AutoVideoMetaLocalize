@@ -22,8 +22,6 @@ export function YouTubeCombo(props: {
   const [channelPageTotal, setChannelPageTotal] =
     React.useState<number>(undefined);
 
-  console.log("YouTubeCombo", selectedMineYouTubeChannel, channelPageTotal)
-
   function onChangeYouTubeChannelRadioGroupResponse(response: ChannelListResponse) {
     setChannelPageTotal(response?.pageInfo.totalResults);
   }

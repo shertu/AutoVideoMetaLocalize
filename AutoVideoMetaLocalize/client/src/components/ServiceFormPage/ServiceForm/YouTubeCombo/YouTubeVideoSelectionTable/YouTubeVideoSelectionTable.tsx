@@ -1,10 +1,10 @@
-import { Alert, Skeleton } from 'antd';
+import { Alert, Skeleton, Row } from 'antd';
 import * as React from 'react';
 import { BasicComboView } from '../../../../BasicComboView/BasicComboView';
 import { Channel, ChannelListResponse, PlaylistItem, PlaylistItemListResponse, YouTubePlaylistItemApi, ApiYouTubePlaylistItemListGetRequest } from '../../../../../../generated-sources/openapi';
 import { AuthorizedContent } from '../../../../AuthorizedContent/AuthorizedContent';
-import { FormSelectionTable } from '../../../../FormSelectionTable/FormSelectionTable';
-import { TablePaginationConfig, ColumnsType } from 'antd/lib/table';
+import Table, { TablePaginationConfig, ColumnsType } from 'antd/lib/table';
+import { TableRowSelection } from 'antd/lib/table/interface';
 
 const YOUTUBE_PLAYLIST_ITEM_API = new YouTubePlaylistItemApi();
 const DEFAULT_PAGE_SIZE: number = 30;
@@ -27,6 +27,7 @@ export interface YouTubeVideoSelectionTableProps {
   youtubeChannel?: Channel;
   value?: React.Key[];
   onChange?: (value: React.Key[]) => void;
+  className?: string;
 }
 
 /**
@@ -36,13 +37,15 @@ export interface YouTubeVideoSelectionTableProps {
  * @return {JSX.Element}
  */
 export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProps): JSX.Element {
-  const { youtubeChannel, value, onChange } = props;
+  const { youtubeChannel, value, onChange, className } = props;
   const channelUploadsPlaylistId: string = youtubeChannel?.contentDetails?.relatedPlaylists.uploads;
+
+  console.log("YouTubeVideoSelectionTable", props);
 
   const [channelUploadsPlaylistItems, setChannelUploadsPlaylistItems] =
     React.useState<Array<PlaylistItem>>(undefined);
 
-  const [response, setResponse] =
+  const [currentResponse, setCurrentResponse] =
     React.useState<PlaylistItemListResponse>(undefined);
 
   const [paginationCurrent, setPaginationCurrent] =
@@ -70,39 +73,44 @@ export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProp
    * Called when the page number is changed, and it takes the resulting page number and pageSize as its arguments.
    */
   async function onChangePaginationAsync(page: number, pageSize?: number): Promise<void> {
+    if (loading) {
+      return;
+    }
+
     pageSize = pageSize || DEFAULT_PAGE_SIZE;
     const reqLen = page * pageSize;
 
-    let tempStateResponse: PlaylistItemListResponse = response;
+    let tempStateResponse: PlaylistItemListResponse = currentResponse;
     let tempStateData: PlaylistItem[] = channelUploadsPlaylistItems || []; // important to default data value
-    let tempStateLoading: boolean = loading;
 
     while (tempStateData.length < reqLen && canLoadMore(tempStateResponse)) {
-      if (tempStateLoading) {
+      setLoading(true);
+
+      // error handle
+      tempStateResponse = await onFetchNext(tempStateResponse, pageSize)
+        .catch(() => {
+          setError(true);
+          return null;
+        });
+
+      // break if an error occured
+      if (tempStateResponse == null) {
         break;
-      } else {
-        tempStateLoading = true;
       }
 
-      tempStateResponse = await onLoadNext(tempStateResponse, pageSize);
-
-      if (tempStateResponse) {
-        tempStateData = tempStateData.concat(tempStateResponse.items);
-      } else {
-        break;
-      }
+      tempStateData = tempStateData.concat(tempStateResponse.items);
     }
 
     setLoading(false);
-    setResponse(tempStateResponse);
-    setChannelUploadsPlaylistItems(tempStateData);
+    setCurrentResponse(tempStateResponse);
     setPaginationCurrent(page);
+    setChannelUploadsPlaylistItems(tempStateData);
   }
 
   /**
    * Fetches the next page of data relative to the current one.
    */
-  function onLoadNext(currentResponse?: ChannelListResponse, maxResults?: number): Promise<ChannelListResponse> {
+  function onFetchNext(currentResponse?: ChannelListResponse, maxResults?: number): Promise<ChannelListResponse> {
     if (channelUploadsPlaylistId == null) {
       return null;
     }
@@ -139,33 +147,35 @@ export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProp
     current: paginationCurrent,
     //position: ['topLeft'],
     simple: true,
-    pageSize: response?.pageInfo.resultsPerPage,
-    total: response?.pageInfo.totalResults,
+    pageSize: currentResponse?.pageInfo.resultsPerPage,
+    total: currentResponse?.pageInfo.totalResults,
     onChange: onChangePagination,
   };
 
   return (
-    <AuthorizedContent>
+    <Row className="max-cell-sm">
       {error && channelUploadsPlaylistItems == null &&
-        <Alert className="max-cell-sm" message="Error" description="Failed to load YouTube video information." type="error" showIcon />
+        <Alert className="max-cell" message="Error" description="Failed to load YouTube video information." type="error" showIcon />
       }
 
       {channelUploadsPlaylistItems && channelUploadsPlaylistItems.length == 0 && loading === false &&
-        <Alert className="max-cell-sm" message="Warning" description="No YouTube videos are associated with this YouTube channel." type="warning" showIcon />
+        <Alert className="max-cell" message="Warning" description="No YouTube videos are associated with this YouTube channel." type="warning" showIcon />
       }
 
-      <Skeleton loading={loading} active className="max-cell-sm">
-        <FormSelectionTable
-          className="max-cell-sm"
+      <Skeleton loading={loading} active className={className}>
+        <Table
+          className={className}
           dataSource={channelUploadsPlaylistItems}
           pagination={pagination}
           rowKey={rowKey}
           columns={VIDEO_FORM_SELECTION_TABLE_COLUMNS}
-          value={value}
-          onChange={onChange}
+          rowSelection={{
+            selectedRowKeys: value,
+            onChange: onChange,
+          }}
         />
       </Skeleton>
-    </AuthorizedContent >
+    </Row>
   );
 }
 

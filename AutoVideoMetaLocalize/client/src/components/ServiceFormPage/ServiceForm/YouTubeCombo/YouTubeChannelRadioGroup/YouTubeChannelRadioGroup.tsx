@@ -38,16 +38,16 @@ export function YouTubeChannelRadioGroup(props: {
   const [error, setError] =
     React.useState<boolean>(null);
 
-  // if possible, a valid channel must be selected at all times
-  React.useEffect(() => {
-    if (mineYouTubeChannels && mineYouTubeChannels.length) {
-      const channel: Channel = radioGroupValueToChannel();
+  //// if possible a valid channel must option be selected at all times
+  //React.useEffect(() => {
+  //  if (mineYouTubeChannels && mineYouTubeChannels.length) {
+  //    const channel: Channel = radioGroupValueToChannel();
 
-      if (channel == null) {
-        setRadioGroupValue(mineYouTubeChannels[0].id);
-      }
-    }
-  }, [mineYouTubeChannels]);
+  //    if (channel == null) {
+  //      setRadioGroupValue(mineYouTubeChannels[0].id);
+  //    }
+  //  }
+  //}, [mineYouTubeChannels]);
 
   // hook to extract selected channel
   React.useEffect(() => {
@@ -92,6 +92,8 @@ export function YouTubeChannelRadioGroup(props: {
       return;
     }
 
+    console.log("Why is this being called twice?", page, pageSize, radioGroupValue, mineYouTubeChannels, currentResponse, loading, error);
+
     pageSize = pageSize || DEFAULT_PAGE_SIZE;
     const reqLen = page * pageSize;
 
@@ -118,6 +120,7 @@ export function YouTubeChannelRadioGroup(props: {
 
     setLoading(false);
     setCurrentResponse(tempStateResponse);
+    //setPaginationCurrent(page);
     setMineYouTubeChannels(tempStateData);
   }
 
