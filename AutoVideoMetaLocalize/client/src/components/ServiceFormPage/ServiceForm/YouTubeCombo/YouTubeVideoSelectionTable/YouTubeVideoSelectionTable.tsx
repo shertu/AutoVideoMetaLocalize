@@ -58,8 +58,12 @@ export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProp
     React.useState<boolean>(null);
 
   React.useEffect(() => {
-    onChangePagination(1); // pagination starts at one
-  }, []);
+    if (youtubeChannel) {
+      //setChannelUploadsPlaylistItems(null);
+      //setCurrentResponse(null);
+      onChangePagination(1); // pagination starts at one
+    }
+  }, [youtubeChannel]);
 
   /**
    * Called when the page number is changed, and it takes the resulting page number and pageSize as its arguments.
@@ -111,10 +115,6 @@ export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProp
    * Fetches the next page of data relative to the current one.
    */
   function onFetchNext(currentResponse?: ChannelListResponse, maxResults?: number): Promise<ChannelListResponse> {
-    if (channelUploadsPlaylistId == null) {
-      return null;
-    }
-
     const request: ApiYouTubePlaylistItemListGetRequest = {
       part: 'id,snippet',
       playlistId: channelUploadsPlaylistId,
