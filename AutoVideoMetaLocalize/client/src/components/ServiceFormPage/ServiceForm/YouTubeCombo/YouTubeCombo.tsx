@@ -27,7 +27,7 @@ export function YouTubeCombo(props: {
   }
 
   return (
-    <Space direction="vertical">
+    <Space direction="vertical" className="max-cell">
       <div>
         <YouTubeChannelRadioGroup
           onChangeChannel={setSelectedMineYouTubeChannel}
@@ -40,6 +40,7 @@ export function YouTubeCombo(props: {
         youtubeChannel={selectedMineYouTubeChannel}
         onChange={onChange}
         value={value}
+        className="max-cell-sm"
       />
     </Space>
   );

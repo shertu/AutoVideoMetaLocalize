@@ -38,16 +38,16 @@ export function YouTubeChannelRadioGroup(props: {
   const [error, setError] =
     React.useState<boolean>(null);
 
-  //// if possible a valid channel must option be selected at all times
-  //React.useEffect(() => {
-  //  if (mineYouTubeChannels && mineYouTubeChannels.length) {
-  //    const channel: Channel = radioGroupValueToChannel();
+  // if possible a valid channel must option be selected at all times
+  React.useEffect(() => {
+    if (mineYouTubeChannels && mineYouTubeChannels.length) {
+      const channel: Channel = radioGroupValueToChannel();
 
-  //    if (channel == null) {
-  //      setRadioGroupValue(mineYouTubeChannels[0].id);
-  //    }
-  //  }
-  //}, [mineYouTubeChannels]);
+      if (channel == null) {
+        setRadioGroupValue(mineYouTubeChannels[0].id);
+      }
+    }
+  }, [mineYouTubeChannels]);
 
   // hook to extract selected channel
   React.useEffect(() => {
