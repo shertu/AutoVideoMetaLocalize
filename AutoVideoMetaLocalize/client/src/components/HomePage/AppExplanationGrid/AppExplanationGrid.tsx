@@ -3,7 +3,7 @@ import { Card, Col, Row, Statistic } from 'antd';
 import { ColProps } from 'antd/lib/col';
 import * as React from 'react';
 import './style.less';
-import { useInterval } from '../../../hooks';
+import { useInterval } from '../../../custom-react-hooks';
 import chance from '../../../chance';
 
 const { Meta } = Card;

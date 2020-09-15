@@ -4,7 +4,7 @@ import routes from '../../routes';
 import { GoogleSignInButton } from '../GoogleSignInButton/GoogleSignInButton';
 import { Page } from '../Page/Page';
 import { AppExplanationGrid } from './AppExplanationGrid/AppExplanationGrid';
-import names from '../../names';
+import APP_NAMES from '../../app-names';
 
 const { Paragraph, Text, Title } = Typography;
 
@@ -22,10 +22,10 @@ const GOOGLE_AUTH_SCOPES: string[] = [
 export function HomePage(): JSX.Element {
   return (
     <Space direction="vertical" align="center" size="large">
-      <Title>{names.APPLICATION}</Title >
+      <Title>{APP_NAMES.APPLICATION}</Title >
 
       <Paragraph className="max-cell-xs">
-        <Text strong>{names.APPLICATION}</Text> is a
+        <Text strong>{APP_NAMES.APPLICATION}</Text> is a
         service which can localize the titles and descriptions
         of your YouTube videos to make them accessible to a larger audience.
       </Paragraph>

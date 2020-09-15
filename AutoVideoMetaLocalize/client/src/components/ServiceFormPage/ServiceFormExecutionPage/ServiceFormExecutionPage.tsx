@@ -1,7 +1,7 @@
 import { Alert, Row, Progress } from 'antd';
 import * as React from 'react';
 import { Page } from '../../Page/Page';
-import { useInterval } from '../../../hooks';
+import { useInterval } from '../../../custom-react-hooks';
 import EventStates from '../../../event-states';
 import { YouTubeVideoApi } from '../../../../generated-sources/openapi';
 
@@ -33,7 +33,7 @@ export function ServiceFormExecutionPage(props: {
 
   useInterval(updateLocalizationCount, 800);
 
-  console.log("executionProgress", executionProgress, "executionProgressMax", executionProgressMax);
+  //console.log("executionProgress", executionProgress, "executionProgressMax", executionProgressMax);
 
   function updateLocalizationCount() {
     if (executionState == EventStates.continuitive) {

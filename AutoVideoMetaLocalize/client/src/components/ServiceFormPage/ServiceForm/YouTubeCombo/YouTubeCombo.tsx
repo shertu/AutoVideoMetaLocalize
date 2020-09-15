@@ -1,10 +1,8 @@
-import { Form } from 'antd';
+import { Form, Row, Space } from 'antd';
 import * as React from 'react';
-import { Channel } from '../../../../../generated-sources/openapi';
+import { Channel, ChannelListResponse } from '../../../../../generated-sources/openapi';
 import { YouTubeChannelRadioGroup } from './YouTubeChannelRadioGroup/YouTubeChannelRadioGroup';
-import { YouTubeVideoSelectionTable } from './YouTubeVideoSelectionTable/YouTubeVideoSelectionTable';
-import { FormItemProps, FormInstance } from 'antd/lib/form';
-import { NamePath } from 'antd/lib/form/interface';
+import { RadioChangeEvent } from 'antd/lib/radio';
 
 /**
  * The page used to control the flow of the process.
@@ -12,50 +10,44 @@ import { NamePath } from 'antd/lib/form/interface';
  * @return {JSX.Element}
  */
 export function YouTubeCombo(props: {
-  form: FormInstance;
-  youTubeChannelRadioGroupFormItemName?: NamePath;
-  youTubeVideoSelectionTableFormItemName?: NamePath;
+  value?: React.Key[];
+  onChange?: (value: React.Key[]) => void;
 }): JSX.Element {
-  const { form, youTubeChannelRadioGroupFormItemName, youTubeVideoSelectionTableFormItemName } = props;
+  const { value, onChange } = props;
 
-  const [mineYouTubeChannels, setMineYouTubeChannels] =
-    React.useState<Array<Channel>>(undefined);
+  const [selectedMineYouTubeChannel, setSelectedMineYouTubeChannel] =
+    React.useState<Channel>(undefined);
 
-  const selectedChannelId: string = form.getFieldValue(youTubeChannelRadioGroupFormItemName);
-  const selectedChannel: Channel = mineYouTubeChannels.find((channel: Channel) => channel.id == selectedChannelId);
-  console.log(selectedChannel);
+  const [channelPageTotal, setChannelPageTotal] =
+    React.useState<number>(undefined);
+
+  console.log("YouTubeCombo", selectedMineYouTubeChannel, channelPageTotal)
 
   //React.useEffect(() => {
   //  onChangePagination(1); // pagination starts at one
   //}, [mineYouTubeChannels]);
 
+  function onChangeYouTubeChannelRadioGroupResponse(response: ChannelListResponse) {
+    setChannelPageTotal(response?.pageInfo.totalResults);
+  }
+
   return (
-    <>
-      <Form.Item
-        label="Channel"
-        name={youTubeChannelRadioGroupFormItemName}
-        rules={[{ required: false, message: 'Please select at least one channel.' }]}
-      >
+    <Space direction="vertical">
+      <div>
         <YouTubeChannelRadioGroup
-          mineYouTubeChannels={mineYouTubeChannels}
-          setMineYouTubeChannels={setMineYouTubeChannels}
+          onChangeChannel={setSelectedMineYouTubeChannel}
+          onChangeResponse={onChangeYouTubeChannelRadioGroupResponse}
           className="max-cell-sm"
         />
-      </Form.Item>
-    </>
+      </div>
+    </Space>
   );
 }
 
 
-//<Form.Item
-//  label="Videos"
-//  name={YouTubeVideoSelectionTableFormItemName}
-//  rules={[{ required: true, message: 'Please select at least one video.' }]}
-//>
-//  <YouTubeVideoSelectionTable
-//    selectedMineYouTubeChannel={selectedMineYouTubeChannel}
-//  />
-//</Form.Item>
+//<YouTubeVideoSelectionTable
+//  selectedMineYouTubeChannel={selectedMineYouTubeChannel}
+///>
 
 
 //hidden = { mineYouTubeChannelTotalCount === 1}

@@ -24,7 +24,7 @@ const VIDEO_FORM_SELECTION_TABLE_COLUMNS: ColumnsType<PlaylistItem> = [{
 }];
 
 export interface YouTubeVideoSelectionTableProps {
-  selectedMineYouTubeChannel?: Channel;
+  youTubeChannel?: Channel;
   value?: React.Key[];
   onChange?: (value: React.Key[]) => void;
 }
@@ -36,8 +36,8 @@ export interface YouTubeVideoSelectionTableProps {
  * @return {JSX.Element}
  */
 export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProps): JSX.Element {
-  const { selectedMineYouTubeChannel, value, onChange } = props;
-  const channelUploadsPlaylistId: string = selectedMineYouTubeChannel?.contentDetails?.relatedPlaylists.uploads;
+  const { youTubeChannel, value, onChange } = props;
+  const channelUploadsPlaylistId: string = youTubeChannel?.contentDetails?.relatedPlaylists.uploads;
 
   const [channelUploadsPlaylistItems, setChannelUploadsPlaylistItems] =
     React.useState<Array<PlaylistItem>>(undefined);

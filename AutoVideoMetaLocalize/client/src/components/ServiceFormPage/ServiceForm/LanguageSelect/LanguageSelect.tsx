@@ -1,7 +1,6 @@
 import { Select, Alert, Row } from 'antd';
 import * as React from 'react';
 import { SupportedLanguage, I18nLanguageSnippet, LanguageApi } from '../../../../../generated-sources/openapi';
-import { SelectProps } from 'antd/lib/select';
 
 const LANGUAGE_API: LanguageApi = new LanguageApi();
 
@@ -10,7 +9,7 @@ const LANGUAGE_API: LanguageApi = new LanguageApi();
  *
  * @return {JSX.Element}
  */
-export function LanguageSelect(props: SelectProps<string>): JSX.Element {
+export function LanguageSelect(): JSX.Element {
   const [cloudTranslationSupportedLanguages, setCloudTranslationSupportedLanguages] =
     React.useState<Array<SupportedLanguage>>(undefined);
 
@@ -42,7 +41,11 @@ export function LanguageSelect(props: SelectProps<string>): JSX.Element {
         <Alert message="Error" description="Failed to load Google Cloud Translate or YouTube language information." type="error" showIcon />
       }
 
-      <Select {...props} optionFilterProp="label">
+      <Select
+        mode="multiple"
+        className="max-cell-sm"
+        optionFilterProp="label"
+      >
         {languagesUnion?.map(language =>
           <Select.Option key={language.languageCode} value={language.languageCode} label={language.displayName}>
             {language.displayName}

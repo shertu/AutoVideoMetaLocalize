@@ -6,6 +6,7 @@ import { FormProps } from 'antd/lib/form';
 import { YouTubeCombo } from './YouTubeCombo/YouTubeCombo';
 import EventStates from '../../../event-states';
 import ExecutionStateContext from '../ExecutionStateContext/ExecutionStateContext';
+import COOKIE_NAMES from '../../../cookie-names';
 
 /** */
 export const ServiceFormItemNames = Object.freeze({
@@ -15,13 +16,24 @@ export const ServiceFormItemNames = Object.freeze({
   SMB_CHECKBOX: 'smb-checkbox',
 });
 
+export interface ServiceFormValues {
+  language_select: string[],
+  youtube_channel_radio_group: string[],
+  youtube_video_selection_table: string[],
+  smb_checkbox: boolean,
+}
+
 /**
  * The page used to control the flow of the process.
  *
  * @return {JSX.Element}
  */
-export function ServiceForm(props: FormProps): JSX.Element {
-  const { form } = props;
+export function ServiceForm(props: {
+  onFinish: (values: ServiceFormValues) => void
+}): JSX.Element {
+  const { onFinish } = props;
+
+  const [form] = Form.useForm<ServiceFormValues>();
 
   const executionState: EventStates = React.useContext(ExecutionStateContext);
 
@@ -29,33 +41,38 @@ export function ServiceForm(props: FormProps): JSX.Element {
 
   /** Clears the form's fields and the language cookie. */
   function onClearForm() {
-    form.setFields([
-      { name: ServiceFormItemNames.LANGUAGE_SELECT, value: undefined },
-      { name: ServiceFormItemNames.YOUTUBE_VIDEO_SELECTION_TABLE, value: undefined },
-      { name: ServiceFormItemNames.SMB_CHECKBOX, value: false },
-    ])
+    form.setFieldsValue({
+      language_select: null,
+      youtube_video_selection_table: null,
+      smb_checkbox: null,
+    });
 
-    document.cookie = cookie.serialize(ServiceFormItemNames.LANGUAGE_SELECT, '');
+    document.cookie = cookie.serialize(COOKIE_NAMES.SERVICE_FORM_LANGUAGES, '');
   }
 
   return (
-    <Form {...props}>
+    <Form
+      labelCol={{ span: 4 }}
+      wrapperCol={{ span: 20 }}
+      onFinish={onFinish}
+      form={form}
+    >
       <Form.Item
         label="Languages"
         name={ServiceFormItemNames.LANGUAGE_SELECT}
         rules={[{ required: true, message: 'Please select at least one language.' }]}
         initialValue={languageSelectCookieValue.split(',')}
       >
-        <LanguageSelect
-          mode="multiple"
-          className="max-cell-sm"
-        />
+        <LanguageSelect />
       </Form.Item>
 
-      <YouTubeCombo
-        youTubeVideoSelectionTableFormItemName={ServiceFormItemNames.YOUTUBE_VIDEO_SELECTION_TABLE}
-        youTubeChannelRadioGroupFormItemName={ServiceFormItemNames.YOUTUBE_CHANNEL_RADIO_GROUP}
-      />
+      <Form.Item
+        label="Videos"
+        name={ServiceFormItemNames.YOUTUBE_VIDEO_SELECTION_TABLE}
+        rules={[{ required: true, message: 'Please select at least one video.' }]}
+      >
+        <YouTubeCombo />
+      </Form.Item>
 
       <Collapse className="ant-form-item">
         <Collapse.Panel header="Additional Options" key="1">

@@ -1,13 +1,13 @@
-import { Button, Form, Row, Space, Carousel } from 'antd';
+import { Carousel } from 'antd';
 import * as React from 'react';
-import { Channel, AppVideoLocalizeRequest, YouTubeVideoApi } from '../../../generated-sources/openapi';
+import { AppVideoLocalizeRequest, YouTubeVideoApi } from '../../../generated-sources/openapi';
 import { AuthorizedContent } from '../AuthorizedContent/AuthorizedContent';
 import * as cookie from 'cookie';
 import { Page } from '../Page/Page';
-import { Store } from 'antd/lib/form/interface';
 import EventStates from '../../event-states';
-import { ServiceForm, ServiceFormItemNames } from './ServiceForm/ServiceForm';
+import { ServiceForm, ServiceFormValues } from './ServiceForm/ServiceForm';
 import { ExecutionStateProvider } from './ExecutionStateContext/ExecutionStateContext';
+import COOKIE_NAMES from '../../cookie-names';
 
 const YOUTUBE_VIDEO_API: YouTubeVideoApi = new YouTubeVideoApi();
 
@@ -20,13 +20,12 @@ export function ServiceFormPage(): JSX.Element {
   const [executionState, setExecutionState] =
     React.useState<EventStates>(EventStates.prospective);
 
-  const [executionError, setExecutionError] =
+  const [, setExecutionError] =
     React.useState<boolean>(false);
 
-  const [executionProgressMax, setExecutionProgressMax] =
+  const [, setExecutionProgressMax] =
     React.useState<number>(0);
 
-  const [form] = Form.useForm();
   const carouselRef = React.useRef<Carousel>();
 
   /**
@@ -34,15 +33,11 @@ export function ServiceFormPage(): JSX.Element {
    *
    * @param {Store} values
    */
-  function onFinish(values: Store) {
-    const languageSelection: string[] = values[ServiceFormItemNames.LANGUAGE_SELECT] || [];
-    const videoSelection: string[] = values[ServiceFormItemNames.YOUTUBE_VIDEO_SELECTION_TABLE] || [];
-    const smbCheckbox: boolean = values[ServiceFormItemNames.SMB_CHECKBOX] || false;
-
+  function onFinish(values: ServiceFormValues) {
     const serviceFormInputs: AppVideoLocalizeRequest = {
-      languages: languageSelection,
-      videos: videoSelection,
-      sheetMusicBoss: smbCheckbox,
+      languages: values.language_select,
+      videos: values.youtube_video_selection_table,
+      sheetMusicBoss: values.smb_checkbox,
     }
 
     console.log("Service form inputs: ", serviceFormInputs);
@@ -58,11 +53,8 @@ export function ServiceFormPage(): JSX.Element {
       setExecutionState(EventStates.continuitive);
       setExecutionError(false);
       setExecutionProgressMax(serviceFormInputs.videos.length * serviceFormInputs.languages.length);
-
-      const languageSelection: string[] = form.getFieldValue(ServiceFormItemNames.LANGUAGE_SELECT) || [];
-      document.cookie = cookie.serialize(ServiceFormItemNames.LANGUAGE_SELECT, languageSelection.join(','), {
-        sameSite: 'lax',
-      });
+      
+      document.cookie = cookie.serialize(COOKIE_NAMES.SERVICE_FORM_LANGUAGES, serviceFormInputs.languages.join(','));
 
       YOUTUBE_VIDEO_API.apiYouTubeVideoLocalizePut({
         appVideoLocalizeRequest: serviceFormInputs,
@@ -92,12 +84,8 @@ export function ServiceFormPage(): JSX.Element {
         <Carousel ref={carouselRef} dots={false}>
           <Page title="Service">
             <ServiceForm
-              labelCol={{ span: 4 }}
-              wrapperCol={{ span: 20 }}
               onFinish={onFinish}
-              form={form}
-            >
-            </ServiceForm>
+            />
           </Page>
         </Carousel>
       </ExecutionStateProvider>
