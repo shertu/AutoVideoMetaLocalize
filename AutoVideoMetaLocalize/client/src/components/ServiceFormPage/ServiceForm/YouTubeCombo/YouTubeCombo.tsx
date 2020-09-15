@@ -3,6 +3,7 @@ import * as React from 'react';
 import { Channel, ChannelListResponse } from '../../../../../generated-sources/openapi';
 import { YouTubeChannelRadioGroup } from './YouTubeChannelRadioGroup/YouTubeChannelRadioGroup';
 import { RadioChangeEvent } from 'antd/lib/radio';
+import { YouTubeVideoSelectionTable } from './YouTubeVideoSelectionTable/YouTubeVideoSelectionTable';
 
 /**
  * The page used to control the flow of the process.
@@ -23,10 +24,6 @@ export function YouTubeCombo(props: {
 
   console.log("YouTubeCombo", selectedMineYouTubeChannel, channelPageTotal)
 
-  //React.useEffect(() => {
-  //  onChangePagination(1); // pagination starts at one
-  //}, [mineYouTubeChannels]);
-
   function onChangeYouTubeChannelRadioGroupResponse(response: ChannelListResponse) {
     setChannelPageTotal(response?.pageInfo.totalResults);
   }
@@ -40,14 +37,18 @@ export function YouTubeCombo(props: {
           className="max-cell-sm"
         />
       </div>
+
+      <YouTubeVideoSelectionTable
+        youtubeChannel={selectedMineYouTubeChannel}
+        onChange={onChange}
+        value={value}
+      />
     </Space>
   );
 }
 
 
-//<YouTubeVideoSelectionTable
-//  selectedMineYouTubeChannel={selectedMineYouTubeChannel}
-///>
+
 
 
 //hidden = { mineYouTubeChannelTotalCount === 1}

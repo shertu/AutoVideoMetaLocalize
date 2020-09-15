@@ -18,7 +18,7 @@ export function YouTubeChannelRadioGroup(props: {
   onChangeResponse?: (response: ChannelListResponse) => void;
   className?: string;
 }): JSX.Element {
-  const { onChangeChannel, onChangeResponse } = props;
+  const { onChangeChannel, onChangeResponse, className } = props;
 
   const [radioGroupValue, setRadioGroupValue] =
     React.useState<string>(undefined);
@@ -38,38 +38,43 @@ export function YouTubeChannelRadioGroup(props: {
   const [error, setError] =
     React.useState<boolean>(null);
 
-  // hook to extract selected channel
+  // if possible, a valid channel must be selected at all times
   React.useEffect(() => {
-    if (mineYouTubeChannels) {
-      let selectedChannel: Channel = mineYouTubeChannels.find((channel: Channel) => channel.id == radioGroupValue);
+    if (mineYouTubeChannels && mineYouTubeChannels.length) {
+      const channel: Channel = radioGroupValueToChannel();
 
-      // if possible, a valid channel must be selected at all times
-      if (selectedChannel == null && atLeastOneMineYouTubeChannel) {
-        selectedChannel = mineYouTubeChannels[0];
-        setRadioGroupValue(selectedChannel.id);
-      }
-
-      // hook to extract selected channel
-      if (onChangeChannel) {
-        onChangeChannel(selectedChannel);
+      if (channel == null) {
+        setRadioGroupValue(mineYouTubeChannels[0].id);
       }
     }
+  }, [mineYouTubeChannels]);
+
+  // hook to extract selected channel
+  React.useEffect(() => {
+    const channel: Channel = radioGroupValueToChannel();
+    if (onChangeChannel) { onChangeChannel(channel); }
   }, [radioGroupValue]);
 
   // hook to extract response page info
   React.useEffect(() => {
-    if (onChangeResponse) {
-      onChangeResponse(currentResponse);
-    }
+    if (onChangeResponse) { onChangeResponse(currentResponse); }
   }, [currentResponse]);
+
+  /** */
+  function radioGroupValueToChannel(): Channel {
+    if (mineYouTubeChannels) {
+      return mineYouTubeChannels.find((channel: Channel) => channel.id == radioGroupValue);
+    }
+
+    return;
+  }
 
   /**
    * 
    * @param e
    */
   function onChange(e: RadioChangeEvent) {
-    const selectedChannelId: string = e.target.value;
-    setRadioGroupValue(selectedChannelId);
+    setRadioGroupValue(e.target.value);
   }
 
   /**
@@ -147,16 +152,13 @@ export function YouTubeChannelRadioGroup(props: {
     return record.id;
   }
 
-  // constants
-  const atLeastOneMineYouTubeChannel: boolean = mineYouTubeChannels && mineYouTubeChannels.length > 0;
-
   return (
     <Row className="max-cell-sm">
       {error && mineYouTubeChannels == null &&
         <Alert message="Error" description="Failed to load YouTube channel information." type="error" showIcon />
       }
 
-      {!atLeastOneMineYouTubeChannel && !canLoadMore(currentResponse) &&
+      {mineYouTubeChannels && mineYouTubeChannels.length === 0 && !canLoadMore(currentResponse) &&
         <Alert message="Warning" description="No YouTube channels are associated with this Google account." type="warning" showIcon />
       }
 
@@ -170,6 +172,7 @@ export function YouTubeChannelRadioGroup(props: {
         <Radio.Group
           value={radioGroupValue}
           onChange={onChange}
+          className={className}
         >
           {mineYouTubeChannels && mineYouTubeChannels.map((channel: Channel) =>
             <Radio.Button className="max-cell max-height" key={rowKey(channel)} value={channel.id}>
