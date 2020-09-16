@@ -26,7 +26,7 @@ export function YouTubeChannelRadioGroup(props: {
     React.useState<string>(undefined);
 
   const [mineYouTubeChannels, setMineYouTubeChannels] =
-    React.useState<Array<Channel>>(undefined);
+    React.useState<Array<Channel>>([]);
 
   const [currentResponse, setCurrentResponse] =
     React.useState<ChannelListResponse>(undefined);
@@ -127,10 +127,11 @@ export function YouTubeChannelRadioGroup(props: {
     return record.id;
   }
 
+  const mineYouTubeChannelsLength: number = mineYouTubeChannels ? mineYouTubeChannels.length : 0;
+
   const fetchMoreData = () => {
     onChangePagination(paginationCurrent + 1);
   };
-
 
   return (
     <Row className="max-cell-sm">
@@ -138,17 +139,17 @@ export function YouTubeChannelRadioGroup(props: {
         <Alert message="Error" description="Failed to load YouTube channel information." type="error" showIcon />
       }
 
-      <InfiniteScroll
-        dataLength={mineYouTubeChannels ? mineYouTubeChannels.length : 0}
-        next={fetchMoreData}
-        hasMore={true}
-        loader={<Row key="infinite-scroll-loader" justify="center"><Spin /></Row>}
-        className="max-cell"
+      <Radio.Group
+        value={radioGroupValue}
+        onChange={onChange}
+        className={className}
       >
-        <Radio.Group
-          value={radioGroupValue}
-          onChange={onChange}
-          className={className}
+        <InfiniteScroll
+          dataLength={mineYouTubeChannelsLength}
+          next={fetchMoreData}
+          hasMore={true}
+          loader={<Row key="infinite-scroll-loader" justify="center"><Spin /></Row>}
+          className="max-cell"
         >
           {mineYouTubeChannels?.map((channel: Channel) =>
             <Radio.Button className="max-cell max-height" key={rowKey(channel)} value={channel.id}>
@@ -159,8 +160,8 @@ export function YouTubeChannelRadioGroup(props: {
               />
             </Radio.Button>
           )}
-        </Radio.Group>
-      </InfiniteScroll>
+        </InfiniteScroll>
+      </Radio.Group>
     </Row>
   );
 }
