@@ -37,7 +37,7 @@ export function YouTubeCombo(props: {
       </div>
 
       <YouTubeVideoSelectionTable
-        youtubeChannel={selectedMineYouTubeChannel}
+        playlistId={selectedMineYouTubeChannel}
         onChange={onChange}
         value={value}
         className="max-cell-sm"

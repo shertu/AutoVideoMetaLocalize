@@ -2,9 +2,7 @@ import { Alert, Skeleton, Row } from 'antd';
 import * as React from 'react';
 import { BasicComboView } from '../../../../BasicComboView/BasicComboView';
 import { Channel, ChannelListResponse, PlaylistItem, PlaylistItemListResponse, YouTubePlaylistItemApi, ApiYouTubePlaylistItemListGetRequest } from '../../../../../../generated-sources/openapi';
-import { AuthorizedContent } from '../../../../AuthorizedContent/AuthorizedContent';
 import Table, { TablePaginationConfig, ColumnsType } from 'antd/lib/table';
-import { TableRowSelection } from 'antd/lib/table/interface';
 
 const YOUTUBE_PLAYLIST_ITEM_API = new YouTubePlaylistItemApi();
 const DEFAULT_PAGE_SIZE: number = 30;
@@ -24,7 +22,7 @@ const VIDEO_FORM_SELECTION_TABLE_COLUMNS: ColumnsType<PlaylistItem> = [{
 }];
 
 export interface YouTubeVideoSelectionTableProps {
-  youtubeChannel?: Channel;
+  playlistId?: string;
   value?: React.Key[];
   onChange?: (value: React.Key[]) => void;
   className?: string;
@@ -37,10 +35,11 @@ export interface YouTubeVideoSelectionTableProps {
  * @return {JSX.Element}
  */
 export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProps): JSX.Element {
-  const { youtubeChannel, value, onChange, className } = props;
-  const channelUploadsPlaylistId: string = youtubeChannel?.contentDetails?.relatedPlaylists.uploads;
+  const { playlistId, value, onChange, className } = props;
 
-  console.log("YouTubeVideoSelectionTable", props);
+  if (playlistId == null) {
+    throw Error("");
+  }
 
   const [channelUploadsPlaylistItems, setChannelUploadsPlaylistItems] =
     React.useState<Array<PlaylistItem>>(undefined);
@@ -51,19 +50,19 @@ export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProp
   const [paginationCurrent, setPaginationCurrent] =
     React.useState<number>(0);
 
-  const [loading, setLoading] =
-    React.useState<boolean>(null);
+  const [isLoading, setIsLoading] =
+    React.useState<boolean>(false);
 
-  const [error, setError] =
-    React.useState<boolean>(null);
+  const [errorOccurred, setErrorOccurred] =
+    React.useState<boolean>(false);
 
   React.useEffect(() => {
-    if (youtubeChannel) {
+    if (playlistId) {
       //setChannelUploadsPlaylistItems(null);
       //setCurrentResponse(null);
       onChangePagination(1); // pagination starts at one
     }
-  }, [youtubeChannel]);
+  }, [playlistId]);
 
   /**
    * Called when the page number is changed, and it takes the resulting page number and pageSize as its arguments.
@@ -77,7 +76,7 @@ export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProp
    * Called when the page number is changed, and it takes the resulting page number and pageSize as its arguments.
    */
   async function onChangePaginationAsync(page: number, pageSize?: number): Promise<void> {
-    if (loading) {
+    if (isLoading) {
       return;
     }
 
@@ -88,12 +87,12 @@ export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProp
     let tempStateData: PlaylistItem[] = channelUploadsPlaylistItems || []; // important to default data value
 
     while (tempStateData.length < reqLen && canLoadMore(tempStateResponse)) {
-      setLoading(true);
+      setIsLoading(true);
 
       // error handle
       tempStateResponse = await onFetchNext(tempStateResponse, pageSize)
         .catch(() => {
-          setError(true);
+          setErrorOccurred(true);
           return null;
         });
 
@@ -105,7 +104,7 @@ export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProp
       tempStateData = tempStateData.concat(tempStateResponse.items);
     }
 
-    setLoading(false);
+    setIsLoading(false);
     setCurrentResponse(tempStateResponse);
     setPaginationCurrent(page);
     setChannelUploadsPlaylistItems(tempStateData);
@@ -117,7 +116,7 @@ export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProp
   function onFetchNext(currentResponse?: ChannelListResponse, maxResults?: number): Promise<ChannelListResponse> {
     const request: ApiYouTubePlaylistItemListGetRequest = {
       part: 'id,snippet',
-      playlistId: channelUploadsPlaylistId,
+      playlistId: playlistId,
       maxResults: maxResults,
     };
 
@@ -154,15 +153,15 @@ export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProp
 
   return (
     <Row className="max-cell-sm">
-      {error && channelUploadsPlaylistItems == null &&
+      {errorOccurred && channelUploadsPlaylistItems == null &&
         <Alert className="max-cell" message="Error" description="Failed to load YouTube video information." type="error" showIcon />
       }
 
-      {channelUploadsPlaylistItems && channelUploadsPlaylistItems.length == 0 && loading === false &&
+      {channelUploadsPlaylistItems && channelUploadsPlaylistItems.length == 0 && isLoading === false &&
         <Alert className="max-cell" message="Warning" description="No YouTube videos are associated with this YouTube channel." type="warning" showIcon />
       }
 
-      <Skeleton loading={loading} active className={className}>
+      <Skeleton loading={isLoading} active className={className}>
         <Table
           className={className}
           dataSource={channelUploadsPlaylistItems}

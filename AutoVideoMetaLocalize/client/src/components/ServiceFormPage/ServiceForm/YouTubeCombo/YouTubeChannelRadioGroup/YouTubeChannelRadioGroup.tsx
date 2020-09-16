@@ -26,108 +26,94 @@ export function YouTubeChannelRadioGroup(props: {
   const [mineYouTubeChannels, setMineYouTubeChannels] =
     React.useState<Array<Channel>>(undefined);
 
+  const [paginationCurrent, setPaginationCurrent] =
+    React.useState<number>(0);
+
+  const [maxDesiredContentLength, setMaxDesiredContentLength] =
+    React.useState<number>(0);
+
+  const [shouldTryToLoadMore, setShouldTryToLoadMore] =
+    React.useState<boolean>(false);
+
   const [currentResponse, setCurrentResponse] =
     React.useState<ChannelListResponse>(undefined);
 
-  //const [paginationCurrent, setPaginationCurrent] =
-  //  React.useState<number>(0);
-
-  const [loading, setLoading] =
-    React.useState<boolean>(null);
-
   const [error, setError] =
-    React.useState<boolean>(null);
+    React.useState<boolean>(false);
 
-  // if possible a valid channel must option be selected at all times
+  // State whether additional content should be loaded.
   React.useEffect(() => {
-    if (mineYouTubeChannels && mineYouTubeChannels.length) {
-      const channel: Channel = radioGroupValueToChannel();
+    let data: Channel[] = mineYouTubeChannels || []; // important to default data value
+    setShouldTryToLoadMore(data.length < maxDesiredContentLength);
+  });
 
-      if (channel == null) {
-        setRadioGroupValue(mineYouTubeChannels[0].id);
-      }
+  // If additional content should be loaded, then load it.
+  React.useEffect(() => {
+    let data: Channel[] = mineYouTubeChannels || []; // important to default data value
+
+    if (shouldTryToLoadMore && canLoadMore(currentResponse)) {
+      // error handle
+      fetchNextResponse(currentResponse)
+        .then((res: ChannelListResponse) => {
+          data = data.concat(res.items);
+
+          setMineYouTubeChannels(data);
+          setCurrentResponse(res); // TODO set state at the same time as data
+        })
+        .catch((err: Response) => setError(true));
+    }
+  }, [shouldTryToLoadMore]);
+
+  // After additional content is loaded then turn off additional content loading.
+  React.useEffect(() => {
+    setShouldTryToLoadMore(false);
+  }, [mineYouTubeChannels]);
+
+  // A valid channel must option be selected when possible.
+  React.useEffect(() => {
+    const channel: Channel = findMineYouTubeChannel(radioGroupValue);
+
+    if (channel == null && mineYouTubeChannels?.length > 0) {
+      setRadioGroupValue(mineYouTubeChannels[0].id);
     }
   }, [mineYouTubeChannels]);
 
-  // hook to extract selected channel
+  // Hook to extract selected channel
   React.useEffect(() => {
-    const channel: Channel = radioGroupValueToChannel();
+    const channel: Channel = findMineYouTubeChannel(radioGroupValue);
+
     if (onChangeChannel) { onChangeChannel(channel); }
   }, [radioGroupValue]);
 
-  // hook to extract response page info
+  // Hook to extract response page info
   React.useEffect(() => {
     if (onChangeResponse) { onChangeResponse(currentResponse); }
   }, [currentResponse]);
 
-  /** */
-  function radioGroupValueToChannel(): Channel {
-    if (mineYouTubeChannels) {
-      return mineYouTubeChannels.find((channel: Channel) => channel.id == radioGroupValue);
-    }
-
-    return;
-  }
-
-  /**
-   * 
-   * @param e
-   */
+  /** The radio group's onChange event. */
   function onChange(e: RadioChangeEvent) {
     setRadioGroupValue(e.target.value);
+  }
+
+  /** Finds the specified channel by id from the radio group options. */
+  function findMineYouTubeChannel(channelId: string): Channel {
+    return mineYouTubeChannels?.find((channel: Channel) => channel.id == channelId);
   }
 
   /**
    * Called when the page number is changed, and it takes the resulting page number and pageSize as its arguments.
    */
   function onChangePagination(page: number, pageSize?: number): void {
-    onChangePaginationAsync(page, pageSize);
-  }
-
-  /**
-   * Called when the page number is changed, and it takes the resulting page number and pageSize as its arguments.
-   */
-  async function onChangePaginationAsync(page: number, pageSize?: number): Promise<void> {
-    if (loading) {
-      return;
-    }
-
-    console.log("Why is this being called twice?", page, pageSize, radioGroupValue, mineYouTubeChannels, currentResponse, loading, error);
-
     pageSize = pageSize || DEFAULT_PAGE_SIZE;
-    const reqLen = page * pageSize;
-
-    let tempStateResponse: ChannelListResponse = currentResponse;
-    let tempStateData: Channel[] = mineYouTubeChannels || []; // important to default data value
-
-    while (tempStateData.length < reqLen && canLoadMore(tempStateResponse)) {
-      setLoading(true);
-
-      // error handle
-      tempStateResponse = await onFetchNext(tempStateResponse, pageSize)
-        .catch(() => {
-          setError(true);
-          return null;
-        });
-
-      // break if an error occured
-      if (tempStateResponse == null) {
-        break;
-      }
-
-      tempStateData = tempStateData.concat(tempStateResponse.items);
-    }
-
-    setLoading(false);
-    setCurrentResponse(tempStateResponse);
-    //setPaginationCurrent(page);
-    setMineYouTubeChannels(tempStateData);
+    const newMaxDesiredContentLength = page * pageSize;
+    setMaxDesiredContentLength(Math.max(maxDesiredContentLength, newMaxDesiredContentLength));
+    setPaginationCurrent(page);
   }
 
   /**
    * Fetches the next page of data relative to the current one.
    */
-  function onFetchNext(response?: ChannelListResponse, maxResults?: number): Promise<ChannelListResponse> {
+  function fetchNextResponse(response?: ChannelListResponse, maxResults?: number): Promise<ChannelListResponse> {
     const request: ApiYouTubeChannelListGetRequest = {
       part: 'id,snippet,contentDetails',
       mine: true,
@@ -157,12 +143,8 @@ export function YouTubeChannelRadioGroup(props: {
 
   return (
     <Row className="max-cell-sm">
-      {error && mineYouTubeChannels == null &&
+      {error &&
         <Alert message="Error" description="Failed to load YouTube channel information." type="error" showIcon />
-      }
-
-      {mineYouTubeChannels && mineYouTubeChannels.length === 0 && !canLoadMore(currentResponse) &&
-        <Alert message="Warning" description="No YouTube channels are associated with this Google account." type="warning" showIcon />
       }
 
       <InfiniteScroll
@@ -177,7 +159,7 @@ export function YouTubeChannelRadioGroup(props: {
           onChange={onChange}
           className={className}
         >
-          {mineYouTubeChannels && mineYouTubeChannels.map((channel: Channel) =>
+          {mineYouTubeChannels?.map((channel: Channel) =>
             <Radio.Button className="max-cell max-height" key={rowKey(channel)} value={channel.id}>
               <BasicComboView
                 thumbnail={channel.snippet?.thumbnails._default}
@@ -192,3 +174,7 @@ export function YouTubeChannelRadioGroup(props: {
   );
 }
 
+//{
+//  mineYouTubeChannels != null && mineYouTubeChannels.length === 0 && !canLoadMore(currentResponse) &&
+//  <Alert message="Warning" description="No YouTube channels are associated with this Google account." type="warning" showIcon />
+//}
