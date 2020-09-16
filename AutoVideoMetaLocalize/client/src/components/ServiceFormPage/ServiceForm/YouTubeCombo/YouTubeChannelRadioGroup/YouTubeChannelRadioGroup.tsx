@@ -39,9 +39,11 @@ export function YouTubeChannelRadioGroup(props: {
 
   // After the response is changed then append the items to the data set
   React.useEffect(() => {
-    let data: Channel[] = mineYouTubeChannels || []; // important to default data value
-    data = data.concat(currentResponse.items);
-    setMineYouTubeChannels(data);
+    if (currentResponse) {
+      let data: Channel[] = mineYouTubeChannels || []; // important to default data value
+      data = data.concat(currentResponse.items);
+      setMineYouTubeChannels(data);
+    }
   }, [currentResponse]);
 
   // A valid channel option is to be selected when possible.
