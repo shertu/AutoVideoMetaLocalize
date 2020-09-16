@@ -88,14 +88,12 @@ export function YouTubeChannelRadioGroup(props: {
       setItems(items.concat(Array.from({ length: 20 })));
     }, 500);
 
-    //// error handle
+    // error handle
     //fetchNextResponse(currentResponse)
     //  .then((res: ChannelListResponse) => setCurrentResponse(res))
     //  .catch((err: Response) => setError(true));
 
-    //console.log("BEFORE", page, paginationCurrent, pageSize);
-    //setPaginationCurrent(page);
-    //console.log("AFTER", page, paginationCurrent, pageSize);
+    setPaginationCurrent(page);
   }
 
   /**
@@ -134,7 +132,7 @@ export function YouTubeChannelRadioGroup(props: {
   console.log("STATE", radioGroupValue, mineYouTubeChannels, currentResponse, paginationCurrent, error);
 
   const [items, setItems] =
-    React.useState<Array<any>>(Array.from({ length: 20 }));
+    React.useState<Array<any>>(undefined);
 
   return (
     <Row className="max-cell-sm">
@@ -148,18 +146,13 @@ export function YouTubeChannelRadioGroup(props: {
         className={className}
       >
         <InfiniteScroll
-          dataLength={items.length}
+          dataLength={items?.length}
           next={() => onChangePagination(paginationCurrent + 1)}
           hasMore={true}
-          loader={<Row justify="center"><Spin /></Row>}
+          loader={<Row align="middle" justify="center" style={{ height: 120 }}><Spin /></Row>}
           height={400}
-          endMessage={
-            <p style={{ textAlign: "center" }}>
-              <b>Yay! You have seen it all</b>
-            </p>
-          }
         >
-          {items.map((i, index) => (
+          {items?.map((value, index: number) =>
             <div style={{
               height: 30,
               border: "1px solid green",
@@ -168,37 +161,33 @@ export function YouTubeChannelRadioGroup(props: {
             }} key={index}>
               div - #{index}
             </div>
-          ))}
+          )}
         </InfiniteScroll>
       </Radio.Group>
     </Row>
   );
 }
 
-//<InfiniteScroll
-//  dataLength={1}
-//  next={() => onChangePagination(paginationCurrent + 1)}
-//  hasMore={true}
-//  loader={<Row key="infinite-scroll-loader" justify="center"><Spin /></Row>}
-//  className="max-cell"
-//  hasChildren={true}
-//>
+//<Radio.Button className="max-cell max-height" key={rowKey(channel)} value={channel.id}>
 //  <BasicComboView
-//    title="This is a test element"
-//    subtitle="Use to check the channel radio group"
+//    thumbnail={channel.snippet?.thumbnails._default}
+//    title={channel.snippet?.title}
+//    subtitle={channel.id}
 //  />
-//</InfiniteScroll>
+//</Radio.Button>
+
 
 //{
-//  mineYouTubeChannels?.map((channel: Channel) =>
-//    <Radio.Button className="max-cell max-height" key={rowKey(channel)} value={channel.id}>
-//      <BasicComboView
-//        thumbnail={channel.snippet?.thumbnails._default}
-//        title={channel.snippet?.title}
-//        subtitle={channel.id}
-//      />
-//    </Radio.Button>
-//  )
+//  items.map((i, index) => (
+//    <div style={{
+//      height: 30,
+//      border: "1px solid green",
+//      margin: 6,
+//      padding: 8
+//    }} key={index}>
+//      div - #{index}
+//    </div>
+//  ))
 //}
 
 //{
