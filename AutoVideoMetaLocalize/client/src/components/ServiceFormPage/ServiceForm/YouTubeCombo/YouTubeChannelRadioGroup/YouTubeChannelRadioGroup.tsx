@@ -45,6 +45,8 @@ export function YouTubeChannelRadioGroup(props: {
 
   // If additional content should be loaded, then load it.
   React.useEffect(() => {
+    console.log(mineYouTubeChannels, maxDesiredContentLength);
+
     let data: Channel[] = mineYouTubeChannels || []; // important to default data value
     const shouldTryToLoadMore: boolean = data.length < maxDesiredContentLength;
 
@@ -63,7 +65,7 @@ export function YouTubeChannelRadioGroup(props: {
     }
   }, [mineYouTubeChannels, maxDesiredContentLength]);
 
-  // A valid channel must option be selected when possible.
+  // A valid channel option is to be selected when possible.
   React.useEffect(() => {
     const channel: Channel = findMineYouTubeChannel(radioGroupValue);
 
@@ -100,7 +102,11 @@ export function YouTubeChannelRadioGroup(props: {
   function onChangePagination(page: number, pageSize?: number): void {
     pageSize = pageSize || DEFAULT_PAGE_SIZE;
     const newMaxDesiredContentLength = page * pageSize;
-    setMaxDesiredContentLength(Math.max(maxDesiredContentLength, newMaxDesiredContentLength));
+
+    if (newMaxDesiredContentLength > maxDesiredContentLength) {
+      setMaxDesiredContentLength(newMaxDesiredContentLength);
+    }
+
     setPaginationCurrent(page);
   }
 
