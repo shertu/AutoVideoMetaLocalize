@@ -133,10 +133,6 @@ export function YouTubeChannelRadioGroup(props: {
   const fetchMoreData = () => {
     console.log("AAAAA");
 
-    if (this.state.items.length >= 500) {
-      this.setState({ hasMore: false });
-      return;
-    }
     // a fake async api call like which sends
     // 20 more records in .5 secs
     setTimeout(() => {
@@ -150,9 +146,11 @@ export function YouTubeChannelRadioGroup(props: {
         <Alert message="Error" description="Failed to load YouTube channel information." type="error" showIcon />
       }
 
-      <div>
-        <h1>demo: react-infinite-scroll-component</h1>
-        <hr />
+      <Radio.Group
+        value={radioGroupValue}
+        onChange={onChange}
+        className={className}
+      >
         <InfiniteScroll
           dataLength={items.length}
           next={fetchMoreData}
@@ -176,15 +174,6 @@ export function YouTubeChannelRadioGroup(props: {
             </div>
           ))}
         </InfiniteScroll>
-      </div>
-
-      <Radio.Group
-        value={radioGroupValue}
-        onChange={onChange}
-        className={className}
-      >
-
-
       </Radio.Group>
     </Row>
   );
