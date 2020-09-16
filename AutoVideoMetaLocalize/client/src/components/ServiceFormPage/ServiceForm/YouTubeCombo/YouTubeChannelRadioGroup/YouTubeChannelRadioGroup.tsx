@@ -8,8 +8,6 @@ import InfiniteScroll from "react-infinite-scroll-component";
 const YOUTUBE_CHANNEL_API: YouTubeChannelApi = new YouTubeChannelApi();
 const DEFAULT_PAGE_SIZE: number = 30;
 
-let YouTubeChannelRadioGroup_ShouldLoadMore: boolean = false;
-
 /**
  * A react component used to display a paginated list of the user's YouTube channels as a radio group.
  * 
@@ -84,8 +82,6 @@ export function YouTubeChannelRadioGroup(props: {
     //pageSize = pageSize || DEFAULT_PAGE_SIZE;
     //const newMaxDesiredContentLength = page * pageSize;
 
-    console.log(page, paginationCurrent, pageSize);
-
     // error handle
     fetchNextResponse(currentResponse)
       .then((res: ChannelListResponse) => setCurrentResponse(res))
@@ -130,9 +126,10 @@ export function YouTubeChannelRadioGroup(props: {
   const mineYouTubeChannelsLength: number = mineYouTubeChannels ? mineYouTubeChannels.length : 0;
 
   const fetchMoreData = () => {
-    console.log("TESTSTST");
     onChangePagination(paginationCurrent + 1);
   };
+
+  console.log("STATE", radioGroupValue, mineYouTubeChannels, mineYouTubeChannels, paginationCurrent, error);
 
   return (
     <Row className="max-cell-sm">
@@ -151,26 +148,29 @@ export function YouTubeChannelRadioGroup(props: {
           hasMore={true}
           loader={<Row key="infinite-scroll-loader" justify="center"><Spin /></Row>}
           className="max-cell"
+          hasChildren={true}
         >
           <BasicComboView
             title="This is a test element"
             subtitle="Use to check the channel radio group"
           />
-
-          {mineYouTubeChannels?.map((channel: Channel) =>
-            <Radio.Button className="max-cell max-height" key={rowKey(channel)} value={channel.id}>
-              <BasicComboView
-                thumbnail={channel.snippet?.thumbnails._default}
-                title={channel.snippet?.title}
-                subtitle={channel.id}
-              />
-            </Radio.Button>
-          )}
         </InfiniteScroll>
       </Radio.Group>
     </Row>
   );
 }
+
+//{
+//  mineYouTubeChannels?.map((channel: Channel) =>
+//    <Radio.Button className="max-cell max-height" key={rowKey(channel)} value={channel.id}>
+//      <BasicComboView
+//        thumbnail={channel.snippet?.thumbnails._default}
+//        title={channel.snippet?.title}
+//        subtitle={channel.id}
+//      />
+//    </Radio.Button>
+//  )
+//}
 
 //{
 //  mineYouTubeChannels != null && mineYouTubeChannels.length === 0 && !canLoadMore(currentResponse) &&
