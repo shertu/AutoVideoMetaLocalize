@@ -26,6 +26,8 @@ export function YouTubeCombo(props: {
     setChannelPageTotal(response?.pageInfo.totalResults);
   }
 
+  const selectedMineYouTubeChannelUploadsPlaylistId = selectedMineYouTubeChannel?.contentDetails.relatedPlaylists.uploads;
+
   return (
     <Space direction="vertical" className="max-cell">
       <div>
@@ -36,12 +38,15 @@ export function YouTubeCombo(props: {
         />
       </div>
 
-      <YouTubeVideoSelectionTable
-        playlistId={selectedMineYouTubeChannel}
-        onChange={onChange}
-        value={value}
-        className="max-cell-sm"
-      />
+      {selectedMineYouTubeChannelUploadsPlaylistId &&
+        <YouTubeVideoSelectionTable
+          playlistId={selectedMineYouTubeChannelUploadsPlaylistId}
+          onChange={onChange}
+          value={value}
+          className="max-cell-sm"
+        />
+      }
+
     </Space>
   );
 }

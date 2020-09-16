@@ -38,7 +38,7 @@ export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProp
   const { playlistId, value, onChange, className } = props;
 
   if (playlistId == null) {
-    throw Error("");
+    throw Error("The playlist id is required.");
   }
 
   const [channelUploadsPlaylistItems, setChannelUploadsPlaylistItems] =
