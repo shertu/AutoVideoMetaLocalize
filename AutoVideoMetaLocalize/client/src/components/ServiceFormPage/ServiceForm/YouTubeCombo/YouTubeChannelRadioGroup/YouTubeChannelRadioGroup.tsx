@@ -8,6 +8,11 @@ import InfiniteScroll from 'react-infinite-scroller';
 const YOUTUBE_CHANNEL_API: YouTubeChannelApi = new YouTubeChannelApi();
 const DEFAULT_PAGE_SIZE: number = 30;
 
+interface YouTubeChannelRadioGroupContent {
+  mineYouTubeChannels: Channel[];
+  currentResponse: ChannelListResponse;
+}
+
 /**
  * A react component used to display a paginated list of the user's YouTube channels as a radio group.
  * 
@@ -23,33 +28,25 @@ export function YouTubeChannelRadioGroup(props: {
   const [radioGroupValue, setRadioGroupValue] =
     React.useState<string>(undefined);
 
-  const [mineYouTubeChannels, setMineYouTubeChannels] =
-    React.useState<Array<Channel>>(undefined);
-
-  const [paginationCurrent, setPaginationCurrent] =
-    React.useState<number>(0);
+  const [content, setContent] =
+    React.useState<YouTubeChannelRadioGroupContent>(undefined);
 
   const [maxDesiredContentLength, setMaxDesiredContentLength] =
     React.useState<number>(0);
 
-  const [shouldTryToLoadMore, setShouldTryToLoadMore] =
-    React.useState<boolean>(false);
-
-  const [currentResponse, setCurrentResponse] =
-    React.useState<ChannelListResponse>(undefined);
+  const [paginationCurrent, setPaginationCurrent] =
+    React.useState<number>(0);
 
   const [error, setError] =
     React.useState<boolean>(false);
 
-  // State whether additional content should be loaded.
-  React.useEffect(() => {
-    let data: Channel[] = mineYouTubeChannels || []; // important to default data value
-    setShouldTryToLoadMore(data.length < maxDesiredContentLength);
-  });
+  const mineYouTubeChannels: Channel[] = content?.mineYouTubeChannels;
+  const currentResponse: ChannelListResponse = content?.currentResponse;
 
   // If additional content should be loaded, then load it.
   React.useEffect(() => {
     let data: Channel[] = mineYouTubeChannels || []; // important to default data value
+    const shouldTryToLoadMore: boolean = data.length < maxDesiredContentLength;
 
     if (shouldTryToLoadMore && canLoadMore(currentResponse)) {
       // error handle
@@ -57,17 +54,14 @@ export function YouTubeChannelRadioGroup(props: {
         .then((res: ChannelListResponse) => {
           data = data.concat(res.items);
 
-          setMineYouTubeChannels(data);
-          setCurrentResponse(res); // TODO set state at the same time as data
+          setContent({
+            mineYouTubeChannels: data,
+            currentResponse: res,
+          })
         })
         .catch((err: Response) => setError(true));
     }
-  }, [shouldTryToLoadMore]);
-
-  // After additional content is loaded then turn off additional content loading.
-  React.useEffect(() => {
-    setShouldTryToLoadMore(false);
-  }, [mineYouTubeChannels]);
+  }, [mineYouTubeChannels, maxDesiredContentLength]);
 
   // A valid channel must option be selected when possible.
   React.useEffect(() => {
