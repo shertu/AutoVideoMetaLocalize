@@ -141,7 +141,7 @@ export function YouTubeChannelRadioGroup(props: {
       <InfiniteScroll
         dataLength={mineYouTubeChannels ? mineYouTubeChannels.length : 0}
         next={fetchMoreData}
-        hasMore={canLoadMore(currentResponse)}
+        hasMore={true}
         loader={<Row key="infinite-scroll-loader" justify="center"><Spin /></Row>}
         className="max-cell"
       >
