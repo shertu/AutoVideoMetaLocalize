@@ -168,7 +168,7 @@ export function YouTubeChannelRadioGroup(props: {
               </p>
             }
           >
-            {this.state.items.map((i, index) => (
+            {items.map((i, index) => (
               <div style={{
                 height: 30,
                 border: "1px solid green",
