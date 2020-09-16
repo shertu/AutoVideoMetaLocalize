@@ -134,7 +134,7 @@ export function YouTubeChannelRadioGroup(props: {
       }
 
       <InfiniteScroll
-        dataLength={this.state.items.length}
+        dataLength={mineYouTubeChannels ? mineYouTubeChannels.length : 0}
         next={() => onChangePagination(paginationCurrent + 1)}
         hasMore={canLoadMore(currentResponse)}
         loader={<Row key="infinite-scroll-loader" justify="center"><Spin /></Row>}
@@ -145,7 +145,7 @@ export function YouTubeChannelRadioGroup(props: {
           onChange={onChange}
           className={className}
         >
-          {content.mineYouTubeChannels?.map((channel: Channel) =>
+          {mineYouTubeChannels?.map((channel: Channel) =>
             <Radio.Button className="max-cell max-height" key={rowKey(channel)} value={channel.id}>
               <BasicComboView
                 thumbnail={channel.snippet?.thumbnails._default}
