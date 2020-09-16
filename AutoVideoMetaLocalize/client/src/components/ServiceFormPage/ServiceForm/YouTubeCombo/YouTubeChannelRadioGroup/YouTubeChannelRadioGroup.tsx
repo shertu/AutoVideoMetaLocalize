@@ -125,11 +125,22 @@ export function YouTubeChannelRadioGroup(props: {
 
   const mineYouTubeChannelsLength: number = mineYouTubeChannels ? mineYouTubeChannels.length : 0;
 
-  const fetchMoreData = () => {
-    onChangePagination(paginationCurrent + 1);
-  };
+  console.log("STATE", radioGroupValue, mineYouTubeChannels, currentResponse, paginationCurrent, error);
 
-  console.log("STATE", radioGroupValue, mineYouTubeChannels, mineYouTubeChannels, paginationCurrent, error);
+  const [items, setItems] =
+    React.useState<Array<any>>(Array.from({ length: 20 }));
+
+  const fetchMoreData = () => {
+    if (this.state.items.length >= 500) {
+      this.setState({ hasMore: false });
+      return;
+    }
+    // a fake async api call like which sends
+    // 20 more records in .5 secs
+    setTimeout(() => {
+      setItems(items.concat(Array.from({ length: 20 })));
+    }, 500);
+  };
 
   return (
     <Row className="max-cell-sm">
@@ -142,23 +153,52 @@ export function YouTubeChannelRadioGroup(props: {
         onChange={onChange}
         className={className}
       >
-        <InfiniteScroll
-          dataLength={1}
-          next={fetchMoreData}
-          hasMore={true}
-          loader={<Row key="infinite-scroll-loader" justify="center"><Spin /></Row>}
-          className="max-cell"
-          hasChildren={true}
-        >
-          <BasicComboView
-            title="This is a test element"
-            subtitle="Use to check the channel radio group"
-          />
-        </InfiniteScroll>
+        <div>
+          <h1>demo: react-infinite-scroll-component</h1>
+          <hr />
+          <InfiniteScroll
+            dataLength={items.length}
+            next={fetchMoreData}
+            hasMore={true}
+            loader={<h4>Loading...</h4>}
+            height={400}
+            endMessage={
+              <p style={{ textAlign: "center" }}>
+                <b>Yay! You have seen it all</b>
+              </p>
+            }
+          >
+            {this.state.items.map((i, index) => (
+              <div style={{
+                height: 30,
+                border: "1px solid green",
+                margin: 6,
+                padding: 8
+              }} key={index}>
+                div - #{index}
+              </div>
+            ))}
+          </InfiniteScroll>
+        </div>
+
       </Radio.Group>
     </Row>
   );
 }
+
+//<InfiniteScroll
+//  dataLength={1}
+//  next={() => onChangePagination(paginationCurrent + 1)}
+//  hasMore={true}
+//  loader={<Row key="infinite-scroll-loader" justify="center"><Spin /></Row>}
+//  className="max-cell"
+//  hasChildren={true}
+//>
+//  <BasicComboView
+//    title="This is a test element"
+//    subtitle="Use to check the channel radio group"
+//  />
+//</InfiniteScroll>
 
 //{
 //  mineYouTubeChannels?.map((channel: Channel) =>
