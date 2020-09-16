@@ -55,17 +55,17 @@ export function YouTubeChannelRadioGroup(props: {
     }
   }, [mineYouTubeChannels]);
 
-  // Hook to extract selected channel
-  React.useEffect(() => {
-    const channel: Channel = findMineYouTubeChannel(radioGroupValue);
+  //// Hook to extract selected channel
+  //React.useEffect(() => {
+  //  const channel: Channel = findMineYouTubeChannel(radioGroupValue);
 
-    if (onChangeChannel) { onChangeChannel(channel); }
-  }, [radioGroupValue]);
+  //  if (onChangeChannel) { onChangeChannel(channel); }
+  //}, [radioGroupValue]);
 
-  // Hook to extract response page info
-  React.useEffect(() => {
-    if (onChangeResponse) { onChangeResponse(currentResponse); }
-  }, [currentResponse]);
+  //// Hook to extract response page info
+  //React.useEffect(() => {
+  //  if (onChangeResponse) { onChangeResponse(currentResponse); }
+  //}, [currentResponse]);
 
   /** The radio group's onChange event. */
   function onChange(e: RadioChangeEvent) {
@@ -127,6 +127,11 @@ export function YouTubeChannelRadioGroup(props: {
     return record.id;
   }
 
+  const fetchMoreData = () => {
+    onChangePagination(paginationCurrent + 1);
+  };
+
+
   return (
     <Row className="max-cell-sm">
       {error &&
@@ -135,7 +140,7 @@ export function YouTubeChannelRadioGroup(props: {
 
       <InfiniteScroll
         dataLength={mineYouTubeChannels ? mineYouTubeChannels.length : 0}
-        next={() => onChangePagination(paginationCurrent + 1)}
+        next={fetchMoreData}
         hasMore={canLoadMore(currentResponse)}
         loader={<Row key="infinite-scroll-loader" justify="center"><Spin /></Row>}
         className="max-cell"
