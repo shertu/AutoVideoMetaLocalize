@@ -130,6 +130,7 @@ export function YouTubeChannelRadioGroup(props: {
   const mineYouTubeChannelsLength: number = mineYouTubeChannels ? mineYouTubeChannels.length : 0;
 
   const fetchMoreData = () => {
+    console.log("TESTSTST");
     onChangePagination(paginationCurrent + 1);
   };
 
@@ -145,12 +146,17 @@ export function YouTubeChannelRadioGroup(props: {
         className={className}
       >
         <InfiniteScroll
-          dataLength={mineYouTubeChannelsLength}
+          dataLength={1}
           next={fetchMoreData}
           hasMore={true}
           loader={<Row key="infinite-scroll-loader" justify="center"><Spin /></Row>}
           className="max-cell"
         >
+          <BasicComboView
+            title="This is a test element"
+            subtitle="Use to check the channel radio group"
+          />
+
           {mineYouTubeChannels?.map((channel: Channel) =>
             <Radio.Button className="max-cell max-height" key={rowKey(channel)} value={channel.id}>
               <BasicComboView
