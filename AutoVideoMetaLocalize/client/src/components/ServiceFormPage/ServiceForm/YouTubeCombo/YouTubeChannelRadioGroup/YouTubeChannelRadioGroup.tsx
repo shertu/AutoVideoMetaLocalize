@@ -3,15 +3,12 @@ import * as React from 'react';
 import { BasicComboView } from '../../../../BasicComboView/BasicComboView';
 import { Channel, YouTubeChannelApi, ApiYouTubeChannelListGetRequest, ChannelListResponse } from '../../../../../../generated-sources/openapi';
 import { RadioChangeEvent } from 'antd/lib/radio';
-import InfiniteScroll from 'react-infinite-scroller';
+import InfiniteScroll from "react-infinite-scroll-component";
 
 const YOUTUBE_CHANNEL_API: YouTubeChannelApi = new YouTubeChannelApi();
 const DEFAULT_PAGE_SIZE: number = 30;
 
-interface YouTubeChannelRadioGroupContent {
-  mineYouTubeChannels: Channel[];
-  currentResponse: ChannelListResponse;
-}
+let YouTubeChannelRadioGroup_ShouldLoadMore: boolean = false;
 
 /**
  * A react component used to display a paginated list of the user's YouTube channels as a radio group.
@@ -28,11 +25,11 @@ export function YouTubeChannelRadioGroup(props: {
   const [radioGroupValue, setRadioGroupValue] =
     React.useState<string>(undefined);
 
-  const [content, setContent] =
-    React.useState<YouTubeChannelRadioGroupContent>(undefined);
+  const [mineYouTubeChannels, setMineYouTubeChannels] =
+    React.useState<Array<Channel>>(undefined);
 
-  const [maxDesiredContentLength, setMaxDesiredContentLength] =
-    React.useState<number>(0);
+  const [currentResponse, setCurrentResponse] =
+    React.useState<ChannelListResponse>(undefined);
 
   const [paginationCurrent, setPaginationCurrent] =
     React.useState<number>(0);
@@ -40,30 +37,12 @@ export function YouTubeChannelRadioGroup(props: {
   const [error, setError] =
     React.useState<boolean>(false);
 
-  const mineYouTubeChannels: Channel[] = content?.mineYouTubeChannels;
-  const currentResponse: ChannelListResponse = content?.currentResponse;
-
-  // If additional content should be loaded, then load it.
+  // After the response is changed then append the items to the data set
   React.useEffect(() => {
-    console.log(mineYouTubeChannels, maxDesiredContentLength);
-
     let data: Channel[] = mineYouTubeChannels || []; // important to default data value
-    const shouldTryToLoadMore: boolean = data.length < maxDesiredContentLength;
-
-    if (shouldTryToLoadMore && canLoadMore(currentResponse)) {
-      // error handle
-      fetchNextResponse(currentResponse)
-        .then((res: ChannelListResponse) => {
-          data = data.concat(res.items);
-
-          setContent({
-            mineYouTubeChannels: data,
-            currentResponse: res,
-          })
-        })
-        .catch((err: Response) => setError(true));
-    }
-  }, [mineYouTubeChannels, maxDesiredContentLength]);
+    data = data.concat(currentResponse.items);
+    setMineYouTubeChannels(data);
+  }, [currentResponse]);
 
   // A valid channel option is to be selected when possible.
   React.useEffect(() => {
@@ -100,14 +79,19 @@ export function YouTubeChannelRadioGroup(props: {
    * Called when the page number is changed, and it takes the resulting page number and pageSize as its arguments.
    */
   function onChangePagination(page: number, pageSize?: number): void {
-    pageSize = pageSize || DEFAULT_PAGE_SIZE;
-    const newMaxDesiredContentLength = page * pageSize;
+    //pageSize = pageSize || DEFAULT_PAGE_SIZE;
+    //const newMaxDesiredContentLength = page * pageSize;
 
-    if (newMaxDesiredContentLength > maxDesiredContentLength) {
-      setMaxDesiredContentLength(newMaxDesiredContentLength);
-    }
+    console.log(page, paginationCurrent, pageSize);
 
+    // error handle
+    fetchNextResponse(currentResponse)
+      .then((res: ChannelListResponse) => setCurrentResponse(res))
+      .catch((err: Response) => setError(true));
+
+    console.log("BEFORE", page, paginationCurrent, pageSize);
     setPaginationCurrent(page);
+    console.log("AFTER", page, paginationCurrent, pageSize);
   }
 
   /**
@@ -148,18 +132,18 @@ export function YouTubeChannelRadioGroup(props: {
       }
 
       <InfiniteScroll
-        className="max-cell"
-        loadMore={onChangePagination}
+        dataLength={this.state.items.length}
+        next={() => onChangePagination(paginationCurrent + 1)}
         hasMore={canLoadMore(currentResponse)}
         loader={<Row key="infinite-scroll-loader" justify="center"><Spin /></Row>}
-        useWindow={false}
+        className="max-cell"
       >
         <Radio.Group
           value={radioGroupValue}
           onChange={onChange}
           className={className}
         >
-          {mineYouTubeChannels?.map((channel: Channel) =>
+          {content.mineYouTubeChannels?.map((channel: Channel) =>
             <Radio.Button className="max-cell max-height" key={rowKey(channel)} value={channel.id}>
               <BasicComboView
                 thumbnail={channel.snippet?.thumbnails._default}
