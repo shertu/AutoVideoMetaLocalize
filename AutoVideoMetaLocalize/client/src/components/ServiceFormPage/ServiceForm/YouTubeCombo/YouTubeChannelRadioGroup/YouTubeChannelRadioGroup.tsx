@@ -82,14 +82,20 @@ export function YouTubeChannelRadioGroup(props: {
     //pageSize = pageSize || DEFAULT_PAGE_SIZE;
     //const newMaxDesiredContentLength = page * pageSize;
 
-    // error handle
-    fetchNextResponse(currentResponse)
-      .then((res: ChannelListResponse) => setCurrentResponse(res))
-      .catch((err: Response) => setError(true));
+    console.log("onChangePagination", page, pageSize);
 
-    console.log("BEFORE", page, paginationCurrent, pageSize);
-    setPaginationCurrent(page);
-    console.log("AFTER", page, paginationCurrent, pageSize);
+    setTimeout(() => {
+      setItems(items.concat(Array.from({ length: 20 })));
+    }, 500);
+
+    //// error handle
+    //fetchNextResponse(currentResponse)
+    //  .then((res: ChannelListResponse) => setCurrentResponse(res))
+    //  .catch((err: Response) => setError(true));
+
+    //console.log("BEFORE", page, paginationCurrent, pageSize);
+    //setPaginationCurrent(page);
+    //console.log("AFTER", page, paginationCurrent, pageSize);
   }
 
   /**
@@ -130,16 +136,6 @@ export function YouTubeChannelRadioGroup(props: {
   const [items, setItems] =
     React.useState<Array<any>>(Array.from({ length: 20 }));
 
-  const fetchMoreData = () => {
-    console.log("AAAAA");
-
-    // a fake async api call like which sends
-    // 20 more records in .5 secs
-    setTimeout(() => {
-      setItems(items.concat(Array.from({ length: 20 })));
-    }, 500);
-  };
-
   return (
     <Row className="max-cell-sm">
       {error &&
@@ -153,9 +149,9 @@ export function YouTubeChannelRadioGroup(props: {
       >
         <InfiniteScroll
           dataLength={items.length}
-          next={fetchMoreData}
+          next={() => onChangePagination(paginationCurrent + 1)}
           hasMore={true}
-          loader={<h4>Loading...</h4>}
+          loader={<Row justify="center"><Spin /></Row>}
           height={400}
           endMessage={
             <p style={{ textAlign: "center" }}>
