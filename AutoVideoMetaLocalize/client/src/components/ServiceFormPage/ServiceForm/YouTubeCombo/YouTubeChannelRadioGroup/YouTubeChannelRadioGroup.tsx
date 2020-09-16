@@ -131,6 +131,8 @@ export function YouTubeChannelRadioGroup(props: {
     React.useState<Array<any>>(Array.from({ length: 20 }));
 
   const fetchMoreData = () => {
+    console.log("AAAAA");
+
     if (this.state.items.length >= 500) {
       this.setState({ hasMore: false });
       return;
@@ -148,38 +150,40 @@ export function YouTubeChannelRadioGroup(props: {
         <Alert message="Error" description="Failed to load YouTube channel information." type="error" showIcon />
       }
 
+      <div>
+        <h1>demo: react-infinite-scroll-component</h1>
+        <hr />
+        <InfiniteScroll
+          dataLength={items.length}
+          next={fetchMoreData}
+          hasMore={true}
+          loader={<h4>Loading...</h4>}
+          height={400}
+          endMessage={
+            <p style={{ textAlign: "center" }}>
+              <b>Yay! You have seen it all</b>
+            </p>
+          }
+        >
+          {items.map((i, index) => (
+            <div style={{
+              height: 30,
+              border: "1px solid green",
+              margin: 6,
+              padding: 8
+            }} key={index}>
+              div - #{index}
+            </div>
+          ))}
+        </InfiniteScroll>
+      </div>
+
       <Radio.Group
         value={radioGroupValue}
         onChange={onChange}
         className={className}
       >
-        <div>
-          <h1>demo: react-infinite-scroll-component</h1>
-          <hr />
-          <InfiniteScroll
-            dataLength={items.length}
-            next={fetchMoreData}
-            hasMore={true}
-            loader={<h4>Loading...</h4>}
-            height={400}
-            endMessage={
-              <p style={{ textAlign: "center" }}>
-                <b>Yay! You have seen it all</b>
-              </p>
-            }
-          >
-            {items.map((i, index) => (
-              <div style={{
-                height: 30,
-                border: "1px solid green",
-                margin: 6,
-                padding: 8
-              }} key={index}>
-                div - #{index}
-              </div>
-            ))}
-          </InfiniteScroll>
-        </div>
+
 
       </Radio.Group>
     </Row>
