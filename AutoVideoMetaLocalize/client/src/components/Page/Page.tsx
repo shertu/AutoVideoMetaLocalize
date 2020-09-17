@@ -22,4 +22,3 @@ export function Page(props: PageProps): JSX.Element {
     </section>
   );
 };
-
