@@ -37,20 +37,17 @@ export function YouTubeCombo(props: {
           className="max-cell-sm"
         />
       </div>
+
+      {selectedMineYouTubeChannelUploadsPlaylistId &&
+        <YouTubeVideoSelectionTable
+          playlistId={selectedMineYouTubeChannelUploadsPlaylistId}
+          onChange={onChange}
+          value={value}
+          className="max-cell-sm"
+        />
+      }
     </Space>
   );
 }
-
-
-//{
-//  selectedMineYouTubeChannelUploadsPlaylistId &&
-//  <YouTubeVideoSelectionTable
-//    playlistId={selectedMineYouTubeChannelUploadsPlaylistId}
-//    onChange={onChange}
-//    value={value}
-//    className="max-cell-sm"
-//  />
-//}
-
 
 //hidden = { mineYouTubeChannelTotalCount === 1}

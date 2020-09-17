@@ -1,7 +1,7 @@
 import { Alert, Skeleton, Row } from 'antd';
 import * as React from 'react';
 import { BasicComboView } from '../../../../BasicComboView/BasicComboView';
-import { Channel, ChannelListResponse, PlaylistItem, PlaylistItemListResponse, YouTubePlaylistItemApi, ApiYouTubePlaylistItemListGetRequest } from '../../../../../../generated-sources/openapi';
+import { PlaylistItem, PlaylistItemListResponse, YouTubePlaylistItemApi, ApiYouTubePlaylistItemListGetRequest } from '../../../../../../generated-sources/openapi';
 import Table, { TablePaginationConfig, ColumnsType } from 'antd/lib/table';
 
 const YOUTUBE_PLAYLIST_ITEM_API = new YouTubePlaylistItemApi();
@@ -37,11 +37,9 @@ export interface YouTubeVideoSelectionTableProps {
 export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProps): JSX.Element {
   const { playlistId, value, onChange, className } = props;
 
-  if (playlistId == null) {
-    throw Error("The playlist id is required.");
-  }
+  if (playlistId == null) { throw Error("The playlist id is a required attribute.");  }
 
-  const [channelUploadsPlaylistItems, setChannelUploadsPlaylistItems] =
+  const [items, setItems] =
     React.useState<Array<PlaylistItem>>([]);
 
   const [currentResponse, setCurrentResponse] =
@@ -50,56 +48,57 @@ export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProp
   const [paginationCurrent, setPaginationCurrent] =
     React.useState<number>(0);
 
-  const [isLoading, setIsLoading] =
-    React.useState<boolean>(false);
+  const [paginationExpectedTotal, setPaginationExpectedTotal] =
+    React.useState<number>(0);
 
   const [error, setError] =
     React.useState<boolean>(false);
 
-  const channelUploadsPlaylistItemsLength: number = channelUploadsPlaylistItems ? channelUploadsPlaylistItems.length : 0;
+  /** The length of the current data collection. */
+  const mineYouTubeChannelsLength: number = items ? items.length : 0;
+  const shouldLoadMore: boolean = mineYouTubeChannelsLength < paginationExpectedTotal && canLoadMore(currentResponse);
 
-  // After the response is changed then append the items to the data set
+  /** Used to append items to the data collection when the next response is loaded. */
   React.useEffect(() => {
     if (currentResponse) {
-      let data: Channel[] = channelUploadsPlaylistItems || []; // important to default data value
+      let data: PlaylistItem[] = items || []; // important to default data value
       data = data.concat(currentResponse.items);
-      setChannelUploadsPlaylistItems(data);
+      setItems(data);
     }
-
-    setIsLoading(false);
   }, [currentResponse]);
 
-  // Initialize the first page
+  /** Used to load the first page. */
   React.useEffect(() => {
-    onChangePagination(1); // pagination starts at one
+    onChangePagination(1);
   }, []);
 
+  /** Used to load items into the data collection until the length expectation is met or no additional item can be loaded. */
+  React.useEffect(() => {
+    if (shouldLoadMore) {
+      fetchNextResponse(currentResponse)
+        .then((res: PlaylistItemListResponse) => setCurrentResponse(res))
+        .catch((err: Response) => setError(true));
+    }
+  }, [paginationExpectedTotal, mineYouTubeChannelsLength]);
+
   /**
-   * Called when the page number is changed, and it takes the resulting page number and pageSize as its arguments.
+   * Called when the page number is changed, and it takes the resulting page number and page size as its arguments.
    */
   function onChangePagination(page: number, pageSize?: number): void {
-    //pageSize = pageSize || DEFAULT_PAGE_SIZE;
-    //const reqLen = page * pageSize;
+    pageSize = pageSize || DEFAULT_PAGE_SIZE;
+    const newPaginationExpectedTotal = page * pageSize;
 
+    if (newPaginationExpectedTotal > paginationExpectedTotal) {
+      setPaginationExpectedTotal(newPaginationExpectedTotal);
+    }
 
-    //let tempStateResponse: PlaylistItemListResponse = currentResponse;
-    //let tempStateData: PlaylistItem[] = channelUploadsPlaylistItems || []; // important to default data value
-
-    //if (mineYouTubeChannelsLength < newMaxDesiredContentLength && canLoadMore(currentResponse)) {
-    //  fetchNextResponse(currentResponse)
-    //    .then((res: ChannelListResponse) => setCurrentResponse(res))
-    //    .catch((err: Response) => setError(true));
-    //}
-
-    //setCurrentResponse(tempStateResponse);
-    //setPaginationCurrent(page);
-    //setChannelUploadsPlaylistItems(tempStateData);
+    setPaginationCurrent(page);
   }
 
   /**
    * Fetches the next page of data relative to the current one.
    */
-  function onFetchNext(currentResponse?: ChannelListResponse, maxResults?: number): Promise<ChannelListResponse> {
+  function fetchNextResponse(currentResponse?: PlaylistItemListResponse, maxResults?: number): Promise<PlaylistItemListResponse> {
     const request: ApiYouTubePlaylistItemListGetRequest = {
       part: 'id,snippet',
       playlistId: playlistId,
@@ -116,15 +115,15 @@ export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProp
   /**
    * Checks if additional data exists.
    */
-  function canLoadMore(currentResponse: ChannelListResponse): boolean {
-    return currentResponse == null || currentResponse.nextPageToken != null;
+  function canLoadMore(response: PlaylistItemListResponse): boolean {
+    return response == null || response.nextPageToken != null;
   }
 
   /**
    * Gets a row's unique key.
    */
   function rowKey(record: PlaylistItem): string {
-    return record.snippet.resourceId.videoId; // The key is the video to correctly enable the form.
+    return record.snippet.resourceId.videoId;
   }
 
   // pagination props
@@ -139,18 +138,18 @@ export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProp
 
   return (
     <Row className="max-cell-sm">
-      {error && channelUploadsPlaylistItems == null &&
-        <Alert className="max-cell" message="Error" description="Failed to load YouTube video information." type="error" showIcon />
+      {error &&
+        <Alert message="Error" description="Failed to load YouTube video information." type="error" showIcon />
       }
 
-      {channelUploadsPlaylistItems && channelUploadsPlaylistItems.length == 0 && isLoading === false &&
-        <Alert className="max-cell" message="Warning" description="No YouTube videos are associated with this YouTube channel." type="warning" showIcon />
+      {mineYouTubeChannelsLength === 0 && !canLoadMore(currentResponse) &&
+        <Alert message="Warning" description="No YouTube videos are associated with this YouTube channel." type="warning" showIcon />
       }
 
-      <Skeleton loading={isLoading} active className={className}>
+      <Skeleton loading={shouldLoadMore} active className={className}>
         <Table
           className={className}
-          dataSource={channelUploadsPlaylistItems}
+          dataSource={items}
           pagination={pagination}
           rowKey={rowKey}
           columns={VIDEO_FORM_SELECTION_TABLE_COLUMNS}

@@ -40,6 +40,7 @@ export function YouTubeChannelRadioGroup(props: {
 
   /** The length of the current data collection. */
   const mineYouTubeChannelsLength: number = mineYouTubeChannels ? mineYouTubeChannels.length : 0;
+  const shouldLoadMore: boolean = mineYouTubeChannelsLength < paginationExpectedTotal && canLoadMore(currentResponse);
 
   /** Used to append items to the data collection when the next response is loaded. */
   React.useEffect(() => {
@@ -140,16 +141,13 @@ export function YouTubeChannelRadioGroup(props: {
     return record.id;
   }
 
-  console.log("STATE", radioGroupValue, mineYouTubeChannels, currentResponse, paginationCurrent, error);
-
   return (
     <Row className="max-cell-sm">
       {error &&
         <Alert message="Error" description="Failed to load YouTube channel information." type="error" showIcon />
       }
 
-      {
-        mineYouTubeChannelsLength === 0 && !canLoadMore(currentResponse) &&
+      {mineYouTubeChannelsLength === 0 && !canLoadMore(currentResponse) &&
         <Alert message="Warning" description="No YouTube channels are associated with this Google account." type="warning" showIcon />
       }
 
