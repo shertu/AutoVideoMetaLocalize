@@ -146,7 +146,7 @@ export function YouTubeChannelRadioGroup(props: {
         className={className}
       >
         <InfiniteScroll
-          dataLength={items?.length}
+          dataLength={items ? items.length : 0}
           next={() => onChangePagination(paginationCurrent + 1)}
           hasMore={true}
           loader={<Row align="middle" justify="center" style={{ height: 120 }}><Spin /></Row>}
