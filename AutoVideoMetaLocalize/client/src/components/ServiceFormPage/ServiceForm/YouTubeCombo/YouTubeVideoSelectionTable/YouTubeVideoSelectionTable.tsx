@@ -42,7 +42,7 @@ export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProp
   }
 
   const [channelUploadsPlaylistItems, setChannelUploadsPlaylistItems] =
-    React.useState<Array<PlaylistItem>>(undefined);
+    React.useState<Array<PlaylistItem>>([]);
 
   const [currentResponse, setCurrentResponse] =
     React.useState<PlaylistItemListResponse>(undefined);
@@ -53,49 +53,47 @@ export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProp
   const [isLoading, setIsLoading] =
     React.useState<boolean>(false);
 
-  const [errorOccurred, setErrorOccurred] =
+  const [error, setError] =
     React.useState<boolean>(false);
 
+  const channelUploadsPlaylistItemsLength: number = channelUploadsPlaylistItems ? channelUploadsPlaylistItems.length : 0;
+
+  // After the response is changed then append the items to the data set
+  React.useEffect(() => {
+    if (currentResponse) {
+      let data: Channel[] = channelUploadsPlaylistItems || []; // important to default data value
+      data = data.concat(currentResponse.items);
+      setChannelUploadsPlaylistItems(data);
+    }
+
+    setIsLoading(false);
+  }, [currentResponse]);
+
+  // Initialize the first page
   React.useEffect(() => {
     onChangePagination(1); // pagination starts at one
-  }, [playlistId]);
+  }, []);
 
   /**
    * Called when the page number is changed, and it takes the resulting page number and pageSize as its arguments.
    */
-  async function onChangePagination(page: number, pageSize?: number): Promise<void> {
-    if (isLoading) {
-      return;
-    }
+  function onChangePagination(page: number, pageSize?: number): void {
+    //pageSize = pageSize || DEFAULT_PAGE_SIZE;
+    //const reqLen = page * pageSize;
 
-    pageSize = pageSize || DEFAULT_PAGE_SIZE;
-    const reqLen = page * pageSize;
 
-    let tempStateResponse: PlaylistItemListResponse = currentResponse;
-    let tempStateData: PlaylistItem[] = channelUploadsPlaylistItems || []; // important to default data value
+    //let tempStateResponse: PlaylistItemListResponse = currentResponse;
+    //let tempStateData: PlaylistItem[] = channelUploadsPlaylistItems || []; // important to default data value
 
-    while (tempStateData.length < reqLen && canLoadMore(tempStateResponse)) {
-      setIsLoading(true);
+    //if (mineYouTubeChannelsLength < newMaxDesiredContentLength && canLoadMore(currentResponse)) {
+    //  fetchNextResponse(currentResponse)
+    //    .then((res: ChannelListResponse) => setCurrentResponse(res))
+    //    .catch((err: Response) => setError(true));
+    //}
 
-      // error handle
-      tempStateResponse = await onFetchNext(tempStateResponse, pageSize)
-        .catch(() => {
-          setErrorOccurred(true);
-          return null;
-        });
-
-      // break if an error occured
-      if (tempStateResponse == null) {
-        break;
-      }
-
-      tempStateData = tempStateData.concat(tempStateResponse.items);
-    }
-
-    setIsLoading(false);
-    setCurrentResponse(tempStateResponse);
-    setPaginationCurrent(page);
-    setChannelUploadsPlaylistItems(tempStateData);
+    //setCurrentResponse(tempStateResponse);
+    //setPaginationCurrent(page);
+    //setChannelUploadsPlaylistItems(tempStateData);
   }
 
   /**
@@ -141,7 +139,7 @@ export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProp
 
   return (
     <Row className="max-cell-sm">
-      {errorOccurred && channelUploadsPlaylistItems == null &&
+      {error && channelUploadsPlaylistItems == null &&
         <Alert className="max-cell" message="Error" description="Failed to load YouTube video information." type="error" showIcon />
       }
 
