@@ -35,6 +35,8 @@ export function YouTubeChannelRadioGroup(props: {
   const [error, setError] =
     React.useState<boolean>(false);
 
+  const mineYouTubeChannelsLength: number = mineYouTubeChannels ? mineYouTubeChannels.length : 0;
+
   // After the response is changed then append the items to the data set
   React.useEffect(() => {
     if (currentResponse) {
@@ -48,22 +50,26 @@ export function YouTubeChannelRadioGroup(props: {
   React.useEffect(() => {
     const channel: Channel = findMineYouTubeChannel(radioGroupValue);
 
-    if (channel == null && mineYouTubeChannels?.length > 0) {
+    if (channel == null && mineYouTubeChannelsLength > 0) {
       setRadioGroupValue(mineYouTubeChannels[0].id);
     }
   }, [mineYouTubeChannels]);
 
-  //// Hook to extract selected channel
-  //React.useEffect(() => {
-  //  const channel: Channel = findMineYouTubeChannel(radioGroupValue);
+  React.useEffect(() => {
+    onChangePagination(1); // pagination starts at one
+  }, []);
 
-  //  if (onChangeChannel) { onChangeChannel(channel); }
-  //}, [radioGroupValue]);
+  // Hook to extract selected channel
+  React.useEffect(() => {
+    const channel: Channel = findMineYouTubeChannel(radioGroupValue);
 
-  //// Hook to extract response page info
-  //React.useEffect(() => {
-  //  if (onChangeResponse) { onChangeResponse(currentResponse); }
-  //}, [currentResponse]);
+    if (onChangeChannel) { onChangeChannel(channel); }
+  }, [radioGroupValue]);
+
+  // Hook to extract response page info
+  React.useEffect(() => {
+    if (onChangeResponse) { onChangeResponse(currentResponse); }
+  }, [currentResponse]);
 
   /** The radio group's onChange event. */
   function onChange(e: RadioChangeEvent) {
@@ -82,16 +88,9 @@ export function YouTubeChannelRadioGroup(props: {
     //pageSize = pageSize || DEFAULT_PAGE_SIZE;
     //const newMaxDesiredContentLength = page * pageSize;
 
-    console.log("onChangePagination", page, pageSize);
-
-    setTimeout(() => {
-      setItems(items.concat(Array.from({ length: 20 })));
-    }, 500);
-
-    // error handle
-    //fetchNextResponse(currentResponse)
-    //  .then((res: ChannelListResponse) => setCurrentResponse(res))
-    //  .catch((err: Response) => setError(true));
+    fetchNextResponse(currentResponse)
+      .then((res: ChannelListResponse) => setCurrentResponse(res))
+      .catch((err: Response) => setError(true));
 
     setPaginationCurrent(page);
   }
@@ -127,12 +126,7 @@ export function YouTubeChannelRadioGroup(props: {
     return record.id;
   }
 
-  const mineYouTubeChannelsLength: number = mineYouTubeChannels ? mineYouTubeChannels.length : 0;
-
   console.log("STATE", radioGroupValue, mineYouTubeChannels, currentResponse, paginationCurrent, error);
-
-  const [items, setItems] =
-    React.useState<Array<any>>(undefined);
 
   return (
     <Row className="max-cell-sm">
@@ -146,21 +140,19 @@ export function YouTubeChannelRadioGroup(props: {
         className={className}
       >
         <InfiniteScroll
-          dataLength={items ? items.length : 0}
+          dataLength={mineYouTubeChannelsLength}
           next={() => onChangePagination(paginationCurrent + 1)}
-          hasMore={true}
+          hasMore={canLoadMore(currentResponse)}
           loader={<Row align="middle" justify="center" style={{ height: 120 }}><Spin /></Row>}
-          height={400}
         >
-          {items?.map((value, index: number) =>
-            <div style={{
-              height: 30,
-              border: "1px solid green",
-              margin: 6,
-              padding: 8
-            }} key={index}>
-              div - #{index}
-            </div>
+          {mineYouTubeChannels?.map((channel: Channel, index: number) =>
+            <Radio.Button className="max-cell max-height" key={rowKey(channel)} value={channel.id}>
+              <BasicComboView
+                thumbnail={channel.snippet?.thumbnails._default}
+                title={channel.snippet?.title}
+                subtitle={channel.id}
+              />
+            </Radio.Button>
           )}
         </InfiniteScroll>
       </Radio.Group>
@@ -168,27 +160,8 @@ export function YouTubeChannelRadioGroup(props: {
   );
 }
 
-//<Radio.Button className="max-cell max-height" key={rowKey(channel)} value={channel.id}>
-//  <BasicComboView
-//    thumbnail={channel.snippet?.thumbnails._default}
-//    title={channel.snippet?.title}
-//    subtitle={channel.id}
-//  />
-//</Radio.Button>
 
 
-//{
-//  items.map((i, index) => (
-//    <div style={{
-//      height: 30,
-//      border: "1px solid green",
-//      margin: 6,
-//      padding: 8
-//    }} key={index}>
-//      div - #{index}
-//    </div>
-//  ))
-//}
 
 //{
 //  mineYouTubeChannels != null && mineYouTubeChannels.length === 0 && !canLoadMore(currentResponse) &&

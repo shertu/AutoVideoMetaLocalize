@@ -57,25 +57,13 @@ export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProp
     React.useState<boolean>(false);
 
   React.useEffect(() => {
-    if (playlistId) {
-      //setChannelUploadsPlaylistItems(null);
-      //setCurrentResponse(null);
-      onChangePagination(1); // pagination starts at one
-    }
+    onChangePagination(1); // pagination starts at one
   }, [playlistId]);
 
   /**
    * Called when the page number is changed, and it takes the resulting page number and pageSize as its arguments.
    */
-  function onChangePagination(page: number, pageSize?: number): void {
-    onChangePaginationAsync(page, pageSize)
-      //.catch(() => setError(true));
-  }
-
-  /**
-   * Called when the page number is changed, and it takes the resulting page number and pageSize as its arguments.
-   */
-  async function onChangePaginationAsync(page: number, pageSize?: number): Promise<void> {
+  async function onChangePagination(page: number, pageSize?: number): Promise<void> {
     if (isLoading) {
       return;
     }
