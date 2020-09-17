@@ -1,9 +1,8 @@
-import { Form, Row, Space } from 'antd';
+import { Space } from 'antd';
 import * as React from 'react';
 import { Channel, ChannelListResponse } from '../../../../../generated-sources/openapi';
 import { YouTubeChannelRadioGroup } from './YouTubeChannelRadioGroup/YouTubeChannelRadioGroup';
-import { RadioChangeEvent } from 'antd/lib/radio';
-import { YouTubeVideoSelectionTable } from './YouTubeVideoSelectionTable/YouTubeVideoSelectionTable';
+import { YouTubeChannelVideoUploadsSelectionTable } from './YouTubeChannelVideoUploadsSelectionTable/YouTubeChannelVideoUploadsSelectionTable';
 
 /**
  * The page used to control the flow of the process.
@@ -26,7 +25,7 @@ export function YouTubeCombo(props: {
     setChannelPageTotal(response?.pageInfo.totalResults);
   }
 
-  const selectedMineYouTubeChannelUploadsPlaylistId = selectedMineYouTubeChannel?.contentDetails.relatedPlaylists.uploads;
+  console.log(selectedMineYouTubeChannel, channelPageTotal);
 
   return (
     <Space direction="vertical" className="max-cell">
@@ -38,9 +37,9 @@ export function YouTubeCombo(props: {
         />
       </div>
 
-      {selectedMineYouTubeChannelUploadsPlaylistId &&
-        <YouTubeVideoSelectionTable
-          playlistId={selectedMineYouTubeChannelUploadsPlaylistId}
+      {selectedMineYouTubeChannel &&
+        <YouTubeChannelVideoUploadsSelectionTable
+          channel={selectedMineYouTubeChannel}
           onChange={onChange}
           value={value}
           className="max-cell-sm"

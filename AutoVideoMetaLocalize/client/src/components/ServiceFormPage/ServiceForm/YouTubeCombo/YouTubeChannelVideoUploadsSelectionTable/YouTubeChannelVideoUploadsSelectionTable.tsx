@@ -1,8 +1,8 @@
-import { Alert, Skeleton, Row } from 'antd';
+import { Alert, Row, Skeleton } from 'antd';
+import Table, { ColumnsType, TablePaginationConfig } from 'antd/lib/table';
 import * as React from 'react';
+import { ApiYouTubePlaylistItemListGetRequest, Channel, PlaylistItem, PlaylistItemListResponse, YouTubePlaylistItemApi } from '../../../../../../generated-sources/openapi';
 import { BasicComboView } from '../../../../BasicComboView/BasicComboView';
-import { PlaylistItem, PlaylistItemListResponse, YouTubePlaylistItemApi, ApiYouTubePlaylistItemListGetRequest } from '../../../../../../generated-sources/openapi';
-import Table, { TablePaginationConfig, ColumnsType } from 'antd/lib/table';
 
 const YOUTUBE_PLAYLIST_ITEM_API = new YouTubePlaylistItemApi();
 const DEFAULT_PAGE_SIZE: number = 30;
@@ -22,7 +22,7 @@ const VIDEO_FORM_SELECTION_TABLE_COLUMNS: ColumnsType<PlaylistItem> = [{
 }];
 
 export interface YouTubeVideoSelectionTableProps {
-  playlistId?: string;
+  channel?: Channel;
   value?: React.Key[];
   onChange?: (value: React.Key[]) => void;
   className?: string;
@@ -34,10 +34,11 @@ export interface YouTubeVideoSelectionTableProps {
  * @param props {RadioGroupProps}
  * @return {JSX.Element}
  */
-export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProps): JSX.Element {
-  const { playlistId, value, onChange, className } = props;
+export function YouTubeChannelVideoUploadsSelectionTable(props: YouTubeVideoSelectionTableProps): JSX.Element {
+  const { channel, value, onChange, className } = props;
 
-  if (playlistId == null) { throw Error("The playlist id is a required attribute.");  }
+  const channelUploadsPlaylistId = channel?.contentDetails.relatedPlaylists.uploads;
+  if (channelUploadsPlaylistId == null) { throw Error("The channel's upload playlist identifier is required.");  }
 
   const [items, setItems] =
     React.useState<Array<PlaylistItem>>([]);
@@ -101,7 +102,7 @@ export function YouTubeVideoSelectionTable(props: YouTubeVideoSelectionTableProp
   function fetchNextResponse(currentResponse?: PlaylistItemListResponse, maxResults?: number): Promise<PlaylistItemListResponse> {
     const request: ApiYouTubePlaylistItemListGetRequest = {
       part: 'id,snippet',
-      playlistId: playlistId,
+      playlistId: channelUploadsPlaylistId,
       maxResults: maxResults,
     };
 
