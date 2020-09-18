@@ -36,10 +36,13 @@ export function ServiceExecutionStatusPage(props: {
 
 
   function updateLocalizationCount() {
-    if (executionState == EventStates.continuitive) {
-      YOUTUBE_VIDEO_API.apiYouTubeVideoLocalizeCountGet()
-        .then((res: number) => setExecutionProgress(res));
-    }
+    YOUTUBE_VIDEO_API.apiYouTubeVideoLocalizeCountGet()
+      .then((res: number) => setExecutionProgress(res));
+
+    //if (executionState == EventStates.continuitive) {
+    //  YOUTUBE_VIDEO_API.apiYouTubeVideoLocalizeCountGet()
+    //    .then((res: number) => setExecutionProgress(res));
+    //}
     //else {
     //  if (executionProgress < executionExpectedTotalOpCount) {
     //    setExecutionProgress(executionExpectedTotalOpCount);
