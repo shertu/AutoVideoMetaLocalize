@@ -18,18 +18,18 @@ export function YouTubeCombo(props: {
   const [selectedMineYouTubeChannel, setSelectedMineYouTubeChannel] =
     React.useState<Channel>(undefined);
 
-  const [channelPageTotal, setChannelPageTotal] =
+  const [mineYouTubeChannelCountTotal, setMineYouTubeChannelCountTotal] =
     React.useState<number>(undefined);
 
   function onChangeYouTubeChannelRadioGroupResponse(response: ChannelListResponse) {
-    setChannelPageTotal(response?.pageInfo.totalResults);
+    setMineYouTubeChannelCountTotal(response?.pageInfo.totalResults);
   }
 
-  console.log(selectedMineYouTubeChannel, channelPageTotal);
+  console.log(selectedMineYouTubeChannel, mineYouTubeChannelCountTotal);
 
   return (
     <Space direction="vertical" className="max-cell">
-      <div>
+      <div hidden={mineYouTubeChannelCountTotal === 1}>
         <YouTubeChannelRadioGroup
           onChangeChannel={setSelectedMineYouTubeChannel}
           onChangeResponse={onChangeYouTubeChannelRadioGroupResponse}

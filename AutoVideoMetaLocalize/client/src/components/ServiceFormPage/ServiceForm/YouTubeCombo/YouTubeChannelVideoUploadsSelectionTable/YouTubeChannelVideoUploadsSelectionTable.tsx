@@ -132,7 +132,7 @@ export function YouTubeChannelVideoUploadsSelectionTable(props: YouTubeVideoSele
     current: paginationCurrent,
     //position: ['topLeft'],
     simple: true,
-    pageSize: currentResponse?.pageInfo.resultsPerPage,
+    pageSize: DEFAULT_PAGE_SIZE,
     total: currentResponse?.pageInfo.totalResults,
     onChange: onChangePagination,
   };
