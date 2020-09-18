@@ -6,8 +6,8 @@ import COOKIE_NAMES from '../../cookie-names';
 import EventStates from '../../event-states';
 import { AuthorizedContent } from '../AuthorizedContent/AuthorizedContent';
 import { Page } from '../Page/Page';
-import { ExecutionStateProvider } from './ExecutionStateContext/ExecutionStateContext';
 import { ServiceForm, ServiceFormValues } from './ServiceForm/ServiceForm';
+import { ServiceExecutionStatusPage } from './ServiceExecutionStatusPage/ServiceExecutionStatusPage';
 
 const YOUTUBE_VIDEO_API: YouTubeVideoApi = new YouTubeVideoApi();
 
@@ -20,10 +20,10 @@ export function ServiceFormPage(): JSX.Element {
   const [executionState, setExecutionState] =
     React.useState<EventStates>(EventStates.prospective);
 
-  const [, setExecutionError] =
+  const [executionError, setExecutionError] =
     React.useState<boolean>(false);
 
-  const [, setExecutionProgressMax] =
+  const [executionExpectedTotalOpCount, setExecutionExpectedTotalOpCount] =
     React.useState<number>(0);
 
   const carouselRef = React.useRef<Carousel>();
@@ -48,8 +48,12 @@ export function ServiceFormPage(): JSX.Element {
    * 
    * @param serviceFormInputs
    */
-  function executeService(serviceFormInputs: AppVideoLocalizeRequest) {
+  async function executeService(serviceFormInputs: AppVideoLocalizeRequest) {
     if (serviceFormInputs == null) {
+      return;
+    }
+
+    if (executionState == EventStates.continuitive) {
       return;
     }
 
@@ -57,60 +61,53 @@ export function ServiceFormPage(): JSX.Element {
     const videos = serviceFormInputs.videos || [];
     const expectedTotalOpCount = videos.length * languages.length;
 
-    if ((executionState == EventStates.prospective || executionState == EventStates.retropective) && expectedTotalOpCount > 0) {
-      setExecutionState(EventStates.continuitive);
-      setExecutionError(false);
-      setExecutionProgressMax(expectedTotalOpCount);
-      
-      document.cookie = cookie.serialize(COOKIE_NAMES.SERVICE_FORM_LANGUAGES, languages.join(','));
-
-      YOUTUBE_VIDEO_API.apiYouTubeVideoLocalizePut({
-        appVideoLocalizeRequest: serviceFormInputs,
-      }).then(() => {
-        setExecutionState(EventStates.retropective);
-      }).catch(() => {
-        setExecutionState(EventStates.retropective);
-        setExecutionError(true);
-      });
+    if (expectedTotalOpCount === 0) {
+      return;
     }
+
+    // before execution state
+    setExecutionState(EventStates.continuitive);
+    setExecutionExpectedTotalOpCount(expectedTotalOpCount);
+
+    // execution
+    document.cookie = cookie.serialize(COOKIE_NAMES.SERVICE_FORM_LANGUAGES, languages.join(','));
+
+    const res = await YOUTUBE_VIDEO_API.apiYouTubeVideoLocalizePut({
+      appVideoLocalizeRequest: serviceFormInputs,
+    }).catch(() => setExecutionError(true));
+
+    // after execution state
+    setExecutionState(EventStates.retropective);
   }
 
-  const showExecutionPage: boolean = executionState === EventStates.continuitive || executionState === EventStates.retropective;
+  const executionStatusPage: boolean = (executionState === EventStates.continuitive || executionState === EventStates.retropective);
 
+  /** */
   React.useEffect(() => {
     const currentCarouselRef = carouselRef?.current;
 
     if (currentCarouselRef) {
-      const carouselTargetIndex: number = showExecutionPage ? 1 : 0;
+      const carouselTargetIndex: number = executionStatusPage ? 1 : 0;
       currentCarouselRef.goTo(carouselTargetIndex);
     }
   }, [executionState]);
 
   return (
     <AuthorizedContent>
-      <ExecutionStateProvider value={executionState}>
-        <Carousel ref={carouselRef} dots={false}>
-          <Page title="Service">
-            <ServiceForm
-              onFinish={onFinish}
-            />
-          </Page>
-        </Carousel>
-      </ExecutionStateProvider>
+      <Carousel ref={carouselRef} dots={false}>
+        <Page title="Service">
+          <ServiceForm
+            onFinish={onFinish}
+          />
+        </Page>
+      </Carousel>
+
+      <ServiceExecutionStatusPage
+        error={executionError}
+        executionState={executionState}
+        executionExpectedTotalOpCount={executionExpectedTotalOpCount}
+      />
     </AuthorizedContent>
   );
 }
 
-//<Page>
-//  <ServiceFormExecutionPage
-//    error={executionError}
-//    executionProgressMax={executionProgressMax}
-//    executionState={executionState}
-//  />
-
-//  <Row justify="end">
-//    <Space>
-//      <Button onClick={() => setExecutionState(EventStates.prospective)}>Return to Service Form</Button>
-//    </Space>
-//  </Row>
-//</Page>

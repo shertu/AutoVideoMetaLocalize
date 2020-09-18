@@ -3,7 +3,6 @@ import * as cookie from 'cookie';
 import * as React from 'react';
 import COOKIE_NAMES from '../../../cookie-names';
 import EventStates from '../../../event-states';
-import ExecutionStateContext from '../ExecutionStateContext/ExecutionStateContext';
 import { LanguageSelect } from './LanguageSelect/LanguageSelect';
 import { YouTubeCombo } from './YouTubeCombo/YouTubeCombo';
 
@@ -30,13 +29,12 @@ export const ServiceFormItemNames = Object.freeze({
  * @return {JSX.Element}
  */
 export function ServiceForm(props: {
-  onFinish: (values: ServiceFormValues) => void
+  onFinish?: (values: ServiceFormValues) => void,
+  serviceExecutionState?: EventStates,
 }): JSX.Element {
-  const { onFinish } = props;
+  const { onFinish, serviceExecutionState } = props;
 
   const [form] = Form.useForm<ServiceFormValues>();
-
-  const executionState: EventStates = React.useContext(ExecutionStateContext);
 
   const languageSelectCookieValue: string = cookie.parse(document.cookie)[ServiceFormItemNames.LANGUAGE_SELECT] || '';
 
@@ -91,7 +89,7 @@ export function ServiceForm(props: {
         <Space>
           <Button onClick={() => onClearForm()}>Clear</Button>
 
-          <Button type="primary" htmlType="submit" disabled={executionState === EventStates.continuitive}>Execute</Button>
+          <Button type="primary" htmlType="submit" disabled={serviceExecutionState === EventStates.continuitive}>Execute</Button>
         </Space>
       </Row>
     </Form>
