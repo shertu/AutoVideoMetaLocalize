@@ -19,7 +19,7 @@ export function BasicComboView(props: {
   const { thumbnail, title, subtitle, avatarShape } = props;
 
   return (
-    <Row className="max-cell-xs" align="middle" justify="start" style={{ minHeight: 120 }}>
+    <Row className="max-cell-xs" align="middle" justify="start" style={{ minHeight: 120, wordBreak: 'break-word' }}>
       <Col span={8}>
         <Row align="middle" justify="center">
           {thumbnail && (

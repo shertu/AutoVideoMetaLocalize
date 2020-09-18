@@ -2,7 +2,6 @@ import * as React from 'react';
 import { Channel, ChannelListResponse } from '../../../../../generated-sources/openapi';
 import { YouTubeChannelRadioGroup } from './YouTubeChannelRadioGroup/YouTubeChannelRadioGroup';
 import { YouTubeChannelVideoUploadsSelectionTable } from './YouTubeChannelVideoUploadsSelectionTable/YouTubeChannelVideoUploadsSelectionTable';
-import { Row } from 'antd';
 
 /**
  * The page used to control the flow of the process.
@@ -24,8 +23,6 @@ export function YouTubeCombo(props: {
   function onChangeYouTubeChannelRadioGroupResponse(response: ChannelListResponse) {
     setMineYouTubeChannelCountTotal(response?.pageInfo.totalResults);
   }
-
-  console.log(selectedMineYouTubeChannel, mineYouTubeChannelCountTotal);
 
   return (
     <>

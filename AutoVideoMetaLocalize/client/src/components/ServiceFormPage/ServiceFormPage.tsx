@@ -1,13 +1,13 @@
 import { Carousel } from 'antd';
+import * as cookie from 'cookie';
 import * as React from 'react';
 import { AppVideoLocalizeRequest, YouTubeVideoApi } from '../../../generated-sources/openapi';
-import { AuthorizedContent } from '../AuthorizedContent/AuthorizedContent';
-import * as cookie from 'cookie';
-import { Page } from '../Page/Page';
-import EventStates from '../../event-states';
-import { ServiceForm, ServiceFormValues } from './ServiceForm/ServiceForm';
-import { ExecutionStateProvider } from './ExecutionStateContext/ExecutionStateContext';
 import COOKIE_NAMES from '../../cookie-names';
+import EventStates from '../../event-states';
+import { AuthorizedContent } from '../AuthorizedContent/AuthorizedContent';
+import { Page } from '../Page/Page';
+import { ExecutionStateProvider } from './ExecutionStateContext/ExecutionStateContext';
+import { ServiceForm, ServiceFormValues } from './ServiceForm/ServiceForm';
 
 const YOUTUBE_VIDEO_API: YouTubeVideoApi = new YouTubeVideoApi();
 
@@ -35,9 +35,9 @@ export function ServiceFormPage(): JSX.Element {
    */
   function onFinish(values: ServiceFormValues) {
     const serviceFormInputs: AppVideoLocalizeRequest = {
-      languages: values.language_select,
-      videos: values.youtube_video_selection_table,
-      sheetMusicBoss: values.smb_checkbox,
+      languages: values.languageSelect,
+      videos: values.youtubeVideoSelectionTable,
+      sheetMusicBoss: values.smbCheckbox,
     }
 
     console.log("Service form inputs: ", serviceFormInputs);
@@ -49,12 +49,20 @@ export function ServiceFormPage(): JSX.Element {
    * @param serviceFormInputs
    */
   function executeService(serviceFormInputs: AppVideoLocalizeRequest) {
-    if (executionState == EventStates.prospective || executionState == EventStates.retropective) {
+    if (serviceFormInputs == null) {
+      return;
+    }
+
+    const languages = serviceFormInputs.languages || [];
+    const videos = serviceFormInputs.videos || [];
+    const expectedTotalOpCount = videos.length * languages.length;
+
+    if ((executionState == EventStates.prospective || executionState == EventStates.retropective) && expectedTotalOpCount > 0) {
       setExecutionState(EventStates.continuitive);
       setExecutionError(false);
-      setExecutionProgressMax(serviceFormInputs.videos.length * serviceFormInputs.languages.length);
+      setExecutionProgressMax(expectedTotalOpCount);
       
-      document.cookie = cookie.serialize(COOKIE_NAMES.SERVICE_FORM_LANGUAGES, serviceFormInputs.languages.join(','));
+      document.cookie = cookie.serialize(COOKIE_NAMES.SERVICE_FORM_LANGUAGES, languages.join(','));
 
       YOUTUBE_VIDEO_API.apiYouTubeVideoLocalizePut({
         appVideoLocalizeRequest: serviceFormInputs,

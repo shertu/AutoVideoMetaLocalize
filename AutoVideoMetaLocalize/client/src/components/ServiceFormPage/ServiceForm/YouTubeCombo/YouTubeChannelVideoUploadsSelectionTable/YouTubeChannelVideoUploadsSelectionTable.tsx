@@ -1,4 +1,4 @@
-import { Alert, Row, Skeleton } from 'antd';
+import { Alert, Skeleton } from 'antd';
 import Table, { ColumnsType, TablePaginationConfig } from 'antd/lib/table';
 import * as React from 'react';
 import { ApiYouTubePlaylistItemListGetRequest, Channel, PlaylistItem, PlaylistItemListResponse, YouTubePlaylistItemApi } from '../../../../../../generated-sources/openapi';
@@ -25,7 +25,6 @@ export interface YouTubeVideoSelectionTableProps {
   channel?: Channel;
   value?: React.Key[];
   onChange?: (value: React.Key[]) => void;
-  className?: string;
 }
 
 /**
@@ -35,7 +34,7 @@ export interface YouTubeVideoSelectionTableProps {
  * @return {JSX.Element}
  */
 export function YouTubeChannelVideoUploadsSelectionTable(props: YouTubeVideoSelectionTableProps): JSX.Element {
-  const { channel, value, onChange, className } = props;
+  const { channel, value, onChange } = props;
 
   const channelUploadsPlaylistId = channel?.contentDetails.relatedPlaylists.uploads;
   if (channelUploadsPlaylistId == null) { throw Error("The channel's upload playlist identifier is required.");  }
@@ -147,12 +146,8 @@ export function YouTubeChannelVideoUploadsSelectionTable(props: YouTubeVideoSele
         <Alert message="Warning" description="No YouTube videos are associated with this YouTube channel." type="warning" showIcon />
       }
 
-      <Alert message="Error" description="Failed to load YouTube video information." type="error" showIcon />
-      <Alert message="Warning" description="No YouTube videos are associated with this YouTube channel." type="warning" showIcon />
-
-      <Skeleton loading={shouldLoadMore} active className={className}>
+      <Skeleton loading={shouldLoadMore} active>
         <Table
-          className={className}
           dataSource={items}
           pagination={pagination}
           rowKey={rowKey}

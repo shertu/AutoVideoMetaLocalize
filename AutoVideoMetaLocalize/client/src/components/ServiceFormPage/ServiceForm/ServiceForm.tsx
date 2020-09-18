@@ -1,27 +1,28 @@
-import { Button, Form, Row, Collapse, Checkbox, Space } from 'antd';
-import * as React from 'react';
-import { LanguageSelect } from './LanguageSelect/LanguageSelect';
+import { Button, Checkbox, Collapse, Form, Row, Space } from 'antd';
 import * as cookie from 'cookie';
-import { FormProps } from 'antd/lib/form';
-import { YouTubeCombo } from './YouTubeCombo/YouTubeCombo';
+import * as React from 'react';
+import COOKIE_NAMES from '../../../cookie-names';
 import EventStates from '../../../event-states';
 import ExecutionStateContext from '../ExecutionStateContext/ExecutionStateContext';
-import COOKIE_NAMES from '../../../cookie-names';
+import { LanguageSelect } from './LanguageSelect/LanguageSelect';
+import { YouTubeCombo } from './YouTubeCombo/YouTubeCombo';
+
+
+
+export interface ServiceFormValues {
+  languageSelect: string[],
+  youtubeChannelRadioGroup: string[],
+  youtubeVideoSelectionTable: string[],
+  smbCheckbox: boolean,
+}
 
 /** */
 export const ServiceFormItemNames = Object.freeze({
-  LANGUAGE_SELECT: 'language-selection',
-  YOUTUBE_CHANNEL_RADIO_GROUP: 'channel-selection',
-  YOUTUBE_VIDEO_SELECTION_TABLE: 'video-selection',
-  SMB_CHECKBOX: 'smb-checkbox',
+  LANGUAGE_SELECT: 'languageSelect',
+  YOUTUBE_CHANNEL_RADIO_GROUP: 'youtubeChannelRadioGroup',
+  YOUTUBE_VIDEO_SELECTION_TABLE: 'youtubeVideoSelectionTable',
+  SMB_CHECKBOX: 'smbCheckbox',
 });
-
-export interface ServiceFormValues {
-  language_select: string[],
-  youtube_channel_radio_group: string[],
-  youtube_video_selection_table: string[],
-  smb_checkbox: boolean,
-}
 
 /**
  * The page used to control the flow of the process.
@@ -42,9 +43,9 @@ export function ServiceForm(props: {
   /** Clears the form's fields and the language cookie. */
   function onClearForm() {
     form.setFieldsValue({
-      language_select: null,
-      youtube_video_selection_table: null,
-      smb_checkbox: null,
+      languageSelect: null,
+      youtubeVideoSelectionTable: null,
+      smbCheckbox: null,
     });
 
     document.cookie = cookie.serialize(COOKIE_NAMES.SERVICE_FORM_LANGUAGES, '');

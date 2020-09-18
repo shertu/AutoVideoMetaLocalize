@@ -1,6 +1,6 @@
-import { Select, Alert, Row } from 'antd';
+import { Alert, Select } from 'antd';
 import * as React from 'react';
-import { SupportedLanguage, I18nLanguageSnippet, LanguageApi } from '../../../../../generated-sources/openapi';
+import { I18nLanguageSnippet, LanguageApi, SupportedLanguage } from '../../../../../generated-sources/openapi';
 
 const LANGUAGE_API: LanguageApi = new LanguageApi();
 
@@ -40,9 +40,6 @@ export function LanguageSelect(): JSX.Element {
       {error &&
         <Alert message="Error" description="Failed to load Google Cloud Translate or YouTube language information." type="error" showIcon />
       }
-
-
-      <Alert message="Error" description="Failed to load Google Cloud Translate or YouTube language information." type="error" showIcon />
 
       <Select
         mode="multiple"

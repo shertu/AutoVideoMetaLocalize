@@ -16,9 +16,8 @@ const DEFAULT_PAGE_SIZE: number = 30;
 export function YouTubeChannelRadioGroup(props: {
   onChangeChannel?: (channel: Channel) => void;
   onChangeResponse?: (response: ChannelListResponse) => void;
-  className?: string;
 }): JSX.Element {
-  const { onChangeChannel, onChangeResponse, className } = props;
+  const { onChangeChannel, onChangeResponse } = props;
 
   const [radioGroupValue, setRadioGroupValue] =
     React.useState<string>(undefined);
@@ -151,13 +150,10 @@ export function YouTubeChannelRadioGroup(props: {
         <Alert message="Warning" description="No YouTube channels are associated with this Google account." type="warning" showIcon />
       }
 
-      <Alert message="Error" description="Failed to load YouTube channel information." type="error" showIcon />
-      <Alert message="Warning" description="No YouTube channels are associated with this Google account." type="warning" showIcon />
-
       <Radio.Group
         value={radioGroupValue}
         onChange={onChange}
-        className={className}
+        className="max-cell"
       >
         <InfiniteScroll
           dataLength={mineYouTubeChannelsLength}
