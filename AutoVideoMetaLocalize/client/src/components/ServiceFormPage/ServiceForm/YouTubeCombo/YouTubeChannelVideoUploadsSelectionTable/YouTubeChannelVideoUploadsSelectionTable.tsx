@@ -147,6 +147,9 @@ export function YouTubeChannelVideoUploadsSelectionTable(props: YouTubeVideoSele
         <Alert message="Warning" description="No YouTube videos are associated with this YouTube channel." type="warning" showIcon />
       }
 
+      <Alert message="Error" description="Failed to load YouTube video information." type="error" showIcon />
+      <Alert message="Warning" description="No YouTube videos are associated with this YouTube channel." type="warning" showIcon />
+
       <Skeleton loading={shouldLoadMore} active className={className}>
         <Table
           className={className}

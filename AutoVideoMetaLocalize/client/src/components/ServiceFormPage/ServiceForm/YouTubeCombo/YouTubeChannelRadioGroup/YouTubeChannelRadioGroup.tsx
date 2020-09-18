@@ -142,7 +142,7 @@ export function YouTubeChannelRadioGroup(props: {
   }
 
   return (
-    <Row className="max-cell-sm">
+    <>
       {error &&
         <Alert message="Error" description="Failed to load YouTube channel information." type="error" showIcon />
       }
@@ -150,6 +150,9 @@ export function YouTubeChannelRadioGroup(props: {
       {mineYouTubeChannelsLength === 0 && !canLoadMore(currentResponse) &&
         <Alert message="Warning" description="No YouTube channels are associated with this Google account." type="warning" showIcon />
       }
+
+      <Alert message="Error" description="Failed to load YouTube channel information." type="error" showIcon />
+      <Alert message="Warning" description="No YouTube channels are associated with this Google account." type="warning" showIcon />
 
       <Radio.Group
         value={radioGroupValue}
@@ -173,6 +176,6 @@ export function YouTubeChannelRadioGroup(props: {
           )}
         </InfiniteScroll>
       </Radio.Group>
-    </Row>
+    </>
   );
 }

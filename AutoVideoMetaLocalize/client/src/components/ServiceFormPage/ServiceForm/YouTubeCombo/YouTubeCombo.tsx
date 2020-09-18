@@ -1,8 +1,8 @@
-import { Space } from 'antd';
 import * as React from 'react';
 import { Channel, ChannelListResponse } from '../../../../../generated-sources/openapi';
 import { YouTubeChannelRadioGroup } from './YouTubeChannelRadioGroup/YouTubeChannelRadioGroup';
 import { YouTubeChannelVideoUploadsSelectionTable } from './YouTubeChannelVideoUploadsSelectionTable/YouTubeChannelVideoUploadsSelectionTable';
+import { Row } from 'antd';
 
 /**
  * The page used to control the flow of the process.
@@ -28,7 +28,7 @@ export function YouTubeCombo(props: {
   console.log(selectedMineYouTubeChannel, mineYouTubeChannelCountTotal);
 
   return (
-    <Space direction="vertical" className="max-cell">
+    <>
       <div hidden={mineYouTubeChannelCountTotal === 1}>
         <YouTubeChannelRadioGroup
           onChangeChannel={setSelectedMineYouTubeChannel}
@@ -45,7 +45,7 @@ export function YouTubeCombo(props: {
           className="max-cell-sm"
         />
       }
-    </Space>
+    </>
   );
 }
 

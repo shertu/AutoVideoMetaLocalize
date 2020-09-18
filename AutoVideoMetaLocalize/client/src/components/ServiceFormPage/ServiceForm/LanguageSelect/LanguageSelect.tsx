@@ -36,14 +36,16 @@ export function LanguageSelect(): JSX.Element {
   }
 
   return (
-    <Row className="max-cell-sm">
+    <>
       {error &&
         <Alert message="Error" description="Failed to load Google Cloud Translate or YouTube language information." type="error" showIcon />
       }
 
+
+      <Alert message="Error" description="Failed to load Google Cloud Translate or YouTube language information." type="error" showIcon />
+
       <Select
         mode="multiple"
-        className="max-cell-sm"
         optionFilterProp="label"
       >
         {languagesUnion?.map(language =>
@@ -52,7 +54,7 @@ export function LanguageSelect(): JSX.Element {
           </Select.Option >
         )}
       </Select>
-    </Row>
+    </>
   );
 }
 
