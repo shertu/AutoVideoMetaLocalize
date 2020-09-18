@@ -21,9 +21,6 @@ export function LanguageSelect(props: {
   const [youTubeI18nLanguages, setYouTubeI18nLanguages] =
     React.useState<Array<I18nLanguageSnippet>>(undefined);
 
-  //const a = Select<Array<LabeledValue>>;
-  
-
   const [error, setError] =
     React.useState<boolean>(false);
 
