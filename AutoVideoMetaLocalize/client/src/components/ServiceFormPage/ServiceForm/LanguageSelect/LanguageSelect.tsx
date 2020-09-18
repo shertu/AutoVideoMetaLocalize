@@ -9,12 +9,20 @@ const LANGUAGE_API: LanguageApi = new LanguageApi();
  *
  * @return {JSX.Element}
  */
-export function LanguageSelect(): JSX.Element {
+export function LanguageSelect(props: {
+  value?: Array<string>;
+  onChange?: (value: Array<string>) => void;
+}): JSX.Element {
+  const { value, onChange } = props;
+
   const [cloudTranslationSupportedLanguages, setCloudTranslationSupportedLanguages] =
     React.useState<Array<SupportedLanguage>>(undefined);
 
   const [youTubeI18nLanguages, setYouTubeI18nLanguages] =
     React.useState<Array<I18nLanguageSnippet>>(undefined);
+
+  //const a = Select<Array<LabeledValue>>;
+  
 
   const [error, setError] =
     React.useState<boolean>(false);
@@ -41,9 +49,11 @@ export function LanguageSelect(): JSX.Element {
         <Alert message="Error" description="Failed to load Google Cloud Translate or YouTube language information." type="error" showIcon />
       }
 
-      <Select
+      <Select<Array<string>>
         mode="multiple"
         optionFilterProp="label"
+        onChange={onChange}
+        value={value}
       >
         {languagesUnion?.map(language =>
           <Select.Option key={language.languageCode} value={language.languageCode} label={language.displayName}>
