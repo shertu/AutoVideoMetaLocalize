@@ -100,13 +100,13 @@ export function ServiceFormPage(): JSX.Element {
             onFinish={onFinish}
           />
         </Page>
-      </Carousel>
 
-      <ServiceExecutionStatusPage
-        error={executionError}
-        executionState={executionState}
-        executionExpectedTotalOpCount={executionExpectedTotalOpCount}
-      />
+        <ServiceExecutionStatusPage
+          error={executionError}
+          executionState={executionState}
+          executionExpectedTotalOpCount={executionExpectedTotalOpCount}
+        />
+      </Carousel>
     </AuthorizedContent>
   );
 }
