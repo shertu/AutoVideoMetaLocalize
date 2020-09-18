@@ -42,11 +42,13 @@ export function ServiceForm(props: {
     form.setFieldsValue({
       languageSelect: [],
       youtubeVideoSelectionTable: [],
-      smbCheckbox: false,
+      smbCheckbox: undefined,
     });
 
     document.cookie = cookie.serialize(COOKIE_NAMES.SERVICE_FORM_LANGUAGES, '');
   }
+
+  //initialValue = { languageSelectInitialValue }
 
   return (
     <Form
@@ -58,8 +60,7 @@ export function ServiceForm(props: {
       <Form.Item
         label="Languages"
         name={ServiceFormItemNames.LANGUAGE_SELECT}
-        rules={[{ required: true, message: 'Please select at least one language.' }]}
-        initialValue={languageSelectInitialValue}
+        rules={[{ required: false, message: 'Please select at least one language.' }]}
       >
         <LanguageSelect />
       </Form.Item>
@@ -67,7 +68,7 @@ export function ServiceForm(props: {
       <Form.Item
         label="Videos"
         name={ServiceFormItemNames.YOUTUBE_VIDEO_SELECTION_TABLE}
-        rules={[{ required: true, message: 'Please select at least one video.' }]}
+        rules={[{ required: false, message: 'Please select at least one video.' }]}
       >
         <YouTubeCombo />
       </Form.Item>
