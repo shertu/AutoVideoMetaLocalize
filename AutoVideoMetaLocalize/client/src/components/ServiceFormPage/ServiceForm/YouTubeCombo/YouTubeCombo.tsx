@@ -33,7 +33,6 @@ export function YouTubeCombo(props: {
         <YouTubeChannelRadioGroup
           onChangeChannel={setSelectedMineYouTubeChannel}
           onChangeResponse={onChangeYouTubeChannelRadioGroupResponse}
-          className="max-cell-sm"
         />
       </div>
 
@@ -42,7 +41,6 @@ export function YouTubeCombo(props: {
           channel={selectedMineYouTubeChannel}
           onChange={onChange}
           value={value}
-          className="max-cell-sm"
         />
       }
     </>

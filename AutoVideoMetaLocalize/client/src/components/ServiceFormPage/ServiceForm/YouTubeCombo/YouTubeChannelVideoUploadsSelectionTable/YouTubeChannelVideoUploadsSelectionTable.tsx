@@ -138,7 +138,7 @@ export function YouTubeChannelVideoUploadsSelectionTable(props: YouTubeVideoSele
   };
 
   return (
-    <Row className="max-cell-sm">
+    <>
       {error &&
         <Alert message="Error" description="Failed to load YouTube video information." type="error" showIcon />
       }
@@ -163,7 +163,7 @@ export function YouTubeChannelVideoUploadsSelectionTable(props: YouTubeVideoSele
           }}
         />
       </Skeleton>
-    </Row>
+    </>
   );
 }
 
