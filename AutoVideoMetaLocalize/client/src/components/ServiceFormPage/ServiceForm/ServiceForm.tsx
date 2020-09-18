@@ -6,8 +6,6 @@ import EventStates from '../../../event-states';
 import { LanguageSelect } from './LanguageSelect/LanguageSelect';
 import { YouTubeCombo } from './YouTubeCombo/YouTubeCombo';
 
-
-
 export interface ServiceFormValues {
   languageSelect: string[],
   youtubeChannelRadioGroup: string[],
@@ -36,14 +34,15 @@ export function ServiceForm(props: {
 
   const [form] = Form.useForm<ServiceFormValues>();
 
-  const languageSelectCookieValue: string = cookie.parse(document.cookie)[ServiceFormItemNames.LANGUAGE_SELECT] || '';
+  const languageSelectCookieValue: string = cookie.parse(document.cookie)[ServiceFormItemNames.LANGUAGE_SELECT];
+  const languageSelectInitialValue: string[] = languageSelectCookieValue ? languageSelectCookieValue.split(',') : [];
 
   /** Clears the form's fields and the language cookie. */
   function onClearForm() {
     form.setFieldsValue({
-      languageSelect: null,
-      youtubeVideoSelectionTable: null,
-      smbCheckbox: null,
+      languageSelect: [],
+      youtubeVideoSelectionTable: [],
+      smbCheckbox: false,
     });
 
     document.cookie = cookie.serialize(COOKIE_NAMES.SERVICE_FORM_LANGUAGES, '');
@@ -60,7 +59,7 @@ export function ServiceForm(props: {
         label="Languages"
         name={ServiceFormItemNames.LANGUAGE_SELECT}
         rules={[{ required: true, message: 'Please select at least one language.' }]}
-        initialValue={languageSelectCookieValue.split(',')}
+        initialValue={languageSelectInitialValue}
       >
         <LanguageSelect />
       </Form.Item>

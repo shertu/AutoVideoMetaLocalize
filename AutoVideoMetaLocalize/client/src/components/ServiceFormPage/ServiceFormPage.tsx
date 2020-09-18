@@ -28,6 +28,8 @@ export function ServiceFormPage(): JSX.Element {
 
   const carouselRef = React.useRef<Carousel>();
 
+  const executionStatusPage: boolean = (executionState === EventStates.continuitive || executionState === EventStates.retropective);
+
   /**
    * Called when the options form is successfully filled out and submitted.
    *
@@ -41,7 +43,10 @@ export function ServiceFormPage(): JSX.Element {
     }
 
     console.log("Service form inputs: ", serviceFormInputs);
-    executeService(serviceFormInputs);
+
+    if (executionState === EventStates.prospective || executionState === EventStates.retropective) {
+      executeService(serviceFormInputs);
+    }
   }
 
   /**
@@ -49,28 +54,20 @@ export function ServiceFormPage(): JSX.Element {
    * @param serviceFormInputs
    */
   async function executeService(serviceFormInputs: AppVideoLocalizeRequest) {
-    if (serviceFormInputs == null) {
-      return;
-    }
+    const { languages, videos, sheetMusicBoss } = serviceFormInputs;
 
-    if (executionState == EventStates.continuitive) {
-      return;
-    }
-
-    const languages = serviceFormInputs.languages || [];
-    const videos = serviceFormInputs.videos || [];
-    const expectedTotalOpCount = videos.length * languages.length;
-
-    if (expectedTotalOpCount === 0) {
+    if (languages == null || languages.length === 0 || videos == null || videos.length === 0 || sheetMusicBoss == null) {
       return;
     }
 
     // before execution state
+    const expectedTotalOpCount = languages.length * videos.length;
+
     setExecutionState(EventStates.continuitive);
     setExecutionExpectedTotalOpCount(expectedTotalOpCount);
 
     // execution
-    document.cookie = cookie.serialize(COOKIE_NAMES.SERVICE_FORM_LANGUAGES, languages.join(','));
+    storeLanguagesCookie(languages);
 
     const res = await YOUTUBE_VIDEO_API.apiYouTubeVideoLocalizePut({
       appVideoLocalizeRequest: serviceFormInputs,
@@ -80,7 +77,15 @@ export function ServiceFormPage(): JSX.Element {
     setExecutionState(EventStates.retropective);
   }
 
-  const executionStatusPage: boolean = (executionState === EventStates.continuitive || executionState === EventStates.retropective);
+  /**
+   * 
+   * @param languageSelectValue
+   */
+  function storeLanguagesCookie(languageSelectValue: string[]) {
+    languageSelectValue = languageSelectValue || [];
+    const languageSelectCookieValue: string = languageSelectValue.join(',');
+    document.cookie = cookie.serialize(COOKIE_NAMES.SERVICE_FORM_LANGUAGES, languageSelectCookieValue);
+  }
 
   /** */
   React.useEffect(() => {
@@ -105,6 +110,7 @@ export function ServiceFormPage(): JSX.Element {
           error={executionError}
           executionState={executionState}
           executionExpectedTotalOpCount={executionExpectedTotalOpCount}
+          onReturn={() => setExecutionState(EventStates.prospective)}
         />
       </Carousel>
     </AuthorizedContent>
