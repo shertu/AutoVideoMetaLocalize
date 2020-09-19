@@ -1,23 +1,24 @@
-import { Alert, Radio, Row, Spin } from 'antd';
-import { RadioChangeEvent } from 'antd/lib/radio';
+import {Alert, Radio, Row, Spin} from 'antd';
+import {RadioChangeEvent} from 'antd/lib/radio';
 import * as React from 'react';
-import InfiniteScroll from "react-infinite-scroll-component";
-import { ApiYouTubeChannelListGetRequest, Channel, ChannelListResponse, YouTubeChannelApi } from '../../../../../../generated-sources/openapi';
-import { BasicComboView } from '../../../../BasicComboView/BasicComboView';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import {ApiYouTubeChannelListGetRequest, Channel, ChannelListResponse, YouTubeChannelApi} from '../../../../../../generated-sources/openapi';
+import {BasicComboView} from '../../../../BasicComboView/BasicComboView';
 
 const YOUTUBE_CHANNEL_API: YouTubeChannelApi = new YouTubeChannelApi();
 const DEFAULT_PAGE_SIZE: number = 30;
 
 /**
- * A react component used to display a paginated list of the user's YouTube channels as a radio group.
- * 
+ * A radio group component used to display and choice from a paginated list of the user's YouTube channels.
+ *
+ * @param {object} props
  * @return {JSX.Element}
  */
 export function YouTubeChannelRadioGroup(props: {
   onChangeChannel?: (channel: Channel) => void;
   onChangeResponse?: (response: ChannelListResponse) => void;
 }): JSX.Element {
-  const { onChangeChannel, onChangeResponse } = props;
+  const {onChangeChannel, onChangeResponse} = props;
 
   const [radioGroupValue, setRadioGroupValue] =
     React.useState<string>(undefined);
@@ -37,7 +38,7 @@ export function YouTubeChannelRadioGroup(props: {
   const [error, setError] =
     React.useState<boolean>(undefined);
 
-  //console.log("YouTubeChannelRadioGroup", radioGroupValue, mineYouTubeChannels, currentResponse, paginationCurrent, paginationExpectedTotal, error);
+  // console.log("YouTubeChannelRadioGroup", radioGroupValue, mineYouTubeChannels, currentResponse, paginationCurrent, paginationExpectedTotal, error);
 
   const dataLength: number = mineYouTubeChannels ? mineYouTubeChannels.length : 0;
   const shouldAndCanLoadMore: boolean = dataLength < paginationExpectedTotal && canLoadMore(currentResponse);
@@ -58,11 +59,10 @@ export function YouTubeChannelRadioGroup(props: {
 
   /** Used to load items into the data collection until the length expectation is met or no additional item can be loaded. */
   React.useEffect(() => {
-
     if (shouldAndCanLoadMore) {
       fetchNextResponse(currentResponse)
-        .then((res: ChannelListResponse) => setCurrentResponse(res))
-        .catch((err: Response) => setError(true));
+          .then((res: ChannelListResponse) => setCurrentResponse(res))
+          .catch((err: Response) => setError(true));
     }
   }, [paginationExpectedTotal, dataLength]);
 
@@ -79,26 +79,42 @@ export function YouTubeChannelRadioGroup(props: {
   React.useEffect(() => {
     const channel: Channel = findMineYouTubeChannel(radioGroupValue);
 
-    if (onChangeChannel) { onChangeChannel(channel); }
+    if (onChangeChannel) {
+      onChangeChannel(channel);
+    }
   }, [radioGroupValue]);
 
   /** Used to hook into the on change response event. */
   React.useEffect(() => {
-    if (onChangeResponse) { onChangeResponse(currentResponse); }
+    if (onChangeResponse) {
+      onChangeResponse(currentResponse);
+    }
   }, [currentResponse]);
 
-  /** Called when the radio group's value changes. */
-  function onChange(e: RadioChangeEvent) {
+  /**
+   * The event called when the component's value changes.
+   *
+   * @param {RadioChangeEvent} e
+   */
+  function onChange(e: RadioChangeEvent): void {
     setRadioGroupValue(e.target.value);
   }
 
-  /** Used to find the specified channel by id from the data collection. */
+  /**
+   * A ultility function used to find a specific channel by id from the item list.
+   *
+   * @param {string} channelId
+   * @return {Channel}
+   */
   function findMineYouTubeChannel(channelId: string): Channel {
     return mineYouTubeChannels?.find((channel: Channel) => channel.id == channelId);
   }
 
   /**
    * Called when the page number is changed, and it takes the resulting page number and page size as its arguments.
+   *
+   * @param {number} page
+   * @param {number} pageSize
    */
   function onChangePagination(page: number, pageSize?: number): void {
     pageSize = pageSize || DEFAULT_PAGE_SIZE;
@@ -113,8 +129,12 @@ export function YouTubeChannelRadioGroup(props: {
 
   /**
    * Fetches the next page of data relative to the current one.
+   *
+   * @param {ChannelListResponse} response
+   * @param {number} maxResults
+   * @return {Promise<ChannelListResponse>}
    */
-  function fetchNextResponse(response?: ChannelListResponse, maxResults?: number): Promise<ChannelListResponse> {
+  function fetchNextResponse(response: ChannelListResponse, maxResults?: number): Promise<ChannelListResponse> {
     const request: ApiYouTubeChannelListGetRequest = {
       part: 'id,snippet,contentDetails',
       mine: true,
@@ -129,7 +149,10 @@ export function YouTubeChannelRadioGroup(props: {
   }
 
   /**
-   * Checks if additional data exists.
+   * Checks if additional items can be loaded given the response.
+   *
+   * @param {ChannelListResponse} response
+   * @return {boolean}
    */
   function canLoadMore(response: ChannelListResponse): boolean {
     return response == null || response.nextPageToken != null;
@@ -137,6 +160,9 @@ export function YouTubeChannelRadioGroup(props: {
 
   /**
    * Gets a row's unique key.
+   *
+   * @param {Channel} record
+   * @return {string}
    */
   function rowKey(record: Channel): string {
     return record.id;
@@ -161,7 +187,7 @@ export function YouTubeChannelRadioGroup(props: {
           dataLength={dataLength}
           next={() => onChangePagination(paginationCurrent + 1)}
           hasMore={canLoadMore(currentResponse)}
-          loader={<Row align="middle" justify="center" style={{ height: 120 }}><Spin /></Row>}
+          loader={<Row align="middle" justify="center" style={{height: 120}}><Spin /></Row>}
         >
           {mineYouTubeChannels?.map((channel: Channel, index: number) =>
             <Radio.Button className="max-cell max-height" key={rowKey(channel)} value={channel.id}>

@@ -1,4 +1,4 @@
-import { Divider } from 'antd';
+import {Divider} from 'antd';
 import * as React from 'react';
 import classNames from 'classnames';
 
@@ -13,7 +13,7 @@ export interface PageProps extends React.DetailedHTMLProps<React.HTMLAttributes<
  * @return {JSX.Element}
  */
 export function Page(props: PageProps): JSX.Element {
-  const { className, title, children, ...sectionProps } = props;
+  const {className, title, children, ...sectionProps} = props;
 
   return (
     <section {...sectionProps} className={classNames(className, 'max-cell-lg')}>

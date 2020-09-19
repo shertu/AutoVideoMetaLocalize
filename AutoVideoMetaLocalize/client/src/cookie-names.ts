@@ -6,6 +6,12 @@ const COOKIE_NAMES = Object.freeze({
 
 export default COOKIE_NAMES;
 
+/**
+ * A utility function used to serialize a value into a cookie.
+ *
+ * @param {string} key
+ * @param {any} value
+ */
 export function writeJsonCookie(key: string, value: any): void {
   if (value !== undefined) {
     const cookieValue: string = JSON.stringify(value);
@@ -13,6 +19,12 @@ export function writeJsonCookie(key: string, value: any): void {
   }
 }
 
+/**
+ * A utility function used to deserialize a value from a cookie.
+ *
+ * @param {string} key
+ * @return {any}
+ */
 export function readJsonCookie(key: string): any {
   const cookieValue: string = cookie.parse(document.cookie)[key];
 

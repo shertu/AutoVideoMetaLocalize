@@ -1,16 +1,16 @@
-import { Layout, Row, Button, Avatar } from 'antd';
+import {Layout, Row, Button, Avatar} from 'antd';
 import * as React from 'react';
-import { AppContentSwitch } from '../AppContentSwitch/AppContentSwitch';
-import { Link } from 'react-router-dom';
+import {AppContentSwitch} from '../AppContentSwitch/AppContentSwitch';
+import {Link} from 'react-router-dom';
 import routes from '../../../routes';
-import { Page } from '../../Page/Page';
+import {Page} from '../../Page/Page';
 import './style.less';
 
-const { Content, Footer } = Layout;
+const {Content, Footer} = Layout;
 
 /**
- * The general layout or structure of the web application, e.g. main, header, footer, etc.
- * 
+ * An important layout component used to design the general structure of the web application, e.g. main, header, footer, etc.
+ *
  * @return {JSX.Element}
  */
 export function AppLayout(): JSX.Element {

@@ -1,14 +1,15 @@
-import { Skeleton, Result, Button } from 'antd';
+import {Skeleton, Result, Button} from 'antd';
 import * as React from 'react';
 import UserContext from '../UserContext/UserContext';
-import { Link } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import routes from '../../routes';
-import { GetClaimsPrincipleResult } from '../../../generated-sources/openapi';
+import {GetClaimsPrincipleResult} from '../../../generated-sources/openapi';
 
 /**
- * A wrapper component which renders child content if the user is authenticated and authorized.
- * 
- * @param props
+ * A wrapper component used to conditionally render when the user is authenticated or authorized.
+ *
+ * @param {object} props
+ * @return {JSX.Element}
  */
 export function AuthorizedContent(props: {
   children?: React.ReactNode;

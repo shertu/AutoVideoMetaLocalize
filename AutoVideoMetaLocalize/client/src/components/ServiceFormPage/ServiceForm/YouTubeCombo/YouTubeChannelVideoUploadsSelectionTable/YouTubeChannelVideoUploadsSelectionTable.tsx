@@ -1,8 +1,8 @@
-import { Alert, Skeleton } from 'antd';
-import Table, { ColumnsType, TablePaginationConfig } from 'antd/lib/table';
+import {Alert, Skeleton} from 'antd';
+import Table, {ColumnsType, TablePaginationConfig} from 'antd/lib/table';
 import * as React from 'react';
-import { ApiYouTubePlaylistItemListGetRequest, Channel, PlaylistItem, PlaylistItemListResponse, YouTubePlaylistItemApi } from '../../../../../../generated-sources/openapi';
-import { BasicComboView } from '../../../../BasicComboView/BasicComboView';
+import {ApiYouTubePlaylistItemListGetRequest, Channel, PlaylistItem, PlaylistItemListResponse, YouTubePlaylistItemApi} from '../../../../../../generated-sources/openapi';
+import {BasicComboView} from '../../../../BasicComboView/BasicComboView';
 
 const YOUTUBE_PLAYLIST_ITEM_API = new YouTubePlaylistItemApi();
 const DEFAULT_PAGE_SIZE: number = 30;
@@ -28,16 +28,18 @@ export interface YouTubeVideoSelectionTableProps {
 }
 
 /**
- * A react component used to display a paginated list of the user's YouTube channels as a radio group.
- * 
- * @param props {RadioGroupProps}
+ * A table component used to display and select from a paginated list of a YouTube channel's uploaded videos.
+ *
+ * @param {YouTubeVideoSelectionTableProps} props
  * @return {JSX.Element}
  */
 export function YouTubeChannelVideoUploadsSelectionTable(props: YouTubeVideoSelectionTableProps): JSX.Element {
-  const { channel, value, onChange } = props;
+  const {channel, value, onChange} = props;
 
   const channelUploadsPlaylistId = channel?.contentDetails.relatedPlaylists.uploads;
-  if (channelUploadsPlaylistId == null) { throw Error("The channel's upload playlist identifier is required.");  }
+  if (channelUploadsPlaylistId == null) {
+    throw Error('The channel\'s upload playlist identifier is required.');
+  }
 
   const [items, setItems] =
     React.useState<Array<PlaylistItem>>(undefined);
@@ -75,13 +77,16 @@ export function YouTubeChannelVideoUploadsSelectionTable(props: YouTubeVideoSele
   React.useEffect(() => {
     if (shouldAndCanLoadMore) {
       fetchNextResponse(currentResponse)
-        .then((res: PlaylistItemListResponse) => setCurrentResponse(res))
-        .catch((err: Response) => setError(true));
+          .then((res: PlaylistItemListResponse) => setCurrentResponse(res))
+          .catch((err: Response) => setError(true));
     }
   }, [paginationExpectedTotal, dataLength]);
 
   /**
    * Called when the page number is changed, and it takes the resulting page number and page size as its arguments.
+   *
+   * @param {number} page
+   * @param {number} pageSize
    */
   function onChangePagination(page: number, pageSize?: number): void {
     pageSize = pageSize || DEFAULT_PAGE_SIZE;
@@ -96,23 +101,30 @@ export function YouTubeChannelVideoUploadsSelectionTable(props: YouTubeVideoSele
 
   /**
    * Fetches the next page of data relative to the current one.
+   *
+   * @param {PlaylistItemListResponse} response
+   * @param {number} maxResults
+   * @return {Promise<PlaylistItemListResponse>}
    */
-  function fetchNextResponse(currentResponse?: PlaylistItemListResponse, maxResults?: number): Promise<PlaylistItemListResponse> {
+  function fetchNextResponse(response: PlaylistItemListResponse, maxResults?: number): Promise<PlaylistItemListResponse> {
     const request: ApiYouTubePlaylistItemListGetRequest = {
       part: 'id,snippet',
       playlistId: channelUploadsPlaylistId,
       maxResults: maxResults,
     };
 
-    if (currentResponse) {
-      request.pageToken = currentResponse.nextPageToken;
+    if (response) {
+      request.pageToken = response.nextPageToken;
     }
 
     return YOUTUBE_PLAYLIST_ITEM_API.apiYouTubePlaylistItemListGet(request);
   }
 
   /**
-   * Checks if additional data exists.
+   * Checks if additional items can be loaded given the response.
+   *
+   * @param {PlaylistItemListResponse} response
+   * @return {boolean}
    */
   function canLoadMore(response: PlaylistItemListResponse): boolean {
     return response == null || response.nextPageToken != null;
@@ -120,6 +132,9 @@ export function YouTubeChannelVideoUploadsSelectionTable(props: YouTubeVideoSele
 
   /**
    * Gets a row's unique key.
+   *
+   * @param {PlaylistItem} record
+   * @return {string}
    */
   function rowKey(record: PlaylistItem): string {
     return record.snippet.resourceId.videoId;
@@ -128,7 +143,7 @@ export function YouTubeChannelVideoUploadsSelectionTable(props: YouTubeVideoSele
   // pagination props
   const pagination: TablePaginationConfig = {
     current: paginationCurrent,
-    //position: ['topLeft'],
+    // position: ['topLeft'],
     simple: true,
     pageSize: DEFAULT_PAGE_SIZE,
     total: currentResponse?.pageInfo.totalResults,

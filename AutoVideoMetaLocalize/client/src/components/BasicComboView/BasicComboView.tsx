@@ -1,11 +1,11 @@
-import { Avatar, Col, Row, Typography } from 'antd';
+import {Avatar, Col, Row, Typography} from 'antd';
 import * as React from 'react';
-import { Thumbnail } from '../../../generated-sources/openapi';
+import {Thumbnail} from '../../../generated-sources/openapi';
 
-const { Paragraph } = Typography;
+const {Paragraph} = Typography;
 
 /**
- * A basic information card with an image, title and subtitle.
+ * A simple information view component with an image, title and subtitle.
  *
  * @param {object} props
  * @return {JSX.Element}
@@ -16,16 +16,16 @@ export function BasicComboView(props: {
   subtitle?: string;
   avatarShape?: 'circle' | 'square';
 }): JSX.Element {
-  const { thumbnail, title, subtitle, avatarShape } = props;
+  const {thumbnail, title, subtitle, avatarShape} = props;
 
   return (
-    <Row className="max-cell-xs" align="middle" justify="start" style={{ minHeight: 120, wordBreak: 'break-word' }}>
+    <Row className="max-cell-xs" align="middle" justify="start" style={{minHeight: 120, wordBreak: 'break-word'}}>
       <Col span={8}>
         <Row align="middle" justify="center">
           {thumbnail && (
             <Avatar
               src={thumbnail.url}
-              style={{ width: thumbnail.width, height: thumbnail.height }}
+              style={{width: thumbnail.width, height: thumbnail.height}}
               shape={avatarShape}
             />
           )}

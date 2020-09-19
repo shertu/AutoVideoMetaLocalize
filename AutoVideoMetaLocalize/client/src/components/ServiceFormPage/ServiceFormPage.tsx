@@ -1,16 +1,16 @@
-import { Alert, Button, Carousel, Progress, Row, Space } from 'antd';
+import {Alert, Progress, Space} from 'antd';
 import * as React from 'react';
-import COOKIE_NAMES, { writeJsonCookie } from '../../cookie-names';
+import {AppVideoLocalizeRequest, YouTubeVideoApi} from '../../../generated-sources/openapi';
+import COOKIE_NAMES, {writeJsonCookie} from '../../cookie-names';
 import EventStates from '../../event-states';
-import { AuthorizedContent } from '../AuthorizedContent/AuthorizedContent';
-import { Page } from '../Page/Page';
-import { ServiceForm, ServiceFormValues } from './ServiceForm/ServiceForm';
-import { YouTubeVideoApi, AppVideoLocalizeRequest } from '../../../generated-sources/openapi';
+import {AuthorizedContent} from '../AuthorizedContent/AuthorizedContent';
+import {Page} from '../Page/Page';
+import {ServiceForm, ServiceFormValues} from './ServiceForm/ServiceForm';
 
 const YOUTUBE_VIDEO_API: YouTubeVideoApi = new YouTubeVideoApi();
 
 /**
- * The page used to control the flow of the process.
+ * The page which services the user's need to localize their YouTube videos.
  *
  * @return {JSX.Element}
  */
@@ -21,30 +21,10 @@ export function ServiceFormPage(): JSX.Element {
   const [error, setError] =
     React.useState<boolean>(undefined);
 
-  //const carouselRef = React.useRef<Carousel>();
-
-  ///** */
-  //React.useEffect(() => {
-  //  const carouselTargetIndex: number = executionState ? 1 : 0;
-  //  goToCarouselTargetIndex(carouselTargetIndex);
-  //}, [executionState]);
-
-  ///**
-  // * 
-  // * @param index
-  // */
-  //function goToCarouselTargetIndex(index: number) {
-  //  const currentCarouselRef = carouselRef?.current;
-
-  //  if (currentCarouselRef) {
-  //    currentCarouselRef.goTo(index);
-  //  }
-  //}
-
   /**
-   * Called when the options form is successfully filled out and submitted.
+   * Called when the service form is successfully filled out and submitted.
    *
-   * @param {Store} values
+   * @param {ServiceFormValues} values
    */
   function onFinish(values: ServiceFormValues) {
     // Important for form values to have fallbacks as most are initially undefined.
@@ -52,14 +32,15 @@ export function ServiceFormPage(): JSX.Element {
       languages: values.languageSelect || [],
       videos: values.youtubeVideoSelectionTable || [],
       sheetMusicBoss: values.smbCheckbox || false,
-    }
+    };
 
     onExecute(request);
   }
 
   /**
-   * 
-   * @param request
+   * The event called when the service form is submitted.
+   *
+   * @param {AppVideoLocalizeRequest} request
    */
   async function onExecute(request: AppVideoLocalizeRequest) {
     setExecutionState(EventStates.continuitive);
@@ -72,12 +53,6 @@ export function ServiceFormPage(): JSX.Element {
 
     setExecutionState(EventStates.retropective);
   }
-
-  ///** */
-  //function onClickReturnToServiceForm() {
-  //  goToCarouselTargetIndex(0);
-  //  setExecutionState(EventStates.prospective);
-  //}
 
   let progressValue: number;
   switch (executionState) {

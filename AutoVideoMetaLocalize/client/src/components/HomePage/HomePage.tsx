@@ -1,17 +1,17 @@
-import { Row, Typography, Space } from 'antd';
+import {Row, Typography, Space} from 'antd';
 import * as React from 'react';
 import routes from '../../routes';
-import { GoogleSignInButton } from '../GoogleSignInButton/GoogleSignInButton';
-import { Page } from '../Page/Page';
-import { AppExplanationGrid } from './AppExplanationGrid/AppExplanationGrid';
+import {GoogleSignInButton} from '../GoogleSignInButton/GoogleSignInButton';
+import {Page} from '../Page/Page';
+import {AppExplanationGrid} from './AppExplanationGrid/AppExplanationGrid';
 import APP_NAMES from '../../app-names';
 
-const { Paragraph, Text, Title } = Typography;
+const {Paragraph, Text, Title} = Typography;
 
 const GOOGLE_AUTH_SCOPES: string[] = [
   // 'https://www.googleapis.com/auth/youtube.upload',
   'https://www.googleapis.com/auth/youtube',
-  //'https://www.googleapis.com/auth/cloud-translation',
+  // 'https://www.googleapis.com/auth/cloud-translation',
 ];
 
 /**
@@ -35,7 +35,7 @@ export function HomePage(): JSX.Element {
           To use this service please sign-in to Google and authorize this application to access your YouTube account.
         </Paragraph>
 
-        <Row align="middle" justify="center" className="max-cell-xs" style={{ padding: '1em' }}>
+        <Row align="middle" justify="center" className="max-cell-xs" style={{padding: '1em'}}>
           <GoogleSignInButton scopes={GOOGLE_AUTH_SCOPES} redirect={`~${routes.ROUTE_PROCESS}`} />
         </Row>
       </Page>

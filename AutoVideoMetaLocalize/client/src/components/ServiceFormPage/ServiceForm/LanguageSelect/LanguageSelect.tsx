@@ -1,19 +1,20 @@
-import { Alert, Select } from 'antd';
+import {Alert, Select} from 'antd';
 import * as React from 'react';
-import { LanguageApi, SupportedLanguage, I18nLanguageSnippet } from '../../../../../generated-sources/openapi';
+import {LanguageApi, SupportedLanguage, I18nLanguageSnippet} from '../../../../../generated-sources/openapi';
 
 const LANGUAGE_API: LanguageApi = new LanguageApi();
 
 /**
- * The page used to control the flow of the process.
+ * A select component used to input the service's translation languagess.
  *
+ * @param {object} props
  * @return {JSX.Element}
  */
 export function LanguageSelect(props: {
   value?: Array<string>;
   onChange?: (value: Array<string>) => void;
 }): JSX.Element {
-  const { value, onChange } = props;
+  const {value, onChange} = props;
 
   const [cloudTranslationSupportedLanguages, setCloudTranslationSupportedLanguages] =
     React.useState<Array<SupportedLanguage>>(undefined);
@@ -26,18 +27,18 @@ export function LanguageSelect(props: {
 
   React.useEffect(() => {
     LANGUAGE_API.apiLanguageGoogleTranslateSupportedLanguagesGet()
-      .then((res) => setCloudTranslationSupportedLanguages(res))
-      .catch(() => setError(true));
+        .then((res) => setCloudTranslationSupportedLanguages(res))
+        .catch(() => setError(true));
 
     LANGUAGE_API.apiLanguageYouTubeI18nLanguagesGet()
-      .then((res) => setYouTubeI18nLanguages(res))
-      .catch(() => setError(true));
+        .then((res) => setYouTubeI18nLanguages(res))
+        .catch(() => setError(true));
   }, []);
 
   let languagesUnion: SupportedLanguage[];
   if (cloudTranslationSupportedLanguages && youTubeI18nLanguages) {
-    const youTubeI18nLanguageCodes = youTubeI18nLanguages.map(x => x.hl);
-    languagesUnion = cloudTranslationSupportedLanguages.filter(x => youTubeI18nLanguageCodes.includes(x.languageCode));
+    const youTubeI18nLanguageCodes = youTubeI18nLanguages.map((x) => x.hl);
+    languagesUnion = cloudTranslationSupportedLanguages.filter((x) => youTubeI18nLanguageCodes.includes(x.languageCode));
   }
 
   return (
@@ -52,7 +53,7 @@ export function LanguageSelect(props: {
         onChange={onChange}
         value={value}
       >
-        {languagesUnion?.map(language =>
+        {languagesUnion?.map((language) =>
           <Select.Option key={language.languageCode} value={language.languageCode} label={language.displayName}>
             {language.displayName}
           </Select.Option >

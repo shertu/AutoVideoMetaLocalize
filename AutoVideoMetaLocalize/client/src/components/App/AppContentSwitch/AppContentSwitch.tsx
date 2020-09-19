@@ -1,17 +1,17 @@
-import { Result, Typography } from 'antd';
+import {Result, Typography} from 'antd';
 import * as React from 'react';
 import Mailto from 'react-mailto.js';
-import { Route, Switch } from 'react-router-dom';
+import {Route, Switch} from 'react-router-dom';
 import routes from '../../../routes';
-import { HomePage } from '../../HomePage/HomePage';
-import { PrivacyPolicyPage } from '../../PrivacyPolicyPage/PrivacyPolicyPage';
-import { ServiceFormPage } from '../../ServiceFormPage/ServiceFormPage';
+import {HomePage} from '../../HomePage/HomePage';
+import {PrivacyPolicyPage} from '../../PrivacyPolicyPage/PrivacyPolicyPage';
+import {ServiceFormPage} from '../../ServiceFormPage/ServiceFormPage';
 
-const { Paragraph } = Typography;
+const {Paragraph} = Typography;
 
 /**
- * The main content router in the web application.
- * 
+ * An important switch component used to route URLs to core pages in the web application.
+ *
  * @return {JSX.Element}
  */
 export function AppContentSwitch(): JSX.Element {

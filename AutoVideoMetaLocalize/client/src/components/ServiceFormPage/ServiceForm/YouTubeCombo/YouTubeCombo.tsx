@@ -1,18 +1,19 @@
 import * as React from 'react';
-import { Channel, ChannelListResponse } from '../../../../../generated-sources/openapi';
-import { YouTubeChannelRadioGroup } from './YouTubeChannelRadioGroup/YouTubeChannelRadioGroup';
-import { YouTubeChannelVideoUploadsSelectionTable } from './YouTubeChannelVideoUploadsSelectionTable/YouTubeChannelVideoUploadsSelectionTable';
+import {Channel, ChannelListResponse} from '../../../../../generated-sources/openapi';
+import {YouTubeChannelRadioGroup} from './YouTubeChannelRadioGroup/YouTubeChannelRadioGroup';
+import {YouTubeChannelVideoUploadsSelectionTable} from './YouTubeChannelVideoUploadsSelectionTable/YouTubeChannelVideoUploadsSelectionTable';
 
 /**
- * The page used to control the flow of the process.
+ * A react component used to select videos from a user's YouTube uploads.
  *
+ * @param {object} props
  * @return {JSX.Element}
  */
 export function YouTubeCombo(props: {
   value?: React.Key[];
   onChange?: (value: React.Key[]) => void;
 }): JSX.Element {
-  const { value, onChange } = props;
+  const {value, onChange} = props;
 
   const [selectedMineYouTubeChannel, setSelectedMineYouTubeChannel] =
     React.useState<Channel>(undefined);
@@ -20,6 +21,11 @@ export function YouTubeCombo(props: {
   const [mineYouTubeChannelCountTotal, setMineYouTubeChannelCountTotal] =
     React.useState<number>(undefined);
 
+  /**
+   * The event called the total number of paginated channels change.
+   *
+   * @param {ChannelListResponse} response
+   */
   function onChangeYouTubeChannelRadioGroupResponse(response: ChannelListResponse) {
     setMineYouTubeChannelCountTotal(response?.pageInfo.totalResults);
   }
@@ -44,4 +50,4 @@ export function YouTubeCombo(props: {
   );
 }
 
-//hidden = { mineYouTubeChannelTotalCount === 1}
+// hidden = { mineYouTubeChannelTotalCount === 1}

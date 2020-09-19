@@ -6,7 +6,7 @@ import APP_NAMES from '../../app-names';
 const {Paragraph, Text, Title} = Typography;
 
 /**
- * This page outlines the rights of the user in regards to their online privacy while using this web application.
+ * The page which outlines the rights of the user in regards to their online privacy while using this web application.
  *
  * @return {JSX.Element}
  */
