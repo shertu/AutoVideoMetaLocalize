@@ -1,10 +1,10 @@
+import { message } from 'antd';
 import * as React from 'react';
 import { render } from 'react-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { AccountApi, GetClaimsPrincipleResult } from '../../../generated-sources/openapi';
 import { UserProvider } from '../UserContext/UserContext';
 import { AppLayout } from './AppLayout/AppLayout';
-import { message } from 'antd';
 
 const ACCOUNT_API: AccountApi = new AccountApi();
 

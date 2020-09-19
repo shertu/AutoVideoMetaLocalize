@@ -34,30 +34,6 @@ export class YouTubeVideoApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiYouTubeVideoLocalizeCountGetRaw(): Promise<runtime.ApiResponse<number>> {
-        const queryParameters: runtime.HTTPQuery = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        const response = await this.request({
-            path: `/api/YouTubeVideo/LocalizeCount`,
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        });
-
-        return new runtime.TextApiResponse(response) as any;
-    }
-
-    /**
-     */
-    async apiYouTubeVideoLocalizeCountGet(): Promise<number> {
-        const response = await this.apiYouTubeVideoLocalizeCountGetRaw();
-        return await response.value();
-    }
-
-    /**
-     */
     async apiYouTubeVideoLocalizePutRaw(requestParameters: ApiYouTubeVideoLocalizePutRequest): Promise<runtime.ApiResponse<Array<Video>>> {
         if (requestParameters.appVideoLocalizeRequest === null || requestParameters.appVideoLocalizeRequest === undefined) {
             throw new runtime.RequiredError('appVideoLocalizeRequest','Required parameter requestParameters.appVideoLocalizeRequest was null or undefined when calling apiYouTubeVideoLocalizePut.');

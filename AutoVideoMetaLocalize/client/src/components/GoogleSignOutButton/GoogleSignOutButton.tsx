@@ -1,7 +1,6 @@
 import {Button} from 'antd';
 import * as React from 'react';
-import {GoogleAuthApi} from '../../../generated-sources/openapi';
-
+import { GoogleAuthApi } from '../../../generated-sources/openapi';
 
 const GOOGLE_AUTH_API: GoogleAuthApi = new GoogleAuthApi();
 

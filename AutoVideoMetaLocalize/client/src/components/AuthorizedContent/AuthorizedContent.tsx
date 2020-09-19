@@ -1,9 +1,9 @@
 import { Skeleton, Result, Button } from 'antd';
 import * as React from 'react';
 import UserContext from '../UserContext/UserContext';
-import { GetClaimsPrincipleResult } from '../../../generated-sources/openapi';
 import { Link } from 'react-router-dom';
 import routes from '../../routes';
+import { GetClaimsPrincipleResult } from '../../../generated-sources/openapi';
 
 /**
  * A wrapper component which renders child content if the user is authenticated and authorized.

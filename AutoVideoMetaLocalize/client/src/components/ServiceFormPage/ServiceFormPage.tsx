@@ -1,10 +1,11 @@
-import { Carousel } from 'antd';
+import { Alert, Button, Carousel, Progress, Row, Space } from 'antd';
 import * as React from 'react';
-import { AppVideoLocalizeRequest, YouTubeVideoApi } from '../../../generated-sources/openapi';
 import COOKIE_NAMES, { writeJsonCookie } from '../../cookie-names';
+import EventStates from '../../event-states';
 import { AuthorizedContent } from '../AuthorizedContent/AuthorizedContent';
 import { Page } from '../Page/Page';
 import { ServiceForm, ServiceFormValues } from './ServiceForm/ServiceForm';
+import { YouTubeVideoApi, AppVideoLocalizeRequest } from '../../../generated-sources/openapi';
 
 const YOUTUBE_VIDEO_API: YouTubeVideoApi = new YouTubeVideoApi();
 
@@ -14,8 +15,8 @@ const YOUTUBE_VIDEO_API: YouTubeVideoApi = new YouTubeVideoApi();
  * @return {JSX.Element}
  */
 export function ServiceFormPage(): JSX.Element {
-  const [isExecuting, setIsExecuting] =
-    React.useState<boolean>(undefined);
+  const [executionState, setExecutionState] =
+    React.useState<EventStates>(EventStates.prospective);
 
   const [error, setError] =
     React.useState<boolean>(undefined);
@@ -24,9 +25,9 @@ export function ServiceFormPage(): JSX.Element {
 
   /** */
   React.useEffect(() => {
-    const carouselTargetIndex: number = isExecuting ? 1 : 0;
+    const carouselTargetIndex: number = executionState ? 1 : 0;
     goToCarouselTargetIndex(carouselTargetIndex);
-  }, [isExecuting]);
+  }, [executionState]);
 
   /**
    * 
@@ -56,20 +57,39 @@ export function ServiceFormPage(): JSX.Element {
     onExecute(request);
   }
 
+  /**
+   * 
+   * @param request
+   */
   async function onExecute(request: AppVideoLocalizeRequest) {
-    setIsExecuting(true);
+    setExecutionState(EventStates.continuitive);
 
-    console.log("WRITING LANGUAGE COOKIE", request.languages);
     writeJsonCookie(COOKIE_NAMES.SERVICE_FORM_LANGUAGES, request.languages);
 
     await YOUTUBE_VIDEO_API.apiYouTubeVideoLocalizePut({
       appVideoLocalizeRequest: request,
     }).catch(() => setError(true));
 
-    setIsExecuting(false);
+    setExecutionState(EventStates.prospective);
   }
 
-  console.log("ServiceFormPage", isExecuting, error);
+  /** */
+  function onClickReturnToServiceForm() {
+    goToCarouselTargetIndex(0);
+    setExecutionState(EventStates.prospective);
+  }
+
+  let progressValue: number;
+  switch (executionState) {
+    case EventStates.prospective:
+      progressValue = 1;
+      break;
+    case EventStates.continuitive:
+    case EventStates.prospective:
+    default:
+      progressValue = 0;
+      break;
+  }
 
   return (
     <AuthorizedContent>
@@ -79,12 +99,23 @@ export function ServiceFormPage(): JSX.Element {
             onFinish={onFinish}
           />
         </Page>
+
+        <Page title="Execution">
+          <Space className="max-cell" direction="vertical" align="center">
+            {error &&
+              <Alert message="Error" description="An error occured which has halted execution." type="error" showIcon />
+            }
+
+            <Progress type="circle" percent={Math.floor(progressValue * 100)} status={error ? 'exception' : null} />
+
+            <Row justify="end">
+              <Space>
+                <Button onClick={onClickReturnToServiceForm}>Return to Service Form</Button>
+              </Space>
+            </Row>
+          </Space>
+        </Page>
       </Carousel>
     </AuthorizedContent>
   );
 }
-
-//<ServiceExecutionStatusPage
-//  request={request}
-//  onFinish={() => setRequest(undefined)}
-///>

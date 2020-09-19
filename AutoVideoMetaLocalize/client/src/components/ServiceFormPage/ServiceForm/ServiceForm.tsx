@@ -1,7 +1,6 @@
 import { Button, Checkbox, Collapse, Form, Row, Space } from 'antd';
 import * as React from 'react';
 import COOKIE_NAMES, { readJsonCookie, writeJsonCookie } from '../../../cookie-names';
-import EventStates from '../../../event-states';
 import { LanguageSelect } from './LanguageSelect/LanguageSelect';
 import { YouTubeCombo } from './YouTubeCombo/YouTubeCombo';
 
@@ -35,7 +34,6 @@ export function ServiceForm(props: {
   const [form] = Form.useForm<ServiceFormValues>();
 
   const languageSelectInitialValue = readJsonCookie(COOKIE_NAMES.SERVICE_FORM_LANGUAGES);
-  console.log("READING LANGUAGE COOKIE", languageSelectInitialValue);
 
   /** Clears the form's fields and the language cookie. */
   function onClearForm() {
@@ -58,7 +56,7 @@ export function ServiceForm(props: {
       <Form.Item
         label="Languages"
         name={ServiceFormItemNames.LANGUAGE_SELECT}
-        rules={[{ required: false, message: 'Please select at least one language.' }]}
+        rules={[{ required: true, message: 'Please select at least one language.' }]}
         initialValue={languageSelectInitialValue}
       >
         <LanguageSelect />
@@ -67,7 +65,7 @@ export function ServiceForm(props: {
       <Form.Item
         label="Videos"
         name={ServiceFormItemNames.YOUTUBE_VIDEO_SELECTION_TABLE}
-        rules={[{ required: false, message: 'Please select at least one video.' }]}
+        rules={[{ required: true, message: 'Please select at least one video.' }]}
       >
         <YouTubeCombo />
       </Form.Item>

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import GoogleButton from 'react-google-button';
-import {GoogleAuthApi} from '../../../generated-sources/openapi';
+import { GoogleAuthApi } from '../../../generated-sources/openapi';
 
 const GOOGLE_AUTH_API: GoogleAuthApi = new GoogleAuthApi();
 

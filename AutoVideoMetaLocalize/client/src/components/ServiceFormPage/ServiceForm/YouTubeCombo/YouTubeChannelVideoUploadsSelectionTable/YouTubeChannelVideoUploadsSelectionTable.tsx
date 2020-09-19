@@ -1,7 +1,7 @@
 import { Alert, Skeleton } from 'antd';
 import Table, { ColumnsType, TablePaginationConfig } from 'antd/lib/table';
 import * as React from 'react';
-import { ApiYouTubePlaylistItemListGetRequest, Channel, PlaylistItem, PlaylistItemListResponse, YouTubePlaylistItemApi } from '../../../../../../generated-sources/openapi';
+import { ApiYouTubePlaylistItemListGetRequest, PlaylistItem, PlaylistItemListResponse } from '../../../../../../generated-sources/openapi';
 import { BasicComboView } from '../../../../BasicComboView/BasicComboView';
 
 const YOUTUBE_PLAYLIST_ITEM_API = new YouTubePlaylistItemApi();
