@@ -1,10 +1,12 @@
 import { Carousel } from 'antd';
 import * as React from 'react';
-import { AppVideoLocalizeRequest } from '../../../generated-sources/openapi';
+import { AppVideoLocalizeRequest, YouTubeVideoApi } from '../../../generated-sources/openapi';
+import COOKIE_NAMES, { writeJsonCookie } from '../../cookie-names';
 import { AuthorizedContent } from '../AuthorizedContent/AuthorizedContent';
 import { Page } from '../Page/Page';
 import { ServiceForm, ServiceFormValues } from './ServiceForm/ServiceForm';
-import { ServiceExecutionStatusPage } from './ServiceExecutionStatusPage/ServiceExecutionStatusPage';
+
+const YOUTUBE_VIDEO_API: YouTubeVideoApi = new YouTubeVideoApi();
 
 /**
  * The page used to control the flow of the process.
@@ -12,10 +14,31 @@ import { ServiceExecutionStatusPage } from './ServiceExecutionStatusPage/Service
  * @return {JSX.Element}
  */
 export function ServiceFormPage(): JSX.Element {
-  const [request, setRequest] =
-    React.useState<AppVideoLocalizeRequest>(undefined);
+  const [isExecuting, setIsExecuting] =
+    React.useState<boolean>(undefined);
+
+  const [error, setError] =
+    React.useState<boolean>(undefined);
 
   const carouselRef = React.useRef<Carousel>();
+
+  /** */
+  React.useEffect(() => {
+    const carouselTargetIndex: number = isExecuting ? 1 : 0;
+    goToCarouselTargetIndex(carouselTargetIndex);
+  }, [isExecuting]);
+
+  /**
+   * 
+   * @param index
+   */
+  function goToCarouselTargetIndex(index: number) {
+    const currentCarouselRef = carouselRef?.current;
+
+    if (currentCarouselRef) {
+      currentCarouselRef.goTo(index);
+    }
+  }
 
   /**
    * Called when the options form is successfully filled out and submitted.
@@ -30,18 +53,23 @@ export function ServiceFormPage(): JSX.Element {
       sheetMusicBoss: values.smbCheckbox || false,
     }
 
-    setRequest(request);
+    onExecute(request);
   }
 
-  /** */
-  React.useEffect(() => {
-    const currentCarouselRef = carouselRef?.current;
-    const carouselTargetIndex: number = request ? 1 : 0;
+  async function onExecute(request: AppVideoLocalizeRequest) {
+    setIsExecuting(true);
 
-    if (currentCarouselRef) {
-      currentCarouselRef.goTo(carouselTargetIndex);
-    }
-  }, [request]);
+    console.log("WRITING LANGUAGE COOKIE", request.languages);
+    writeJsonCookie(COOKIE_NAMES.SERVICE_FORM_LANGUAGES, request.languages);
+
+    await YOUTUBE_VIDEO_API.apiYouTubeVideoLocalizePut({
+      appVideoLocalizeRequest: request,
+    }).catch(() => setError(true));
+
+    setIsExecuting(false);
+  }
+
+  console.log("ServiceFormPage", isExecuting, error);
 
   return (
     <AuthorizedContent>
@@ -51,13 +79,12 @@ export function ServiceFormPage(): JSX.Element {
             onFinish={onFinish}
           />
         </Page>
-
-        <ServiceExecutionStatusPage
-          request={request}
-          onFinish={() => setRequest(undefined)}
-        />
       </Carousel>
     </AuthorizedContent>
   );
 }
 
+//<ServiceExecutionStatusPage
+//  request={request}
+//  onFinish={() => setRequest(undefined)}
+///>

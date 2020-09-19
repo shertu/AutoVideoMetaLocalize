@@ -18,21 +18,11 @@ namespace AutoVideoMetaLocalize.Controllers {
 	[Route("api/[controller]")]
 	[ApiController]
 	public class YouTubeVideoController : ControllerBase {
-		private const string SESSION_KEY_LOCALIZE_COUNT = "LOCALIZE_COUNT";
 		private const string VIDEO_LOCALIZE_PART = "id,snippet,localizations";
 		private const string SHEET_MUSIC_BOSS_TERM = "piano tutorial";
 
 		private readonly YouTubeServiceAccessor youtubeServiceAccessor;
 		private readonly GoogleCloudTranslateServiceAccessor translateServiceAccessor;
-
-		public int SessionLocalizationCount {
-			get {
-				int? value = HttpContext.Session.GetInt32(SESSION_KEY_LOCALIZE_COUNT);
-				return value.GetValueOrDefault();
-			}
-
-			set => HttpContext.Session.SetInt32(SESSION_KEY_LOCALIZE_COUNT, value);
-		}
 
 		public YouTubeVideoController(YouTubeServiceAccessor youtubeServiceAccessor, GoogleCloudTranslateServiceAccessor translateServiceAccessor) {
 			this.youtubeServiceAccessor = youtubeServiceAccessor;
@@ -70,15 +60,9 @@ namespace AutoVideoMetaLocalize.Controllers {
 		//	}
 		//}
 
-		[HttpGet("LocalizeCount")]
-		public ActionResult<int> GetLocalizeCount() {
-			return SessionLocalizationCount;
-		}
-
 		[HttpPut("Localize")]
 		public async Task<ActionResult<IEnumerable<Video>>> LocalizeVideo([Required, FromBody] AppVideoLocalizeRequest body) {
 			IntPtr localizationCountPtr = new IntPtr(0);
-			SessionLocalizationCount = localizationCountPtr.ToInt32();
 
 			string[] videos = body.Videos;
 			Task<Video>[] tasks = new Task<Video>[videos.Length];
@@ -169,8 +153,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 			}
 
 			video.Localizations[language] = localization;
-			IntPtr newPtr = IntPtr.Add(localizationCountPtr, 1);
-			SessionLocalizationCount = newPtr.ToInt32();
+			_ = IntPtr.Add(localizationCountPtr, 1);
 		}
 
 		/// <summary>

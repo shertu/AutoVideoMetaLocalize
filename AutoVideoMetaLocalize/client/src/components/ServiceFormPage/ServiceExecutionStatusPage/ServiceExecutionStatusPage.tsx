@@ -25,9 +25,6 @@ export function ServiceExecutionStatusPage(props: {
   const [executionOpCount, setExecutionOpCount] =
     React.useState<number>(0);
 
-  const [error, setError] =
-    React.useState<boolean>(undefined);
-
 
   console.log("ServiceExecutionStatusPage.request: ", request);
 
@@ -35,7 +32,6 @@ export function ServiceExecutionStatusPage(props: {
     if (request) {
       setExecutionOpCount(0);
       setExecutionExpectedTotalOpCount(request.languages.length * request.videos.length);
-      onExecute(request)
     }
   }, [request]);
 
@@ -58,18 +54,6 @@ export function ServiceExecutionStatusPage(props: {
     //}
   }
 
-  /**
-   * 
-   * @param request
-   */
-  async function onExecute(request: AppVideoLocalizeRequest) {
-    console.log("WRITING LANGUAGE COOKIE", request.languages);
-    writeJsonCookie(COOKIE_NAMES.SERVICE_FORM_LANGUAGES, request.languages);
-
-    await YOUTUBE_VIDEO_API.apiYouTubeVideoLocalizePut({
-      appVideoLocalizeRequest: request,
-    }).catch(() => setError(true));
-  }
 
   console.log("ops: ", executionOpCount, "out of", executionExpectedTotalOpCount);
   const progressValue: number = executionExpectedTotalOpCount ? executionOpCount / executionExpectedTotalOpCount : 1;
@@ -77,11 +61,7 @@ export function ServiceExecutionStatusPage(props: {
   return (
     <Page title="Execution">
       <Space className="max-cell" direction="vertical" align="center">
-        {error &&
-          <Alert message="Error" description="An error occured which has halted execution." type="error" showIcon />
-        }
-
-        <Progress type="circle" percent={progressValue * 100} status={error ? 'exception' : null} />
+        <Progress type="circle" percent={progressValue * 100} />
 
         <Row justify="end">
           <Space>
@@ -93,3 +73,9 @@ export function ServiceExecutionStatusPage(props: {
   );
 }
 
+//{
+//  error &&
+//  <Alert message="Error" description="An error occured which has halted execution." type="error" showIcon />
+//}
+
+//<Progress type="circle" percent={progressValue * 100} status={error ? 'exception' : null} />
