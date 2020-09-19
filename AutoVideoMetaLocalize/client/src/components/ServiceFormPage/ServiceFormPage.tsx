@@ -62,6 +62,7 @@ export function ServiceFormPage(): JSX.Element {
     setExecutionExpectedTotalOpCount(expectedTotalOpCount);
 
     // execution
+    console.log("WRITING LANGUAGE COOKIE", languages);
     writeJsonCookie(COOKIE_NAMES.SERVICE_FORM_LANGUAGES, languages);
 
     const res = await YOUTUBE_VIDEO_API.apiYouTubeVideoLocalizePut({

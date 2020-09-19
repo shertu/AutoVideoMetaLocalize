@@ -1,5 +1,4 @@
 import { Button, Checkbox, Collapse, Form, Row, Space } from 'antd';
-import * as cookie from 'cookie';
 import * as React from 'react';
 import COOKIE_NAMES, { readJsonCookie, writeJsonCookie } from '../../../cookie-names';
 import EventStates from '../../../event-states';
@@ -9,7 +8,7 @@ import { YouTubeCombo } from './YouTubeCombo/YouTubeCombo';
 /** An interface to work with the form's values. */
 export interface ServiceFormValues {
   languageSelect: string[],
-  youtubeChannelRadioGroup: string[],
+  //youtubeChannelRadioGroup: string[],
   youtubeVideoSelectionTable: string[],
   smbCheckbox: boolean,
 }
@@ -17,7 +16,7 @@ export interface ServiceFormValues {
 /** The names of the form's items used to map to its values. */
 export const ServiceFormItemNames = Object.freeze({
   LANGUAGE_SELECT: 'languageSelect',
-  YOUTUBE_CHANNEL_RADIO_GROUP: 'youtubeChannelRadioGroup',
+  //YOUTUBE_CHANNEL_RADIO_GROUP: 'youtubeChannelRadioGroup',
   YOUTUBE_VIDEO_SELECTION_TABLE: 'youtubeVideoSelectionTable',
   SMB_CHECKBOX: 'smbCheckbox',
 });
@@ -36,21 +35,18 @@ export function ServiceForm(props: {
   const [form] = Form.useForm<ServiceFormValues>();
 
   const languageSelectInitialValue = readJsonCookie(COOKIE_NAMES.SERVICE_FORM_LANGUAGES);
-  console.log(languageSelectInitialValue);
+  console.log("READING LANGUAGE COOKIE", languageSelectInitialValue);
 
   /** Clears the form's fields and the language cookie. */
   function onClearForm() {
-    form.resetFields();
-
-    const newLanguageSelectInitialValue: string[] = [];
-    writeJsonCookie(COOKIE_NAMES.SERVICE_FORM_LANGUAGES, newLanguageSelectInitialValue);
+    writeJsonCookie(COOKIE_NAMES.SERVICE_FORM_LANGUAGES, []);
 
     form.setFieldsValue({
-      languageSelect: newLanguageSelectInitialValue,
+      languageSelect: [],
+      youtubeVideoSelectionTable: [],
+      smbCheckbox: false,
     })
   }
-
-  //initialValue = { languageSelectInitialValue }
 
   return (
     <Form
@@ -63,6 +59,7 @@ export function ServiceForm(props: {
         label="Languages"
         name={ServiceFormItemNames.LANGUAGE_SELECT}
         rules={[{ required: false, message: 'Please select at least one language.' }]}
+        initialValue={languageSelectInitialValue}
       >
         <LanguageSelect />
       </Form.Item>
