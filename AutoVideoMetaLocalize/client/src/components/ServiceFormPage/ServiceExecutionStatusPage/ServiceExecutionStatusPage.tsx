@@ -42,8 +42,10 @@ export function ServiceExecutionStatusPage(props: {
   useInterval(updateLocalizationCount, 800);
 
   function updateLocalizationCount() {
-    YOUTUBE_VIDEO_API.apiYouTubeVideoLocalizeCountGet()
-      .then((res: number) => setExecutionOpCount(res));
+    if (request && executionOpCount < executionExpectedTotalOpCount) {
+      YOUTUBE_VIDEO_API.apiYouTubeVideoLocalizeCountGet()
+        .then((res: number) => setExecutionOpCount(res));
+    }
 
     //if (executionState == EventStates.continuitive) {
     //  YOUTUBE_VIDEO_API.apiYouTubeVideoLocalizeCountGet()
