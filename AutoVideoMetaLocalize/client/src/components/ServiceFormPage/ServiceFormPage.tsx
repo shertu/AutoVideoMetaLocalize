@@ -70,7 +70,7 @@ export function ServiceFormPage(): JSX.Element {
       appVideoLocalizeRequest: request,
     }).catch(() => setError(true));
 
-    setExecutionState(EventStates.prospective);
+    setExecutionState(EventStates.retropective);
   }
 
   ///** */
@@ -82,12 +82,13 @@ export function ServiceFormPage(): JSX.Element {
   let progressValue: number;
   switch (executionState) {
     case EventStates.prospective:
-      progressValue = 1;
+      progressValue = 0;
       break;
     case EventStates.continuitive:
-    case EventStates.prospective:
-    default:
       progressValue = 0;
+      break;
+    case EventStates.retropective:
+      progressValue = 1;
       break;
   }
 
