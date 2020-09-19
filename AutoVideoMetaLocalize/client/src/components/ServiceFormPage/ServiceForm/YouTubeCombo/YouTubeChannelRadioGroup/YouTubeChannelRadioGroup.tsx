@@ -23,7 +23,7 @@ export function YouTubeChannelRadioGroup(props: {
     React.useState<string>(undefined);
 
   const [mineYouTubeChannels, setMineYouTubeChannels] =
-    React.useState<Array<Channel>>([]);
+    React.useState<Array<Channel>>(undefined);
 
   const [currentResponse, setCurrentResponse] =
     React.useState<ChannelListResponse>(undefined);
@@ -32,13 +32,15 @@ export function YouTubeChannelRadioGroup(props: {
     React.useState<number>(0);
 
   const [paginationExpectedTotal, setPaginationExpectedTotal] =
-    React.useState<number>(0);
+    React.useState<number>(undefined);
 
   const [error, setError] =
-    React.useState<boolean>(false);
+    React.useState<boolean>(undefined);
 
   /** The length of the current data collection. */
   const mineYouTubeChannelsLength: number = mineYouTubeChannels ? mineYouTubeChannels.length : 0;
+
+  /** The answer as to whether additional data needs to be loaded. */
   const shouldLoadMore: boolean = mineYouTubeChannelsLength < paginationExpectedTotal && canLoadMore(currentResponse);
 
   /** Used to append items to the data collection when the next response is loaded. */
@@ -57,7 +59,8 @@ export function YouTubeChannelRadioGroup(props: {
 
   /** Used to load items into the data collection until the length expectation is met or no additional item can be loaded. */
   React.useEffect(() => {
-    if (mineYouTubeChannelsLength < paginationExpectedTotal && canLoadMore(currentResponse)) {
+
+    if (shouldLoadMore) {
       fetchNextResponse(currentResponse)
         .then((res: ChannelListResponse) => setCurrentResponse(res))
         .catch((err: Response) => setError(true));

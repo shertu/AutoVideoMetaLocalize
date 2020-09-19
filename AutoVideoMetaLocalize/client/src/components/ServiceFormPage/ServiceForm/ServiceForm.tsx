@@ -1,11 +1,12 @@
 import { Button, Checkbox, Collapse, Form, Row, Space } from 'antd';
 import * as cookie from 'cookie';
 import * as React from 'react';
-import COOKIE_NAMES from '../../../cookie-names';
+import COOKIE_NAMES, { readJsonCookie, writeJsonCookie } from '../../../cookie-names';
 import EventStates from '../../../event-states';
 import { LanguageSelect } from './LanguageSelect/LanguageSelect';
 import { YouTubeCombo } from './YouTubeCombo/YouTubeCombo';
 
+/** An interface to work with the form's values. */
 export interface ServiceFormValues {
   languageSelect: string[],
   youtubeChannelRadioGroup: string[],
@@ -13,7 +14,7 @@ export interface ServiceFormValues {
   smbCheckbox: boolean,
 }
 
-/** */
+/** The names of the form's items used to map to its values. */
 export const ServiceFormItemNames = Object.freeze({
   LANGUAGE_SELECT: 'languageSelect',
   YOUTUBE_CHANNEL_RADIO_GROUP: 'youtubeChannelRadioGroup',
@@ -34,18 +35,21 @@ export function ServiceForm(props: {
 
   const [form] = Form.useForm<ServiceFormValues>();
 
-  const languageSelectCookieValue: string = cookie.parse(document.cookie)[ServiceFormItemNames.LANGUAGE_SELECT];
-  const languageSelectInitialValue: string[] = languageSelectCookieValue ? languageSelectCookieValue.split(',') : [];
+  const languageSelectInitialValue = readJsonCookie(COOKIE_NAMES.SERVICE_FORM_LANGUAGES);
+
+  console.log(languageSelectInitialValue);
 
   /** Clears the form's fields and the language cookie. */
   function onClearForm() {
-    form.setFieldsValue({
-      languageSelect: [],
-      youtubeVideoSelectionTable: [],
-      smbCheckbox: undefined,
-    });
+    form.resetFields();
 
-    document.cookie = cookie.serialize(COOKIE_NAMES.SERVICE_FORM_LANGUAGES, '');
+    const languageSelectResetValue: string[] = [];
+
+    form.setFieldsValue({
+      languageSelect: languageSelectResetValue,
+    })
+
+    writeJsonCookie(COOKIE_NAMES.SERVICE_FORM_LANGUAGES, languageSelectResetValue);
   }
 
   //initialValue = { languageSelectInitialValue }

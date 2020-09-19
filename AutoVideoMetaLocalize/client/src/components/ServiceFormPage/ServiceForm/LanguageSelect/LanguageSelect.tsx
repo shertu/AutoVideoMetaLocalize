@@ -22,7 +22,7 @@ export function LanguageSelect(props: {
     React.useState<Array<I18nLanguageSnippet>>(undefined);
 
   const [error, setError] =
-    React.useState<boolean>(false);
+    React.useState<boolean>(undefined);
 
   React.useEffect(() => {
     LANGUAGE_API.apiLanguageGoogleTranslateSupportedLanguagesGet()
@@ -34,7 +34,7 @@ export function LanguageSelect(props: {
       .catch(() => setError(true));
   }, []);
 
-  let languagesUnion: SupportedLanguage[] = null;
+  let languagesUnion: SupportedLanguage[];
   if (cloudTranslationSupportedLanguages && youTubeI18nLanguages) {
     const youTubeI18nLanguageCodes = youTubeI18nLanguages.map(x => x.hl);
     languagesUnion = cloudTranslationSupportedLanguages.filter(x => youTubeI18nLanguageCodes.includes(x.languageCode));

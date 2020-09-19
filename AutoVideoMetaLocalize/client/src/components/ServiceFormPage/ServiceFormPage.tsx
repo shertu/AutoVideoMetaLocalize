@@ -2,7 +2,7 @@ import { Carousel } from 'antd';
 import * as cookie from 'cookie';
 import * as React from 'react';
 import { AppVideoLocalizeRequest, YouTubeVideoApi } from '../../../generated-sources/openapi';
-import COOKIE_NAMES from '../../cookie-names';
+import COOKIE_NAMES, { writeJsonCookie } from '../../cookie-names';
 import EventStates from '../../event-states';
 import { AuthorizedContent } from '../AuthorizedContent/AuthorizedContent';
 import { Page } from '../Page/Page';
@@ -36,55 +36,42 @@ export function ServiceFormPage(): JSX.Element {
    * @param {Store} values
    */
   function onFinish(values: ServiceFormValues) {
-    const serviceFormInputs: AppVideoLocalizeRequest = {
-      languages: values.languageSelect,
-      videos: values.youtubeVideoSelectionTable,
-      sheetMusicBoss: values.smbCheckbox,
+    // It is important for these values to have fallbacks.
+    const request: AppVideoLocalizeRequest = {
+      languages: values.languageSelect || [],
+      videos: values.youtubeVideoSelectionTable || [],
+      sheetMusicBoss: values.smbCheckbox || false,
     }
 
-    console.log("Service form inputs: ", serviceFormInputs);
-
-    if (executionState === EventStates.prospective || executionState === EventStates.retropective) {
-      executeService(serviceFormInputs);
-    }
+    console.log("Service form inputs: ", request);
+    executeService(request);
   }
 
   /**
    * 
-   * @param serviceFormInputs
+   * @param request
    */
-  async function executeService(serviceFormInputs: AppVideoLocalizeRequest) {
-    const { languages, videos, sheetMusicBoss } = serviceFormInputs;
+  async function executeService(request: AppVideoLocalizeRequest) {
+    const { languages, videos } = request;
 
-    if (languages == null || languages.length === 0 || videos == null || videos.length === 0 || sheetMusicBoss == null) {
+    const expectedTotalOpCount = languages.length * videos.length;
+    if (executionExpectedTotalOpCount === 0) {
       return;
     }
 
     // before execution state
-    const expectedTotalOpCount = languages.length * videos.length;
-
     setExecutionState(EventStates.continuitive);
     setExecutionExpectedTotalOpCount(expectedTotalOpCount);
 
     // execution
-    storeLanguagesCookie(languages);
+    writeJsonCookie(COOKIE_NAMES.SERVICE_FORM_LANGUAGES, languages);
 
     const res = await YOUTUBE_VIDEO_API.apiYouTubeVideoLocalizePut({
-      appVideoLocalizeRequest: serviceFormInputs,
+      appVideoLocalizeRequest: request,
     }).catch(() => setExecutionError(true));
 
     // after execution state
     setExecutionState(EventStates.retropective);
-  }
-
-  /**
-   * 
-   * @param languageSelectValue
-   */
-  function storeLanguagesCookie(languageSelectValue: string[]) {
-    languageSelectValue = languageSelectValue || [];
-    const languageSelectCookieValue: string = languageSelectValue.join(',');
-    document.cookie = cookie.serialize(COOKIE_NAMES.SERVICE_FORM_LANGUAGES, languageSelectCookieValue);
   }
 
   /** */
@@ -106,14 +93,15 @@ export function ServiceFormPage(): JSX.Element {
           />
         </Page>
 
-        <ServiceExecutionStatusPage
-          error={executionError}
-          executionState={executionState}
-          executionExpectedTotalOpCount={executionExpectedTotalOpCount}
-          onReturn={() => setExecutionState(EventStates.prospective)}
-        />
+
       </Carousel>
     </AuthorizedContent>
   );
 }
 
+//<ServiceExecutionStatusPage
+//  error={executionError}
+//  executionState={executionState}
+//  executionExpectedTotalOpCount={executionExpectedTotalOpCount}
+//  onReturn={() => setExecutionState(EventStates.prospective)}
+///>

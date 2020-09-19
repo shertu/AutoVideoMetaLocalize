@@ -40,7 +40,7 @@ export function YouTubeChannelVideoUploadsSelectionTable(props: YouTubeVideoSele
   if (channelUploadsPlaylistId == null) { throw Error("The channel's upload playlist identifier is required.");  }
 
   const [items, setItems] =
-    React.useState<Array<PlaylistItem>>([]);
+    React.useState<Array<PlaylistItem>>(undefined);
 
   const [currentResponse, setCurrentResponse] =
     React.useState<PlaylistItemListResponse>(undefined);
@@ -49,14 +49,16 @@ export function YouTubeChannelVideoUploadsSelectionTable(props: YouTubeVideoSele
     React.useState<number>(0);
 
   const [paginationExpectedTotal, setPaginationExpectedTotal] =
-    React.useState<number>(0);
+    React.useState<number>(undefined);
 
   const [error, setError] =
-    React.useState<boolean>(false);
+    React.useState<boolean>(undefined);
 
   /** The length of the current data collection. */
-  const mineYouTubeChannelsLength: number = items ? items.length : 0;
-  const shouldLoadMore: boolean = mineYouTubeChannelsLength < paginationExpectedTotal && canLoadMore(currentResponse);
+  const itemsLength: number = items ? items.length : 0;
+
+  /** The answer as to whether additional data needs to be loaded. */
+  const shouldLoadMore: boolean = itemsLength < paginationExpectedTotal && canLoadMore(currentResponse);
 
   /** Used to append items to the data collection when the next response is loaded. */
   React.useEffect(() => {
@@ -79,7 +81,7 @@ export function YouTubeChannelVideoUploadsSelectionTable(props: YouTubeVideoSele
         .then((res: PlaylistItemListResponse) => setCurrentResponse(res))
         .catch((err: Response) => setError(true));
     }
-  }, [paginationExpectedTotal, mineYouTubeChannelsLength]);
+  }, [paginationExpectedTotal, itemsLength]);
 
   /**
    * Called when the page number is changed, and it takes the resulting page number and page size as its arguments.
@@ -142,7 +144,7 @@ export function YouTubeChannelVideoUploadsSelectionTable(props: YouTubeVideoSele
         <Alert message="Error" description="Failed to load YouTube video information." type="error" showIcon />
       }
 
-      {mineYouTubeChannelsLength === 0 && !canLoadMore(currentResponse) &&
+      {itemsLength === 0 && !canLoadMore(currentResponse) &&
         <Alert message="Warning" description="No YouTube videos are associated with this YouTube channel." type="warning" showIcon />
       }
 
