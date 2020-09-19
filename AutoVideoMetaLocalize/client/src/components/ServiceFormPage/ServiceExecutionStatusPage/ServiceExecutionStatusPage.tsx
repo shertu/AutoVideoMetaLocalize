@@ -1,9 +1,10 @@
 import { Alert, Button, Progress, Row, Space } from 'antd';
 import * as React from 'react';
-import { YouTubeVideoApi } from '../../../../generated-sources/openapi';
+import { YouTubeVideoApi, AppVideoLocalizeRequest } from '../../../../generated-sources/openapi';
 import { useInterval } from '../../../custom-react-hooks';
 import EventStates from '../../../event-states';
 import { Page } from '../../Page/Page';
+import COOKIE_NAMES, { writeJsonCookie } from '../../../cookie-names';
 
 const YOUTUBE_VIDEO_API: YouTubeVideoApi = new YouTubeVideoApi();
 
@@ -13,30 +14,36 @@ const YOUTUBE_VIDEO_API: YouTubeVideoApi = new YouTubeVideoApi();
  * @return {JSX.Element}
  */
 export function ServiceExecutionStatusPage(props: {
-  error?: boolean,
-  executionState?: EventStates,
-  executionExpectedTotalOpCount?: number,
-  onReturn?: () => void,
+  request?: AppVideoLocalizeRequest,
+  onFinish?: () => void,
 }): JSX.Element {
-  const { error, executionExpectedTotalOpCount, executionState, onReturn } = props;
+  const { request, onFinish } = props;
 
-  const [executionProgress, setExecutionProgress] =
+  const [executionExpectedTotalOpCount, setExecutionExpectedTotalOpCount] =
     React.useState<number>(0);
 
-  //React.useEffect(() => {
-  //  if (executionState === EventStates.continuitive) {
-  //    setExecutionProgress(0);
-  //  }
-  //}, [executionState]);
+  const [executionOpCount, setExecutionOpCount] =
+    React.useState<number>(0);
 
-  console.log("ops: ", executionProgress, "out of", executionExpectedTotalOpCount);
-  const progressValue: number = executionExpectedTotalOpCount ? executionProgress / executionExpectedTotalOpCount : 1;
+  const [error, setError] =
+    React.useState<boolean>(undefined);
+
+
+  console.log("ServiceExecutionStatusPage.request: ", request);
+
+  React.useEffect(() => {
+    if (request) {
+      setExecutionOpCount(0);
+      setExecutionExpectedTotalOpCount(request.languages.length * request.videos.length);
+      onExecute(request)
+    }
+  }, [request]);
 
   useInterval(updateLocalizationCount, 800);
 
   function updateLocalizationCount() {
     YOUTUBE_VIDEO_API.apiYouTubeVideoLocalizeCountGet()
-      .then((res: number) => setExecutionProgress(res));
+      .then((res: number) => setExecutionOpCount(res));
 
     //if (executionState == EventStates.continuitive) {
     //  YOUTUBE_VIDEO_API.apiYouTubeVideoLocalizeCountGet()
@@ -49,6 +56,22 @@ export function ServiceExecutionStatusPage(props: {
     //}
   }
 
+  /**
+   * 
+   * @param request
+   */
+  async function onExecute(request: AppVideoLocalizeRequest) {
+    console.log("WRITING LANGUAGE COOKIE", request.languages);
+    writeJsonCookie(COOKIE_NAMES.SERVICE_FORM_LANGUAGES, request.languages);
+
+    await YOUTUBE_VIDEO_API.apiYouTubeVideoLocalizePut({
+      appVideoLocalizeRequest: request,
+    }).catch(() => setError(true));
+  }
+
+  console.log("ops: ", executionOpCount, "out of", executionExpectedTotalOpCount);
+  const progressValue: number = executionExpectedTotalOpCount ? executionOpCount / executionExpectedTotalOpCount : 1;
+
   return (
     <Page title="Execution">
       <Space className="max-cell" direction="vertical" align="center">
@@ -60,7 +83,7 @@ export function ServiceExecutionStatusPage(props: {
 
         <Row justify="end">
           <Space>
-            <Button onClick={onReturn}>Return to Service Form</Button>
+            <Button onClick={onFinish}>Return to Service Form</Button>
           </Space>
         </Row>
       </Space>

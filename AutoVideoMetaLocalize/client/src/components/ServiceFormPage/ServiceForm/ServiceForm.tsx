@@ -28,9 +28,9 @@ export const ServiceFormItemNames = Object.freeze({
  */
 export function ServiceForm(props: {
   onFinish?: (values: ServiceFormValues) => void,
-  serviceExecutionState?: EventStates,
+  submitDisabled?: boolean,
 }): JSX.Element {
-  const { onFinish, serviceExecutionState } = props;
+  const { onFinish, submitDisabled } = props;
 
   const [form] = Form.useForm<ServiceFormValues>();
 
@@ -88,7 +88,7 @@ export function ServiceForm(props: {
         <Space>
           <Button onClick={() => onClearForm()}>Clear</Button>
 
-          <Button type="primary" htmlType="submit" disabled={serviceExecutionState === EventStates.continuitive}>Execute</Button>
+          <Button type="primary" htmlType="submit" disabled={submitDisabled}>Execute</Button>
         </Space>
       </Row>
     </Form>

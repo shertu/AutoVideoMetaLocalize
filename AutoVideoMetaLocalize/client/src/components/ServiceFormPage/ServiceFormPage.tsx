@@ -1,13 +1,10 @@
 import { Carousel } from 'antd';
 import * as React from 'react';
-import { AppVideoLocalizeRequest, YouTubeVideoApi } from '../../../generated-sources/openapi';
-import COOKIE_NAMES, { writeJsonCookie } from '../../cookie-names';
-import EventStates from '../../event-states';
+import { AppVideoLocalizeRequest } from '../../../generated-sources/openapi';
 import { AuthorizedContent } from '../AuthorizedContent/AuthorizedContent';
 import { Page } from '../Page/Page';
 import { ServiceForm, ServiceFormValues } from './ServiceForm/ServiceForm';
-
-const YOUTUBE_VIDEO_API: YouTubeVideoApi = new YouTubeVideoApi();
+import { ServiceExecutionStatusPage } from './ServiceExecutionStatusPage/ServiceExecutionStatusPage';
 
 /**
  * The page used to control the flow of the process.
@@ -15,18 +12,10 @@ const YOUTUBE_VIDEO_API: YouTubeVideoApi = new YouTubeVideoApi();
  * @return {JSX.Element}
  */
 export function ServiceFormPage(): JSX.Element {
-  const [executionState, setExecutionState] =
-    React.useState<EventStates>(EventStates.prospective);
-
-  const [executionError, setExecutionError] =
-    React.useState<boolean>(false);
-
-  const [executionExpectedTotalOpCount, setExecutionExpectedTotalOpCount] =
-    React.useState<number>(0);
+  const [request, setRequest] =
+    React.useState<AppVideoLocalizeRequest>(undefined);
 
   const carouselRef = React.useRef<Carousel>();
-
-  const executionStatusPage: boolean = (executionState === EventStates.continuitive || executionState === EventStates.retropective);
 
   /**
    * Called when the options form is successfully filled out and submitted.
@@ -34,54 +23,25 @@ export function ServiceFormPage(): JSX.Element {
    * @param {Store} values
    */
   function onFinish(values: ServiceFormValues) {
-    // It is important for these values to have fallbacks.
+    // Important for form values to have fallbacks as most are initially undefined.
     const request: AppVideoLocalizeRequest = {
       languages: values.languageSelect || [],
       videos: values.youtubeVideoSelectionTable || [],
       sheetMusicBoss: values.smbCheckbox || false,
     }
 
-    console.log("Service form inputs: ", request);
-    executeService(request);
-  }
-
-  /**
-   * 
-   * @param request
-   */
-  async function executeService(request: AppVideoLocalizeRequest) {
-    const { languages, videos } = request;
-
-    const expectedTotalOpCount = languages.length * videos.length;
-    if (executionExpectedTotalOpCount === 0) {
-      return;
-    }
-
-    // before execution state
-    setExecutionState(EventStates.continuitive);
-    setExecutionExpectedTotalOpCount(expectedTotalOpCount);
-
-    // execution
-    console.log("WRITING LANGUAGE COOKIE", languages);
-    writeJsonCookie(COOKIE_NAMES.SERVICE_FORM_LANGUAGES, languages);
-
-    const res = await YOUTUBE_VIDEO_API.apiYouTubeVideoLocalizePut({
-      appVideoLocalizeRequest: request,
-    }).catch(() => setExecutionError(true));
-
-    // after execution state
-    setExecutionState(EventStates.retropective);
+    setRequest(request);
   }
 
   /** */
   React.useEffect(() => {
     const currentCarouselRef = carouselRef?.current;
+    const carouselTargetIndex: number = request ? 1 : 0;
 
     if (currentCarouselRef) {
-      const carouselTargetIndex: number = executionStatusPage ? 1 : 0;
       currentCarouselRef.goTo(carouselTargetIndex);
     }
-  }, [executionState]);
+  }, [request]);
 
   return (
     <AuthorizedContent>
@@ -92,15 +52,12 @@ export function ServiceFormPage(): JSX.Element {
           />
         </Page>
 
-
+        <ServiceExecutionStatusPage
+          request={request}
+          onFinish={() => setRequest(undefined)}
+        />
       </Carousel>
     </AuthorizedContent>
   );
 }
 
-//<ServiceExecutionStatusPage
-//  error={executionError}
-//  executionState={executionState}
-//  executionExpectedTotalOpCount={executionExpectedTotalOpCount}
-//  onReturn={() => setExecutionState(EventStates.prospective)}
-///>
