@@ -37,11 +37,10 @@ export function YouTubeChannelRadioGroup(props: {
   const [error, setError] =
     React.useState<boolean>(undefined);
 
-  /** The length of the current data collection. */
-  const mineYouTubeChannelsLength: number = mineYouTubeChannels ? mineYouTubeChannels.length : 0;
+  console.log("YouTubeChannelRadioGroup", radioGroupValue, mineYouTubeChannels, currentResponse, paginationCurrent, paginationExpectedTotal);
 
-  /** The answer as to whether additional data needs to be loaded. */
-  const shouldLoadMore: boolean = mineYouTubeChannelsLength < paginationExpectedTotal && canLoadMore(currentResponse);
+  const dataLength: number = mineYouTubeChannels ? mineYouTubeChannels.length : 0;
+  const shouldAndCanLoadMore: boolean = dataLength < paginationExpectedTotal && canLoadMore(currentResponse);
 
   /** Used to append items to the data collection when the next response is loaded. */
   React.useEffect(() => {
@@ -60,18 +59,18 @@ export function YouTubeChannelRadioGroup(props: {
   /** Used to load items into the data collection until the length expectation is met or no additional item can be loaded. */
   React.useEffect(() => {
 
-    if (shouldLoadMore) {
+    if (shouldAndCanLoadMore) {
       fetchNextResponse(currentResponse)
         .then((res: ChannelListResponse) => setCurrentResponse(res))
         .catch((err: Response) => setError(true));
     }
-  }, [paginationExpectedTotal, mineYouTubeChannelsLength]);
+  }, [paginationExpectedTotal, dataLength]);
 
   /** Used to ensure a valid channel option is selected at all times. */
   React.useEffect(() => {
     const channel: Channel = findMineYouTubeChannel(radioGroupValue);
 
-    if (channel == null && mineYouTubeChannelsLength > 0) {
+    if (channel == null && dataLength > 0) {
       setRadioGroupValue(mineYouTubeChannels[0].id);
     }
   }, [mineYouTubeChannels]);
@@ -149,7 +148,7 @@ export function YouTubeChannelRadioGroup(props: {
         <Alert message="Error" description="Failed to load YouTube channel information." type="error" showIcon />
       }
 
-      {mineYouTubeChannelsLength === 0 && !canLoadMore(currentResponse) &&
+      {dataLength === 0 && !canLoadMore(currentResponse) &&
         <Alert message="Warning" description="No YouTube channels are associated with this Google account." type="warning" showIcon />
       }
 
@@ -159,7 +158,7 @@ export function YouTubeChannelRadioGroup(props: {
         className="max-cell"
       >
         <InfiniteScroll
-          dataLength={mineYouTubeChannelsLength}
+          dataLength={dataLength}
           next={() => onChangePagination(paginationCurrent + 1)}
           hasMore={canLoadMore(currentResponse)}
           loader={<Row align="middle" justify="center" style={{ height: 120 }}><Spin /></Row>}

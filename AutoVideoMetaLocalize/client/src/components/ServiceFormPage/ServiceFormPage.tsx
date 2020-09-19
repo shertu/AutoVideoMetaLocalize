@@ -1,5 +1,4 @@
 import { Carousel } from 'antd';
-import * as cookie from 'cookie';
 import * as React from 'react';
 import { AppVideoLocalizeRequest, YouTubeVideoApi } from '../../../generated-sources/openapi';
 import COOKIE_NAMES, { writeJsonCookie } from '../../cookie-names';
@@ -7,7 +6,6 @@ import EventStates from '../../event-states';
 import { AuthorizedContent } from '../AuthorizedContent/AuthorizedContent';
 import { Page } from '../Page/Page';
 import { ServiceForm, ServiceFormValues } from './ServiceForm/ServiceForm';
-import { ServiceExecutionStatusPage } from './ServiceExecutionStatusPage/ServiceExecutionStatusPage';
 
 const YOUTUBE_VIDEO_API: YouTubeVideoApi = new YouTubeVideoApi();
 

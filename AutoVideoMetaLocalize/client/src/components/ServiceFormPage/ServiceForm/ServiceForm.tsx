@@ -36,20 +36,18 @@ export function ServiceForm(props: {
   const [form] = Form.useForm<ServiceFormValues>();
 
   const languageSelectInitialValue = readJsonCookie(COOKIE_NAMES.SERVICE_FORM_LANGUAGES);
-
   console.log(languageSelectInitialValue);
 
   /** Clears the form's fields and the language cookie. */
   function onClearForm() {
     form.resetFields();
 
-    const languageSelectResetValue: string[] = [];
+    const newLanguageSelectInitialValue: string[] = [];
+    writeJsonCookie(COOKIE_NAMES.SERVICE_FORM_LANGUAGES, newLanguageSelectInitialValue);
 
     form.setFieldsValue({
-      languageSelect: languageSelectResetValue,
+      languageSelect: newLanguageSelectInitialValue,
     })
-
-    writeJsonCookie(COOKIE_NAMES.SERVICE_FORM_LANGUAGES, languageSelectResetValue);
   }
 
   //initialValue = { languageSelectInitialValue }

@@ -54,11 +54,8 @@ export function YouTubeChannelVideoUploadsSelectionTable(props: YouTubeVideoSele
   const [error, setError] =
     React.useState<boolean>(undefined);
 
-  /** The length of the current data collection. */
-  const itemsLength: number = items ? items.length : 0;
-
-  /** The answer as to whether additional data needs to be loaded. */
-  const shouldLoadMore: boolean = itemsLength < paginationExpectedTotal && canLoadMore(currentResponse);
+  const dataLength: number = items ? items.length : 0;
+  const shouldAndCanLoadMore: boolean = dataLength < paginationExpectedTotal && canLoadMore(currentResponse);
 
   /** Used to append items to the data collection when the next response is loaded. */
   React.useEffect(() => {
@@ -76,12 +73,12 @@ export function YouTubeChannelVideoUploadsSelectionTable(props: YouTubeVideoSele
 
   /** Used to load items into the data collection until the length expectation is met or no additional item can be loaded. */
   React.useEffect(() => {
-    if (shouldLoadMore) {
+    if (shouldAndCanLoadMore) {
       fetchNextResponse(currentResponse)
         .then((res: PlaylistItemListResponse) => setCurrentResponse(res))
         .catch((err: Response) => setError(true));
     }
-  }, [paginationExpectedTotal, itemsLength]);
+  }, [paginationExpectedTotal, dataLength]);
 
   /**
    * Called when the page number is changed, and it takes the resulting page number and page size as its arguments.
@@ -144,11 +141,11 @@ export function YouTubeChannelVideoUploadsSelectionTable(props: YouTubeVideoSele
         <Alert message="Error" description="Failed to load YouTube video information." type="error" showIcon />
       }
 
-      {itemsLength === 0 && !canLoadMore(currentResponse) &&
+      {dataLength === 0 && !canLoadMore(currentResponse) &&
         <Alert message="Warning" description="No YouTube videos are associated with this YouTube channel." type="warning" showIcon />
       }
 
-      <Skeleton loading={shouldLoadMore} active>
+      <Skeleton loading={shouldAndCanLoadMore} active>
         <Table
           dataSource={items}
           pagination={pagination}
