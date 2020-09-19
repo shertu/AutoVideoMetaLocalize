@@ -21,25 +21,25 @@ export function ServiceFormPage(): JSX.Element {
   const [error, setError] =
     React.useState<boolean>(undefined);
 
-  const carouselRef = React.useRef<Carousel>();
+  //const carouselRef = React.useRef<Carousel>();
 
-  /** */
-  React.useEffect(() => {
-    const carouselTargetIndex: number = executionState ? 1 : 0;
-    goToCarouselTargetIndex(carouselTargetIndex);
-  }, [executionState]);
+  ///** */
+  //React.useEffect(() => {
+  //  const carouselTargetIndex: number = executionState ? 1 : 0;
+  //  goToCarouselTargetIndex(carouselTargetIndex);
+  //}, [executionState]);
 
-  /**
-   * 
-   * @param index
-   */
-  function goToCarouselTargetIndex(index: number) {
-    const currentCarouselRef = carouselRef?.current;
+  ///**
+  // * 
+  // * @param index
+  // */
+  //function goToCarouselTargetIndex(index: number) {
+  //  const currentCarouselRef = carouselRef?.current;
 
-    if (currentCarouselRef) {
-      currentCarouselRef.goTo(index);
-    }
-  }
+  //  if (currentCarouselRef) {
+  //    currentCarouselRef.goTo(index);
+  //  }
+  //}
 
   /**
    * Called when the options form is successfully filled out and submitted.
@@ -73,11 +73,11 @@ export function ServiceFormPage(): JSX.Element {
     setExecutionState(EventStates.prospective);
   }
 
-  /** */
-  function onClickReturnToServiceForm() {
-    goToCarouselTargetIndex(0);
-    setExecutionState(EventStates.prospective);
-  }
+  ///** */
+  //function onClickReturnToServiceForm() {
+  //  goToCarouselTargetIndex(0);
+  //  setExecutionState(EventStates.prospective);
+  //}
 
   let progressValue: number;
   switch (executionState) {
@@ -93,13 +93,13 @@ export function ServiceFormPage(): JSX.Element {
 
   return (
     <AuthorizedContent>
-      <Carousel ref={carouselRef} dots={false}>
-        <Page title="Service">
-          <ServiceForm
-            onFinish={onFinish}
-          />
-        </Page>
+      <Page title="Service">
+        <ServiceForm
+          onFinish={onFinish}
+        />
+      </Page>
 
+      {(executionState === EventStates.continuitive || executionState === EventStates.retropective) &&
         <Page title="Execution">
           <Space className="max-cell" direction="vertical" align="center">
             {error &&
@@ -107,15 +107,9 @@ export function ServiceFormPage(): JSX.Element {
             }
 
             <Progress type="circle" percent={Math.floor(progressValue * 100)} status={error ? 'exception' : null} />
-
-            <Row justify="end">
-              <Space>
-                <Button onClick={onClickReturnToServiceForm}>Return to Service Form</Button>
-              </Space>
-            </Row>
           </Space>
         </Page>
-      </Carousel>
+      }
     </AuthorizedContent>
   );
 }
