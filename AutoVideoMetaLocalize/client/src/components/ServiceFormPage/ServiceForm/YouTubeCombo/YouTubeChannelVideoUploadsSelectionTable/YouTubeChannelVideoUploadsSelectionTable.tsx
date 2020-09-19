@@ -49,7 +49,7 @@ export function YouTubeChannelVideoUploadsSelectionTable(props: YouTubeVideoSele
     React.useState<number>(0);
 
   const [paginationExpectedTotal, setPaginationExpectedTotal] =
-    React.useState<number>(undefined);
+    React.useState<number>(0); // important to default value
 
   const [error, setError] =
     React.useState<boolean>(undefined);

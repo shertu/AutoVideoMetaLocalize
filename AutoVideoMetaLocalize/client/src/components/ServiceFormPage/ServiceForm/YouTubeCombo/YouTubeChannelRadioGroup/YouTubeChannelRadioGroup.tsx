@@ -32,12 +32,12 @@ export function YouTubeChannelRadioGroup(props: {
     React.useState<number>(0);
 
   const [paginationExpectedTotal, setPaginationExpectedTotal] =
-    React.useState<number>(undefined);
+    React.useState<number>(0); // important to default value
 
   const [error, setError] =
     React.useState<boolean>(undefined);
 
-  console.log("YouTubeChannelRadioGroup", radioGroupValue, mineYouTubeChannels, currentResponse, paginationCurrent, paginationExpectedTotal);
+  console.log("YouTubeChannelRadioGroup", radioGroupValue, mineYouTubeChannels, currentResponse, paginationCurrent, paginationExpectedTotal, error);
 
   const dataLength: number = mineYouTubeChannels ? mineYouTubeChannels.length : 0;
   const shouldAndCanLoadMore: boolean = dataLength < paginationExpectedTotal && canLoadMore(currentResponse);
