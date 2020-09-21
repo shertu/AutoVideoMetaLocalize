@@ -3,10 +3,10 @@ import * as React from 'react';
 /**
  * A custom react hook used to repeatedly call a callback function on a regular interval.
  *
- * @param {Function} callback
  * @param {number} delay
+ * @param {Function} callback
  */
-export function useInterval(callback: Function, delay: number): void {
+export function useInterval(delay: number, callback: Function): void {
   const savedCallback = React.useRef<Function>();
 
   // Remember the latest callback.

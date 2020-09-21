@@ -18,10 +18,11 @@ import {
     AppVideoLocalizeRequest,
     AppVideoLocalizeRequestFromJSON,
     AppVideoLocalizeRequestToJSON,
-    Video,
-    VideoFromJSON,
-    VideoToJSON,
 } from '../models';
+
+export interface ApiYouTubeVideoLocalizationCountGetRequest {
+    hash?: string | null;
+}
 
 export interface ApiYouTubeVideoLocalizePutRequest {
     appVideoLocalizeRequest: AppVideoLocalizeRequest;
@@ -34,7 +35,35 @@ export class YouTubeVideoApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiYouTubeVideoLocalizePutRaw(requestParameters: ApiYouTubeVideoLocalizePutRequest): Promise<runtime.ApiResponse<Array<Video>>> {
+    async apiYouTubeVideoLocalizationCountGetRaw(requestParameters: ApiYouTubeVideoLocalizationCountGetRequest): Promise<runtime.ApiResponse<number>> {
+        const queryParameters: runtime.HTTPQuery = {};
+
+        if (requestParameters.hash !== undefined) {
+            queryParameters['hash'] = requestParameters.hash;
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/api/YouTubeVideo/LocalizationCount`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        });
+
+        return new runtime.TextApiResponse(response) as any;
+    }
+
+    /**
+     */
+    async apiYouTubeVideoLocalizationCountGet(requestParameters: ApiYouTubeVideoLocalizationCountGetRequest): Promise<number> {
+        const response = await this.apiYouTubeVideoLocalizationCountGetRaw(requestParameters);
+        return await response.value();
+    }
+
+    /**
+     */
+    async apiYouTubeVideoLocalizePutRaw(requestParameters: ApiYouTubeVideoLocalizePutRequest): Promise<runtime.ApiResponse<string>> {
         if (requestParameters.appVideoLocalizeRequest === null || requestParameters.appVideoLocalizeRequest === undefined) {
             throw new runtime.RequiredError('appVideoLocalizeRequest','Required parameter requestParameters.appVideoLocalizeRequest was null or undefined when calling apiYouTubeVideoLocalizePut.');
         }
@@ -53,12 +82,12 @@ export class YouTubeVideoApi extends runtime.BaseAPI {
             body: AppVideoLocalizeRequestToJSON(requestParameters.appVideoLocalizeRequest),
         });
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(VideoFromJSON));
+        return new runtime.TextApiResponse(response) as any;
     }
 
     /**
      */
-    async apiYouTubeVideoLocalizePut(requestParameters: ApiYouTubeVideoLocalizePutRequest): Promise<Array<Video>> {
+    async apiYouTubeVideoLocalizePut(requestParameters: ApiYouTubeVideoLocalizePutRequest): Promise<string> {
         const response = await this.apiYouTubeVideoLocalizePutRaw(requestParameters);
         return await response.value();
     }
