@@ -68,14 +68,13 @@ export function ServiceFormPage(): JSX.Element {
 
     writeJsonCookie(COOKIE_NAMES.SERVICE_FORM_LANGUAGES, languages);
 
-    setLocalizationOpCount(0);
-    setLocalizationOpCountLimit(languages.length * videos.length);
-
     YOUTUBE_VIDEO_API.apiYouTubeVideoLocalizePut({
       appVideoLocalizeRequest: request,
-    })
-        .then((res: string) => setLocalizationOpCountHash(res))
-        .catch(() => setError(true));
+    }).then((res: string) => {
+      setLocalizationOpCount(0);
+      setLocalizationOpCountLimit(languages.length * videos.length);
+      setLocalizationOpCountHash(res);
+    }).catch(() => setError(true));
   }
 
   /**

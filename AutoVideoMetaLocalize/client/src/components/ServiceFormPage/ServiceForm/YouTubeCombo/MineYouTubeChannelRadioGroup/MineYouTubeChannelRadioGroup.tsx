@@ -1,4 +1,4 @@
-import {Alert, Radio, Row, Spin} from 'antd';
+import {Alert, Radio, Skeleton} from 'antd';
 import {RadioChangeEvent} from 'antd/lib/radio';
 import * as React from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -187,7 +187,7 @@ export function MineYouTubeChannelRadioGroup(props: {
           dataLength={dataLength}
           next={() => onChangePagination(paginationCurrent + 1)}
           hasMore={canLoadMore(currentResponse)}
-          loader={<Row align="middle" justify="center" style={{height: 120}}><Spin /></Row>}
+          loader={<Skeleton loading active/>}
         >
           {mineYouTubeChannels?.map((channel: Channel, index: number) =>
             <Radio.Button className="max-cell max-height" key={rowKey(channel)} value={channel.id}>
