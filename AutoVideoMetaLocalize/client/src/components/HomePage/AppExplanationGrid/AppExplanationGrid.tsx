@@ -15,7 +15,7 @@ const COL_LAYOUT: ColProps = {
 };
 
 /**
- * A grid component used to explain how this web application is useful.
+ * A view component used to explain how this web application is useful.
  *
  * @return {JSX.Element}
  */
@@ -23,7 +23,7 @@ export function AppExplanationGrid(): JSX.Element {
   const [viewCount, setViewCount] =
     React.useState<number>(927787);
 
-  useInterval(() => setViewCount(viewCount + chance.natural({min: 0, max: 99})), 800);
+  useInterval(800, () => setViewCount(viewCount + chance.natural({min: 0, max: 99})));
 
   return (
     <Row className="app-explanation-grid" align="top" justify="center" gutter={8}>

@@ -9,41 +9,46 @@ const YOUTUBE_CHANNEL_API: YouTubeChannelApi = new YouTubeChannelApi();
 const DEFAULT_PAGE_SIZE: number = 30;
 
 /**
- * A radio group component used to display and choice from a paginated list of the user's YouTube channels.
+ * A radio group component used to select one of the user's YouTube channels.
  *
  * @param {object} props
  * @return {JSX.Element}
  */
-export function YouTubeChannelRadioGroup(props: {
+export function MineYouTubeChannelRadioGroup(props: {
   onChangeChannel?: (channel: Channel) => void;
   onChangeResponse?: (response: ChannelListResponse) => void;
 }): JSX.Element {
   const {onChangeChannel, onChangeResponse} = props;
 
+  /** The current selected value of the radio group. */
   const [radioGroupValue, setRadioGroupValue] =
     React.useState<string>(undefined);
 
+  /** The known YouTube channels associated with the user. */
   const [mineYouTubeChannels, setMineYouTubeChannels] =
     React.useState<Array<Channel>>(undefined);
 
+  /** The response from the latest item fetch. */
   const [currentResponse, setCurrentResponse] =
     React.useState<ChannelListResponse>(undefined);
 
+  /** The current page index of the pagination. */
   const [paginationCurrent, setPaginationCurrent] =
-    React.useState<number>(0);
+    React.useState<number>(0); // important to default data value
 
-  const [paginationExpectedTotal, setPaginationExpectedTotal] =
-    React.useState<number>(0); // important to default value
+  /** The current page size of the pagination. */
+  const [paginationSize, setPaginationSize] =
+    React.useState<number>(undefined);
 
+  /** Has an error occured during a fetch op? */
   const [error, setError] =
     React.useState<boolean>(undefined);
 
-  // console.log("YouTubeChannelRadioGroup", radioGroupValue, mineYouTubeChannels, currentResponse, paginationCurrent, paginationExpectedTotal, error);
-
+  const paginationExpectedTotal: number = paginationCurrent * paginationSize;
   const dataLength: number = mineYouTubeChannels ? mineYouTubeChannels.length : 0;
   const shouldAndCanLoadMore: boolean = dataLength < paginationExpectedTotal && canLoadMore(currentResponse);
 
-  /** Used to append items to the data collection when the next response is loaded. */
+  /** On fetching additional items, append the new items to the data collection. */
   React.useEffect(() => {
     if (currentResponse) {
       let data: Channel[] = mineYouTubeChannels || []; // important to default data value
@@ -52,23 +57,24 @@ export function YouTubeChannelRadioGroup(props: {
     }
   }, [currentResponse]);
 
-  /** Used to load the first page. */
+  /** On the initial mount, load the first page. */
   React.useEffect(() => {
-    onChangePagination(1);
+    onChangePagination(paginationCurrent + 1, DEFAULT_PAGE_SIZE);
   }, []);
 
-  /** Used to load items into the data collection until the length expectation is met or no additional item can be loaded. */
+
+  /** Load items into the data collection until the length expectation is met or no additional item can be loaded. */
   React.useEffect(() => {
     if (shouldAndCanLoadMore) {
       fetchNextResponse(currentResponse)
           .then((res: ChannelListResponse) => setCurrentResponse(res))
-          .catch((err: Response) => setError(true));
+          .catch(() => setError(true));
     }
-  }, [paginationExpectedTotal, dataLength]);
+  }, [shouldAndCanLoadMore, mineYouTubeChannels]);
 
-  /** Used to ensure a valid channel option is selected at all times. */
+  /** Ensure that a valid channel option is selected at all times when possible. */
   React.useEffect(() => {
-    const channel: Channel = findMineYouTubeChannel(radioGroupValue);
+    const channel: Channel = findMineYouTubeChannelById(radioGroupValue);
 
     if (channel == null && dataLength > 0) {
       setRadioGroupValue(mineYouTubeChannels[0].id);
@@ -77,8 +83,7 @@ export function YouTubeChannelRadioGroup(props: {
 
   /** Used to hook into the on change value event. */
   React.useEffect(() => {
-    const channel: Channel = findMineYouTubeChannel(radioGroupValue);
-
+    const channel: Channel = findMineYouTubeChannelById(radioGroupValue);
     if (onChangeChannel) {
       onChangeChannel(channel);
     }
@@ -101,12 +106,12 @@ export function YouTubeChannelRadioGroup(props: {
   }
 
   /**
-   * A ultility function used to find a specific channel by id from the item list.
+   * Used to find channel from the channel data collection by id.
    *
    * @param {string} channelId
    * @return {Channel}
    */
-  function findMineYouTubeChannel(channelId: string): Channel {
+  function findMineYouTubeChannelById(channelId: string): Channel {
     return mineYouTubeChannels?.find((channel: Channel) => channel.id == channelId);
   }
 
@@ -118,17 +123,12 @@ export function YouTubeChannelRadioGroup(props: {
    */
   function onChangePagination(page: number, pageSize?: number): void {
     pageSize = pageSize || DEFAULT_PAGE_SIZE;
-    const newPaginationExpectedTotal = page * pageSize;
-
-    if (newPaginationExpectedTotal > paginationExpectedTotal) {
-      setPaginationExpectedTotal(newPaginationExpectedTotal);
-    }
-
     setPaginationCurrent(page);
+    setPaginationSize(pageSize);
   }
 
   /**
-   * Fetches the next page of data relative to the current one.
+   * Fetches the next page of data relative to the specified response.
    *
    * @param {ChannelListResponse} response
    * @param {number} maxResults
@@ -149,7 +149,7 @@ export function YouTubeChannelRadioGroup(props: {
   }
 
   /**
-   * Checks if additional items can be loaded given the response.
+   * Checks if additional items can be loaded for the specified the response.
    *
    * @param {ChannelListResponse} response
    * @return {boolean}

@@ -15,7 +15,7 @@ const GOOGLE_AUTH_SCOPES: string[] = [
 ];
 
 /**
- * The main page of this web application.
+ * The home page of this web application.
  *
  * @return {JSX.Element}
  */

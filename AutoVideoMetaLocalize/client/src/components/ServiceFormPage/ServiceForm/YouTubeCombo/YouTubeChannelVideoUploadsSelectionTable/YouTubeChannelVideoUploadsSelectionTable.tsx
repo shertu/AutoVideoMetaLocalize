@@ -28,7 +28,7 @@ export interface YouTubeVideoSelectionTableProps {
 }
 
 /**
- * A table component used to display and select from a paginated list of a YouTube channel's uploaded videos.
+ * A table component used to select a subset of videos from a YouTube channel's uploaded videos.
  *
  * @param {YouTubeVideoSelectionTableProps} props
  * @return {JSX.Element}
@@ -41,46 +41,57 @@ export function YouTubeChannelVideoUploadsSelectionTable(props: YouTubeVideoSele
     throw Error('The channel\'s upload playlist identifier is required.');
   }
 
-  const [items, setItems] =
+  /** The current selected value of the radio group. */
+  // const [radioGroupValue, setRadioGroupValue] =
+  //  React.useState<string>(undefined);
+
+  /** The known playlist items associated with the Channel's upload playlist. */
+  const [channelUploadsPlaylistItems, setChannelUploadsPlaylistItems] =
     React.useState<Array<PlaylistItem>>(undefined);
 
+  /** The response from the latest item fetch. */
   const [currentResponse, setCurrentResponse] =
     React.useState<PlaylistItemListResponse>(undefined);
 
+  /** The current page index of the pagination. */
   const [paginationCurrent, setPaginationCurrent] =
-    React.useState<number>(0);
+    React.useState<number>(0); // important to default data value
 
-  const [paginationExpectedTotal, setPaginationExpectedTotal] =
-    React.useState<number>(0); // important to default value
+  /** The current page size of the pagination. */
+  const [paginationSize, setPaginationSize] =
+    React.useState<number>(undefined);
 
+  /** Has an error occured during a fetch op? */
   const [error, setError] =
     React.useState<boolean>(undefined);
 
-  const dataLength: number = items ? items.length : 0;
+  const paginationExpectedTotal: number = paginationCurrent * paginationSize;
+  const dataLength: number = channelUploadsPlaylistItems ? channelUploadsPlaylistItems.length : 0;
   const shouldAndCanLoadMore: boolean = dataLength < paginationExpectedTotal && canLoadMore(currentResponse);
 
-  /** Used to append items to the data collection when the next response is loaded. */
+  /** On fetching additional items, append the new items to the data collection. */
   React.useEffect(() => {
     if (currentResponse) {
-      let data: PlaylistItem[] = items || []; // important to default data value
+      let data: Channel[] = channelUploadsPlaylistItems || []; // important to default data value
       data = data.concat(currentResponse.items);
-      setItems(data);
+      setChannelUploadsPlaylistItems(data);
     }
   }, [currentResponse]);
 
-  /** Used to load the first page. */
+  /** On the initial mount, load the first page. */
   React.useEffect(() => {
-    onChangePagination(1);
+    onChangePagination(paginationCurrent + 1, DEFAULT_PAGE_SIZE);
   }, []);
 
-  /** Used to load items into the data collection until the length expectation is met or no additional item can be loaded. */
+
+  /** Load items into the data collection until the length expectation is met or no additional item can be loaded. */
   React.useEffect(() => {
     if (shouldAndCanLoadMore) {
       fetchNextResponse(currentResponse)
           .then((res: PlaylistItemListResponse) => setCurrentResponse(res))
-          .catch((err: Response) => setError(true));
+          .catch(() => setError(true));
     }
-  }, [paginationExpectedTotal, dataLength]);
+  }, [shouldAndCanLoadMore, channelUploadsPlaylistItems]);
 
   /**
    * Called when the page number is changed, and it takes the resulting page number and page size as its arguments.
@@ -90,17 +101,12 @@ export function YouTubeChannelVideoUploadsSelectionTable(props: YouTubeVideoSele
    */
   function onChangePagination(page: number, pageSize?: number): void {
     pageSize = pageSize || DEFAULT_PAGE_SIZE;
-    const newPaginationExpectedTotal = page * pageSize;
-
-    if (newPaginationExpectedTotal > paginationExpectedTotal) {
-      setPaginationExpectedTotal(newPaginationExpectedTotal);
-    }
-
     setPaginationCurrent(page);
+    setPaginationSize(pageSize);
   }
 
   /**
-   * Fetches the next page of data relative to the current one.
+   * Fetches the next page of data relative to the specified response.
    *
    * @param {PlaylistItemListResponse} response
    * @param {number} maxResults
@@ -121,7 +127,7 @@ export function YouTubeChannelVideoUploadsSelectionTable(props: YouTubeVideoSele
   }
 
   /**
-   * Checks if additional items can be loaded given the response.
+   * Checks if additional items can be loaded for the specified the response.
    *
    * @param {PlaylistItemListResponse} response
    * @return {boolean}
@@ -145,7 +151,7 @@ export function YouTubeChannelVideoUploadsSelectionTable(props: YouTubeVideoSele
     current: paginationCurrent,
     // position: ['topLeft'],
     simple: true,
-    pageSize: DEFAULT_PAGE_SIZE,
+    pageSize: paginationSize,
     total: currentResponse?.pageInfo.totalResults,
     onChange: onChangePagination,
   };
@@ -162,7 +168,7 @@ export function YouTubeChannelVideoUploadsSelectionTable(props: YouTubeVideoSele
 
       <Skeleton loading={shouldAndCanLoadMore} active>
         <Table
-          dataSource={items}
+          dataSource={channelUploadsPlaylistItems}
           pagination={pagination}
           rowKey={rowKey}
           columns={VIDEO_FORM_SELECTION_TABLE_COLUMNS}

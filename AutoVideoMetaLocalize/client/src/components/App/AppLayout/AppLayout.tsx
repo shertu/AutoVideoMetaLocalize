@@ -9,7 +9,7 @@ import './style.less';
 const {Content, Footer} = Layout;
 
 /**
- * An important layout component used to design the general structure of the web application, e.g. main, header, footer, etc.
+ * A layout component used to describe general structure of the web application, e.g. main, header, footer, etc.
  *
  * @return {JSX.Element}
  */

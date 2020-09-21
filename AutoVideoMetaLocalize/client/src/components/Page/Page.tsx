@@ -7,7 +7,7 @@ export interface PageProps extends React.DetailedHTMLProps<React.HTMLAttributes<
 }
 
 /**
- * A standard large full-width page to display a section of content.
+ * A large, full-width view component to display a section of content.
  *
  * @param {PageProps} props
  * @return {JSX.Element}

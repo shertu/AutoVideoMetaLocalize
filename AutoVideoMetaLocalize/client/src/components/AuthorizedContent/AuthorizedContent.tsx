@@ -6,7 +6,7 @@ import routes from '../../routes';
 import {GetClaimsPrincipleResult} from '../../../generated-sources/openapi';
 
 /**
- * A wrapper component used to conditionally render when the user is authenticated or authorized.
+ * A wrapper component used to conditionally render its children when the user is authenticated.
  *
  * @param {object} props
  * @return {JSX.Element}

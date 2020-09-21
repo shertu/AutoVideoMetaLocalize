@@ -10,7 +10,7 @@ import {ServiceFormPage} from '../../ServiceFormPage/ServiceFormPage';
 const {Paragraph} = Typography;
 
 /**
- * An important switch component used to route URLs to core pages in the web application.
+ * A switch component used to route URLs to core pages in the web application.
  *
  * @return {JSX.Element}
  */

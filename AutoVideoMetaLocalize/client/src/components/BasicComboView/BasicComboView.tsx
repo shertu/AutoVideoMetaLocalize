@@ -5,7 +5,7 @@ import {Thumbnail} from '../../../generated-sources/openapi';
 const {Paragraph} = Typography;
 
 /**
- * A simple information view component with an image, title and subtitle.
+ * A simple view component with an image, title and subtitle.
  *
  * @param {object} props
  * @return {JSX.Element}

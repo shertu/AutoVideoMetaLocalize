@@ -3,7 +3,7 @@ import * as React from 'react';
 import {render} from 'react-dom';
 import {BrowserRouter as Router} from 'react-router-dom';
 import {AccountApi, GetClaimsPrincipleResult} from '../../../generated-sources/openapi';
-import {UserProvider} from '../UserContext/UserContext';
+import UserContext from '../UserContext/UserContext';
 import {AppLayout} from './AppLayout/AppLayout';
 
 const ACCOUNT_API: AccountApi = new AccountApi();
@@ -35,11 +35,11 @@ export function App(): JSX.Element {
   }, []);
 
   return (
-    <UserProvider value={user}>
+    <UserContext.Provider value={user}>
       <Router>
         <AppLayout />
       </Router>
-    </UserProvider>
+    </UserContext.Provider>
   );
 }
 

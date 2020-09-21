@@ -2,26 +2,22 @@ import {Button, Checkbox, Collapse, Form, Row, Space} from 'antd';
 import * as React from 'react';
 import COOKIE_NAMES, {readJsonCookie, writeJsonCookie} from '../../../cookie-names';
 import {LanguageSelect} from './LanguageSelect/LanguageSelect';
-import {YouTubeCombo} from './YouTubeCombo/YouTubeCombo';
+import {MineChannelVideoUploadsCombo} from './YouTubeCombo/MineChannelVideoUploadsCombo';
 
-/** An interface to work with the form's values. */
 export interface ServiceFormValues {
-  languageSelect: string[],
-  // youtubeChannelRadioGroup: string[],
-  youtubeVideoSelectionTable: string[],
-  smbCheckbox: boolean,
+  languages: string[],
+  videos: string[],
+  sheetMusicBoss: boolean,
 }
 
-/** The names of the form's items used to map to its values. */
-export const ServiceFormItemNames = Object.freeze({
-  LANGUAGE_SELECT: 'languageSelect',
-  // YOUTUBE_CHANNEL_RADIO_GROUP: 'youtubeChannelRadioGroup',
-  YOUTUBE_VIDEO_SELECTION_TABLE: 'youtubeVideoSelectionTable',
-  SMB_CHECKBOX: 'smbCheckbox',
+const ServiceFormItemNames = Object.freeze({
+  LANGUAGE_SELECT: 'languages',
+  YOUTUBE_VIDEO_SELECTION_TABLE: 'videos',
+  SMB_CHECKBOX: 'sheetMusicBoss',
 });
 
 /**
- * The form componnent used to handle user's input for the web application's service.
+ * A form componnent used to manage input for the web application's localization service.
  *
  * @param {object} props
  * @return {JSX.Element}
@@ -32,18 +28,20 @@ export function ServiceForm(props: {
 }): JSX.Element {
   const {onFinish, submitDisabled} = props;
 
+  /** The form ref used to maniuplate the form instance's values. */
   const [form] = Form.useForm<ServiceFormValues>();
 
+  /** The initial value of the languge select form item. */
   const languageSelectInitialValue = readJsonCookie(COOKIE_NAMES.SERVICE_FORM_LANGUAGES);
 
-  /** Sets the form's fields to their default values and clears the language cookie. */
+  /** The event called when the form is cleared. */
   function onClearForm() {
     writeJsonCookie(COOKIE_NAMES.SERVICE_FORM_LANGUAGES, []);
 
     form.setFieldsValue({
-      languageSelect: [],
-      youtubeVideoSelectionTable: [],
-      smbCheckbox: false,
+      languages: [],
+      videos: [],
+      sheetMusicBoss: false,
     });
   }
 
@@ -68,7 +66,7 @@ export function ServiceForm(props: {
         name={ServiceFormItemNames.YOUTUBE_VIDEO_SELECTION_TABLE}
         rules={[{required: true, message: 'Please select at least one video.'}]}
       >
-        <YouTubeCombo />
+        <MineChannelVideoUploadsCombo />
       </Form.Item>
 
       <Collapse className="ant-form-item">
