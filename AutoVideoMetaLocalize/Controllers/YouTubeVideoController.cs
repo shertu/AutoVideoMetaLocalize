@@ -4,7 +4,6 @@ using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
 using Google.Cloud.Translate.V3;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
@@ -23,10 +22,12 @@ namespace AutoVideoMetaLocalize.Controllers {
 
 		private readonly YouTubeServiceAccessor youtubeServiceAccessor;
 		private readonly GoogleCloudTranslateServiceAccessor translateServiceAccessor;
+		private readonly IntegerStore intStore;
 
-		public YouTubeVideoController(YouTubeServiceAccessor youtubeServiceAccessor, GoogleCloudTranslateServiceAccessor translateServiceAccessor) {
+		public YouTubeVideoController(YouTubeServiceAccessor youtubeServiceAccessor, GoogleCloudTranslateServiceAccessor translateServiceAccessor, IntegerStore intStore) {
 			this.youtubeServiceAccessor = youtubeServiceAccessor;
 			this.translateServiceAccessor = translateServiceAccessor;
+			this.intStore = intStore;
 		}
 
 		//[HttpGet("List")]
@@ -60,9 +61,15 @@ namespace AutoVideoMetaLocalize.Controllers {
 		//	}
 		//}
 
+		[HttpGet("LocalizationCount")]
+		public ActionResult<int> GetProgress(string hash) {
+			return intStore[hash];
+		}
+
 		[HttpPut("Localize")]
-		public async Task<ActionResult<IEnumerable<Video>>> LocalizeVideo([Required, FromBody] AppVideoLocalizeRequest body) {
-			IntPtr localizationCountPtr = new IntPtr(0);
+		public async Task<ActionResult<string>> LocalizeVideo([Required, FromBody] AppVideoLocalizeRequest body) {
+			string localizationCountHash = Guid.NewGuid().ToString();
+			intStore[localizationCountHash] = 0;
 
 			string[] videos = body.Videos;
 			Task<Video>[] tasks = new Task<Video>[videos.Length];
@@ -77,37 +84,24 @@ namespace AutoVideoMetaLocalize.Controllers {
 				IList<Video> items = response.Items;
 
 				foreach (Video item in items) {
-					tasks[i++] = LocalizeVideoTask(item, body, localizationCountPtr);
+					tasks[i++] = LocalizeVideoTask(item, body, localizationCountHash);
 				}
 
 				request.PageToken = response.NextPageToken;
 			} while (request.PageToken != null);
 
-			return await Task.WhenAll(tasks);
+			_ = Task.WhenAll(tasks);
+			return new ActionResult<string>(localizationCountHash);
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="video"></param>
-		/// <param name="body"></param>
-		/// <param name="localizationCountPtr"></param>
-		/// <returns></returns>
-		private async Task<Video> LocalizeVideoTask(Video video, AppVideoLocalizeRequest body, IntPtr localizationCountPtr) {
-			video = await AddLocalizationToVideo(video, body, localizationCountPtr);
-			//throw new Exception(JsonConvert.SerializeObject(video));
+
+		private async Task<Video> LocalizeVideoTask(Video video, AppVideoLocalizeRequest body, string localizationCountHash) {
+			video = await AddLocalizationToVideo(video, body, localizationCountHash);
 			video = await UpdateVideo(video, VIDEO_LOCALIZE_PART);
 			return video;
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="video"></param>
-		/// <param name="body"></param>
-		/// <param name="localizationCountPtr"></param>
-		/// <returns></returns>
-		private async Task<Video> AddLocalizationToVideo(Video video, AppVideoLocalizeRequest body, IntPtr localizationCountPtr) {
+		private async Task<Video> AddLocalizationToVideo(Video video, AppVideoLocalizeRequest body, string localizationCountHash) {
 			TranslationServiceClient service = await translateServiceAccessor.InitializeServiceAsync();
 			string[] languages = body.Languages;
 
@@ -118,22 +112,14 @@ namespace AutoVideoMetaLocalize.Controllers {
 
 			for (int i = 0; i < languages.Length; i++) {
 				string language = languages[i];
-				tasks[i] = AddLocalizationToVideoTask(service, video, language, body, localizationCountPtr);
+				tasks[i] = AddLocalizationToVideoTask(service, video, language, body, localizationCountHash);
 			}
 
 			await Task.WhenAll(tasks);
 			return video;
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="service"></param>
-		/// <param name="video"></param>
-		/// <param name="language"></param>
-		/// <param name="body"></param>
-		/// <returns></returns>
-		private async Task AddLocalizationToVideoTask(TranslationServiceClient service, Video video, string language, AppVideoLocalizeRequest body, IntPtr localizationCountPtr) {
+		private async Task AddLocalizationToVideoTask(TranslationServiceClient service, Video video, string language, AppVideoLocalizeRequest body, string localizationCountHash) {
 			string vidTitle = video.Snippet.Title;
 			string vidDescription = video.Snippet.Description;
 			string vidLanguage = video.Snippet.DefaultLanguage;
@@ -153,15 +139,9 @@ namespace AutoVideoMetaLocalize.Controllers {
 			}
 
 			video.Localizations[language] = localization;
-			_ = IntPtr.Add(localizationCountPtr, 1);
+			_ = ++intStore[localizationCountHash];
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="video"></param>
-		/// <param name="part"></param>
-		/// <returns></returns>
 		private async Task<Video> UpdateVideo(Video video, string part) {
 			YouTubeService service = await youtubeServiceAccessor.InitializeServiceAsync();
 			VideosResource.UpdateRequest request = service.Videos.Update(video, part);

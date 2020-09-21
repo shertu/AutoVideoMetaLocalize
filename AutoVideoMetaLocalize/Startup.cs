@@ -95,10 +95,7 @@ namespace AutoVideoMetaLocalize {
 			_ = services.AddScoped<GoogleCloudTranslateServiceAccessor>();
 			#endregion
 
-			#region session
-			_ = services.AddDistributedMemoryCache();
-			_ = services.AddSession();
-			#endregion
+			_ = services.AddSingleton<IntegerStore>();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -143,10 +140,6 @@ namespace AutoVideoMetaLocalize {
 			#region authentication and authorization
 			_ = app.UseAuthentication();
 			_ = app.UseAuthorization();
-			#endregion
-
-			#region session
-			_ = app.UseSession();
 			#endregion
 
 			#region endpoints
