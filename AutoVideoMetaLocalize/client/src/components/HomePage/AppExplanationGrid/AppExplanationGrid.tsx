@@ -40,7 +40,7 @@ export function AppExplanationGrid(): JSX.Element {
       <Col {...COL_LAYOUT} >
         <Card cover={
           <Row align="middle" justify="center">
-            <img alt="example" src="https://upload.wikimedia.org/wikipedia/commons/d/dd/Cloud-Translation-Logo.svg"
+            <img alt="example" src="https://symbols.getvecta.com/stencil_4/37_cloud-translation-api.d31f1a7876.svg"
               style={{width: 110}} />
           </Row>
         }>

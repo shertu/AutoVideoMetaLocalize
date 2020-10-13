@@ -73,8 +73,11 @@ export function YouTubeChannelVideoUploadsSelectionTable(props: YouTubeVideoSele
   React.useEffect(() => {
     if (currentResponse) {
       let data: Channel[] = channelUploadsPlaylistItems || []; // important to default data value
-      data = data.concat(currentResponse.items);
-      setChannelUploadsPlaylistItems(data);
+      const { items } = currentResponse;
+
+      if (items) {
+        setChannelUploadsPlaylistItems(data.concat(items));
+      }
     }
   }, [currentResponse]);
 

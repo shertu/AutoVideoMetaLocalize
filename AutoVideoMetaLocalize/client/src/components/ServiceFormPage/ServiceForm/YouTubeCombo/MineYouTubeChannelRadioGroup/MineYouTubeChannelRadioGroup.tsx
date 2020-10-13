@@ -52,8 +52,11 @@ export function MineYouTubeChannelRadioGroup(props: {
   React.useEffect(() => {
     if (currentResponse) {
       let data: Channel[] = mineYouTubeChannels || []; // important to default data value
-      data = data.concat(currentResponse.items);
-      setMineYouTubeChannels(data);
+      const { items } = currentResponse;
+
+      if (items) {
+        setMineYouTubeChannels(data.concat(items));
+      }
     }
   }, [currentResponse]);
 
