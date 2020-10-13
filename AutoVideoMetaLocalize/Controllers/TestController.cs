@@ -1,6 +1,4 @@
 ﻿//using AutoVideoMetaLocalize.Utilities;
-//using Microsoft.AspNetCore.Authorization;
-//using Microsoft.AspNetCore.Http;
 //using Microsoft.AspNetCore.Mvc;
 //using System;
 //using System.Threading.Tasks;
@@ -9,8 +7,6 @@
 //	[Route("api/[controller]")]
 //	[ApiController]
 //	public class TestController : ControllerBase {
-//		private const string SESSION_KEY_TEST_PROGRESS = "SESSION_KEY_TEST_PROGRESS";
-
 //		private static readonly Random rand = new Random();
 //		private readonly IntegerStore dict;
 
@@ -24,7 +20,7 @@
 //		}
 
 //		[HttpGet("Start")]
-//		public ActionResult<string> StartMultiThreadedEndpoint() {
+//		public async Task<ActionResult<string>> StartMultiThreadedEndpoint() {
 //			string hash = Guid.NewGuid().ToString();
 //			dict[hash] = 0;
 
@@ -34,12 +30,14 @@
 //				tasks[i] = IncrementProgress(hash);
 //			}
 
-//			_ = Task.WhenAll(tasks);
+//			await Task.WhenAll(tasks);
+
 //			//await Task.WhenAll(tasks);
 //			return new ActionResult<string>(hash);
 //		}
 
 //		private async Task IncrementProgress(string hash) {
+//			throw new Exception();
 //			await Task.Delay(rand.Next(65536));
 //			int val = ++dict[hash];
 //			Console.WriteLine($"The value of localizationCountPtr is {val}.");

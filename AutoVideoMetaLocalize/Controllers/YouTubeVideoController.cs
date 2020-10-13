@@ -90,14 +90,16 @@ namespace AutoVideoMetaLocalize.Controllers {
 				request.PageToken = response.NextPageToken;
 			} while (request.PageToken != null);
 
-			_ = Task.WhenAll(tasks);
+			//_ = Task.WhenAll(tasks); // do not wait for all videos to be localized
+			Video[] _ = await Task.WhenAll(tasks); // wait for all videos to be localized
+
 			return new ActionResult<string>(localizationCountHash);
 		}
 
 
 		private async Task<Video> LocalizeVideoTask(Video video, AppVideoLocalizeRequest body, string localizationCountHash) {
-			video = await AddLocalizationToVideo(video, body, localizationCountHash);
-			video = await UpdateVideo(video, VIDEO_LOCALIZE_PART);
+			video = await AddLocalizationToVideo(video, body, localizationCountHash); // wait for all localizations to be added
+			video = await UpdateVideo(video, VIDEO_LOCALIZE_PART); // update the video
 			return video;
 		}
 
@@ -115,7 +117,8 @@ namespace AutoVideoMetaLocalize.Controllers {
 				tasks[i] = AddLocalizationToVideoTask(service, video, language, body, localizationCountHash);
 			}
 
-			await Task.WhenAll(tasks);
+			await Task.WhenAll(tasks); // wait for all localizations to be added
+
 			return video;
 		}
 
