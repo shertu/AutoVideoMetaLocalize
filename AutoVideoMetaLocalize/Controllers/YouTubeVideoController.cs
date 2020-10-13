@@ -91,7 +91,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 			} while (request.PageToken != null);
 
 			//_ = Task.WhenAll(tasks); // do not wait for all videos to be localized
-			Video[] _ = await Task.WhenAll(tasks); // wait for all videos to be localized
+			Video[] _ = await Task.WhenAll(tasks); // wait for all videos to be localized and catch errors
 
 			return new ActionResult<string>(localizationCountHash);
 		}

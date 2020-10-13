@@ -16,9 +16,9 @@ namespace AutoVideoMetaLocalize.Controllers {
 
 		[HttpPost]
 		public async Task<ActionResult<string>> GetSimpleTranslation(
-			[Required, FromQuery] string targetLanguageCode,
-			[Required, FromQuery] string sourceLanguageCode,
-			[Required, FromBody] string text) {
+			[FromQuery] string targetLanguageCode,
+			[FromQuery] string sourceLanguageCode,
+			[FromBody] string text) {
 			TranslationServiceClient service = await translateServiceAccessor.InitializeServiceAsync();
 			return await service.SimpleTranslation(GoogleCloudTranslateServiceAccessor.PARENT, targetLanguageCode, sourceLanguageCode, text); ;
 		}

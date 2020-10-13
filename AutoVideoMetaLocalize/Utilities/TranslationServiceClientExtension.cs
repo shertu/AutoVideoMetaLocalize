@@ -10,6 +10,10 @@ namespace AutoVideoMetaLocalize.Utilities {
 				return text;
 			}
 
+			if (string.IsNullOrWhiteSpace(text)) {
+				return text;
+			}
+
 			TranslateTextRequest request = new TranslateTextRequest {
 				Parent = parent,
 				TargetLanguageCode = targetLanguageCode,
