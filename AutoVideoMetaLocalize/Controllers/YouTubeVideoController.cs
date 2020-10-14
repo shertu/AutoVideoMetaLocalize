@@ -84,9 +84,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 				IList<Video> items = response.Items;
 
 				foreach (Video item in items) {
-					Task<Video> task = LocalizeVideoTask(item, body, localizationCountHash);
-					task.Start(); // run the task as soon as it is created
-					tasks[i++] = task;
+					tasks[i++] = LocalizeVideoTask(item, body, localizationCountHash); // All other tasks begin their life cycle in a hot state.
 				}
 
 				request.PageToken = response.NextPageToken;
