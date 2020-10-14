@@ -84,13 +84,14 @@ namespace AutoVideoMetaLocalize.Controllers {
 				IList<Video> items = response.Items;
 
 				foreach (Video item in items) {
-					tasks[i++] = LocalizeVideoTask(item, body, localizationCountHash);
+					Task<Video> task = LocalizeVideoTask(item, body, localizationCountHash);
+					task.Start(); // run the task as soon as it is created
+					tasks[i++] = task;
 				}
 
 				request.PageToken = response.NextPageToken;
 			} while (request.PageToken != null);
 
-			Task.WhenAll(tasks).Start(); // do not wait for all videos to be localized
 			//_ = await Task.WhenAll(tasks); // wait for all videos to be localized and catch errors
 
 			return new ActionResult<string>(localizationCountHash);
