@@ -90,11 +90,10 @@ namespace AutoVideoMetaLocalize.Controllers {
 				request.PageToken = response.NextPageToken;
 			} while (request.PageToken != null);
 
-			//_ = await Task.WhenAll(tasks); // wait for all videos to be localized and catch errors
+			_ = await Task.WhenAll(tasks); // wait for all videos to be localized and catch errors
 
 			return new ActionResult<string>(localizationCountHash);
 		}
-
 
 		private async Task<Video> LocalizeVideoTask(Video video, AppVideoLocalizeRequest body, string localizationCountHash) {
 			video = await AddLocalizationToVideo(video, body, localizationCountHash); // wait for all localizations to be added
