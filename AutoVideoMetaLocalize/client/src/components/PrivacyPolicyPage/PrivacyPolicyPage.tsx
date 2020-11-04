@@ -1,7 +1,7 @@
+import { Typography } from 'antd';
 import * as React from 'react';
-import {Page} from '../Page/Page';
-import {Typography} from 'antd';
-import APP_NAMES from '../../app-names';
+import { APPLICATION_NAME } from '../../constants';
+import { AppPage } from '../AppPage/AppPage';
 
 const {Paragraph, Text, Title} = Typography;
 
@@ -12,9 +12,9 @@ const {Paragraph, Text, Title} = Typography;
  */
 export function PrivacyPolicyPage(): JSX.Element {
   return (
-    <Page>
+    <AppPage>
       <Typography>
-        <Title level={1}>Privacy Policy for {APP_NAMES.APPLICATION.toUpperCase()}</Title>
+        <Title level={1}>Privacy Policy for {APPLICATION_NAME.toUpperCase()}</Title>
 
         <Paragraph>This Privacy Policy document outlines how information about <Text strong>you</Text> is collected and used whilst you visit this website.</Paragraph>
 
@@ -37,6 +37,6 @@ export function PrivacyPolicyPage(): JSX.Element {
           This website, like many other websites, uses computer cookies to help keep track of your preferences, authenticaiton session, etc.
         </Paragraph>
       </Typography>
-    </Page>
+    </AppPage>
   );
 }

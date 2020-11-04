@@ -1,6 +1,6 @@
 import {Button, Checkbox, Collapse, Form, Row, Space} from 'antd';
 import * as React from 'react';
-import COOKIE_NAMES, {readJsonCookie, writeJsonCookie} from '../../../cookie-names';
+import COOKIE_NAMES, {readJsonCookie, writeJsonCookie} from '../../../json-cookie';
 import {LanguageSelect} from './LanguageSelect/LanguageSelect';
 import {MineChannelVideoUploadsCombo} from './YouTubeCombo/MineChannelVideoUploadsCombo';
 

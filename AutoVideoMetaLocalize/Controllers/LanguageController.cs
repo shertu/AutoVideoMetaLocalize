@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoVideoMetaLocalize.Utilities;
 using Google.Apis.YouTube.v3;
@@ -24,7 +24,8 @@ namespace AutoVideoMetaLocalize.Controllers {
 
 		[Authorize, HttpGet("YouTube-I18nLanguages")]
 		public async Task<ActionResult<IEnumerable<I18nLanguageSnippet>>> GetYouTubeLanguages() {
-			YouTubeService service = await youtubeServiceAccessor.InitializeServiceAsync();
+      string userId = User.GetGoogleNameIdentifier();
+      YouTubeService service = await youtubeServiceAccessor.InitializeServiceAsync(userId);
 			I18nLanguagesResource.ListRequest req = service.I18nLanguages.List("snippet");
 
 			try {
@@ -53,7 +54,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 
 				try {
 					SupportedLanguages temp = await service.GetSupportedLanguagesAsync(new GetSupportedLanguagesRequest {
-						Parent = GoogleCloudTranslateServiceAccessor.PARENT,
+						Parent = ApplicationValues.GOOGLE_PROJECT_NAME.ToString(),
 						DisplayLanguageCode = displayLanguageCode,
 					});
 

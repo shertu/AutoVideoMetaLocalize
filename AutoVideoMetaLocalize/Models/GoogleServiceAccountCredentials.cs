@@ -1,20 +1,36 @@
-﻿using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace AutoVideoMetaLocalize.Models {
-	public class GoogleServiceAccountCredentials {
-        public string type { get; set; }
-        public string project_id { get; set; }
-        public string private_key_id { get; set; }
-        public string private_key { get; set; }
-        public string client_email { get; set; }
-        public string client_id { get; set; }
-        public string auth_uri { get; set; }
-        public string token_uri { get; set; }
-        public string auth_provider_x509_cert_url { get; set; }
-        public string client_x509_cert_url { get; set; }
+  public class GoogleServiceAccountCredentials {
 
-		public override string ToString() {
-            return JsonConvert.SerializeObject(this);
-        }
-	}
+    [JsonPropertyName("type")]
+    public string Type { get; set; }
+
+    [JsonPropertyName("project_id")]
+    public string ProjectId { get; set; }
+
+    [JsonPropertyName("private_key_id")]
+    public string PrivateKeyId { get; set; }
+
+    [JsonPropertyName("private_key")]
+    public string PrivateKey { get; set; }
+
+    [JsonPropertyName("client_email")]
+    public string ClientEmail { get; set; }
+
+    [JsonPropertyName("client_id")]
+    public string ClientId { get; set; }
+
+    [JsonPropertyName("auth_uri")]
+    public string AuthUri { get; set; }
+
+    [JsonPropertyName("token_uri")]
+    public string TokenUri { get; set; }
+
+    [JsonPropertyName("auth_provider_x509_cert_url")]
+    public string AuthProviderX509CertUrl { get; set; }
+
+    [JsonPropertyName("client_x509_cert_url")]
+    public string ClientX509CertUrl { get; set; }
+  }
 }

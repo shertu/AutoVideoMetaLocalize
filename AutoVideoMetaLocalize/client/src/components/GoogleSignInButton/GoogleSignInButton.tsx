@@ -1,11 +1,9 @@
 import * as React from 'react';
 import GoogleButton from 'react-google-button';
-import {GoogleAuthApi} from '../../../generated-sources/openapi';
-
-const GOOGLE_AUTH_API: GoogleAuthApi = new GoogleAuthApi();
+import { ApiAuthGoogleOAuthSignInGetRequest, BASE_PATH } from '../../../generated-sources/openapi';
 
 /**
- * A button component used to sign-in via the Google Auth API.
+ * A button component used to sign in to the application via the Google Auth API.
  *
  * @param {object} props
  * @return {JSX.Element}
@@ -16,20 +14,23 @@ export function GoogleSignInButton(props: {
 }): JSX.Element {
   const {scopes, redirect} = props;
 
+  const scopesdef = scopes ? scopes.join(' ') : 'https://www.googleapis.com/auth/userinfo.profile';
+  const redirectdef = redirect || window.location.pathname;
+
   /** The click event for this button. */
-  async function onClick(): Promise<void> {
-    await GOOGLE_AUTH_API.apiGoogleAuthAuthenticationRedirectUriPost({
-      uri: redirect || window.location.pathname,
-    });
+  function onClick(): void {
+    const requestParameters: ApiAuthGoogleOAuthSignInGetRequest = {
+      postSignInRedirectUri: redirectdef,
+      scope: scopesdef,
+    };
 
-    const authorizationCodeRequestUrl: string = await GOOGLE_AUTH_API.apiGoogleAuthAuthorizationCodeRequestUrlGet({
-      scope: scopes && scopes.join(' '),
-    });
+    const searchParams: URLSearchParams = new URLSearchParams(requestParameters as URLSearchParams);
 
+    const authorizationCodeRequestUrl: string = BASE_PATH + '/api/Auth/GoogleOAuthSignIn' + '?' + searchParams.toString();
     window.location.assign(authorizationCodeRequestUrl);
   }
 
   return (
-    <GoogleButton type="light" onClick={onClick}/>
+    <GoogleButton type="light" onClick={onClick} />
   );
 }

@@ -1,4 +1,4 @@
-﻿using AutoVideoMetaLocalize.Models;
+using AutoVideoMetaLocalize.Models;
 using AutoVideoMetaLocalize.Utilities;
 using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
@@ -73,7 +73,9 @@ namespace AutoVideoMetaLocalize.Controllers {
 
 			string[] videos = body.Videos;
 			Task<Video>[] tasks = new Task<Video>[videos.Length];
-			YouTubeService service = await youtubeServiceAccessor.InitializeServiceAsync();
+
+      string userId = User.GetGoogleNameIdentifier();
+      YouTubeService service = await youtubeServiceAccessor.InitializeServiceAsync(userId);
 
 			VideosResource.ListRequest request = service.Videos.List(VIDEO_LOCALIZE_PART);
 			request.Id = string.Join(',', videos);
@@ -89,6 +91,8 @@ namespace AutoVideoMetaLocalize.Controllers {
 
 				request.PageToken = response.NextPageToken;
 			} while (request.PageToken != null);
+
+			//Task.Run(async () => await Task.WhenAll(tasks));
 
 			_ = await Task.WhenAll(tasks); // wait for all videos to be localized and catch errors
 
@@ -129,14 +133,14 @@ namespace AutoVideoMetaLocalize.Controllers {
 			string sourceLanguageCode = vidLanguage;
 
 			VideoLocalization localization = new VideoLocalization {
-				Description = await service.SimpleTranslation(GoogleCloudTranslateServiceAccessor.PARENT, targetLanguageCode, sourceLanguageCode, vidDescription),
+				Description = await service.SimpleTranslation(targetLanguageCode, sourceLanguageCode, vidDescription),
 			};
 
 			if (body.SheetMusicBoss) {
-				string temp = await service.SimpleTranslation(GoogleCloudTranslateServiceAccessor.PARENT, targetLanguageCode, sourceLanguageCode, SHEET_MUSIC_BOSS_TERM);
+				string temp = await service.SimpleTranslation(targetLanguageCode, sourceLanguageCode, SHEET_MUSIC_BOSS_TERM);
 				localization.Title = vidTitle.Replace(SHEET_MUSIC_BOSS_TERM, temp, true, CultureInfo.DefaultThreadCurrentCulture);
 			} else {
-				localization.Title = await service.SimpleTranslation(GoogleCloudTranslateServiceAccessor.PARENT, targetLanguageCode, sourceLanguageCode, vidTitle);
+				localization.Title = await service.SimpleTranslation(targetLanguageCode, sourceLanguageCode, vidTitle);
 			}
 
 			video.Localizations[language] = localization;
@@ -144,7 +148,8 @@ namespace AutoVideoMetaLocalize.Controllers {
 		}
 
 		private async Task<Video> UpdateVideo(Video video, string part) {
-			YouTubeService service = await youtubeServiceAccessor.InitializeServiceAsync();
+      string userId = User.GetGoogleNameIdentifier();
+      YouTubeService service = await youtubeServiceAccessor.InitializeServiceAsync(userId);
 			VideosResource.UpdateRequest request = service.Videos.Update(video, part);
 			return await request.ExecuteAsync();
 		}

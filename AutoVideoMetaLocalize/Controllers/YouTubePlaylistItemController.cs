@@ -1,4 +1,4 @@
-﻿using AutoVideoMetaLocalize.Models;
+using AutoVideoMetaLocalize.Models;
 using AutoVideoMetaLocalize.Utilities;
 using Google;
 using Google.Apis.YouTube.v3;
@@ -21,7 +21,8 @@ namespace AutoVideoMetaLocalize.Controllers {
 
 		[HttpGet("List")]
 		public async Task<ActionResult<PlaylistItemListResponse>> List([Required, FromQuery] AppPlaylistItemListRequest request) {
-			YouTubeService service = await serviceAccessor.InitializeServiceAsync();
+      string userId = User.GetGoogleNameIdentifier();
+      YouTubeService service = await serviceAccessor.InitializeServiceAsync(userId);
 			PlaylistItemsResource.ListRequest requestActual = request.ToActualRequest(service);
 
 			try {

@@ -1,11 +1,11 @@
-import {Alert, Progress, Space} from 'antd';
+import { Alert, Progress, Space } from 'antd';
 import * as React from 'react';
-import {AppVideoLocalizeRequest, YouTubeVideoApi} from '../../../generated-sources/openapi';
-import COOKIE_NAMES, {writeJsonCookie} from '../../cookie-names';
-import {useInterval} from '../../custom-react-hooks';
-import {AuthorizedContent} from '../AuthorizedContent/AuthorizedContent';
-import {Page} from '../Page/Page';
-import {ServiceForm, ServiceFormValues} from './ServiceForm/ServiceForm';
+import { AppVideoLocalizeRequest, YouTubeVideoApi } from '../../../generated-sources/openapi';
+import { CookiesNames } from '../../constants';
+import { useInterval } from '../../custom-react-hooks';
+import { writeJsonCookie } from '../../json-cookie';
+import { AppPage } from '../AppPage/AppPage';
+import { ServiceForm, ServiceFormValues } from './ServiceForm/ServiceForm';
 
 const YOUTUBE_VIDEO_API: YouTubeVideoApi = new YouTubeVideoApi();
 
@@ -40,6 +40,7 @@ export function ServiceFormPage(): JSX.Element {
     }
   }, [localizationOpCount, localizationOpCountLimit]);
 
+  // use throttle library instead
   /** Call the localization op count update function. */
   useInterval(1000, onUpdateLocalizationOpCount);
 
@@ -66,7 +67,7 @@ export function ServiceFormPage(): JSX.Element {
 
     const {languages, videos} = request;
 
-    writeJsonCookie(COOKIE_NAMES.SERVICE_FORM_LANGUAGES, languages);
+    writeJsonCookie(CookiesNames.SERVICE_FORM_LANGUAGES, languages);
 
     YOUTUBE_VIDEO_API.apiYouTubeVideoLocalizePut({
       appVideoLocalizeRequest: request,
@@ -97,16 +98,14 @@ export function ServiceFormPage(): JSX.Element {
   const progressValue: number = localizationOpCountLimit > 0 ? localizationOpCount / localizationOpCountLimit : 1;
 
   return (
-    <AuthorizedContent>
-      <Page title="Service">
-        <ServiceForm
-          onFinish={onFinish}
-          submitDisabled={isExecuting}
-        />
-      </Page>
+    <AppPage title="Service">
+      <ServiceForm
+        onFinish={onFinish}
+        submitDisabled={isExecuting}
+      />
 
       {localizationOpCountLimit > 0 &&
-        <Page title="Execution">
+        <AppPage title="Execution">
           <Space className="max-cell" direction="vertical" align="center">
             {error &&
               <Alert message="Error" description="An error occured which has halted execution." type="error" showIcon />
@@ -114,8 +113,19 @@ export function ServiceFormPage(): JSX.Element {
 
             <Progress type="circle" percent={Math.floor(progressValue * 100)} status={error ? 'exception' : null} />
           </Space>
-        </Page>
+        </AppPage>
       }
-    </AuthorizedContent>
+    </AppPage>
   );
 }
+
+//<Result
+//  status="403"
+//  title="403"
+//  subTitle="Sorry, you are not authorized to access this part of the website."
+//  extra={
+//    <Link to={ApplicationRouteInfo.ROUTE_HOME}>
+//      <Button type="primary">Go Home</Button>
+//    </Link>
+//  }
+///>

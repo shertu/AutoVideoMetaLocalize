@@ -1,17 +1,7 @@
-import {message} from 'antd';
 import * as React from 'react';
-import {render} from 'react-dom';
-import {BrowserRouter as Router} from 'react-router-dom';
-import {AccountApi, GetClaimsPrincipleResult} from '../../../generated-sources/openapi';
-import UserContext from '../UserContext/UserContext';
-import {AppLayout} from './AppLayout/AppLayout';
-
-const ACCOUNT_API: AccountApi = new AccountApi();
-
-const UNAUTHORIZED_USER: GetClaimsPrincipleResult = {
-  claims: null,
-  isAuthenticated: false,
-};
+import { render } from 'react-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
+import { AppLayout } from './AppLayout/AppLayout';
 
 /**
  * The highest level react component.
@@ -19,27 +9,10 @@ const UNAUTHORIZED_USER: GetClaimsPrincipleResult = {
  * @return {JSX.Element}
  */
 export function App(): JSX.Element {
-  const [user, setUser] =
-    React.useState<GetClaimsPrincipleResult>(undefined);
-
-  React.useEffect(() => {
-    ACCOUNT_API.apiAccountGet()
-        .then((res) => setUser(res))
-        .catch((err: Response) => {
-          if (err.status == 401) {
-            setUser(UNAUTHORIZED_USER);
-          } else {
-            message.error('An unexpected error occured while fetching user information.');
-          }
-        });
-  }, []);
-
   return (
-    <UserContext.Provider value={user}>
-      <Router>
-        <AppLayout />
-      </Router>
-    </UserContext.Provider>
+    <Router>
+      <AppLayout />
+    </Router>
   );
 }
 

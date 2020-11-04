@@ -1,8 +1,9 @@
-import {Alert, Skeleton} from 'antd';
+import {Alert, Avatar, List, Skeleton, Typography} from 'antd';
 import Table, {ColumnsType, TablePaginationConfig} from 'antd/lib/table';
 import * as React from 'react';
-import {ApiYouTubePlaylistItemListGetRequest, Channel, PlaylistItem, PlaylistItemListResponse, YouTubePlaylistItemApi} from '../../../../../../generated-sources/openapi';
-import {BasicComboView} from '../../../../BasicComboView/BasicComboView';
+import { ApiYouTubePlaylistItemListGetRequest, Channel, PlaylistItem, PlaylistItemListResponse, Thumbnail, YouTubePlaylistItemApi } from '../../../../../../generated-sources/openapi';
+
+const { Text } = Typography;
 
 const YOUTUBE_PLAYLIST_ITEM_API = new YouTubePlaylistItemApi();
 const DEFAULT_PAGE_SIZE: number = 30;
@@ -10,14 +11,22 @@ const DEFAULT_PAGE_SIZE: number = 30;
 const VIDEO_FORM_SELECTION_TABLE_COLUMNS: ColumnsType<PlaylistItem> = [{
   title: 'Video',
   render: (_text: any, record: PlaylistItem) => {
-    const view = <BasicComboView
-      avatarShape="square"
-      thumbnail={record.snippet.thumbnails._default}
-      title={record.snippet.title}
-      subtitle={record.snippet.publishedAt.toLocaleString()}
-    />;
+    const playlistItemTitle: string = record.snippet.title;
+    const playlistItemDefaultThumbnail: Thumbnail = record.snippet.thumbnails._default;
+    const playlistItemPublishAt: Date = new Date(record.snippet.publishedAt);
 
-    return view;
+    return (
+      <List.Item.Meta
+        avatar={
+          <Avatar
+            src={playlistItemDefaultThumbnail.url}
+            style={{ width: playlistItemDefaultThumbnail.width, height: playlistItemDefaultThumbnail.height }}
+          />
+        }
+        title={playlistItemTitle}
+        description={<Text style={{ fontFamily: 'monospace' }}>{playlistItemPublishAt.toLocaleString()}</Text>}
+      />
+    );
   },
 }];
 

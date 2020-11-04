@@ -2,19 +2,22 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const {CleanWebpackPlugin} = require('clean-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
+const WebpackCli = require('webpack-cli'); // added to clear dependency check
 
 // https://github.com/ant-design/ant-design/blob/master/components/style/themes/default.less
 const ThemeOverrides = {
   //'primary-color': '#d8412f',
-  'font-size-base': '16px',
+  //'font-size-base': '16px',
+  //'@layout-header-background': '#FFF'
 };
 
 // webpack method
 module.exports = {
   mode: 'development',
+  devtool: 'source-map',
 
   entry: [
     require('regenerator-runtime/path').path,
@@ -34,20 +37,18 @@ module.exports = {
   devServer: {
     contentBase: path.resolve(__dirname, 'wwwroot'),
     writeToDisk: true,
-    // historyApiFallback: true
   },
 
-  module:
-  {
+  module: {
     rules: [{
       test: /\.html$/,
       use: ['html-loader'],
     }, {
-      test: /\.less$/,
+      test: /\.(c|le)ss$/,
       use: [
         MiniCssExtractPlugin.loader, // creates style nodes from JS strings
-        'css-loader', // translates CSS into CommonJS
-        {
+        'css-loader',
+        { // translates CSS into CommonJS
           loader: 'less-loader', // compiles Less to CSS
           options: {
             modifyVars: ThemeOverrides, // override the default antd theme
@@ -60,8 +61,7 @@ module.exports = {
       exclude: /node_modules/,
       use: [
         'babel-loader',
-        // enforce an eslint code style as a build requirement
-        // 'eslint-loader',
+        // use eslint-loader to enforce an eslint code style as a build requirement
       ],
     }, {
       test: /\.(png|svg|jpg)$/,

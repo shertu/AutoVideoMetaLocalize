@@ -1,4 +1,4 @@
-﻿using AutoVideoMetaLocalize.Models;
+using AutoVideoMetaLocalize.Models;
 using AutoVideoMetaLocalize.Utilities;
 using Google;
 using Google.Apis.YouTube.v3;
@@ -9,9 +9,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
 namespace AutoVideoMetaLocalize.Controllers {
-	[Authorize]
 	[Route("api/[controller]")]
-	[ApiController]
+	[Authorize, ApiController]
 	public class YouTubeChannelController : ControllerBase {
 		private readonly YouTubeServiceAccessor serviceAccessor;
 
@@ -21,7 +20,8 @@ namespace AutoVideoMetaLocalize.Controllers {
 
 		[HttpGet("List")]
 		public async Task<ActionResult<ChannelListResponse>> List([Required, FromQuery] AppChannelListRequest request) {
-			YouTubeService service = await serviceAccessor.InitializeServiceAsync();
+      string userId = User.GetGoogleNameIdentifier();
+      YouTubeService service = await serviceAccessor.InitializeServiceAsync(userId);
 			ChannelsResource.ListRequest requestActual = request.ToActualRequest(service);
 
 			try {

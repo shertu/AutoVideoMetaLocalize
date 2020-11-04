@@ -1,10 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using AutoVideoMetaLocalize.Security.Authentication;
-using AutoVideoMetaLocalize.Utilities;
-using ChanceNET;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -15,150 +10,141 @@ using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using AutoVideoMetaLocalize.Utilities;
+using zukte.com.Security.Authentication;
 
 namespace AutoVideoMetaLocalize {
-	public class Startup {
-		private const string SPA_ENTRY_FILENAME = "index.html";
-		public static readonly Version APIVERSION = new Version(1, 0);
-		public static readonly string APPNAME = Assembly.GetExecutingAssembly().GetName().Name;
+  public class Startup {
+    /// <summary>
+    /// The name of the file to serve when the user accesses the web server.zs
+    /// </summary>
+    private const string SPA_ENTRY_FILENAME = "index.html";
 
-		private readonly IConfiguration _configuration;
+    /// <summary>
+    /// Represents a set of key/value application configuration properties.
+    /// </summary>
+    private readonly IConfiguration _configuration;
 
-		public Startup(IConfiguration configuration) {
-			_configuration = configuration;
-		}
+    public Startup(IConfiguration configuration) {
+      _configuration = configuration;
+    }
 
-		// This method gets called by the runtime. Use this method to add services to the container.
-		// For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
-		public void ConfigureServices(IServiceCollection services) {
-			#region Google OAuth 2.0
-			GoogleAuthorizationCodeFlow.Initializer authInitializer = new GoogleAuthorizationCodeFlow.Initializer {
-				ClientSecrets = new ClientSecrets {
-					ClientId = _configuration["Authentication:Google:ClientId"],
-					ClientSecret = _configuration["Authentication:Google:ClientSecret"]
-				},
-				DataStore = GoogleDataStores.GOOGLE_AUTH_TOKEN_STORE,
-				IncludeGrantedScopes = true,
-				Scopes = new string[] {
-					@"https://www.googleapis.com/auth/userinfo.profile",
-				},
-			};
+    // This method gets called by the runtime. Use this method to add services to the container.
+    // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
+    public void ConfigureServices(IServiceCollection services) {
+      #region Google OAuth 2.0
+      GoogleAuthorizationCodeFlow.Initializer authInitializer = new GoogleAuthorizationCodeFlow.Initializer {
+        ClientSecrets = new ClientSecrets {
+          ClientId = _configuration["Authentication:Google:ClientId"],
+          ClientSecret = _configuration["Authentication:Google:ClientSecret"]
+        },
+        DataStore = GoogleDataStores.GOOGLE_AUTH_TOKEN_STORE,
+        IncludeGrantedScopes = true,
+        Scopes = new string[] {
+          @"https://www.googleapis.com/auth/userinfo.profile",
+        },
+      };
 
-			_ = services.AddScoped(elem => authInitializer);
-			_ = services.AddScoped<GoogleCredentialManager>();
-			#endregion
+      _ = services.AddScoped(elem => authInitializer);
+      _ = services.AddScoped<GoogleCredentialManager>();
+      #endregion
 
-			#region chance
-			// This is an implementation of the corresponding .js library
-			Chance chance = new ConcurrentChance();
-			_ = services.AddSingleton(chance);
-			#endregion
+      #region routing
+      _ = services.AddControllers();
+      #endregion
 
-			#region routing
-			_ = services.AddControllers();
-			#endregion
+      #region authentication
+      _ = services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+        .AddCookie(options => {
+          options.Events = new CustomCookieAuthenticationEvents();
+        });
 
-			#region authentication
-			_ = services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-				.AddCookie(options => {
-					/* The normal login system cannot combine with an OAuth 2.0 system
-					 * as the app cannot 300 the user to the google login page.
-					 */
-					options.Events = new CustomCookieAuthenticationEvents();
-				});
-			#endregion
+      //_ = services.AddScoped<MineApplicationUserController>();
+      //_ = services.AddScoped<ApplicationUsersController>();
+      #endregion
 
-			#region authorization
-			_ = services.AddAuthorization();
-			#endregion
+      #region authorization
+      _ = services.AddAuthorization(options => {
+      });
+      #endregion
 
-			#region Swashbuckle
-			string version = APIVERSION.ToString();
+      #region Swashbuckle
+      _ = services.AddSwaggerGen(options => {
+        options.SwaggerDoc(ApplicationValues.API_VERSION.ToString(), new OpenApiInfo {
+          Title = ApplicationValues.NAME,
+          Version = ApplicationValues.API_VERSION.ToString()
+        });
+      });
+      #endregion
 
-			_ = services.AddSwaggerGen(options => {
-				options.SwaggerDoc(version, new OpenApiInfo {
-					Title = APPNAME,
-					Version = version
-				});
-			});
-			#endregion
+      #region YouTube and Google Cloud Translate
+      _ = services.AddScoped<YouTubeServiceAccessor>();
+      _ = services.AddScoped<GoogleCloudTranslateServiceAccessor>();
+      _ = services.AddSingleton<IntegerStore>();
+      #endregion
+    }
 
-			#region HttpContext
-			_ = services.AddHttpContextAccessor();
-			#endregion
+    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
+      // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/middleware/ 
 
-			#region YouTube
-			_ = services.AddScoped<YouTubeServiceAccessor>();
-			#endregion
+      #region developer exception
+      _ = app.UseDeveloperExceptionPage();
+      #endregion
 
-			#region Google Cloud Translate
-			_ = services.AddScoped<GoogleCloudTranslateServiceAccessor>();
-			#endregion
+      #region rewrite
+      RewriteOptions rewriteOptions = new RewriteOptions()
+        .AddRewrite("privacy-policy", SPA_ENTRY_FILENAME, true)
+        .AddRewrite("service", SPA_ENTRY_FILENAME, true)
+        ;
 
-			_ = services.AddSingleton<IntegerStore>();
-		}
+      _ = app.UseRewriter(rewriteOptions);
+      #endregion
 
-		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-		public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
-			// https://docs.microsoft.com/en-us/aspnet/core/fundamentals/middleware/ 
+      #region static content
+      _ = app.UseDefaultFiles(); // adds the base route to index.html
 
-			#region developer exception
-			_ = app.UseDeveloperExceptionPage();
-			#endregion
+      StaticFileOptions staticFileOptions = new StaticFileOptions {
+        OnPrepareResponse = staticFileResponseContext => {
+          staticFileResponseContext.Context.Response.Headers.Append("Cache-Control", $"public, max-age={System.TimeSpan.FromDays(7).Seconds}");
+        }
+      };
 
-			#region rewrite
-			RewriteOptions rewriteOptions = new RewriteOptions()
-				.AddRewrite("privacy-policy", SPA_ENTRY_FILENAME, true)
-				.AddRewrite("service", SPA_ENTRY_FILENAME, true)
-				;
+      _ = app.UseStaticFiles(staticFileOptions);
+      #endregion
 
-			_ = app.UseRewriter(rewriteOptions);
-			#endregion
+      #region routing
+      _ = app.UseRouting();
+      #endregion
 
-			#region static content
-			_ = app.UseDefaultFiles(); // adds the base route to index.html
+      #region cookie policy
+      _ = app.UseCookiePolicy(new CookiePolicyOptions {
+        MinimumSameSitePolicy = SameSiteMode.Lax,
+      });
+      #endregion
 
-			StaticFileOptions staticFileOptions = new StaticFileOptions {
-				OnPrepareResponse = staticFileResponseContext => {
-					staticFileResponseContext.Context.Response.Headers.Append("Cache-Control", $"public, max-age={TimeSpan.FromDays(7).Seconds}");
-				}
-			};
+      #region authentication and authorization
+      _ = app.UseAuthentication();
+      _ = app.UseAuthorization();
+      #endregion
 
-			_ = app.UseStaticFiles(staticFileOptions);
-			#endregion
+      #region endpoints
+      _ = app.UseEndpoints(endpoints => {
+        _ = endpoints.MapControllers();
+      });
+      #endregion
 
-			#region routing
-			_ = app.UseRouting();
-			#endregion
+      #region Swashbuckle
+      _ = app.UseSwagger(c => {
+        c.PreSerializeFilters.Add((swagger, httpReq) => {
+          swagger.Servers = new List<OpenApiServer> { new OpenApiServer { Url = $"{httpReq.Scheme}://{httpReq.Host.Value}" } };
+        });
+      });
 
-			#region cookie policy
-			_ = app.UseCookiePolicy(new CookiePolicyOptions {
-				MinimumSameSitePolicy = SameSiteMode.Lax,
-			});
-			#endregion
-
-			#region authentication and authorization
-			_ = app.UseAuthentication();
-			_ = app.UseAuthorization();
-			#endregion
-
-			#region endpoints
-			_ = app.UseEndpoints(endpoints => {
-				_ = endpoints.MapControllers();
-			});
-			#endregion
-
-			#region Swashbuckle
-			_ = app.UseSwagger(c => {
-				c.PreSerializeFilters.Add((swagger, httpReq) => {
-					swagger.Servers = new List<OpenApiServer> { new OpenApiServer { Url = $"{httpReq.Scheme}://{httpReq.Host.Value}" } };
-				});
-			});
-
-			_ = app.UseSwaggerUI(c => {
-				c.SwaggerEndpoint($"/swagger/{APIVERSION}/swagger.json", APPNAME);
-			});
-			#endregion
-		}
-	}
+      _ = app.UseSwaggerUI(c => {
+        c.SwaggerEndpoint($"/swagger/{ApplicationValues.API_VERSION}/swagger.json", ApplicationValues.NAME);
+      });
+      #endregion
+    }
+  }
 }

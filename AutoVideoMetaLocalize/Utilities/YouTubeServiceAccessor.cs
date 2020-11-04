@@ -1,4 +1,5 @@
-﻿using Google.Apis.Auth.OAuth2;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
 using System.Threading.Tasks;
 
@@ -10,12 +11,12 @@ namespace AutoVideoMetaLocalize.Utilities {
 			this.gcm = gcm;
 		}
 
-		public async Task<YouTubeService> InitializeServiceAsync() {
-			UserCredential credential = await gcm.LoadUserCredentialsAsync();
+		public async Task<YouTubeService> InitializeServiceAsync(string userCredentialsKey) {
+			UserCredential credential = await gcm.LoadUserCredentialsAsync(userCredentialsKey);
 
-			return new YouTubeService(new YouTubeService.Initializer {
+			return new YouTubeService(new BaseClientService.Initializer {
 				HttpClientInitializer = credential,
-				ApplicationName = "Auto Video Meta Localize",
+				ApplicationName = ApplicationValues.NAME,
 			});
 		}
 	}

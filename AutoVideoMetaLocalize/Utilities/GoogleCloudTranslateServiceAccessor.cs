@@ -1,11 +1,11 @@
-﻿using AutoVideoMetaLocalize.Models;
-using Google.Api.Gax.ResourceNames;
+using AutoVideoMetaLocalize.Models;
 using Google.Cloud.Translate.V3;
 using Microsoft.Extensions.Configuration;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace AutoVideoMetaLocalize.Utilities {
-	public class GoogleCloudTranslateServiceAccessor {
+  public class GoogleCloudTranslateServiceAccessor {
 		private readonly IConfiguration configuration;
 
 		public GoogleCloudTranslateServiceAccessor(IConfiguration configuration) {
@@ -13,16 +13,17 @@ namespace AutoVideoMetaLocalize.Utilities {
 		}
 
 		public async Task<TranslationServiceClient> InitializeServiceAsync() {
-			GoogleServiceAccountCredentials credentials = configuration.GetSection("AutoVideoMetaLocalize-249eb3a3b3f9").Get<GoogleServiceAccountCredentials>();
+			GoogleServiceAccountCredentials credentials = configuration
+        .GetSection("AutoVideoMetaLocalize-249eb3a3b3f9")
+        .Get<GoogleServiceAccountCredentials>();
 
-			TranslationServiceClientBuilder builder = new TranslationServiceClientBuilder {
-				JsonCredentials = credentials.ToString(),
+      string jsonString = JsonSerializer.Serialize(credentials);
+
+      TranslationServiceClientBuilder builder = new TranslationServiceClientBuilder {
+				JsonCredentials = jsonString,
 			};
 
 			return await builder.BuildAsync();
 		}
-
-		private const string PROJECT_ID = "autovideometalocalize";
-		public static readonly string PARENT = new ProjectName(PROJECT_ID).ToString();
 	}
 }

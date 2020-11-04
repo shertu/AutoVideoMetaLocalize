@@ -1,11 +1,11 @@
-﻿using Google.Cloud.Translate.V3;
+using Google.Cloud.Translate.V3;
 using System.IO;
 using System.Threading.Tasks;
 using System.Web;
 
 namespace AutoVideoMetaLocalize.Utilities {
 	public static class TranslationServiceClientExtension {
-		public static async Task<string> SimpleTranslation(this TranslationServiceClient service, string parent, string targetLanguageCode, string sourceLanguageCode, string text) {
+		public static async Task<string> SimpleTranslation(this TranslationServiceClient service, string targetLanguageCode, string sourceLanguageCode, string text) {
 			if (targetLanguageCode == sourceLanguageCode) {
 				return text;
 			}
@@ -15,7 +15,7 @@ namespace AutoVideoMetaLocalize.Utilities {
 			}
 
 			TranslateTextRequest request = new TranslateTextRequest {
-				Parent = parent,
+				Parent = ApplicationValues.GOOGLE_PROJECT_NAME.ToString(),
 				TargetLanguageCode = targetLanguageCode,
 				SourceLanguageCode = sourceLanguageCode,
 				Contents = { text },

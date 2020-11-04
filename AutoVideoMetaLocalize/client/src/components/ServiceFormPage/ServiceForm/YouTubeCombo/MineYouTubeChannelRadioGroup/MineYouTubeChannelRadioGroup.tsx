@@ -1,9 +1,10 @@
-import {Alert, Radio, Skeleton} from 'antd';
-import {RadioChangeEvent} from 'antd/lib/radio';
+import { Alert, Avatar, List, Radio, Skeleton, Typography } from 'antd';
+import { RadioChangeEvent } from 'antd/lib/radio';
 import * as React from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import {ApiYouTubeChannelListGetRequest, Channel, ChannelListResponse, YouTubeChannelApi} from '../../../../../../generated-sources/openapi';
-import {BasicComboView} from '../../../../BasicComboView/BasicComboView';
+import { ApiYouTubeChannelListGetRequest, Channel, ChannelListResponse, Thumbnail, YouTubeChannelApi } from '../../../../../../generated-sources/openapi';
+
+const { Text } = Typography;
 
 const YOUTUBE_CHANNEL_API: YouTubeChannelApi = new YouTubeChannelApi();
 const DEFAULT_PAGE_SIZE: number = 30;
@@ -18,7 +19,7 @@ export function MineYouTubeChannelRadioGroup(props: {
   onChangeChannel?: (channel: Channel) => void;
   onChangeResponse?: (response: ChannelListResponse) => void;
 }): JSX.Element {
-  const {onChangeChannel, onChangeResponse} = props;
+  const { onChangeChannel, onChangeResponse } = props;
 
   /** The current selected value of the radio group. */
   const [radioGroupValue, setRadioGroupValue] =
@@ -70,8 +71,8 @@ export function MineYouTubeChannelRadioGroup(props: {
   React.useEffect(() => {
     if (shouldAndCanLoadMore) {
       fetchNextResponse(currentResponse)
-          .then((res: ChannelListResponse) => setCurrentResponse(res))
-          .catch(() => setError(true));
+        .then((res: ChannelListResponse) => setCurrentResponse(res))
+        .catch(() => setError(true));
     }
   }, [shouldAndCanLoadMore, mineYouTubeChannels]);
 
@@ -190,19 +191,35 @@ export function MineYouTubeChannelRadioGroup(props: {
           dataLength={dataLength}
           next={() => onChangePagination(paginationCurrent + 1)}
           hasMore={canLoadMore(currentResponse)}
-          loader={<Skeleton loading active/>}
+          loader={<Skeleton loading active />}
         >
-          {mineYouTubeChannels?.map((channel: Channel, index: number) =>
-            <Radio.Button className="max-cell max-height" key={rowKey(channel)} value={channel.id}>
-              <BasicComboView
-                thumbnail={channel.snippet?.thumbnails._default}
-                title={channel.snippet?.title}
-                subtitle={channel.id}
-              />
-            </Radio.Button>
-          )}
+          <List
+            dataSource={mineYouTubeChannels}
+            renderItem={(item: Channel) => {
+              const channelId: string = item.id;
+              const channelTitle: string = item.snippet.title;
+              const channelDefaultThumbnail: Thumbnail = item.snippet.thumbnails._default;
+
+              return (
+                <Radio.Button className="max-cell max-height" key={rowKey(item)} value={channelId}>
+                  <List.Item.Meta
+                    avatar={
+                      <Avatar
+                        shape="circle"
+                        src={channelDefaultThumbnail.url}
+                        style={{ width: channelDefaultThumbnail.width, height: channelDefaultThumbnail.height }}
+                      />
+                    }
+                    title={channelTitle}
+                    description={<Text style={{ fontFamily: 'monospace' }}>{channelId}</Text>}
+                  />
+                </Radio.Button>
+              );
+            }}
+          />
         </InfiniteScroll>
       </Radio.Group>
     </>
   );
 }
+
