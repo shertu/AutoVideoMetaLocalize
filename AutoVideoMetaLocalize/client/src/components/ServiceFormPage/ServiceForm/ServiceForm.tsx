@@ -5,22 +5,18 @@ import {readJsonCookie, writeJsonCookie} from '../../../json-cookie';
 import {LanguageSelect} from './LanguageSelect/LanguageSelect';
 import {MineChannelVideoUploadsCombo} from './YouTubeCombo/MineChannelVideoUploadsCombo';
 
-const ServiceFormItemNames = Object.freeze({
-  LANGUAGE_SELECT: 'languages',
-  YOUTUBE_VIDEO_SELECTION_TABLE: 'videos',
-  SMB_CHECKBOX: 'sheetMusicBoss',
-});
-
 export interface ServiceFormValues {
   languages?: string[],
   videos?: string[],
-  sheetMusicBoss?: boolean,
+  sheetmusicboss?: boolean,
+  languageExclusion?: boolean,
 }
 
 export const SERVICE_FORM_DEFAULT_VALUES: ServiceFormValues = {
   languages: [],
   videos: [],
-  sheetMusicBoss: false,
+  sheetmusicboss: false,
+  languageExclusion: false,
 };
 
 /**
@@ -56,7 +52,7 @@ export function ServiceForm(props: {
     >
       <Form.Item
         label="Languages"
-        name={ServiceFormItemNames.LANGUAGE_SELECT}
+        name="languages"
         rules={[{required: true, message: 'Please select at least one language.'}]}
         initialValue={languageSelectInitialValue}
       >
@@ -65,7 +61,7 @@ export function ServiceForm(props: {
 
       <Form.Item
         label="Videos"
-        name={ServiceFormItemNames.YOUTUBE_VIDEO_SELECTION_TABLE}
+        name="videos"
         rules={[{required: true, message: 'Please select at least one video.'}]}
       >
         <MineChannelVideoUploadsCombo />
@@ -74,7 +70,14 @@ export function ServiceForm(props: {
       <Collapse className="ant-form-item">
         <Collapse.Panel header="Additional Options" key="1">
           <Form.Item
-            name={ServiceFormItemNames.SMB_CHECKBOX}
+            name="sheetmusicboss"
+            valuePropName="checked"
+            noStyle
+          >
+            <Checkbox>Sheet Music Boss</Checkbox>
+          </Form.Item>
+          <Form.Item
+            name={ServiceFormItemNames.SheetMusicBossCheckbox}
             valuePropName="checked"
             noStyle
           >

@@ -37,6 +37,12 @@ export interface AppVideoLocalizeRequest {
      * @memberof AppVideoLocalizeRequest
      */
     sheetMusicBoss?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof AppVideoLocalizeRequest
+     */
+    excludeOtherLanguages?: boolean;
 }
 
 export function AppVideoLocalizeRequestFromJSON(json: any): AppVideoLocalizeRequest {
@@ -52,6 +58,7 @@ export function AppVideoLocalizeRequestFromJSONTyped(json: any, ignoreDiscrimina
         'videos': json['videos'],
         'languages': json['languages'],
         'sheetMusicBoss': !exists(json, 'sheetMusicBoss') ? undefined : json['sheetMusicBoss'],
+        'excludeOtherLanguages': !exists(json, 'excludeOtherLanguages') ? undefined : json['excludeOtherLanguages'],
     };
 }
 
@@ -67,6 +74,7 @@ export function AppVideoLocalizeRequestToJSON(value?: AppVideoLocalizeRequest | 
         'videos': value.videos,
         'languages': value.languages,
         'sheetMusicBoss': value.sheetMusicBoss,
+        'excludeOtherLanguages': value.excludeOtherLanguages,
     };
 }
 

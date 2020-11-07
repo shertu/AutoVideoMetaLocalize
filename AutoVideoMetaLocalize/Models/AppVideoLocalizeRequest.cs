@@ -3,13 +3,11 @@ using System.ComponentModel.DataAnnotations;
 namespace AutoVideoMetaLocalize.Models {
 	public class AppVideoLocalizeRequest {
 		[Required]
-		public string[] Videos { get; set; }
+		public string[] MineChannelVideoUploadCollection { get; set; }
 
 		[Required]
-		public string[] Languages { get; set; }
+		public string[] TranslationLanguageCollection { get; set; }
 
-		public bool SheetMusicBoss { get; set; } = default;
-
-    public bool ExcludeOtherLanguages { get; set; } = default;
+    public bool NullifyVideoLocalizations { get; set; } = default;
   }
 }

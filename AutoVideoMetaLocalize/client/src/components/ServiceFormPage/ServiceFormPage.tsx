@@ -66,7 +66,8 @@ export function ServiceFormPage(): JSX.Element {
     const request: AppVideoLocalizeRequest = {
       languages: values.languages || SERVICE_FORM_DEFAULT_VALUES.languages,
       videos: values.videos || SERVICE_FORM_DEFAULT_VALUES.videos,
-      sheetMusicBoss: values.sheetMusicBoss || SERVICE_FORM_DEFAULT_VALUES.sheetMusicBoss,
+      sheetMusicBoss: values.sheetmusicboss || SERVICE_FORM_DEFAULT_VALUES.sheetmusicboss,
+      excludeOtherLanguages: values.languageExclusion || SERVICE_FORM_DEFAULT_VALUES.languageExclusion,
     };
 
     executeAppVideoLocalizeRequest(request);
