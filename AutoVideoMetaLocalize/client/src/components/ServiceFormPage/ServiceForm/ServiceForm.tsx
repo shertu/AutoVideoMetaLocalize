@@ -70,7 +70,7 @@ export function ServiceForm(props: {
             valuePropName="checked"
             noStyle
           >
-            <Checkbox>Nullify Video Localizations</Checkbox>
+            <Checkbox>Nullify Existing Video Localizations</Checkbox>
           </Form.Item>
         </Collapse.Panel>
       </Collapse>

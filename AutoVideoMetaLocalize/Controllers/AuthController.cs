@@ -86,10 +86,21 @@ namespace AutoVideoMetaLocalize.Controllers {
       }
 
       ClaimsPrincipal principleToSignInAs = new ClaimsPrincipal(User.Identities.Where(e => e.IsAuthenticated));
-      await HttpContext.SignInAsync(principleToSignInAs);
+      await HttpContext.SignInAsync(principleToSignInAs, GenerateAuthenticationProperties(credential.Token));
       return LocalRedirect(PostSignInRedirectUriCookie);
     }
 
+    /// <summary>
+    /// Generates the authentication properties for the http-context sign in.
+    /// </summary>
+    private AuthenticationProperties GenerateAuthenticationProperties(TokenResponse token) {
+      DateTimeOffset expiresUtc = token.IssuedUtc
+        .AddSeconds((double) token.ExpiresInSeconds);
+
+      return new AuthenticationProperties {
+        ExpiresUtc = expiresUtc,
+      };
+    }
 
     /// <summary>
     /// Generates Google user crendentials from a Google authorization code.
