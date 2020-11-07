@@ -4,10 +4,10 @@ import * as cookie from 'cookie';
  * A utility function used to serialize a value into a cookie.
  *
  * @param {string} key
- * @param {any} value
+ * @param {T} value
  */
-export function writeJsonCookie(key: string, value: any): void {
-  if (value !== undefined) {
+export function writeJsonCookie<T>(key: string, value: T): void {
+  if (value) {
     const cookieValue: string = JSON.stringify(value);
     document.cookie = cookie.serialize(key, cookieValue);
   }
@@ -17,12 +17,12 @@ export function writeJsonCookie(key: string, value: any): void {
  * A utility function used to deserialize a value from a cookie.
  *
  * @param {string} key
- * @return {any}
+ * @return {T}
  */
-export function readJsonCookie(key: string): any {
+export function readJsonCookie<T>(key: string): T {
   const cookieValue: string = cookie.parse(document.cookie)[key];
 
-  let value: any;
+  let value: T;
   if (cookieValue) {
     value = JSON.parse(cookieValue);
   }

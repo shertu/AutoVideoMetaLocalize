@@ -20,7 +20,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 
 		[HttpGet("List")]
 		public async Task<ActionResult<ChannelListResponse>> List([Required, FromQuery] AppChannelListRequest request) {
-      string userId = User.GetGoogleNameIdentifier();
+      string userId = User.GetLocalAuthorityNameIdentifier();
       YouTubeService service = await serviceAccessor.InitializeServiceAsync(userId);
 			ChannelsResource.ListRequest requestActual = request.ToActualRequest(service);
 

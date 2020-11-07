@@ -1,11 +1,11 @@
-import { Result, Typography } from 'antd';
+import {Result, Typography} from 'antd';
 import * as React from 'react';
 import Mailto from 'react-mailto.js';
-import { Route, Switch } from 'react-router-dom';
-import { ApplicationRouteInfo } from '../../../constants';
-import { LandingPage } from '../../LandingPage/LandingPage';
-import { PrivacyPolicyPage } from '../../PrivacyPolicyPage/PrivacyPolicyPage';
-import { ServiceFormPage } from '../../ServiceFormPage/ServiceFormPage';
+import {Route, Switch} from 'react-router-dom';
+import {ApplicationRouteInfo} from '../../../constants';
+import {LandingPage} from '../../LandingPage/LandingPage';
+import {PrivacyPolicyPage} from '../../PrivacyPolicyPage/PrivacyPolicyPage';
+import {ServiceFormPage} from '../../ServiceFormPage/ServiceFormPage';
 
 const {Paragraph} = Typography;
 

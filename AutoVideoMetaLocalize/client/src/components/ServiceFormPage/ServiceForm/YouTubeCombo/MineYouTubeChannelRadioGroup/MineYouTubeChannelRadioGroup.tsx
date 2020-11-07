@@ -1,10 +1,10 @@
-import { Alert, Avatar, List, Radio, Skeleton, Typography } from 'antd';
-import { RadioChangeEvent } from 'antd/lib/radio';
+import {Alert, Avatar, List, Radio, Skeleton, Space, Typography} from 'antd';
+import {RadioChangeEvent} from 'antd/lib/radio';
 import * as React from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { ApiYouTubeChannelListGetRequest, Channel, ChannelListResponse, Thumbnail, YouTubeChannelApi } from '../../../../../../generated-sources/openapi';
+import {ApiYouTubeChannelListGetRequest, Channel, ChannelListResponse, Thumbnail, YouTubeChannelApi} from '../../../../../../generated-sources/openapi';
 
-const { Text } = Typography;
+const {Text} = Typography;
 
 const YOUTUBE_CHANNEL_API: YouTubeChannelApi = new YouTubeChannelApi();
 const DEFAULT_PAGE_SIZE: number = 30;
@@ -19,7 +19,7 @@ export function MineYouTubeChannelRadioGroup(props: {
   onChangeChannel?: (channel: Channel) => void;
   onChangeResponse?: (response: ChannelListResponse) => void;
 }): JSX.Element {
-  const { onChangeChannel, onChangeResponse } = props;
+  const {onChangeChannel, onChangeResponse} = props;
 
   /** The current selected value of the radio group. */
   const [radioGroupValue, setRadioGroupValue] =
@@ -35,7 +35,7 @@ export function MineYouTubeChannelRadioGroup(props: {
 
   /** The current page index of the pagination. */
   const [paginationCurrent, setPaginationCurrent] =
-    React.useState<number>(0); // important to default data value
+    React.useState<number>(undefined); // important to default data value
 
   /** The current page size of the pagination. */
   const [paginationSize, setPaginationSize] =
@@ -45,15 +45,19 @@ export function MineYouTubeChannelRadioGroup(props: {
   const [error, setError] =
     React.useState<boolean>(undefined);
 
-  const paginationExpectedTotal: number = paginationCurrent * paginationSize;
-  const dataLength: number = mineYouTubeChannels ? mineYouTubeChannels.length : 0;
-  const shouldAndCanLoadMore: boolean = dataLength < paginationExpectedTotal && canLoadMore(currentResponse);
+  const dataLength: number = mineYouTubeChannels?.length || 0;
+  const shouldLoadMore: boolean = dataLength < calculateWantedItemCount();
+  const hasMore: boolean = canLoadMore(currentResponse);
+  const shouldAndHasMore: boolean = shouldLoadMore && hasMore;
+
+  // console.log("MineYouTubeChannelRadioGroup State", radioGroupValue, mineYouTubeChannels, currentResponse, paginationCurrent, paginationSize, error);
+  // console.log("MineYouTubeChannelRadioGroup", dataLength, shouldLoadMore, hasMore, shouldAndHasMore);
 
   /** On fetching additional items, append the new items to the data collection. */
   React.useEffect(() => {
     if (currentResponse) {
-      let data: Channel[] = mineYouTubeChannels || []; // important to default data value
-      const { items } = currentResponse;
+      const data: Channel[] = mineYouTubeChannels || []; // important to default data value
+      const {items} = currentResponse;
 
       if (items) {
         setMineYouTubeChannels(data.concat(items));
@@ -63,18 +67,17 @@ export function MineYouTubeChannelRadioGroup(props: {
 
   /** On the initial mount, load the first page. */
   React.useEffect(() => {
-    onChangePagination(paginationCurrent + 1, DEFAULT_PAGE_SIZE);
+    onChangePagination(1, DEFAULT_PAGE_SIZE);
   }, []);
-
 
   /** Load items into the data collection until the length expectation is met or no additional item can be loaded. */
   React.useEffect(() => {
-    if (shouldAndCanLoadMore) {
+    if (shouldAndHasMore) {
       fetchNextResponse(currentResponse)
-        .then((res: ChannelListResponse) => setCurrentResponse(res))
-        .catch(() => setError(true));
+          .then((res: ChannelListResponse) => setCurrentResponse(res))
+          .catch(() => setError(true));
     }
-  }, [shouldAndCanLoadMore, mineYouTubeChannels]);
+  }, [shouldAndHasMore, mineYouTubeChannels]);
 
   /** Ensure that a valid channel option is selected at all times when possible. */
   React.useEffect(() => {
@@ -99,6 +102,17 @@ export function MineYouTubeChannelRadioGroup(props: {
       onChangeResponse(currentResponse);
     }
   }, [currentResponse]);
+
+  /**
+  * Calculates the desired number of items in the item collection.
+  *
+  * @return {number}
+  */
+  function calculateWantedItemCount(): number {
+    const a: number = paginationCurrent || 0;
+    const b: number = paginationSize || 0;
+    return a * b;
+  }
 
   /**
    * The event called when the component's value changes.
@@ -173,53 +187,57 @@ export function MineYouTubeChannelRadioGroup(props: {
   }
 
   return (
-    <>
+    <Space className="max-cell" direction="vertical">
       {error &&
         <Alert message="Error" description="Failed to load YouTube channel information." type="error" showIcon />
       }
 
-      {dataLength === 0 && !canLoadMore(currentResponse) &&
+      {!dataLength && !hasMore &&
         <Alert message="Warning" description="No YouTube channels are associated with this Google account." type="warning" showIcon />
       }
 
-      <Radio.Group
-        value={radioGroupValue}
-        onChange={onChange}
-        className="max-cell"
-      >
-        <InfiniteScroll
-          dataLength={dataLength}
-          next={() => onChangePagination(paginationCurrent + 1)}
-          hasMore={canLoadMore(currentResponse)}
-          loader={<Skeleton loading active />}
+      {!error &&
+        <Radio.Group
+          value={radioGroupValue}
+          onChange={onChange}
+          className="max-cell"
         >
-          <List
-            dataSource={mineYouTubeChannels}
-            renderItem={(item: Channel) => {
-              const channelId: string = item.id;
-              const channelTitle: string = item.snippet.title;
-              const channelDefaultThumbnail: Thumbnail = item.snippet.thumbnails._default;
+          <InfiniteScroll
+            dataLength={dataLength}
+            next={() => onChangePagination(paginationCurrent + 1)}
+            hasMore={hasMore}
+            loader={<Skeleton loading active />}
+          >
+            {mineYouTubeChannels &&
+              <List
+                dataSource={mineYouTubeChannels}
+                renderItem={(item: Channel) => {
+                  const channelId: string = item.id;
+                  const channelTitle: string = item.snippet.title;
+                  const channelDefaultThumbnail: Thumbnail = item.snippet.thumbnails._default;
 
-              return (
-                <Radio.Button className="max-cell max-height" key={rowKey(item)} value={channelId}>
-                  <List.Item.Meta
-                    avatar={
-                      <Avatar
-                        shape="circle"
-                        src={channelDefaultThumbnail.url}
-                        style={{ width: channelDefaultThumbnail.width, height: channelDefaultThumbnail.height }}
+                  return (
+                    <Radio.Button className="max-cell max-height" key={rowKey(item)} value={channelId}>
+                      <List.Item.Meta
+                        avatar={
+                          <Avatar
+                            shape="circle"
+                            src={channelDefaultThumbnail.url}
+                            style={{width: channelDefaultThumbnail.width, height: channelDefaultThumbnail.height}}
+                          />
+                        }
+                        title={channelTitle}
+                        description={<Text style={{fontFamily: 'monospace'}}>{channelId}</Text>}
                       />
-                    }
-                    title={channelTitle}
-                    description={<Text style={{ fontFamily: 'monospace' }}>{channelId}</Text>}
-                  />
-                </Radio.Button>
-              );
-            }}
-          />
-        </InfiniteScroll>
-      </Radio.Group>
-    </>
+                    </Radio.Button>
+                  );
+                }}
+              />
+            }
+          </InfiniteScroll>
+        </Radio.Group>
+      }
+    </Space>
   );
 }
 

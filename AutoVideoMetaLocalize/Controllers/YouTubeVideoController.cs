@@ -74,7 +74,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 			string[] videos = body.Videos;
 			Task<Video>[] tasks = new Task<Video>[videos.Length];
 
-      string userId = User.GetGoogleNameIdentifier();
+      string userId = User.GetLocalAuthorityNameIdentifier();
       YouTubeService service = await youtubeServiceAccessor.InitializeServiceAsync(userId);
 
 			VideosResource.ListRequest request = service.Videos.List(VIDEO_LOCALIZE_PART);
@@ -94,7 +94,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 
 			//Task.Run(async () => await Task.WhenAll(tasks));
 
-			_ = await Task.WhenAll(tasks); // wait for all videos to be localized and catch errors
+			_ = Task.WhenAll(tasks); // wait for all videos to be localized and catch errors
 
 			return new ActionResult<string>(localizationCountHash);
 		}
@@ -148,7 +148,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 		}
 
 		private async Task<Video> UpdateVideo(Video video, string part) {
-      string userId = User.GetGoogleNameIdentifier();
+      string userId = User.GetLocalAuthorityNameIdentifier();
       YouTubeService service = await youtubeServiceAccessor.InitializeServiceAsync(userId);
 			VideosResource.UpdateRequest request = service.Videos.Update(video, part);
 			return await request.ExecuteAsync();

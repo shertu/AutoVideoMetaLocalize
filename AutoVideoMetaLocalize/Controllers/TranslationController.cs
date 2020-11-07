@@ -1,6 +1,5 @@
 using AutoVideoMetaLocalize.Utilities;
 using Google.Cloud.Translate.V3;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 

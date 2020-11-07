@@ -1,15 +1,12 @@
-import { Row, Space, Typography } from 'antd/lib';
+import {PageHeader, Space, Typography} from 'antd/lib';
 import * as React from 'react';
-import { ApplicationRouteInfo, APPLICATION_NAME } from '../../constants';
-import { AppPage } from '../AppPage/AppPage';
-import { GoogleSignInButton } from '../GoogleSignInButton/GoogleSignInButton';
-import { AppExplanationGrid } from './AppExplanationGrid/AppExplanationGrid';
+import {ApplicationRouteInfo, APPLICATION_NAME} from '../../constants';
+import {AutoColumnRow, AutoColumnRowGutterDefault} from '../AutoColumnRow/AutoColumnRow';
+import {GoogleSignInButton} from '../GoogleSignInButton/GoogleSignInButton';
+import {MaxCell} from '../MaxCell/MaxCell';
+import {AppExplanationGrid} from './AppExplanationGrid/AppExplanationGrid';
 
-const { Paragraph, Text, Title } = Typography;
-
-const GOOGLE_AUTH_SCOPES: string[] = [
-  // 'https://www.googleapis.com/auth/userinfo.profile',
-];
+const {Paragraph, Title} = Typography;
 
 /**
  * The home page of this web application.
@@ -18,28 +15,27 @@ const GOOGLE_AUTH_SCOPES: string[] = [
  */
 export function LandingPage(): JSX.Element {
   return (
-    <AppPage style={{ minHeight: '100vh' }}>
-      <Space direction="vertical" align="center" size="large">
-        <Title>{APPLICATION_NAME}</Title >
+    <Space className="max-cell" direction="vertical" align="center" size={0}>
+      <Title>{APPLICATION_NAME}</Title>
 
-        <Paragraph className="max-cell-xs">
-          <Text strong>{APPLICATION_NAME}</Text> is a
-          service which can localize the titles and descriptions
-          of your YouTube videos to make them accessible to a larger audience.
-        </Paragraph>
+      <MaxCell>
+        <PageHeader title="YouTube Authorization" />
 
-        <AppPage title="YouTube Authorization">
-          <Paragraph className="max-cell-xs">To use this service please sign-in to Google and authorize this application to access your YouTube account.</Paragraph>
+        <AutoColumnRow align="middle" justify="center" gutter={[AutoColumnRowGutterDefault, AutoColumnRowGutterDefault]}>
+          <Typography className="max-cell-xs">
+            <Paragraph>
+              To use this demo service please sign in to Google and authorize this application to manage your YouTube account.
+              The application will read and edit the info in your YouTube channel and videos.
+            </Paragraph>
+          </Typography>
 
-          <Row align="middle" justify="center" className="max-cell-xs" style={{ padding: '1em' }}>
-            <GoogleSignInButton scopes={GOOGLE_AUTH_SCOPES} redirect={`~${ApplicationRouteInfo.ROUTE_PROCESS}`} />
-          </Row>
-        </AppPage>
+          <GoogleSignInButton redirect={`~${ApplicationRouteInfo.ROUTE_PROCESS}`} />
+        </AutoColumnRow>
 
-        <AppPage title="How does it work?">
-          <AppExplanationGrid />
-        </AppPage>
-      </Space>
-    </AppPage>
+        <PageHeader title="How does it work?" />
+
+        <AppExplanationGrid />
+      </MaxCell>
+    </Space>
   );
 }

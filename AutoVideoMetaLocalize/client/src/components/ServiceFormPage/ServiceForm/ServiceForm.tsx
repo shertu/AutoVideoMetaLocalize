@@ -1,20 +1,27 @@
 import {Button, Checkbox, Collapse, Form, Row, Space} from 'antd';
 import * as React from 'react';
-import COOKIE_NAMES, {readJsonCookie, writeJsonCookie} from '../../../json-cookie';
+import {CookiesNames} from '../../../constants';
+import {readJsonCookie, writeJsonCookie} from '../../../json-cookie';
 import {LanguageSelect} from './LanguageSelect/LanguageSelect';
 import {MineChannelVideoUploadsCombo} from './YouTubeCombo/MineChannelVideoUploadsCombo';
-
-export interface ServiceFormValues {
-  languages: string[],
-  videos: string[],
-  sheetMusicBoss: boolean,
-}
 
 const ServiceFormItemNames = Object.freeze({
   LANGUAGE_SELECT: 'languages',
   YOUTUBE_VIDEO_SELECTION_TABLE: 'videos',
   SMB_CHECKBOX: 'sheetMusicBoss',
 });
+
+export interface ServiceFormValues {
+  languages?: string[],
+  videos?: string[],
+  sheetMusicBoss?: boolean,
+}
+
+export const SERVICE_FORM_DEFAULT_VALUES: ServiceFormValues = {
+  languages: [],
+  videos: [],
+  sheetMusicBoss: false,
+};
 
 /**
  * A form componnent used to manage input for the web application's localization service.
@@ -32,17 +39,12 @@ export function ServiceForm(props: {
   const [form] = Form.useForm<ServiceFormValues>();
 
   /** The initial value of the languge select form item. */
-  const languageSelectInitialValue = readJsonCookie(COOKIE_NAMES.SERVICE_FORM_LANGUAGES);
+  const languageSelectInitialValue: string[] = readJsonCookie<string[]>(CookiesNames.SERVICE_FORM_LANGUAGES);
 
   /** The event called when the form is cleared. */
   function onClearForm() {
-    writeJsonCookie(COOKIE_NAMES.SERVICE_FORM_LANGUAGES, []);
-
-    form.setFieldsValue({
-      languages: [],
-      videos: [],
-      sheetMusicBoss: false,
-    });
+    writeJsonCookie<string[]>(CookiesNames.SERVICE_FORM_LANGUAGES, SERVICE_FORM_DEFAULT_VALUES.languages);
+    form.setFieldsValue(SERVICE_FORM_DEFAULT_VALUES);
   }
 
   return (
@@ -83,7 +85,7 @@ export function ServiceForm(props: {
 
       <Row justify="end">
         <Space>
-          <Button onClick={() => onClearForm()}>Clear</Button>
+          <Button onClick={onClearForm}>Clear</Button>
 
           <Button type="primary" htmlType="submit" disabled={submitDisabled}>Execute</Button>
         </Space>

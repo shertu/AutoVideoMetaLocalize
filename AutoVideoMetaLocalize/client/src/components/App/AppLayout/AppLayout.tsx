@@ -1,9 +1,9 @@
-import { Avatar, Button, Layout, Space } from 'antd';
+import {Avatar, Button, Layout, Space} from 'antd';
 import * as React from 'react';
-import { Link } from 'react-router-dom';
-import { ApplicationRouteInfo } from '../../../constants';
-import { AppPage } from '../../AppPage/AppPage';
-import { AppContentSwitch } from '../AppContentSwitch/AppContentSwitch';
+import {Link} from 'react-router-dom';
+import {ApplicationRouteInfo} from '../../../constants';
+import {MaxCell} from '../../MaxCell/MaxCell';
+import {AppContentSwitch} from '../AppContentSwitch/AppContentSwitch';
 import './style.less';
 
 const {Content, Footer} = Layout;
@@ -14,13 +14,13 @@ const {Content, Footer} = Layout;
  * @return {JSX.Element}
  */
 export function AppLayout(): JSX.Element {
-  //const isHomePage: boolean = useRouteMatch(ApplicationRouteInfo.Home).isExact;
+  // const isHomePage: boolean = useRouteMatch(ApplicationRouteInfo.Home).isExact;
   return (
     <Layout id="app-layout">
       <Content>
-        <AppPage id="content-viewport">
+        <MaxCell id="content-viewport">
           <AppContentSwitch />
-        </AppPage>
+        </MaxCell>
       </Content>
       <Footer>
         <Space className="max-height" align="center">

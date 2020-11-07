@@ -21,7 +21,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 
 		[HttpGet("List")]
 		public async Task<ActionResult<PlaylistItemListResponse>> List([Required, FromQuery] AppPlaylistItemListRequest request) {
-      string userId = User.GetGoogleNameIdentifier();
+      string userId = User.GetLocalAuthorityNameIdentifier();
       YouTubeService service = await serviceAccessor.InitializeServiceAsync(userId);
 			PlaylistItemsResource.ListRequest requestActual = request.ToActualRequest(service);
 

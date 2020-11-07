@@ -58,7 +58,7 @@ namespace AutoVideoMetaLocalize.Controllers {
       PostSignInRedirectUriCookie = postSignInRedirectUri ?? POST_SIGNIN_REDIRECT_URI_DEFAULT;
 
       AuthorizationCodeRequestUrl authorizationRequestUrl = _flow.CreateAuthorizationCodeRequest(OAuthRedirectUri);
-      authorizationRequestUrl.Scope = scope ?? authorizationRequestUrl.Scope;
+      //authorizationRequestUrl.Scope = scope ?? authorizationRequestUrl.Scope;
 
       return Redirect(authorizationRequestUrl.Build().AbsoluteUri);
     }

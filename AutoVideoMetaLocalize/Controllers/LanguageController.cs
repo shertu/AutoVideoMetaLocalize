@@ -24,7 +24,7 @@ namespace AutoVideoMetaLocalize.Controllers {
 
 		[Authorize, HttpGet("YouTube-I18nLanguages")]
 		public async Task<ActionResult<IEnumerable<I18nLanguageSnippet>>> GetYouTubeLanguages() {
-      string userId = User.GetGoogleNameIdentifier();
+      string userId = User.GetLocalAuthorityNameIdentifier();
       YouTubeService service = await youtubeServiceAccessor.InitializeServiceAsync(userId);
 			I18nLanguagesResource.ListRequest req = service.I18nLanguages.List("snippet");
 

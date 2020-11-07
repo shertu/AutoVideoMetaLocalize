@@ -1,4 +1,4 @@
-import {Alert, Select} from 'antd';
+import {Alert, message, Select, Space} from 'antd';
 import * as React from 'react';
 import {LanguageApi, SupportedLanguage, I18nLanguageSnippet} from '../../../../../generated-sources/openapi';
 
@@ -24,19 +24,15 @@ export function LanguageSelect(props: {
   const [youTubeI18nLanguages, setYouTubeI18nLanguages] =
     React.useState<Array<I18nLanguageSnippet>>(undefined);
 
-  /** Has an error occured during a fetch op? */
-  const [error, setError] =
-    React.useState<boolean>(undefined);
-
   /** On the initial mount, load the Google Cloud Translate and YouTube languages. */
   React.useEffect(() => {
     LANGUAGE_API.apiLanguageGoogleTranslateSupportedLanguagesGet()
         .then((res) => setCloudTranslationSupportedLanguages(res))
-        .catch(() => setError(true));
+        .catch(() => message.error('Failed to load Google Cloud Translate language information.'));
 
     LANGUAGE_API.apiLanguageYouTubeI18nLanguagesGet()
         .then((res) => setYouTubeI18nLanguages(res))
-        .catch(() => setError(true));
+        .catch(() => message.error('Failed to load YouTube language information.'));
   }, []);
 
   /** The languages supported by both Google Cloud Translate and YouTube. */
@@ -47,24 +43,18 @@ export function LanguageSelect(props: {
   }
 
   return (
-    <>
-      {error &&
-        <Alert message="Error" description="Failed to load Google Cloud Translate or YouTube language information." type="error" showIcon />
-      }
-
-      <Select<Array<string>>
-        mode="multiple"
-        optionFilterProp="label"
-        onChange={onChange}
-        value={value}
-      >
-        {languagesUnion?.map((language: SupportedLanguage) =>
-          <Select.Option key={language.languageCode} value={language.languageCode} label={language.displayName}>
-            {language.displayName}
-          </Select.Option >
-        )}
-      </Select>
-    </>
+    <Select<Array<string>>
+      mode="multiple"
+      optionFilterProp="label"
+      onChange={onChange}
+      value={value}
+    >
+      {languagesUnion?.map((language: SupportedLanguage) =>
+        <Select.Option key={language.languageCode} value={language.languageCode} label={language.displayName}>
+          {language.displayName}
+        </Select.Option >
+      )}
+    </Select>
   );
 }
 

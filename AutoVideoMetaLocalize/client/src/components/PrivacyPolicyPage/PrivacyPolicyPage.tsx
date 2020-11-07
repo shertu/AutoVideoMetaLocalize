@@ -1,7 +1,6 @@
-import { Typography } from 'antd';
+import {Typography} from 'antd';
 import * as React from 'react';
-import { APPLICATION_NAME } from '../../constants';
-import { AppPage } from '../AppPage/AppPage';
+import {APPLICATION_NAME} from '../../constants';
 
 const {Paragraph, Text, Title} = Typography;
 
@@ -12,31 +11,29 @@ const {Paragraph, Text, Title} = Typography;
  */
 export function PrivacyPolicyPage(): JSX.Element {
   return (
-    <AppPage>
-      <Typography>
-        <Title level={1}>Privacy Policy for {APPLICATION_NAME.toUpperCase()}</Title>
+    <Typography>
+      <Title level={1}>Privacy Policy for {APPLICATION_NAME.toUpperCase()}</Title>
 
-        <Paragraph>This Privacy Policy document outlines how information about <Text strong>you</Text> is collected and used whilst you visit this website.</Paragraph>
+      <Paragraph>This Privacy Policy document outlines how information about <Text strong>you</Text> is collected and used whilst you visit this website.</Paragraph>
 
-        <Paragraph>Further use of this website is to be considered <Text strong>consent</Text> to our Privacy Policy and agreemnent to its terms.</Paragraph>
+      <Paragraph>Further use of this website is to be considered <Text strong>consent</Text> to our Privacy Policy and agreemnent to its terms.</Paragraph>
 
-        <Title level={2}>How we collect and use your information</Title>
+      <Title level={2}>How we collect and use your information</Title>
 
-        <Paragraph>
-          This website will never store personal information such as your name, email address, phone number, etc.
-        </Paragraph>
+      <Paragraph>
+        This website will never store personal information such as your name, email address, phone number, etc.
+      </Paragraph>
 
-        <Paragraph>
-          This website will use https://www.googleapis.com/auth/youtube to read the titles and descriptions of your YouTube channel&#39;s uploaded videos
-          as well as to update the localizations of your YouTube channel&#39;s uploaded videos.
-        </Paragraph>
+      <Paragraph>
+        This website will use https://www.googleapis.com/auth/youtube to read the titles and descriptions of your YouTube channel&#39;s uploaded videos
+        as well as to update the localizations of your YouTube channel&#39;s uploaded videos.
+      </Paragraph>
 
-        <Title level={2}>Cookies</Title>
+      <Title level={2}>Cookies</Title>
 
-        <Paragraph>
-          This website, like many other websites, uses computer cookies to help keep track of your preferences, authenticaiton session, etc.
-        </Paragraph>
-      </Typography>
-    </AppPage>
+      <Paragraph>
+        This website, like many other websites, uses computer cookies to help keep track of your preferences, authenticaiton session, etc.
+      </Paragraph>
+    </Typography>
   );
 }

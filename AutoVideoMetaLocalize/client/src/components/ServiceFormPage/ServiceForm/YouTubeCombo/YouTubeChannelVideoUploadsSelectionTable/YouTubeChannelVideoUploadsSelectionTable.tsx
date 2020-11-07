@@ -1,9 +1,9 @@
-import {Alert, Avatar, List, Skeleton, Typography} from 'antd';
+import {Alert, Avatar, List, Skeleton, Space, Typography} from 'antd';
 import Table, {ColumnsType, TablePaginationConfig} from 'antd/lib/table';
 import * as React from 'react';
-import { ApiYouTubePlaylistItemListGetRequest, Channel, PlaylistItem, PlaylistItemListResponse, Thumbnail, YouTubePlaylistItemApi } from '../../../../../../generated-sources/openapi';
+import {ApiYouTubePlaylistItemListGetRequest, Channel, PlaylistItem, PlaylistItemListResponse, Thumbnail, YouTubePlaylistItemApi} from '../../../../../../generated-sources/openapi';
 
-const { Text } = Typography;
+const {Text} = Typography;
 
 const YOUTUBE_PLAYLIST_ITEM_API = new YouTubePlaylistItemApi();
 const DEFAULT_PAGE_SIZE: number = 30;
@@ -19,12 +19,13 @@ const VIDEO_FORM_SELECTION_TABLE_COLUMNS: ColumnsType<PlaylistItem> = [{
       <List.Item.Meta
         avatar={
           <Avatar
+            shape="square"
             src={playlistItemDefaultThumbnail.url}
-            style={{ width: playlistItemDefaultThumbnail.width, height: playlistItemDefaultThumbnail.height }}
+            style={{width: playlistItemDefaultThumbnail.width, height: playlistItemDefaultThumbnail.height}}
           />
         }
         title={playlistItemTitle}
-        description={<Text style={{ fontFamily: 'monospace' }}>{playlistItemPublishAt.toLocaleString()}</Text>}
+        description={<Text style={{fontFamily: 'monospace'}}>{playlistItemPublishAt.toLocaleString()}</Text>}
       />
     );
   },
@@ -45,10 +46,10 @@ export interface YouTubeVideoSelectionTableProps {
 export function YouTubeChannelVideoUploadsSelectionTable(props: YouTubeVideoSelectionTableProps): JSX.Element {
   const {channel, value, onChange} = props;
 
-  const channelUploadsPlaylistId = channel?.contentDetails.relatedPlaylists.uploads;
-  if (channelUploadsPlaylistId == null) {
-    throw Error('The channel\'s upload playlist identifier is required.');
-  }
+  const channelUploadsPlaylistId = channel?.contentDetails?.relatedPlaylists.uploads;
+  // if (!channelUploadsPlaylistId) {
+  //  throw Error('The channel\'s upload playlist identifier is required.');
+  // }
 
   /** The current selected value of the radio group. */
   // const [radioGroupValue, setRadioGroupValue] =
@@ -64,7 +65,7 @@ export function YouTubeChannelVideoUploadsSelectionTable(props: YouTubeVideoSele
 
   /** The current page index of the pagination. */
   const [paginationCurrent, setPaginationCurrent] =
-    React.useState<number>(0); // important to default data value
+    React.useState<number>(undefined); // important to default data value
 
   /** The current page size of the pagination. */
   const [paginationSize, setPaginationSize] =
@@ -74,15 +75,16 @@ export function YouTubeChannelVideoUploadsSelectionTable(props: YouTubeVideoSele
   const [error, setError] =
     React.useState<boolean>(undefined);
 
-  const paginationExpectedTotal: number = paginationCurrent * paginationSize;
-  const dataLength: number = channelUploadsPlaylistItems ? channelUploadsPlaylistItems.length : 0;
-  const shouldAndCanLoadMore: boolean = dataLength < paginationExpectedTotal && canLoadMore(currentResponse);
+  const dataLength: number = channelUploadsPlaylistItems?.length || 0;
+  const shouldLoadMore: boolean = dataLength < calculateWantedItemCount();
+  const hasMore: boolean = canLoadMore(currentResponse);
+  const shouldAndHasMore: boolean = shouldLoadMore && hasMore;
 
   /** On fetching additional items, append the new items to the data collection. */
   React.useEffect(() => {
     if (currentResponse) {
-      let data: Channel[] = channelUploadsPlaylistItems || []; // important to default data value
-      const { items } = currentResponse;
+      const data: Channel[] = channelUploadsPlaylistItems || []; // important to default data value
+      const {items} = currentResponse;
 
       if (items) {
         setChannelUploadsPlaylistItems(data.concat(items));
@@ -92,18 +94,29 @@ export function YouTubeChannelVideoUploadsSelectionTable(props: YouTubeVideoSele
 
   /** On the initial mount, load the first page. */
   React.useEffect(() => {
-    onChangePagination(paginationCurrent + 1, DEFAULT_PAGE_SIZE);
+    onChangePagination(1, DEFAULT_PAGE_SIZE);
   }, []);
 
 
   /** Load items into the data collection until the length expectation is met or no additional item can be loaded. */
   React.useEffect(() => {
-    if (shouldAndCanLoadMore) {
+    if (shouldAndHasMore) {
       fetchNextResponse(currentResponse)
           .then((res: PlaylistItemListResponse) => setCurrentResponse(res))
           .catch(() => setError(true));
     }
-  }, [shouldAndCanLoadMore, channelUploadsPlaylistItems]);
+  }, [shouldAndHasMore, channelUploadsPlaylistItems]);
+
+  /**
+  * Calculates the desired number of items in the item collection.
+  *
+  * @return {number}
+  */
+  function calculateWantedItemCount(): number {
+    const a: number = paginationCurrent || 0;
+    const b: number = paginationSize || 0;
+    return a * b;
+  }
 
   /**
    * Called when the page number is changed, and it takes the resulting page number and page size as its arguments.
@@ -169,28 +182,30 @@ export function YouTubeChannelVideoUploadsSelectionTable(props: YouTubeVideoSele
   };
 
   return (
-    <>
+    <Space className="max-cell" direction="vertical">
       {error &&
         <Alert message="Error" description="Failed to load YouTube video information." type="error" showIcon />
       }
 
-      {dataLength === 0 && !canLoadMore(currentResponse) &&
+      {dataLength === 0 && !hasMore &&
         <Alert message="Warning" description="No YouTube videos are associated with this YouTube channel." type="warning" showIcon />
       }
 
-      <Skeleton loading={shouldAndCanLoadMore} active>
-        <Table
-          dataSource={channelUploadsPlaylistItems}
-          pagination={pagination}
-          rowKey={rowKey}
-          columns={VIDEO_FORM_SELECTION_TABLE_COLUMNS}
-          rowSelection={{
-            selectedRowKeys: value,
-            onChange: onChange,
-          }}
-        />
-      </Skeleton>
-    </>
+      {!error &&
+        <Skeleton loading={shouldAndHasMore} active>
+          <Table
+            dataSource={channelUploadsPlaylistItems}
+            pagination={pagination}
+            rowKey={rowKey}
+            columns={VIDEO_FORM_SELECTION_TABLE_COLUMNS}
+            rowSelection={{
+              selectedRowKeys: value,
+              onChange: onChange,
+            }}
+          />
+        </Skeleton>
+      }
+    </Space>
   );
 }
 

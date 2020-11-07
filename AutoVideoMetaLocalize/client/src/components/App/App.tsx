@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { render } from 'react-dom';
-import { BrowserRouter as Router } from 'react-router-dom';
-import { AppLayout } from './AppLayout/AppLayout';
+import {render} from 'react-dom';
+import {BrowserRouter as Router} from 'react-router-dom';
+import {AppLayout} from './AppLayout/AppLayout';
 
 /**
  * The highest level react component.
@@ -11,7 +11,7 @@ import { AppLayout } from './AppLayout/AppLayout';
 export function App(): JSX.Element {
   return (
     <Router>
-      <AppLayout />
+      <AppLayout/>
     </Router>
   );
 }

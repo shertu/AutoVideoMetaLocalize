@@ -1,36 +1,25 @@
-using System.Text.Json.Serialization;
-
 namespace AutoVideoMetaLocalize.Models {
+#pragma warning disable IDE1006 // Naming Styles
   public class GoogleServiceAccountCredentials {
+    public string type { get; set; }
 
-    [JsonPropertyName("type")]
-    public string Type { get; set; }
+    public string project_id { get; set; }
 
-    [JsonPropertyName("project_id")]
-    public string ProjectId { get; set; }
+    public string private_key_id { get; set; }
 
-    [JsonPropertyName("private_key_id")]
-    public string PrivateKeyId { get; set; }
+    public string private_key { get; set; }
 
-    [JsonPropertyName("private_key")]
-    public string PrivateKey { get; set; }
+    public string client_email { get; set; }
 
-    [JsonPropertyName("client_email")]
-    public string ClientEmail { get; set; }
+    public string client_id { get; set; }
 
-    [JsonPropertyName("client_id")]
-    public string ClientId { get; set; }
+    public string auth_uri { get; set; }
 
-    [JsonPropertyName("auth_uri")]
-    public string AuthUri { get; set; }
+    public string token_uri { get; set; }
 
-    [JsonPropertyName("token_uri")]
-    public string TokenUri { get; set; }
+    public string auth_provider_x509_cert_url { get; set; }
 
-    [JsonPropertyName("auth_provider_x509_cert_url")]
-    public string AuthProviderX509CertUrl { get; set; }
-
-    [JsonPropertyName("client_x509_cert_url")]
-    public string ClientX509CertUrl { get; set; }
+    public string client_x509_cert_url { get; set; }
   }
+#pragma warning restore IDE1006 // Naming Styles
 }
