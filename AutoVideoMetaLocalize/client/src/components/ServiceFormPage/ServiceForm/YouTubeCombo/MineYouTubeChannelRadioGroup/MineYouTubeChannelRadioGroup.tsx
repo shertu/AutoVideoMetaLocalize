@@ -50,8 +50,8 @@ export function MineYouTubeChannelRadioGroup(props: {
   const hasMore: boolean = canLoadMore(currentResponse);
   const shouldAndHasMore: boolean = shouldLoadMore && hasMore;
 
-  // console.log("MineYouTubeChannelRadioGroup State", radioGroupValue, mineYouTubeChannels, currentResponse, paginationCurrent, paginationSize, error);
-  // console.log("MineYouTubeChannelRadioGroup", dataLength, shouldLoadMore, hasMore, shouldAndHasMore);
+   console.log("MineYouTubeChannelRadioGroup State", radioGroupValue, mineYouTubeChannels, currentResponse, paginationCurrent, paginationSize, error);
+   console.log("MineYouTubeChannelRadioGroup", dataLength, shouldLoadMore, hasMore, shouldAndHasMore);
 
   /** On fetching additional items, append the new items to the data collection. */
   React.useEffect(() => {
@@ -73,9 +73,9 @@ export function MineYouTubeChannelRadioGroup(props: {
   /** Load items into the data collection until the length expectation is met or no additional item can be loaded. */
   React.useEffect(() => {
     if (shouldAndHasMore) {
-      fetchNextResponse(currentResponse)
+      buildNextFetchResponse(currentResponse)
           .then((res: ChannelListResponse) => setCurrentResponse(res))
-          .catch(() => setError(true));
+          //.catch(() => setError(true));
     }
   }, [shouldAndHasMore, mineYouTubeChannels]);
 
@@ -146,22 +146,21 @@ export function MineYouTubeChannelRadioGroup(props: {
   }
 
   /**
-   * Fetches the next page of data relative to the specified response.
+   * Constructs a fetch op to get the next page of data for the specified response.
    *
    * @param {ChannelListResponse} response
    * @param {number} maxResults
    * @return {Promise<ChannelListResponse>}
    */
-  function fetchNextResponse(response: ChannelListResponse, maxResults?: number): Promise<ChannelListResponse> {
+  function buildNextFetchResponse(response: ChannelListResponse, maxResults?: number): Promise<ChannelListResponse> {
     const request: ApiYouTubeChannelListGetRequest = {
-      part: 'id,snippet,contentDetails',
-      mine: true,
-      maxResults: maxResults,
+      appChannelListRequest: {
+        part: 'id,snippet,contentDetails',
+        mine: true,
+        maxResults: maxResults,
+        pageToken: response?.nextPageToken,
+      }
     };
-
-    if (response) {
-      request.pageToken = response.nextPageToken;
-    }
 
     return YOUTUBE_CHANNEL_API.apiYouTubeChannelListGet(request);
   }

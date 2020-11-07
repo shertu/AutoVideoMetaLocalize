@@ -1,22 +1,18 @@
 import {Button, Checkbox, Collapse, Form, Row, Space} from 'antd';
 import * as React from 'react';
+import {AppVideoLocalizeRequest} from '../../../../generated-sources/openapi';
 import {CookiesNames} from '../../../constants';
 import {readJsonCookie, writeJsonCookie} from '../../../json-cookie';
 import {LanguageSelect} from './LanguageSelect/LanguageSelect';
 import {MineChannelVideoUploadsCombo} from './YouTubeCombo/MineChannelVideoUploadsCombo';
 
-export interface ServiceFormValues {
-  languages?: string[],
-  videos?: string[],
-  sheetmusicboss?: boolean,
-  languageExclusion?: boolean,
+export interface ServiceFormValues extends AppVideoLocalizeRequest {
 }
 
 export const SERVICE_FORM_DEFAULT_VALUES: ServiceFormValues = {
-  languages: [],
-  videos: [],
-  sheetmusicboss: false,
-  languageExclusion: false,
+  translationLanguageCollection: [],
+  mineChannelVideoUploadCollection: [],
+  nullifyVideoLocalizations: false,
 };
 
 /**
@@ -39,7 +35,7 @@ export function ServiceForm(props: {
 
   /** The event called when the form is cleared. */
   function onClearForm() {
-    writeJsonCookie<string[]>(CookiesNames.SERVICE_FORM_LANGUAGES, SERVICE_FORM_DEFAULT_VALUES.languages);
+    writeJsonCookie<string[]>(CookiesNames.SERVICE_FORM_LANGUAGES, SERVICE_FORM_DEFAULT_VALUES.translationLanguageCollection);
     form.setFieldsValue(SERVICE_FORM_DEFAULT_VALUES);
   }
 
@@ -52,7 +48,7 @@ export function ServiceForm(props: {
     >
       <Form.Item
         label="Languages"
-        name="languages"
+        name="translationLanguageCollection"
         rules={[{required: true, message: 'Please select at least one language.'}]}
         initialValue={languageSelectInitialValue}
       >
@@ -61,7 +57,7 @@ export function ServiceForm(props: {
 
       <Form.Item
         label="Videos"
-        name="videos"
+        name="mineChannelVideoUploadCollection"
         rules={[{required: true, message: 'Please select at least one video.'}]}
       >
         <MineChannelVideoUploadsCombo />
@@ -70,18 +66,11 @@ export function ServiceForm(props: {
       <Collapse className="ant-form-item">
         <Collapse.Panel header="Additional Options" key="1">
           <Form.Item
-            name="sheetmusicboss"
+            name="nullifyVideoLocalizations"
             valuePropName="checked"
             noStyle
           >
-            <Checkbox>Sheet Music Boss</Checkbox>
-          </Form.Item>
-          <Form.Item
-            name={ServiceFormItemNames.SheetMusicBossCheckbox}
-            valuePropName="checked"
-            noStyle
-          >
-            <Checkbox>Sheet Music Boss</Checkbox>
+            <Checkbox>Nullify Video Localizations</Checkbox>
           </Form.Item>
         </Collapse.Panel>
       </Collapse>

@@ -24,25 +24,19 @@ export interface AppVideoLocalizeRequest {
      * @type {Array<string>}
      * @memberof AppVideoLocalizeRequest
      */
-    videos: Array<string>;
+    mineChannelVideoUploadCollection: Array<string>;
     /**
      * 
      * @type {Array<string>}
      * @memberof AppVideoLocalizeRequest
      */
-    languages: Array<string>;
+    translationLanguageCollection: Array<string>;
     /**
      * 
      * @type {boolean}
      * @memberof AppVideoLocalizeRequest
      */
-    sheetMusicBoss?: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof AppVideoLocalizeRequest
-     */
-    excludeOtherLanguages?: boolean;
+    nullifyVideoLocalizations?: boolean;
 }
 
 export function AppVideoLocalizeRequestFromJSON(json: any): AppVideoLocalizeRequest {
@@ -55,10 +49,9 @@ export function AppVideoLocalizeRequestFromJSONTyped(json: any, ignoreDiscrimina
     }
     return {
         
-        'videos': json['videos'],
-        'languages': json['languages'],
-        'sheetMusicBoss': !exists(json, 'sheetMusicBoss') ? undefined : json['sheetMusicBoss'],
-        'excludeOtherLanguages': !exists(json, 'excludeOtherLanguages') ? undefined : json['excludeOtherLanguages'],
+        'mineChannelVideoUploadCollection': json['mineChannelVideoUploadCollection'],
+        'translationLanguageCollection': json['translationLanguageCollection'],
+        'nullifyVideoLocalizations': !exists(json, 'nullifyVideoLocalizations') ? undefined : json['nullifyVideoLocalizations'],
     };
 }
 
@@ -71,10 +64,9 @@ export function AppVideoLocalizeRequestToJSON(value?: AppVideoLocalizeRequest | 
     }
     return {
         
-        'videos': value.videos,
-        'languages': value.languages,
-        'sheetMusicBoss': value.sheetMusicBoss,
-        'excludeOtherLanguages': value.excludeOtherLanguages,
+        'mineChannelVideoUploadCollection': value.mineChannelVideoUploadCollection,
+        'translationLanguageCollection': value.translationLanguageCollection,
+        'nullifyVideoLocalizations': value.nullifyVideoLocalizations,
     };
 }
 

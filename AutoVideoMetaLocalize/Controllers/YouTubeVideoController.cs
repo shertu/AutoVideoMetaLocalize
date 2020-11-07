@@ -23,7 +23,10 @@ namespace AutoVideoMetaLocalize.Controllers {
     private readonly GoogleCloudTranslateServiceAccessor translateServiceAccessor;
     private readonly IntegerStore intStore;
 
-    public YouTubeVideoController(YouTubeServiceAccessor youtubeServiceAccessor, GoogleCloudTranslateServiceAccessor translateServiceAccessor, IntegerStore intStore) {
+    public YouTubeVideoController(
+      YouTubeServiceAccessor youtubeServiceAccessor,
+      GoogleCloudTranslateServiceAccessor translateServiceAccessor,
+      IntegerStore intStore) {
       this.youtubeServiceAccessor = youtubeServiceAccessor;
       this.translateServiceAccessor = translateServiceAccessor;
       this.intStore = intStore;

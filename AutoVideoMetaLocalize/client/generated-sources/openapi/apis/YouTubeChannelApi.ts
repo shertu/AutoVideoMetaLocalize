@@ -15,23 +15,16 @@
 
 import * as runtime from '../runtime';
 import {
+    AppChannelListRequest,
+    AppChannelListRequestFromJSON,
+    AppChannelListRequestToJSON,
     ChannelListResponse,
     ChannelListResponseFromJSON,
     ChannelListResponseToJSON,
 } from '../models';
 
 export interface ApiYouTubeChannelListGetRequest {
-    part?: string | null;
-    categoryId?: string | null;
-    forUsername?: string | null;
-    hl?: string | null;
-    id?: string | null;
-    managedByMe?: boolean | null;
-    maxResults?: number | null;
-    mine?: boolean | null;
-    mySubscribers?: boolean | null;
-    onBehalfOfContentOwner?: string | null;
-    pageToken?: string | null;
+    appChannelListRequest: AppChannelListRequest;
 }
 
 /**
@@ -42,59 +35,22 @@ export class YouTubeChannelApi extends runtime.BaseAPI {
     /**
      */
     async apiYouTubeChannelListGetRaw(requestParameters: ApiYouTubeChannelListGetRequest): Promise<runtime.ApiResponse<ChannelListResponse>> {
+        if (requestParameters.appChannelListRequest === null || requestParameters.appChannelListRequest === undefined) {
+            throw new runtime.RequiredError('appChannelListRequest','Required parameter requestParameters.appChannelListRequest was null or undefined when calling apiYouTubeChannelListGet.');
+        }
+
         const queryParameters: runtime.HTTPQuery = {};
 
-        if (requestParameters.part !== undefined) {
-            queryParameters['Part'] = requestParameters.part;
-        }
-
-        if (requestParameters.categoryId !== undefined) {
-            queryParameters['CategoryId'] = requestParameters.categoryId;
-        }
-
-        if (requestParameters.forUsername !== undefined) {
-            queryParameters['ForUsername'] = requestParameters.forUsername;
-        }
-
-        if (requestParameters.hl !== undefined) {
-            queryParameters['Hl'] = requestParameters.hl;
-        }
-
-        if (requestParameters.id !== undefined) {
-            queryParameters['Id'] = requestParameters.id;
-        }
-
-        if (requestParameters.managedByMe !== undefined) {
-            queryParameters['ManagedByMe'] = requestParameters.managedByMe;
-        }
-
-        if (requestParameters.maxResults !== undefined) {
-            queryParameters['MaxResults'] = requestParameters.maxResults;
-        }
-
-        if (requestParameters.mine !== undefined) {
-            queryParameters['Mine'] = requestParameters.mine;
-        }
-
-        if (requestParameters.mySubscribers !== undefined) {
-            queryParameters['MySubscribers'] = requestParameters.mySubscribers;
-        }
-
-        if (requestParameters.onBehalfOfContentOwner !== undefined) {
-            queryParameters['OnBehalfOfContentOwner'] = requestParameters.onBehalfOfContentOwner;
-        }
-
-        if (requestParameters.pageToken !== undefined) {
-            queryParameters['PageToken'] = requestParameters.pageToken;
-        }
-
         const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
 
         const response = await this.request({
             path: `/api/YouTubeChannel/List`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
+            body: AppChannelListRequestToJSON(requestParameters.appChannelListRequest),
         });
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ChannelListResponseFromJSON(jsonValue));

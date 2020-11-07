@@ -101,7 +101,7 @@ export function YouTubeChannelVideoUploadsSelectionTable(props: YouTubeVideoSele
   /** Load items into the data collection until the length expectation is met or no additional item can be loaded. */
   React.useEffect(() => {
     if (shouldAndHasMore) {
-      fetchNextResponse(currentResponse)
+      buildNextFetchResponse(currentResponse)
           .then((res: PlaylistItemListResponse) => setCurrentResponse(res))
           .catch(() => setError(true));
     }
@@ -131,22 +131,21 @@ export function YouTubeChannelVideoUploadsSelectionTable(props: YouTubeVideoSele
   }
 
   /**
-   * Fetches the next page of data relative to the specified response.
+   * Constructs a fetch op to get the next page of data for the specified response.
    *
    * @param {PlaylistItemListResponse} response
    * @param {number} maxResults
    * @return {Promise<PlaylistItemListResponse>}
    */
-  function fetchNextResponse(response: PlaylistItemListResponse, maxResults?: number): Promise<PlaylistItemListResponse> {
+  function buildNextFetchResponse(response: PlaylistItemListResponse, maxResults?: number): Promise<PlaylistItemListResponse> {
     const request: ApiYouTubePlaylistItemListGetRequest = {
-      part: 'id,snippet',
-      playlistId: channelUploadsPlaylistId,
-      maxResults: maxResults,
+      appPlaylistItemListRequest: {
+        part: 'id,snippet',
+        playlistId: channelUploadsPlaylistId,
+        maxResults: maxResults,
+        pageToken: response?.nextPageToken,
+      }
     };
-
-    if (response) {
-      request.pageToken = response.nextPageToken;
-    }
 
     return YOUTUBE_PLAYLIST_ITEM_API.apiYouTubePlaylistItemListGet(request);
   }

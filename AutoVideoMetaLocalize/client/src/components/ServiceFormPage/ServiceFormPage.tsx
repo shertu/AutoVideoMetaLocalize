@@ -64,10 +64,7 @@ export function ServiceFormPage(): JSX.Element {
   function onFinish(values: ServiceFormValues): void {
     // Important for form values to have fallbacks as most are initially undefined.
     const request: AppVideoLocalizeRequest = {
-      languages: values.languages || SERVICE_FORM_DEFAULT_VALUES.languages,
-      videos: values.videos || SERVICE_FORM_DEFAULT_VALUES.videos,
-      sheetMusicBoss: values.sheetmusicboss || SERVICE_FORM_DEFAULT_VALUES.sheetmusicboss,
-      excludeOtherLanguages: values.languageExclusion || SERVICE_FORM_DEFAULT_VALUES.languageExclusion,
+      ...SERVICE_FORM_DEFAULT_VALUES, ...values,
     };
 
     executeAppVideoLocalizeRequest(request);
@@ -79,10 +76,10 @@ export function ServiceFormPage(): JSX.Element {
    * @param {AppVideoLocalizeRequest} request
    */
   function executeAppVideoLocalizeRequest(request: AppVideoLocalizeRequest): void {
-    writeJsonCookie<string[]>(CookiesNames.SERVICE_FORM_LANGUAGES, request.languages);
+    writeJsonCookie<string[]>(CookiesNames.SERVICE_FORM_LANGUAGES, request.translationLanguageCollection);
 
     setLocalizationOpCount(0);
-    setLocalizationOpCountMax(request.languages.length * request.videos.length);
+    setLocalizationOpCountMax(request.translationLanguageCollection.length * request.mineChannelVideoUploadCollection.length);
 
     YOUTUBE_VIDEO_API.apiYouTubeVideoLocalizePut({
       appVideoLocalizeRequest: request,

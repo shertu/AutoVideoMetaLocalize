@@ -1,3 +1,5 @@
+export * from './AppChannelListRequest';
+export * from './AppPlaylistItemListRequest';
 export * from './AppVideoLocalizeRequest';
 export * from './Channel';
 export * from './ChannelAuditDetails';

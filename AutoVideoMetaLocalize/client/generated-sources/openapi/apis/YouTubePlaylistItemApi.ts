@@ -15,19 +15,16 @@
 
 import * as runtime from '../runtime';
 import {
+    AppPlaylistItemListRequest,
+    AppPlaylistItemListRequestFromJSON,
+    AppPlaylistItemListRequestToJSON,
     PlaylistItemListResponse,
     PlaylistItemListResponseFromJSON,
     PlaylistItemListResponseToJSON,
 } from '../models';
 
 export interface ApiYouTubePlaylistItemListGetRequest {
-    part?: string | null;
-    id?: string | null;
-    maxResults?: number | null;
-    onBehalfOfContentOwner?: string | null;
-    pageToken?: string | null;
-    playlistId?: string | null;
-    videoId?: string | null;
+    appPlaylistItemListRequest: AppPlaylistItemListRequest;
 }
 
 /**
@@ -38,43 +35,22 @@ export class YouTubePlaylistItemApi extends runtime.BaseAPI {
     /**
      */
     async apiYouTubePlaylistItemListGetRaw(requestParameters: ApiYouTubePlaylistItemListGetRequest): Promise<runtime.ApiResponse<PlaylistItemListResponse>> {
+        if (requestParameters.appPlaylistItemListRequest === null || requestParameters.appPlaylistItemListRequest === undefined) {
+            throw new runtime.RequiredError('appPlaylistItemListRequest','Required parameter requestParameters.appPlaylistItemListRequest was null or undefined when calling apiYouTubePlaylistItemListGet.');
+        }
+
         const queryParameters: runtime.HTTPQuery = {};
 
-        if (requestParameters.part !== undefined) {
-            queryParameters['Part'] = requestParameters.part;
-        }
-
-        if (requestParameters.id !== undefined) {
-            queryParameters['Id'] = requestParameters.id;
-        }
-
-        if (requestParameters.maxResults !== undefined) {
-            queryParameters['MaxResults'] = requestParameters.maxResults;
-        }
-
-        if (requestParameters.onBehalfOfContentOwner !== undefined) {
-            queryParameters['OnBehalfOfContentOwner'] = requestParameters.onBehalfOfContentOwner;
-        }
-
-        if (requestParameters.pageToken !== undefined) {
-            queryParameters['PageToken'] = requestParameters.pageToken;
-        }
-
-        if (requestParameters.playlistId !== undefined) {
-            queryParameters['PlaylistId'] = requestParameters.playlistId;
-        }
-
-        if (requestParameters.videoId !== undefined) {
-            queryParameters['VideoId'] = requestParameters.videoId;
-        }
-
         const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
 
         const response = await this.request({
             path: `/api/YouTubePlaylistItem/List`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
+            body: AppPlaylistItemListRequestToJSON(requestParameters.appPlaylistItemListRequest),
         });
 
         return new runtime.JSONApiResponse(response, (jsonValue) => PlaylistItemListResponseFromJSON(jsonValue));
