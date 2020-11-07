@@ -139,12 +139,10 @@ export function YouTubeChannelVideoUploadsSelectionTable(props: YouTubeVideoSele
    */
   function buildNextFetchResponse(response: PlaylistItemListResponse, maxResults?: number): Promise<PlaylistItemListResponse> {
     const request: ApiYouTubePlaylistItemListGetRequest = {
-      appPlaylistItemListRequest: {
-        part: 'id,snippet',
-        playlistId: channelUploadsPlaylistId,
-        maxResults: maxResults,
-        pageToken: response?.nextPageToken,
-      }
+      part: 'id,snippet',
+      playlistId: channelUploadsPlaylistId,
+      maxResults: maxResults,
+      pageToken: response?.nextPageToken,
     };
 
     return YOUTUBE_PLAYLIST_ITEM_API.apiYouTubePlaylistItemListGet(request);

@@ -154,12 +154,10 @@ export function MineYouTubeChannelRadioGroup(props: {
    */
   function buildNextFetchResponse(response: ChannelListResponse, maxResults?: number): Promise<ChannelListResponse> {
     const request: ApiYouTubeChannelListGetRequest = {
-      appChannelListRequest: {
-        part: 'id,snippet,contentDetails',
-        mine: true,
-        maxResults: maxResults,
-        pageToken: response?.nextPageToken,
-      }
+      part: 'id,snippet,contentDetails',
+      mine: true,
+      maxResults: maxResults,
+      pageToken: response?.nextPageToken,
     };
 
     return YOUTUBE_CHANNEL_API.apiYouTubeChannelListGet(request);

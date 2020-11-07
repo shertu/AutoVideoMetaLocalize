@@ -44,7 +44,7 @@ namespace AutoVideoMetaLocalize {
         },
       };
 
-      _ = services.AddScoped(elem => authInitializer);
+      _ = services.AddScoped(sp => authInitializer);
       _ = services.AddScoped<GoogleCredentialManager>();
       #endregion
 

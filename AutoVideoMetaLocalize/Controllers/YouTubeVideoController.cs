@@ -88,22 +88,20 @@ namespace AutoVideoMetaLocalize.Controllers {
         IList<Video> items = response.Items;
 
         foreach (Video item in items) {
-          tasks[i++] = LocalizeVideoTask(item, body, localizationCountHash); // All other tasks begin their life cycle in a hot state.
+          tasks[i++] = LocalizeVideoTask(item, body, localizationCountHash, service); // All other tasks begin their life cycle in a hot state.
         }
 
         request.PageToken = response.NextPageToken;
       } while (request.PageToken != null);
 
-      //Task.Run(async () => await Task.WhenAll(tasks));
-
-      _ = Task.WhenAll(tasks); // wait for all videos to be localized and catch errors
+      _ = Task.WhenAll(tasks); // errors will not be caught because no await
 
       return new ActionResult<string>(localizationCountHash);
     }
 
-    private async Task<Video> LocalizeVideoTask(Video video, AppVideoLocalizeRequest body, string localizationCountHash) {
+    private async Task<Video> LocalizeVideoTask(Video video, AppVideoLocalizeRequest body, string localizationCountHash, YouTubeService service) {
       video = await AddLocalizationToVideo(video, body, localizationCountHash); // wait for all localizations to be added
-      video = await UpdateVideo(video, VIDEO_LOCALIZE_PART); // update the video
+      video = await UpdateVideo(video, VIDEO_LOCALIZE_PART, service); // update the video
       return video;
     }
 
@@ -147,11 +145,10 @@ namespace AutoVideoMetaLocalize.Controllers {
       _ = ++intStore[localizationCountHash];
     }
 
-    private async Task<Video> UpdateVideo(Video video, string part) {
-      string userId = User.GetLocalAuthorityNameIdentifier();
-      YouTubeService service = await youtubeServiceAccessor.InitializeServiceAsync(userId);
+    private async Task<Video> UpdateVideo(Video video, string part, YouTubeService service) {
       VideosResource.UpdateRequest request = service.Videos.Update(video, part);
-      return await request.ExecuteAsync();
+      Video updatedVideo = await request.ExecuteAsync();
+      return updatedVideo;
     }
   }
 }
